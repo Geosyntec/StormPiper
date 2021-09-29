@@ -1,21 +1,37 @@
 from io import BytesIO
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Request
+import ee
+from fastapi import APIRouter, HTTPException, Request, Depends, Query
 from fastapi.responses import RedirectResponse, StreamingResponse
 
-router = APIRouter()
-
-TILE_REGISTRY = {
-    "esri": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
-    "carto-db": "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
-}
+# from stormpiper.core.config import settings
+from stormpiper.earth_engine import fetch_lidar_dsm_tile_url
 
 
-@router.get("/tileserver/{tilename}/{z}/{x}/{y}/{s}")
-async def get_tile_zxy(
-    tilename: str, z: float, x: float, y: float, s: str = "none"
-) -> Any:
+TILE_REGISTRY = {}
+
+
+def init_tile_registry():
+
+    TILE_REGISTRY[
+        "esri"
+    ] = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
+    TILE_REGISTRY[
+        "carto-db"
+    ] = "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
+
+    if "lidar_dsm" not in TILE_REGISTRY:
+        TILE_REGISTRY["lidar_dsm"] = fetch_lidar_dsm_tile_url()
+
+
+router = APIRouter(dependencies=[Depends(init_tile_registry)])
+
+
+@router.get(
+    "/tileserver/{tilename}/{z}/{x}/{y}/{s}",
+)
+async def get_tile_zxy(tilename: str, z: int, x: int, y: int, s: str = "none") -> Any:
 
     url = TILE_REGISTRY.get(tilename, "").format(**dict(x=x, y=y, z=z, s=s))
 
@@ -29,9 +45,9 @@ async def get_tile_zxy(
 async def get_tile_zxy_file(
     request: Request,
     tilename: str,
-    z: float,
-    x: float,
-    y: float,
+    z: int,
+    x: int,
+    y: int,
     s: str = "a",
 ) -> Any:
 
@@ -51,3 +67,14 @@ async def get_tile_zxy_file(
         media_type=media_type,
         headers={"Connection": "keep-alive", "Cache-Control": "max-age=86400"},
     )
+
+
+@router.get("/elevation")
+async def get_elevation(long: float = Query(...), lat: float = Query(...)) -> Any:
+    """mt_rainer = [-121.756163642, 46.85166326]"""
+
+    point = ee.Geometry.Point([long, lat])
+    img = ee.Image("USGS/NED")
+    elevation_meters = img.reduceRegion(ee.Reducer.first(), point)
+
+    return elevation_meters.getInfo()

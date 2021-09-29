@@ -8,6 +8,7 @@ from fastapi.staticfiles import StaticFiles
 
 from stormpiper.api import api_router
 from stormpiper.core.config import settings, stormpiper_path
+from stormpiper.earth_engine import login
 from stormpiper.site import site_router
 
 
@@ -22,6 +23,21 @@ def create_app(settings_override: Optional[Dict[str, Any]] = None) -> FastAPI:
         version=_settings.VERSION,
         # docs_url=None, redoc_url=None
     )
+
+    @app.on_event("startup")
+    def register_sessions():
+        sessions = {"tileserver_session": aiohttp.ClientSession()}
+        setattr(app, "sessions", sessions)
+
+    @app.on_event("startup")
+    def login_earth_engine():
+        login()
+
+    @app.on_event("shutdown")
+    async def close_sessions():
+        sessions = getattr(app, "sessions", {})
+        for _, session in sessions.items():
+            await session.close()
 
     app.add_middleware(BrotliMiddleware)
     app.add_middleware(
@@ -41,16 +57,5 @@ def create_app(settings_override: Optional[Dict[str, Any]] = None) -> FastAPI:
         StaticFiles(directory=stormpiper_path / "site" / "static"),
         name="site/static",
     )
-
-    @app.on_event("startup")
-    def register_sessions():
-        sessions = {"tileserver_session": aiohttp.ClientSession()}
-        setattr(app, "sessions", sessions)
-
-    @app.on_event("shutdown")
-    async def close_sessions():
-        sessions = getattr(app, "sessions", {})
-        for _, session in sessions.items():
-            await session.close()
 
     return app

@@ -32,17 +32,17 @@
     <option value="./api/tileserver/carto-db/{z}/{x}/{y}/{s}">
       cartodb - stormpiper
     </option>
+    <option value="./api/tileserver/lidar_dsm/{z}/{x}/{y}/{s}">
+      lidar_dsm - stormpiper
+    </option>
     <option value="./api/file_tileserver/esri/{z}/{x}/{y}/{s}">
       esri - stormpiper - file
     </option>
     <option value="./api/file_tileserver/carto-db/{z}/{x}/{y}/{s}">
       cartodb - stormpiper - file
     </option>
-    <option value="./api/async_file_tileserver/esri/{z}/{x}/{y}/{s}">
-      esri - stormpiper - file - async
-    </option>
-    <option value="./api/async_file_tileserver/carto-db/{z}/{x}/{y}/{s}">
-      cartodb - stormpiper - file - async
+    <option value="./api/file_tileserver/lidar_dsm/{z}/{x}/{y}/{s}">
+      lidar_dsm - stormpiper - file
     </option>
     <option
       value="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
@@ -79,7 +79,7 @@
     .addEventListener("change", () => on_change_basemap());
 
   let map = L.map("map-container");
-  map.setView([33.58, -117.65], 11);
+  map.setView([47.256, -122.435], 11);
 
   let current_bg;
 

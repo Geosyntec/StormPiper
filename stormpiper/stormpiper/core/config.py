@@ -6,6 +6,9 @@ from pydantic import AnyHttpUrl, BaseSettings, validator
 
 import stormpiper
 
+with resources.path("stormpiper", "__init__.py") as file:
+    stormpiper_path = file.parent
+
 
 class Settings(BaseSettings):
     VERSION: str = stormpiper.__version__
@@ -29,12 +32,17 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
+    # EE Auth
+    EE_SERVICE_ACCOUNT: str = ""
+    EE_PROJECT_DIRECTORY: str = ""
+
     class Config:
         extra = "allow"
         env_prefix = "STP_"
+        try:
+            env_file = stormpiper_path / ".private_keys" / ".env"
+        except FileNotFoundError:
+            pass
 
 
 settings = Settings()
-
-with resources.path("stormpiper", "__init__.py") as file:
-    stormpiper_path = file.parent
