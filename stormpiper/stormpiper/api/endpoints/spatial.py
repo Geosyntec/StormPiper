@@ -2,12 +2,10 @@ from io import BytesIO
 from typing import Any
 
 import ee
-from fastapi import APIRouter, HTTPException, Request, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import RedirectResponse, StreamingResponse
 
-# from stormpiper.core.config import settings
 from stormpiper.earth_engine import fetch_lidar_dsm_tile_url
-
 
 TILE_REGISTRY = {}
 
