@@ -41,7 +41,7 @@
     "description": "Lidar dervied surface elevation. Depicts elevation of the top of surfaces such as buildings and tree canopy.",
     "safe_name": "lidar_dsm",
     "layer": {
-      "eeObject": "projects/ee-tacoma-watershed/assets/raster/lidar_dtm",
+      "eeObject": "projects/ee-tacoma-watershed/assets/raster/lidar_dsm",
       "name": "Digital Surface Model",
       "visParams": {
         "min": 0,
