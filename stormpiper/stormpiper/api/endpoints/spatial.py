@@ -1,35 +1,50 @@
 from io import BytesIO
-from typing import Any
+from typing import Dict
 
 import ee
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
-from fastapi.responses import RedirectResponse, StreamingResponse
+from fastapi.responses import JSONResponse, RedirectResponse, StreamingResponse
 
-from stormpiper.earth_engine import fetch_lidar_dsm_tile_url
+from stormpiper import earth_engine
 
-TILE_REGISTRY = {}
+TILE_REGISTRY: Dict[str, str] = {}
 
 
 def init_tile_registry():
 
-    TILE_REGISTRY[
-        "esri"
-    ] = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
-    TILE_REGISTRY[
-        "carto-db"
-    ] = "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
+    global TILE_REGISTRY
 
-    if "lidar_dsm" not in TILE_REGISTRY:
-        TILE_REGISTRY["lidar_dsm"] = fetch_lidar_dsm_tile_url()
+    if not TILE_REGISTRY:
+
+        TILE_REGISTRY[
+            "esri"
+        ] = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
+        TILE_REGISTRY[
+            "carto-db"
+        ] = "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
+
+        layers = earth_engine.layers().values()
+
+        for spec in layers:
+
+            name = spec.get("safe_name")
+            url = spec.get("layer", {}).get("url")
+            if name and url:  # pragma: no branch
+                TILE_REGISTRY[name] = url
+
+    return TILE_REGISTRY
 
 
-router = APIRouter(dependencies=[Depends(init_tile_registry)])
+router = APIRouter()
 
 
 @router.get(
-    "/tileserver/{tilename}/{z}/{x}/{y}/{s}",
+    "/tileserver_redirect/{tilename}/{z}/{x}/{y}/{s}",
+    dependencies=[Depends(init_tile_registry)],
 )
-async def get_tile_zxy(tilename: str, z: int, x: int, y: int, s: str = "none") -> Any:
+async def get_tile_zxy_redirect(
+    tilename: str, z: int, x: int, y: int, s: str = "none"
+) -> RedirectResponse:
 
     url = TILE_REGISTRY.get(tilename, "").format(**dict(x=x, y=y, z=z, s=s))
 
@@ -39,15 +54,18 @@ async def get_tile_zxy(tilename: str, z: int, x: int, y: int, s: str = "none") -
     return RedirectResponse(url)
 
 
-@router.get("/file_tileserver/{tilename}/{z}/{x}/{y}/{s}")
-async def get_tile_zxy_file(
+@router.get(
+    "/tileserver/{tilename}/{z}/{x}/{y}/{s}",
+    dependencies=[Depends(init_tile_registry)],
+)
+async def get_tile_file_zxy(
     request: Request,
     tilename: str,
     z: int,
     x: int,
     y: int,
     s: str = "a",
-) -> Any:
+) -> StreamingResponse:
 
     url = TILE_REGISTRY.get(tilename, "").format(**dict(x=x, y=y, z=z, s=s))
 
@@ -67,8 +85,10 @@ async def get_tile_zxy_file(
     )
 
 
-@router.get("/elevation")
-async def get_elevation(long: float = Query(...), lat: float = Query(...)) -> Any:
+@router.get("/elevation", response_class=JSONResponse)
+async def get_elevation(
+    long: float = Query(...), lat: float = Query(...)
+) -> JSONResponse:
     """mt_rainer = [-121.756163642, 46.85166326]"""
 
     point = ee.Geometry.Point([long, lat])
@@ -76,3 +96,14 @@ async def get_elevation(long: float = Query(...), lat: float = Query(...)) -> An
     elevation_meters = img.reduceRegion(ee.Reducer.first(), point)
 
     return elevation_meters.getInfo()
+
+
+@router.get("/spatial/assets", response_class=JSONResponse)
+async def get_ee_assets() -> JSONResponse:
+
+    rsp = earth_engine.assets()
+
+    if not rsp:  # pragma: no cover
+        raise HTTPException(status_code=404, detail=f"not found")
+
+    return rsp

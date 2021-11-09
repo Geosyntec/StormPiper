@@ -1,0 +1,134 @@
+{
+  "CanopyClasses": {
+    "discrete": "TRUE",
+    "labels": [" 0-20 feet?", "20-40 feet?", "40-80 feet?", "80+ feet?"],
+    "sourceName": "City of Tacoma",
+    "safe_name": "canopy_classes",
+    "layer": {
+      "eeObject": "projects/ee-tacoma-watershed/assets/raster/canopy_classes",
+      "name": "Tree Canopy Height",
+      "visParams": {
+        "min": 1,
+        "max": 4,
+        "palette": ["#d7f9d0", "#64b463", "#126e45", "#122414"],
+        "opacity": 0.8,
+        "name": "Tree Canopy Height"
+      }
+    }
+  },
+  "lidar_dtm": {
+    "discrete": "FALSE",
+    "sourceName": "City of Tacoma",
+    "units": "feet",
+    "description": "Lidar-dervied bare earth elevation.",
+    "safe_name": "lidar_dtm",
+    "layer": {
+      "eeObject": "projects/ee-tacoma-watershed/assets/raster/lidar_dtm",
+      "name": "Digital Terrain Model",
+      "visParams": {
+        "min": 0,
+        "max": 500,
+        "palette": ["#3C5600", "#7A711F", "#B79A5E", "#F1CEA4", "#FDFDE6"],
+        "opacity": 0.8,
+        "name": "lidar_dtm"
+      }
+    }
+  },
+  "lidar_dsm": {
+    "discrete": "FALSE",
+    "sourceName": "City of Tacoma",
+    "units": "feet",
+    "description": "Lidar dervied surface elevation. Depicts elevation of the top of surfaces such as buildings and tree canopy.",
+    "safe_name": "lidar_dsm",
+    "layer": {
+      "eeObject": "projects/ee-tacoma-watershed/assets/raster/lidar_dsm",
+      "name": "Digital Surface Model",
+      "visParams": {
+        "min": 0,
+        "max": 500,
+        "palette": ["#3C5600", "#7A711F", "#B79A5E", "#F1CEA4", "#FDFDE6"],
+        "opacity": 0.8,
+        "name": "lidar_dsm"
+      }
+    }
+  },
+  "tacoma_lc_1m_2": {
+    "discrete": "TRUE",
+    "labels": [
+      "Forest/Trees",
+      "Pasture",
+      "Grass",
+      "Water",
+      "Impervious - Roofs",
+      "Impervious"
+    ],
+    "sourceName": "City of Tacoma",
+    "safe_name": "tacoma_lc_1m_2",
+    "layer": {
+      "eeObject": "projects/ee-tacoma-watershed/assets/raster/tacoma_lc_1m_2",
+      "name": "Land Cover Classes",
+      "visParams": {
+        "min": 1,
+        "max": 5,
+        "palette": [
+          "#55775e",
+          "#dacd7f",
+          "#7e9e87",
+          "#b3caff",
+          "#844c8b",
+          "#ead1f0"
+        ],
+        "opacity": 0.8,
+        "name": "tacoma_lc_1m_2"
+      }
+    }
+  },
+  "urban_heat_tac_af": {
+    "sourceName": "City of Tacoma",
+    "units": "°C",
+    "description": "Afteroon temperature measurements",
+    "safe_name": "urban_heat_tac_af",
+    "layer": {
+      "eeObject": "projects/ee-tacoma-watershed/assets/raster/urban_heat_tac_af",
+      "visParams": {
+        "min": 26,
+        "max": 34,
+        "palette": [
+          "#4575b4",
+          "#91bfdb",
+          "#e0f3f8",
+          "#ffffbf",
+          "#fee090",
+          "#fc8d59",
+          "#d73027"
+        ],
+        "opacity": 0.8,
+        "name": "Urban_Heat_tac_af"
+      }
+    }
+  },
+  "urban_heat_tac_pm": {
+    "sourceName": "City of Tacoma",
+    "units": "°C",
+    "description": "Evening temperature measurements",
+    "safe_name": "urban_heat_tac_pm",
+    "layer": {
+      "eeObject": "projects/ee-tacoma-watershed/assets/raster/urban_heat_tac_pm",
+      "visParams": {
+        "min": 26,
+        "max": 34,
+        "palette": [
+          "#4575b4",
+          "#91bfdb",
+          "#e0f3f8",
+          "#ffffbf",
+          "#fee090",
+          "#fc8d59",
+          "#d73027"
+        ],
+        "opacity": 0.8,
+        "name": "urban_heat_tac_pm"
+      }
+    }
+  }
+}

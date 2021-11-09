@@ -15,9 +15,10 @@
   .content {
     height: 100%;
     width: 85%;
+    padding-bottom: 1rem;
   }
   #map-container {
-    height: 100%;
+    height: 90%;
     width: 100%;
   }
 </style>
@@ -25,36 +26,45 @@
 <!--The div in which the map will be created-->
 <div id="map-container"></div>
 <div>
-  <select id="map-picker">
-    <option value="./api/tileserver/esri/{z}/{x}/{y}/{s}">
-      esri - stormpiper
-    </option>
-    <option value="./api/tileserver/carto-db/{z}/{x}/{y}/{s}">
-      cartodb - stormpiper
-    </option>
-    <option value="./api/tileserver/lidar_dsm/{z}/{x}/{y}/{s}">
-      lidar_dsm - stormpiper
-    </option>
-    <option value="./api/file_tileserver/esri/{z}/{x}/{y}/{s}">
-      esri - stormpiper - file
-    </option>
-    <option value="./api/file_tileserver/carto-db/{z}/{x}/{y}/{s}">
-      cartodb - stormpiper - file
-    </option>
-    <option value="./api/file_tileserver/lidar_dsm/{z}/{x}/{y}/{s}">
-      lidar_dsm - stormpiper - file
-    </option>
-    <option
-      value="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
-    >
-      esri - direct
-    </option>
-    <option
-      value="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
-    >
-      cartodb - direct
-    </option>
-  </select>
+  <div>
+    <label for="basemap-picker">Basemap</label>
+    <select id="basemap-picker">
+      <option
+        value="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
+      >
+        esri - direct
+      </option>
+      <option
+        value="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
+      >
+        cartodb - direct
+      </option>
+      <option value="./api/tileserver/esri/{z}/{x}/{y}/{s}">
+        esri - stormpiper
+      </option>
+      <option value="./api/tileserver/carto-db/{z}/{x}/{y}/{s}">
+        cartodb - stormpiper
+      </option>
+    </select>
+  </div>
+  <div>
+    <label for="overlay-picker">Overlay</label>
+    <select id="overlay-picker">
+      {% for layer in layers %}
+      <option value="./api/tileserver/{{ layer['safe_name'] }}/{z}/{x}/{y}/{s}">
+        {{ layer.get('layer', {}).get('name', layer['safe_name']) }} -
+        stormpiper
+      </option>
+      <option
+        value="./api/tileserver_redirect/{{ layer['safe_name'] }}/{z}/{x}/{y}/{s}"
+      >
+        {{ layer.get('layer', {}).get('name', layer['safe_name']) }} -
+        stormpiper - redirect
+      </option>
+
+      {% endfor %}
+    </select>
+  </div>
 </div>
 
 <!--load leaflet.js-->
@@ -70,22 +80,30 @@
 <!--our own code to create the map-->
 <script>
   function on_change_basemap() {
-    var result = document.getElementById("map-picker").value;
-    set_basemap(result, map);
+    var result = document.getElementById("basemap-picker").value;
+    set_basemap_layer(result, map);
+  }
+  function on_change_overlay() {
+    var result = document.getElementById("overlay-picker").value;
+    set_overlay_layer(result, map);
   }
 
   document
-    .getElementById("map-picker")
+    .getElementById("basemap-picker")
     .addEventListener("change", () => on_change_basemap());
+
+  document
+    .getElementById("overlay-picker")
+    .addEventListener("change", () => on_change_overlay());
 
   let map = L.map("map-container");
   map.setView([47.256, -122.435], 11);
 
   let current_bg;
-
-  const set_basemap = async (url, map) => {
+  const set_basemap_layer = async (url, map) => {
     let new_bg = L.tileLayer(url, {
       maxZoom: 19,
+      zIndex: 0,
     });
 
     new_bg.addTo(map);
@@ -97,7 +115,29 @@
     current_bg.addTo(map);
   };
 
-  set_basemap("./api/tileserver/esri/{z}/{x}/{y}/{s}", map);
+  let current_overlay;
+  const set_overlay_layer = async (url, map) => {
+    let new_bg = L.tileLayer(url, {
+      maxZoom: 19,
+      zIndex: 100,
+    });
+
+    new_bg.addTo(map);
+
+    if (current_overlay) {
+      map.removeLayer(current_overlay);
+    }
+    current_overlay = new_bg;
+    current_overlay.addTo(map);
+  };
+
+  set_basemap_layer("./api/tileserver/esri/{z}/{x}/{y}/{s}", map);
+
+  document.addEventListener("load", () => {
+    document
+      .getElementById("overlay-picker")
+      .dispatchEvent(new Event("change"));
+  });
 
   //extend Leaflet to create a GeoJSON layer from a TopoJSON file
   L.TopoJSON = L.GeoJSON.extend({
