@@ -41,7 +41,7 @@ class Settings(BaseSettings):
         env_prefix = "STP_"
         try:
             env_file = stormpiper_path / ".private_keys" / ".env"
-        except FileNotFoundError:
+        except FileNotFoundError:  # pragma: no cover
             pass
 
 
