@@ -27,7 +27,6 @@ jobs:
 
       - name: Prepare if manual dispatch
         id: prep_manual
-        if: ${{ github.event.inputs.tag }}
         run: |
           DOCKER_IMAGE=gcr.io/stormpiper/${{ matrix.image }}
           TAGS=${DOCKER_IMAGE}:${{ github.event.inputs.tag }}
