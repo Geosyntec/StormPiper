@@ -24,8 +24,9 @@
 }
 
 .content {
-  align-self: center;
-  justify-self: center;
+  position: relative;
+  /* align-self: center;
+  justify-self: center; */
 }
 
 .footer {

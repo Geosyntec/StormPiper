@@ -39,10 +39,10 @@
       >
         cartodb - direct
       </option>
-      <option value="./api/tileserver/esri/{z}/{x}/{y}/{s}">
+      <option value="./api/rest/tileserver/esri/{z}/{x}/{y}/{s}">
         esri - stormpiper
       </option>
-      <option value="./api/tileserver/carto-db/{z}/{x}/{y}/{s}">
+      <option value="./api/rest/tileserver/carto-db/{z}/{x}/{y}/{s}">
         cartodb - stormpiper
       </option>
     </select>
@@ -51,12 +51,14 @@
     <label for="overlay-picker">Overlay</label>
     <select id="overlay-picker">
       {% for layer in layers %}
-      <option value="./api/tileserver/{{ layer['safe_name'] }}/{z}/{x}/{y}/{s}">
+      <option
+        value="./api/rest/tileserver/{{ layer['safe_name'] }}/{z}/{x}/{y}/{s}"
+      >
         {{ layer.get('layer', {}).get('name', layer['safe_name']) }} -
         stormpiper
       </option>
       <option
-        value="./api/tileserver_redirect/{{ layer['safe_name'] }}/{z}/{x}/{y}/{s}"
+        value="./api/rest/tileserver/redirect/{{ layer['safe_name'] }}/{z}/{x}/{y}/{s}"
       >
         {{ layer.get('layer', {}).get('name', layer['safe_name']) }} -
         stormpiper - redirect
@@ -131,103 +133,12 @@
     current_overlay.addTo(map);
   };
 
-  set_basemap_layer("./api/tileserver/esri/{z}/{x}/{y}/{s}", map);
+  set_basemap_layer("./api/rest/tileserver/esri/{z}/{x}/{y}/{s}", map);
 
   document.addEventListener("load", () => {
     document
       .getElementById("overlay-picker")
       .dispatchEvent(new Event("change"));
   });
-
-  //extend Leaflet to create a GeoJSON layer from a TopoJSON file
-  L.TopoJSON = L.GeoJSON.extend({
-    addData: function (data) {
-      var geojson, key;
-      if (data.type === "Topology") {
-        for (key in data.objects) {
-          if (data.objects.hasOwnProperty(key)) {
-            geojson = topojson.feature(data, data.objects[key]);
-            L.GeoJSON.prototype.addData.call(this, geojson);
-          }
-        }
-        return this;
-      }
-      L.GeoJSON.prototype.addData.call(this, data);
-      return this;
-    },
-  });
-  L.topoJson = function (data, options) {
-    return new L.TopoJSON(data, options);
-  };
-
-  //create an empty geojson layer
-  //with a style and a popup on click
-  var geojson = L.topoJson(null, {
-    interactive: false,
-    style: function (feature) {
-      return {
-        color: "#000",
-        opacity: 1,
-        weight: 1,
-        fillColor: "#35495d",
-        fillOpacity: 0.2,
-      };
-    },
-    onEachFeature: function (feature, layer) {
-      let popup_attrs = new Array();
-      popup_attrs.push(
-        feature.properties?.station || feature.properties.CatchIDN
-      );
-      feature.properties?.has_discharge ? popup_attrs.push("Discharge") : null;
-      feature.properties?.has_rainfall ? popup_attrs.push("Rainfall") : null;
-      feature.properties?.has_raw_level ? popup_attrs.push("Raw Level") : null;
-      feature.properties?.has_distance_to_water
-        ? popup_attrs.push("Distance to Water")
-        : null;
-      feature.properties?.has_conductivity
-        ? popup_attrs.push("Conductivity")
-        : null;
-
-      let popup_content = "";
-
-      popup_attrs.forEach((d) => {
-        popup_content += "<p>" + d + "</p>";
-      });
-
-      layer.bindPopup(popup_content);
-    },
-  }).addTo(map);
-
-  var tjson = L.topoJson(null, {
-    style: function (feature) {
-      return {
-        color: "#ff4500",
-        opacity: 1,
-        weight: 1,
-        fillColor: "#35495d",
-        fillOpacity: 0.0,
-      };
-    },
-    onEachFeature: function (feature, layer) {
-      layer.bindPopup(
-        "<p>" + `CatchIDN: ${feature.properties.CatchIDN}` + "</p>"
-      );
-    },
-  }).addTo(map);
-
-  //define a function to get and parse geojson from URL
-  async function getGeoData(url) {
-    let response = await fetch(url);
-    let data = await response.json();
-    return data;
-  }
-
-  //fetch the geojson and add it to our geojson layer
-  // var topo_url = "{{ topo_url | safe }}" || "";
-  // var geo_url = "{{ geo_url | safe }}" || "";
-  // var sites_url = "{{ sites_url | safe }}" || "";
-  // getGeoData(topo_url).then((data) => tjson.addData(data));
-  // // getGeoData(geo_url).then((data) => geojson.addData(data));
-  // getGeoData(sites_url).then((data) => geojson.addData(data));
 </script>
 {% endblock %}

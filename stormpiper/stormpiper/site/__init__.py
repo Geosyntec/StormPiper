@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from stormpiper.site.views import tileserver
+from stormpiper.site.views import demo
 
 site_router = APIRouter()
-site_router.include_router(tileserver.router)
+site_router.include_router(demo.router)
