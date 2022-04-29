@@ -40,9 +40,13 @@ class Settings(BaseSettings):
         extra = "allow"
         env_prefix = "STP_"
         try:
-            env_file = stormpiper_path / ".private_keys" / ".env"
+            env_file = ".env"
         except FileNotFoundError:  # pragma: no cover
             pass
+
+    def update(self, other: dict) -> None:  # pragma: no cover
+        for key, value in other.items():
+            setattr(self, key, value)
 
 
 settings = Settings()

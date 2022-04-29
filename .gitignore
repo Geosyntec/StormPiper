@@ -139,3 +139,17 @@ dmypy.json
 # Mac
 .DS_Store
 
+# js and node
+
+# Optional npm cache directory
+.npm
+
+# Compiled binary addons (https://nodejs.org/api/addons.html)
+build/Release
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# TypeScript cache
+*.tsbuildinfo
