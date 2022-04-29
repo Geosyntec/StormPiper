@@ -49,11 +49,11 @@ jobs:
           echo "auto tags: ${TAGS}"
           echo ::set-output name=tags::${TAGS}
 
-      - name: Prepare if auto tag
+      - name: Prepare tag
         id: prep
         run: |
           TAGS=${{ steps.prep_auto.outputs.tags }}
-          if [[ ${{ steps.prep_manual.outputs.tags }} ]] then;
+          if [[ ${{ steps.prep_manual.outputs.tags }} ]]; then
             TAGS=${{ steps.prep_manual.outputs.tags }}
           fi
           echo "tags: ${TAGS}"
