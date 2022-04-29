@@ -25,19 +25,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Prepare if manual dispatch
-        id: prep_manual
-        run: |
-          if [[ ${{ github.event.inputs.tag }} ]]; then
-            DOCKER_IMAGE=gcr.io/stormpiper/${{ matrix.image }}
-            TAGS=${DOCKER_IMAGE}:${{ github.event.inputs.tag }}
-          fi
-          
-          echo "manual tags: ${TAGS}"
-          echo ::set-output name=tags::${TAGS}
-
       - name: Prepare if auto tag
-        id: prep_auto
+        id: prep
         run: |
           DOCKER_IMAGE=gcr.io/stormpiper/${{ matrix.image }}
           VERSION=edge
@@ -49,16 +38,6 @@ jobs:
             TAGS="${TAGS},${DOCKER_IMAGE}:latest"
           fi
           echo "auto tags: ${TAGS}"
-          echo ::set-output name=tags::${TAGS}
-
-      - name: Prepare tag
-        id: prep
-        run: |
-          TAGS=${{ steps.prep_auto.outputs.tags }}
-          if [[ ${{ steps.prep_manual.outputs.tags }} ]]; then
-            TAGS=${{ steps.prep_manual.outputs.tags }}
-          fi
-          echo "tags: ${TAGS}"
           echo ::set-output name=tags::${TAGS}
 
       - name: Set up Docker Buildx
