@@ -1,0 +1,20 @@
+services:
+  stormpiper:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: stormpiper
+    environment:
+      NEREID_ASYNC_MODE: none
+    env_file:
+      ## comment these out to work on front end.
+      # - ./stormpiper/.env
+      # - .env
+
+      ## add this to work on front end.
+      - .env-dev
+    ports:
+      - published: 8080
+        target: 80
+    volumes:
+      - ./stormpiper/stormpiper:/stormpiper/stormpiper

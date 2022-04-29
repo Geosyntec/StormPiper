@@ -1,6 +1,9 @@
 _no_git*
 .vscode
 
+# Docker stuff
+docker-stack.yml
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -105,6 +108,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
+*.env*
 .env
 .venv
 env/

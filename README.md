@@ -55,3 +55,24 @@ from StormPiper directory
 ```
 bash scripts/lint.sh
 ```
+
+
+## get started with docker
+
+### Build the container
+```
+make develop
+```
+
+### Run the container
+```
+make up
+make dev-server
+```
+
+dev-server runs on localhost:8080
+
+### Stop the container
+```
+make down
+```
