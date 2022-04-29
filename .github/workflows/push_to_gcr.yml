@@ -28,7 +28,7 @@ jobs:
       - name: Prepare if auto tag
         id: prep
         run: |
-          DOCKER_IMAGE=gcr.io/stormpiper/${{ matrix.image }}
+          DOCKER_IMAGE=gcr.io/tacoma-app/${{ matrix.image }}
           VERSION=edge
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             VERSION=${GITHUB_REF#refs/tags/v}
