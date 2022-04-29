@@ -37,7 +37,7 @@ jobs:
             VERSION=${GITHUB_REF#refs/tags/}
             echo "version2: ${VERSION}"
           fi
-          if [[ ${{ github.event.inputs.tag }} ]] ; then
+          if [[ ${{ github.event.inputs.tag }} ]]; then
             VERSION=${{ github.event.inputs.tag }}
             echo "version3: ${VERSION}"
           fi
