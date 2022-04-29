@@ -31,6 +31,7 @@ jobs:
         run: |
           DOCKER_IMAGE=gcr.io/tacoma-app/${{ matrix.image }}
           VERSION=edge
+          echo "github refs: ${GITHUB_REF}"
           echo "version: ${VERSION}"
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             VERSION=${GITHUB_REF#refs/tags/}
