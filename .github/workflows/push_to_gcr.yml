@@ -61,7 +61,6 @@ jobs:
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
-          # file: ./Dockerfile
           target: ${{ matrix.image }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.prep.outputs.tags }}
@@ -70,3 +69,14 @@ jobs:
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
+
+      - id: 'auth'
+      uses: 'google-github-actions/auth@v0'
+      with:
+        credentials_json: '${{ secrets.GCR_JSON_KEY }}'
+
+    - name: 'Deploy to Cloud Run'
+      uses: 'google-github-actions/deploy-cloudrun@v0'
+      with:
+        image: 'gcr.io/tacoma-app/stormpiper:edge'
+        service: 'stormpiper-latest'
