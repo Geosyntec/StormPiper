@@ -16,7 +16,7 @@ COPY ./stormpiper/requirements.txt /requirements.txt
 RUN mkdir /core \
     && pip wheel \
     --wheel-dir=/core \
-    -r /requirements.txt
+    -r /requirements.txt gunicorn==20.1.0
 
 
 FROM python:3.9-slim-buster as core-env
@@ -30,6 +30,7 @@ RUN pip install \
     --no-cache-dir \
     --find-links=/core \
     -r /requirements.txt \
+    gunicorn==20.1.0 \
     && rm -rf /core/*
 
 
