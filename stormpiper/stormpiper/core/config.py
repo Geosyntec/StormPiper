@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     # "http://localhost:8080", "http://local.dockertoolbox.tiangolo.com"]'
     ALLOW_CORS_ORIGINS: List[Union[AnyHttpUrl, Literal["*"]]] = []
     ALLOW_CORS_ORIGIN_REGEX: Optional[str] = None
+    TRUSTED_HOSTS: Union[List[str], str] = "127.0.0.1"
 
     @validator("ALLOW_CORS_ORIGINS", pre=True)  # pragma: no cover
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:

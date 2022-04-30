@@ -6,13 +6,13 @@ from fastapi import FastAPI, Depends, Request
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from stormpiper.api import api_router
 from stormpiper.core.config import settings, stormpiper_path
 from stormpiper.earth_engine import login as login_earth_engine
 from stormpiper.site import site_router
 
-# from stormpiper.apps.supersafe.factory import create_app as create_supersafe_app
 from stormpiper.apps import supersafe as ss
 
 supersafe = ss.create_app(app_kwargs=dict(root_path="/supersafe"))
@@ -72,6 +72,7 @@ def create_app(
         allow_methods=["GET", "OPTIONS", "POST"],
         allow_headers=["*"],
     )
+    app.add_middleware(ProxyHeadersMiddleware, trusted_hosts=_settings.TRUSTED_HOSTS)
 
     app.include_router(api_router)
     app.include_router(site_router)
