@@ -1,25 +1,17 @@
+import base64
+from functools import lru_cache
+
 import ee
 
-from stormpiper.core.config import settings, stormpiper_path
+from stormpiper.core.config import settings
 
 
-EE_AUTHENTICATED = False
+lru_cache()
 
 
 def login():
-    global EE_AUTHENTICATED
-
-    if EE_AUTHENTICATED:
-        return
-
-    try:
-        private_key_path = str(stormpiper_path / ".private_keys" / "tncKey.json")
-        credentials = ee.ServiceAccountCredentials(
-            settings.EE_SERVICE_ACCOUNT, private_key_path
-        )
-        ee.Initialize(credentials)
-        EE_AUTHENTICATED = True
-
-    except Exception:  # pragma: no cover
-        EE_AUTHENTICATED = False
-        raise
+    private_key_data = base64.b64decode(settings.EE_JSON_BASE64.encode("ascii"))
+    credentials = ee.ServiceAccountCredentials(
+        settings.EE_SERVICE_ACCOUNT, key_data=private_key_data
+    )
+    ee.Initialize(credentials)

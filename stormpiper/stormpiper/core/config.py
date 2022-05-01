@@ -36,6 +36,7 @@ class Settings(BaseSettings):
     # EE Auth
     EE_SERVICE_ACCOUNT: str = ""
     EE_PROJECT_DIRECTORY: str = ""
+    EE_JSON_BASE64: str = ""
 
     class Config:
         extra = "allow"
