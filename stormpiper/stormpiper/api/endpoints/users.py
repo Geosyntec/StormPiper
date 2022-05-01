@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import Depends
+from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -11,6 +11,8 @@ from stormpiper.apps.supersafe.users import (
     get_async_session,
     fastapi_users,
 )
+from stormpiper.apps.supersafe.scripts.init_users import create_admin, create_public
+
 
 router = fastapi_users.get_users_router()
 
@@ -35,3 +37,16 @@ for r in router.routes:
         "users:get_users",
     ]:
         r.dependencies.append(Depends(check_admin))
+
+
+rpc_router = APIRouter()
+
+
+@rpc_router.get("/init_admin", tags=["admin"])
+async def init_admin():
+    await create_admin()
+
+
+@rpc_router.get("/init_public", tags=["admin"])
+async def init_public():
+    await create_public()

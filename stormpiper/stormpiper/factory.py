@@ -11,7 +11,7 @@ from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 # from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware
 
 
-from stormpiper.api import api_router
+from stormpiper.api import api_router, rpc_router
 from stormpiper.core.config import settings, stormpiper_path
 from stormpiper.earth_engine import login as login_earth_engine
 from stormpiper.site import site_router
@@ -82,6 +82,7 @@ def create_app(
         # app.add_middleware(HTTPSRedirectMiddleware)
 
     app.include_router(api_router)
+    app.include_router(rpc_router)
     app.include_router(site_router)
     app.mount(path="/supersafe", app=supersafe)
 

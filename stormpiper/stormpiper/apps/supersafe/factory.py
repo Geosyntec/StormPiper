@@ -1,5 +1,5 @@
 from typing import Optional, Dict, Any
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI
 from .users import (
     bearer_backend,
     cookie_backend,
