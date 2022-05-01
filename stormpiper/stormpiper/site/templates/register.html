@@ -84,8 +84,9 @@
 {% endblock %} {% block javascript %} {{ super() }}
 
 <script>
-  const submitUrl = "{{ url_for('register:post_register') }}";
-  const redirectRoute = "{{ url_for('home') }}";
+  const submitUrl =
+    "{{ request.scope['router'].url_path_for('register:post_register') }}";
+  const redirectRoute = "{{ request.scope['router'].url_path_for('home') }}";
   const form = document.getElementById("RegistrationForm");
   var err_div = document.getElementById("error_msgs");
 

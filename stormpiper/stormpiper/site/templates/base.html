@@ -11,9 +11,8 @@
     <link
       rel="stylesheet"
       type="text/css"
-      href="{{ request.url_for('site/static', path='style.css') }}"
+      href="{{ request.scope['router'].url_path_for('site/static', path='style.css') }}"
     />
-
     {% if title %}
     <title>{{ title }}</title>
     {% else %}
