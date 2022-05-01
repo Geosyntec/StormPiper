@@ -12,7 +12,7 @@ with resources.path("stormpiper", "__init__.py") as file:
 
 class Settings(BaseSettings):
     VERSION: str = stormpiper.__version__
-    ENVIRONMENT: str = "production"
+    ENVIRONMENT: str = "development"
 
     SECRET_KEY: str = secrets.token_urlsafe(32)
     # 60 minutes * 24 hours * 8 days = 8 days
