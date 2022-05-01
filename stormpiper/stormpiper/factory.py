@@ -7,7 +7,8 @@ from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
-from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware
+
+# from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware
 
 
 from stormpiper.api import api_router
@@ -78,7 +79,7 @@ def create_app(
         app.add_middleware(
             ProxyHeadersMiddleware, trusted_hosts=_settings.TRUSTED_HOSTS
         )
-        app.add_middleware(HTTPSRedirectMiddleware)
+        # app.add_middleware(HTTPSRedirectMiddleware)
 
     app.include_router(api_router)
     app.include_router(site_router)
