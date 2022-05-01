@@ -97,7 +97,9 @@ def create_app(
         user: ss.users.User = Depends(ss.users.current_user_safe(optional=True)),
     ):
         if user is None:
-            return RedirectResponse(request.url_for("login:get_login"))
+            return RedirectResponse(
+                request.scope["router"].url_path_for("login:get_login")
+            )
 
         return user
 

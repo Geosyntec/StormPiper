@@ -38,7 +38,7 @@ async def get_register(
 
 @router.post("/register", name="register:post_register")
 async def post_register(request: Request):
-    return RedirectResponse(request.url_for("register:register"))
+    return RedirectResponse(request.scope["router"].url_path_for("register:register"))
 
 
 @router.get("/login", name="login:get_login")
@@ -48,4 +48,6 @@ async def get_login(request: Request):
 
 @router.post("/login", name="login:post_login")
 async def post_login(request: Request):
-    return RedirectResponse(request.url_for("auth:jwt.cookie.login"))
+    return RedirectResponse(
+        request.scope["router"].url_path_for("auth:jwt.cookie.login")
+    )
