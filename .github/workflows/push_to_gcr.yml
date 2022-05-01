@@ -81,3 +81,4 @@ jobs:
         with:
           image: "gcr.io/tacoma-app/stormpiper:edge"
           service: "stormpiper-latest"
+          region: us-west1
