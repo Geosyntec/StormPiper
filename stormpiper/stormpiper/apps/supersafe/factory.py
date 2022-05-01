@@ -59,10 +59,10 @@ def create_app(
         # Not needed if you setup a migration system like Alembic
         await create_db_and_tables()
 
-        if "sqlite" in _settings.DATABASE_URL_ASYNC:
-            from .scripts import init_users
+        # if "sqlite" in _settings.DATABASE_URL_ASYNC:
+        #     from .scripts import init_users
 
-            await init_users.create_all()
+        #     await init_users.create_all()
 
     setattr(app, "startup", startup)
 
