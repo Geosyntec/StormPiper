@@ -8,6 +8,7 @@ from stormpiper.apps.supersafe.users import (
     UserTable,
     User,
     check_admin,
+    check_protect_role_field,
     get_async_session,
     fastapi_users,
 )
@@ -29,6 +30,7 @@ async def get_users(db: AsyncSession = Depends(get_async_session)):
     return result.scalars().all()
 
 
+# routes requiring admin role (i.e., role==100)
 for r in router.routes:
     if r.name in [
         "users:patch_user",
@@ -37,6 +39,14 @@ for r in router.routes:
         "users:get_users",
     ]:
         r.dependencies.append(Depends(check_admin))
+
+
+# Prevent non-admins from changing their role.
+for r in router.routes:
+    if r.name in [
+        "users:patch_current_user",
+    ]:
+        r.dependencies.append(Depends(check_protect_role_field))
 
 
 rpc_router = APIRouter()

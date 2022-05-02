@@ -88,7 +88,7 @@ current_active_user = current_user_safe(active=True)
 current_active_super_user = current_user_safe(active=True, superuser=True)
 
 
-def check_role(min_role: Role = Role.public):
+def check_role(min_role: Role = Role.admin):
     async def current_active_user_role(user=Depends(current_active_user)):
         if user.role >= min_role:
             return user
@@ -101,5 +101,32 @@ def check_role(min_role: Role = Role.public):
     return current_active_user_role
 
 
+# check if role >= 100
 check_admin = check_role(min_role=Role.admin)
+
+# check if role >= 1, i.e., not public
 check_user = check_role(min_role=Role.user)
+
+
+def check_protected_field_role(field: str, min_role: Role = Role.admin):
+    """Check if user is attempting to edit the user role."""
+
+    async def current_active_user_role(
+        user_update: UserUpdate, user=Depends(current_active_user)
+    ):
+
+        if field not in user_update.dict(exclude_unset=True):
+            return user_update
+
+        if user.role >= min_role:
+            return user_update
+
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={"reason": f"requires {min_role} permissions or higher."},
+        )
+
+    return current_active_user_role
+
+
+check_protect_role_field = check_protected_field_role(field="role", min_role=Role.admin)
