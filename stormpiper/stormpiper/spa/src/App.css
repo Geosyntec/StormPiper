@@ -1,0 +1,101 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#header-panel{
+  position: fixed;
+	z-index: 10;
+	top: 0;
+  bottom: 0;
+	right: 0;
+  overflow-x: hidden;
+  overflow-y:hidden;
+  height: 15%;
+  width: 100%;
+  background: rgb(36, 21, 170);
+}
+
+#control-panel {
+  transition-property: height,width;
+  transition-duration: 500ms;
+	position: fixed;
+	z-index: 9;
+	top: 20%;
+  left: 75%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 75%;
+  width: 25%;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+#control-panel-hidden{
+  transition-property: height,width;
+  transition-duration: 500ms;
+  position: fixed;
+	z-index: 9;
+	top: 20%;
+  left: 75%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  height:6%;
+  width: 15%;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+#control-panel > div{
+	padding: 0 20px 20px 20px;
+}
+
+.layer-controls {
+	border: groove 2px #fff;
+  border-left: none;
+  border-right: none;
+  padding: 8px 0;
+}
+
+.deck-tooltip {
+  z-index:8 !important;
+  left:100px;
+  top:100px;
+  font-family: Helvetica, Arial, sans-serif;
+  padding: 6px !important;
+  margin: 8px;
+  max-width: 300px;
+  font-size: 10px;
+}

@@ -1,0 +1,21 @@
+#layer-toggler-title::after{
+    content:"[-]";
+    position:relative;
+    left: 10px;
+}
+
+#layer-toggler-title-hidden::after{
+    content:"[+]";
+    position:relative;
+    left: 10px;
+}
+
+#layer-toggler-title:hover,
+#layer-toggler-title-hidden:hover
+{
+    cursor:pointer
+}
+
+
+
+
