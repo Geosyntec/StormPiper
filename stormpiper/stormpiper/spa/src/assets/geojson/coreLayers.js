@@ -3,7 +3,7 @@ import { COORDINATE_SYSTEM } from "@deck.gl/core";
 import { GeoJsonLayer, BitmapLayer } from "@deck.gl/layers";
 import { TileLayer } from "@deck.gl/geo-layers";
 import { Matrix4 } from "math.gl";
-
+/*
 const wetlands = {
   layer: GeoJsonLayer,
   getData: () => vectorData.wetlands,
@@ -53,7 +53,7 @@ const activeSWMain = {
     getLineColor: [160, 160, 180, 200],
     getDashArray: (f) => [20, 0],
     getLineWidth: (f) => {
-     return parseInt(f.properties['DIAMETER'])/48
+      return parseInt(f.properties["DIAMETER"]) / 48;
     },
     getElevation: (f) => 500,
     lineWidthScale: 10,
@@ -182,7 +182,7 @@ const landUseDesignations = {
     dashGapPickable: true,
   },
 };
-
+*/
 const tssRaster = {
   layer: TileLayer,
   props: {
@@ -190,7 +190,7 @@ const tssRaster = {
     label: "Total Suspended Solids (TSS)",
     // data: "http://storage.googleapis.com/tnc-data-v1-bucket/TSSViz/{z}/{x}/{y}",
     // data:"./api/rest/tileserver/tnc_tss_ug_L/{z}/{x}/{y}/{s}",
-    data:"http://localhost:8080/api/rest/tileserver/tnc_tss_ug_L/{z}/{x}/{y}/{s}",
+    data: "/api/rest/tileserver/tnc_tss_ug_L/{z}/{x}/{y}/{s}",
     minZoom: 10,
     maxZoom: 18,
     tileSize: 256,
@@ -255,16 +255,16 @@ const clusteredPopRaster = {
 
 /* eslint-disable quote-props */
 export const layerDict = {
-  "Surfacewater": {
-    "Active Network":[activeSWMain],
-    "Proposed Network":[proposedSWFacility]
-  },
-  "Wastewater": {
-    "Active Network":[activeWWMain],
-  },
-  "Municipal Characteristics":{
-    "Infrastructure Characteristics":[capitalProjectStreets,row],
-    "General Characteristics":[landUseDesignations,equalOpportunityIndex],
-  },
-  "Base Imagery": [tssRaster,landCoverRaster,clusteredPopRaster],
+  // "Surfacewater": {
+  //   "Active Network":[activeSWMain],
+  //   "Proposed Network":[proposedSWFacility]
+  // },
+  // "Wastewater": {
+  //   "Active Network":[activeWWMain],
+  // },
+  // "Municipal Characteristics":{
+  //   "Infrastructure Characteristics":[capitalProjectStreets,row],
+  //   "General Characteristics":[landUseDesignations,equalOpportunityIndex],
+  // },
+  "Base Imagery": [tssRaster, landCoverRaster, clusteredPopRaster],
 };
