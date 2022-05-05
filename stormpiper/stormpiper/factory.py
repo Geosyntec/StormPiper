@@ -94,10 +94,9 @@ def create_app(
 
     app.mount(
         "/app",
-        StaticFiles(directory=stormpiper_path / "spa" / "build"),
+        StaticFiles(directory=stormpiper_path / "spa" / "build", html=True),
         name="app",
     )
-
 
     @app.get("/", name="home")
     async def home(
