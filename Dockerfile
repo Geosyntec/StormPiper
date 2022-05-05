@@ -1,3 +1,11 @@
+FROM node:16-buster as build-frontend
+WORKDIR /app
+COPY ./stormpiper/stormpiper/spa/package*.json /app/
+RUN npm install
+COPY ./stormpiper/stormpiper/spa /app/
+RUN npm run build
+
+
 FROM python:3.9-slim-buster as core-runtime
 RUN apt-get update -y \
     && apt-get install -y --no-install-recommends graphviz libspatialindex-dev unixodbc \ 
@@ -43,3 +51,4 @@ COPY ./stormpiper/scripts/start-reload.sh /start-reload.sh
 RUN chmod +x /start-reload.sh
 EXPOSE 80
 COPY ./stormpiper/stormpiper /stormpiper/stormpiper
+COPY --from=build-frontend /app/build/ /stormpiper/stormpiper/spa/build
