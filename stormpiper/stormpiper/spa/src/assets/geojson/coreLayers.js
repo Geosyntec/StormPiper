@@ -183,6 +183,29 @@ const landUseDesignations = {
   },
 };
 */
+const activeSWMain = {
+  layer: GeoJsonLayer,
+  // getData: () => vectorData.activeSWMain,
+  data:"https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/31?outFields=*&returnGeometry=true&f=pjson&outSR=4326",
+  props: {
+    id: "activeSWMain",
+    label: "Active Surfacewater Main Lines",
+    getPointRadius: 10,
+    getFillColor: [160, 160, 180, 200],
+    getLineColor: [160, 160, 180, 200],
+    getDashArray: (f) => [20, 0],
+    getLineWidth: (f) => {
+      return parseInt(f.properties["DIAMETER"]) / 48;
+    },
+    getElevation: (f) => 500,
+    lineWidthScale: 10,
+    lineWidthMinPixels: 1,
+    pickable: true,
+    dashJustified: true,
+    dashGapPickable: true,
+  },
+};
+
 const tssRaster = {
   layer: TileLayer,
   props: {
@@ -255,10 +278,17 @@ const clusteredPopRaster = {
 
 /* eslint-disable quote-props */
 export const layerDict = {
+<<<<<<< HEAD
   // "Surfacewater": {
   //   "Active Network":[activeSWMain],
   //   "Proposed Network":[proposedSWFacility]
   // },
+=======
+  "Surfacewater": {
+    "Active Network":[activeSWMain],
+    // "Proposed Network":[proposedSWFacility]
+  },
+>>>>>>> 99f674f (added test ES link for SW layer)
   // "Wastewater": {
   //   "Active Network":[activeWWMain],
   // },
