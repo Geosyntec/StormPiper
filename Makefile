@@ -76,7 +76,7 @@ down: ## bring down the containers and detach volumes
 	docker compose -f docker-stack.yml down -v
 
 dev-server: ## start a development server
-	docker compose -f docker-stack.yml run -p 8080:80 -e LOG_LEVEL=debug stormpiper bash /start-reload.sh
+	docker compose -f docker-compose.develop.yml run -p 8080:80 -e LOG_LEVEL=debug stormpiper bash /start-reload.sh
 
 release: ## push production images to registry
 	bash scripts/push_release.sh
