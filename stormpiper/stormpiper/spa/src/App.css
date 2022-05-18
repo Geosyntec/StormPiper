@@ -51,12 +51,12 @@
 }
 
 #control-panel {
-  transition-property: height,width;
+  transition-property: height,width,left;
   transition-duration: 500ms;
 	position: fixed;
 	z-index: 9;
 	top: 20%;
-  left: 75%;
+  left: 0%;
   overflow-x: hidden;
   overflow-y: auto;
   height: 75%;
@@ -65,12 +65,12 @@
 }
 
 #control-panel-hidden{
-  transition-property: height,width;
+  transition-property: height,width,left;
   transition-duration: 500ms;
   position: fixed;
 	z-index: 9;
 	top: 20%;
-  left: 75%;
+  left: 5%;
   overflow-x: hidden;
   overflow-y: hidden;
   height:6%;

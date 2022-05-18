@@ -187,8 +187,8 @@ const activeLocalSWFacility = {
   layer: GeoJsonLayer,
   props: {
     data:"https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/21/query?where=1%3D1&outFields=*&returnGeometry=true&f=geojson&outSR=4326",
-    id: "proposedSWFacility",
-    label: "Proposed Surface Water Facilities",
+    id: "activeSWFacility",
+    label: "Active Surface Water Facilities",
     getPointRadius: 20,
     getFillColor: [160, 160, 180, 200],
     getLineColor: [160, 160, 180, 200],

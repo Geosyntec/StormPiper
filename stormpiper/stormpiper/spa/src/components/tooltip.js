@@ -1,7 +1,7 @@
 // DeckGL react component
 const fieldDict = {
     activeSWMain:['ALTID','DIAMETER','INSTALLDATE'],
-    proposedSWFacility:['ALTID','SUBBASIN','FACILITYDETAIL','MEDIATYPE'],
+    activeSWFacility:['ALTID','SUBBASIN','FACILITYDETAIL','MEDIATYPE'],
     default:['OBJECTID']
 }
 
