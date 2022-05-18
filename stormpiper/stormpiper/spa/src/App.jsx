@@ -3,6 +3,7 @@ import { layerDict } from "./assets/geojson/coreLayers";
 import LayerSelector from "./components/layerSelector"
 import DeckGLMap from "./components/map";
 import ProminentAppBar from "./components/topMenu";
+import BMPStatWindow from "./components/bmpStatWindow";
 import "./App.css";
 
 function App() {
@@ -36,7 +37,7 @@ function App() {
   function _toggleLayer(layerName, updateFunction = setActiveLayers) {
     var currentActiveLayers = { ...activeLayers };
     currentActiveLayers[layerName] = !currentActiveLayers[layerName];
-    console.log('Current Active Layers:',currentActiveLayers)
+    // console.log('Current Active Layers:',currentActiveLayers)
     updateFunction(currentActiveLayers);
   }
 
@@ -60,32 +61,60 @@ function App() {
       }
       return false;
     });
-    console.log('Layers to Render:',layersToRender)
+    // console.log('Layers to Render:',layersToRender)
     return layersToRender;
   }
 
-  const [displayState,setDisplayState] = useState(false) // when true, control panel is displayed
+  const [lyrSelectDisplayState,setlyrSelectDisplayState] = useState(false) // when true, control panel is displayed
+  const [prjStatDisplayState,setprjStatDisplayState] = useState(false) // when true, project stats panel is displayed
+  const [focusFeature,setFocusFeature] = useState(null)
 
-  function _toggleDisplayState(){
-    setDisplayState(!displayState)
+
+  function _togglelyrSelectDisplayState(){
+    setlyrSelectDisplayState(!lyrSelectDisplayState)
   }
+  function _toggleprjStatDisplayState(){
+    setprjStatDisplayState(!prjStatDisplayState)
+  }
+
+  function _lyrClickHandlers(objInfo){
+    // console.log("Top level map click: ",objInfo)
+    if(objInfo?.layer?.id==='activeSWFacility'){
+      if(!prjStatDisplayState){//users can click on another facility without hiding the panel
+        _toggleprjStatDisplayState()
+      }
+      setFocusFeature(objInfo)
+    }
+  }
+  
 
   return (
     <div className="App">
       <ProminentAppBar></ProminentAppBar>
       <div>
-        <DeckGLMap layers={_renderLayers(layerDict, activeLayers)}>
-        </DeckGLMap>
+        <DeckGLMap 
+          layers={_renderLayers(layerDict, activeLayers)}
+          onClick={_lyrClickHandlers.bind(this)}
+        ></DeckGLMap>
       </div>
-      <div id={displayState ? "control-panel" : "control-panel-hidden"}>
+      <div id={lyrSelectDisplayState ? "control-panel" : "control-panel-hidden"}>
         <div style={{ textAlign: "left", padding: "5px 0 5px" }}>
           <LayerSelector
             layerDict = {layerDict}
             activeLayers = {activeLayers}
             _onToggleLayer = {_toggleLayer}
-            displayStatus = {displayState}
-            displayController = {_toggleDisplayState}
+            displayStatus = {lyrSelectDisplayState}
+            displayController = {_togglelyrSelectDisplayState}
           ></LayerSelector>
+        </div>
+      </div>
+      <div id={prjStatDisplayState ? "prj-stat-panel" : "prj-stat-panel-hidden"}>
+        <div style={{ textAlign: "left", padding: "5px 0 5px" }}>
+          <BMPStatWindow
+            displayStatus = {prjStatDisplayState}
+            displayController = {_toggleprjStatDisplayState}
+            feature = {focusFeature}
+          ></BMPStatWindow>
         </div>
       </div>
     </div>

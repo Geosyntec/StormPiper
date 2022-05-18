@@ -1,6 +1,6 @@
 import DeckGL from "@deck.gl/react";
 import StaticMap from "react-map-gl";
-import getTooltipContents from "./tooltip.js";
+import getTooltipContents from "./tooltip.jsx";
 
 // Viewport settings
 const INITIAL_VIEW_STATE = {
@@ -21,8 +21,9 @@ function DeckGLMap(props) {
       initialViewState={INITIAL_VIEW_STATE}
       controller={true}
       layers={props.layers}
+      onClick={props.onClick}
       getTooltip={(object) => {
-        if(object?.object){console.log('Selected Object',object)}
+        // if(object?.object){console.log('Selected Object',object)}
         return object.object && {
           html: getTooltipContents(object.object, object?.layer?.id,object?.layer?.props?.label),
         };

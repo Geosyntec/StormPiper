@@ -10,8 +10,6 @@ const fieldDict = {
 function getTooltipContents(object,layer,label) {
     const feat = object
     const fields = fieldDict[layer]?fieldDict[layer]:fieldDict.default
-    console.log('feature:',feat.properties)
-    console.log('layer:',layer)
     if (feat){
         return (
             `<h4> Layer: ${label}</h4>

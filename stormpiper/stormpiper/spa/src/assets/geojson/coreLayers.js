@@ -198,6 +198,8 @@ const activeLocalSWFacility = {
     lineWidthScale: 2,
     lineWidthMinPixels: 1,
     pickable: true,
+    onClick:(info,event)=>console.log(info,event),
+    highlightColor:[42,213,232],
     dashJustified: true,
     dashGapPickable: true,
   },

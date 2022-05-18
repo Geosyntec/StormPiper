@@ -1,0 +1,16 @@
+/* #panel-title::after{
+    content:'\2715';
+    position:relative;
+    left:50%;
+    cursor:pointer;
+} */
+
+.panel-header{
+    display:flex
+}
+
+#cancel-icon{
+    cursor: pointer;
+    position:relative;
+    left:75%;
+}
