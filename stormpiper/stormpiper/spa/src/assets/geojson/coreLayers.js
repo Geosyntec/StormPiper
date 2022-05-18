@@ -183,11 +183,32 @@ const landUseDesignations = {
   },
 };
 */
+const activeLocalSWFacility = {
+  layer: GeoJsonLayer,
+  props: {
+    data:"https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/21/query?where=1%3D1&outFields=*&returnGeometry=true&f=geojson&outSR=4326",
+    id: "proposedSWFacility",
+    label: "Proposed Surface Water Facilities",
+    getPointRadius: 20,
+    getFillColor: [160, 160, 180, 200],
+    getLineColor: [160, 160, 180, 200],
+    getDashArray: (f) => [20, 0],
+    getLineWidth: (f) => 1,
+    getElevation: (f) => 500,
+    lineWidthScale: 2,
+    lineWidthMinPixels: 1,
+    pickable: true,
+    dashJustified: true,
+    dashGapPickable: true,
+  },
+};
+
+
 const activeSWMain = {
   layer: GeoJsonLayer,
   // getData: () => vectorData.activeSWMain,
-  data:"https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/31?outFields=*&returnGeometry=true&f=pjson&outSR=4326",
   props: {
+    data:"https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/31/query?where=1%3D1&outFields=*&returnGeometry=true&f=geojson&outSR=4326",
     id: "activeSWMain",
     label: "Active Surfacewater Main Lines",
     getPointRadius: 10,
@@ -278,17 +299,10 @@ const clusteredPopRaster = {
 
 /* eslint-disable quote-props */
 export const layerDict = {
-<<<<<<< HEAD
-  // "Surfacewater": {
-  //   "Active Network":[activeSWMain],
-  //   "Proposed Network":[proposedSWFacility]
-  // },
-=======
   "Surfacewater": {
-    "Active Network":[activeSWMain],
+    "Active Network":[activeSWMain,activeLocalSWFacility],
     // "Proposed Network":[proposedSWFacility]
   },
->>>>>>> 99f674f (added test ES link for SW layer)
   // "Wastewater": {
   //   "Active Network":[activeWWMain],
   // },
@@ -296,5 +310,7 @@ export const layerDict = {
   //   "Infrastructure Characteristics":[capitalProjectStreets,row],
   //   "General Characteristics":[landUseDesignations,equalOpportunityIndex],
   // },
-  "Base Imagery": [tssRaster, landCoverRaster, clusteredPopRaster],
+  "Base Imagery": {
+    "Raster":[tssRaster, landCoverRaster, clusteredPopRaster]
+  }
 };

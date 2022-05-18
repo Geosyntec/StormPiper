@@ -22,9 +22,9 @@ function DeckGLMap(props) {
       controller={true}
       layers={props.layers}
       getTooltip={(object) => {
-        // if(object?.object){console.log('Selected Object',object)}
+        if(object?.object){console.log('Selected Object',object)}
         return object.object && {
-          html: getTooltipContents(object.object, object?.layer?.id),
+          html: getTooltipContents(object.object, object?.layer?.id,object?.layer?.props?.label),
         };
       }}
     >

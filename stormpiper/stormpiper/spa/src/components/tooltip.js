@@ -7,16 +7,16 @@ const fieldDict = {
 
 
 
-function getTooltipContents(object,layer) {
+function getTooltipContents(object,layer,label) {
     const feat = object
     const fields = fieldDict[layer]?fieldDict[layer]:fieldDict.default
     console.log('feature:',feat.properties)
     console.log('layer:',layer)
     if (feat){
         return (
-            `<h4> Layer: ${layer}</h4>
+            `<h4> Layer: ${label}</h4>
             ${fields.map(field=>{
-                return(`<h4> ${field}: ${feat?.properties[field]}</h4>`)    
+                return(`<h5> ${field}: ${feat?.properties[field]}</h5>`)    
             })}`
         );
     }
