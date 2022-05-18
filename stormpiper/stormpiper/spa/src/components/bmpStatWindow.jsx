@@ -23,11 +23,11 @@ function BMPStatWindow(props) {
 }
 
 function _renderStats(props) {
-  console.log("Rendering Stats:", props.object);
+  console.log("Rendering Stats:", props?.object);
   return (
     <div>
-      <p>ID: {props.object?.properties?.ALTID}</p>
-      <p>Subbasin: {props.object?.properties?.SUBBASIN}</p>
+      <p>ID: {props?.object?.properties?.ALTID}</p>
+      <p>Subbasin: {props?.object?.properties?.SUBBASIN}</p>
     </div>
   );
 }
