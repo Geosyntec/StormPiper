@@ -22,6 +22,8 @@ services:
         target: 80
     volumes:
       - ./stormpiper/stormpiper:/stormpiper/stormpiper
+      - ./stormpiper/alembic:/stormpiper/alembic
+
   bg_worker:
     build:
       context: .
