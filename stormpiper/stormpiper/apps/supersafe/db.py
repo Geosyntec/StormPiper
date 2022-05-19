@@ -1,14 +1,12 @@
-from typing import AsyncGenerator
-
 from fastapi import Depends
 from fastapi_users.db import SQLAlchemyBaseUserTable, SQLAlchemyUserDatabase
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Column, String, Enum
 
 from .models import UserDB, Role
 from stormpiper.core.config import settings
+from stormpiper.database.connection import async_engine, get_async_session
 
 
 Base: DeclarativeMeta = declarative_base()
@@ -24,18 +22,9 @@ class UserTable(Base, SQLAlchemyBaseUserTable):
     role = Column(Enum(Role))
 
 
-engine = create_async_engine(settings.DATABASE_URL_ASYNC)
-async_session_maker = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
-
-
 async def create_db_and_tables():
-    async with engine.begin() as conn:
+    async with async_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-
-
-async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
-    async with async_session_maker() as session:
-        yield session
 
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):

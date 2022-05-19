@@ -1,4 +1,3 @@
-from distutils.debug import DEBUG
 import sqlalchemy as sa
 from sqlalchemy import Column, String, Integer, Float
 from sqlalchemy.ext.declarative import declarative_base
