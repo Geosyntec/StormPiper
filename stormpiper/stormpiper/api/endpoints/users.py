@@ -12,10 +12,11 @@ from stormpiper.apps.supersafe.users import (
     get_async_session,
     fastapi_users,
 )
-from stormpiper.apps.supersafe.scripts.init_users import create_admin, create_public
+from stormpiper.apps.supersafe.init_users import create_admin, create_public
 
 
 router = fastapi_users.get_users_router()
+rpc_router = APIRouter()
 
 
 class UserResponse(User):
@@ -23,11 +24,27 @@ class UserResponse(User):
         orm_mode = True
 
 
+# REST Routes
+
+
 @router.get("/", response_model=List[UserResponse], name="users:get_users")
 async def get_users(db: AsyncSession = Depends(get_async_session)):
 
     result = await db.execute(select(UserTable))
     return result.scalars().all()
+
+
+# RPC Routes
+
+
+@rpc_router.get("/init_admin_user", tags=["admin"])
+async def init_admin():
+    await create_admin()
+
+
+@rpc_router.get("/init_public_user", tags=["admin"])
+async def init_public():
+    await create_public()
 
 
 # routes requiring admin role (i.e., role==100)
@@ -47,16 +64,3 @@ for r in router.routes:
         "users:patch_current_user",
     ]:
         r.dependencies.append(Depends(check_protect_role_field))
-
-
-rpc_router = APIRouter()
-
-
-@rpc_router.get("/init_admin", tags=["admin"])
-async def init_admin():
-    await create_admin()
-
-
-@rpc_router.get("/init_public", tags=["admin"])
-async def init_public():
-    await create_public()

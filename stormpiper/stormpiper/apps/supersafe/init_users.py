@@ -1,9 +1,9 @@
 import contextlib
 
-from ..config import settings
-from ..db import get_async_session, get_user_db
-from ..models import UserCreate
-from ..users import get_user_manager
+from stormpiper.core.config import settings
+from .db import get_async_session, get_user_db
+from .models import UserCreate
+from .users import get_user_manager
 from fastapi_users.manager import UserAlreadyExists
 
 get_async_session_context = contextlib.asynccontextmanager(get_async_session)

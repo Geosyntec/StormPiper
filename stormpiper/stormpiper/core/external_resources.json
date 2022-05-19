@@ -1,0 +1,23 @@
+{
+  "tmnt_facility_codes": {
+    "url": "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/21/queryDomains"
+  },
+  "tmnt_facilities": {
+    "url": "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/21/query?where=1%3D1&outFields=*&returnGeometry=true&f=pjson",
+    "columns": [
+      "ALTID",
+      "COMMONNAME",
+      "FACILITYDETAIL",
+      "FACILITYTYPE",
+      "FLOWCONTROL",
+      "INFILTRATED",
+      "WATERQUALITY",
+      "FLOWCONTROLTYPE",
+      "WATERQUALITYTYPE",
+      "geometry"
+    ]
+  },
+  "tmnt_facility_delineations": {
+    "url": "error unknown Url"
+  }
+}

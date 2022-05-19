@@ -22,14 +22,13 @@ cycler==0.11.0
 dnspython==2.2.1
 earthengine-api==0.1.307
 email-validator==1.1.3
-fastapi==0.75.2
 fastapi-users==9.3.1
 fastapi-users-db-sqlalchemy==3.0.1
 Fiona==1.8.21
 fonttools==4.33.3
 frozenlist==1.3.0
 future==0.18.2
-GeoAlchemy2==0.11.1
+GeoAlchemy2>=0.9.3,<0.11.0
 geopandas==0.10.2
 google-api-core==2.7.2
 google-api-python-client==1.12.11
@@ -96,3 +95,8 @@ uvloop==0.16.0
 watchgod==0.8.2
 websockets==10.3
 yarl==1.7.2
+celery[redis]
+watchfiles
+fastapi
+tenacity
+alembic

@@ -12,7 +12,7 @@ from fastapi_users.db import SQLAlchemyUserDatabase
 
 from .db import get_user_db, create_db_and_tables, UserTable, get_async_session
 from .models import User, UserCreate, UserDB, UserUpdate, Role
-from .config import settings
+from stormpiper.core.config import settings
 
 
 class UserManager(BaseUserManager[UserCreate, UserDB]):
@@ -65,12 +65,12 @@ cookie_backend = AuthenticationBackend(
 )
 
 fastapi_users = FastAPIUsers(
-    get_user_manager,
-    [bearer_backend, cookie_backend],
-    User,
-    UserCreate,
-    UserUpdate,
-    UserDB,
+    get_user_manager=get_user_manager,
+    auth_backends=[bearer_backend, cookie_backend],
+    user_model=User,
+    user_create_model=UserCreate,
+    user_update_model=UserUpdate,
+    user_db_model=UserDB,
 )
 
 
