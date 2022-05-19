@@ -8,9 +8,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
-# from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware
-
-
 from stormpiper.api import api_router, rpc_router
 from stormpiper.core.config import settings, stormpiper_path
 from stormpiper.earth_engine import login as login_earth_engine

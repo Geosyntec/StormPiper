@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Column, String, Enum
 
 from .models import UserDB, Role
-from .config import settings
+from stormpiper.core.config import settings
 
 
 Base: DeclarativeMeta = declarative_base()

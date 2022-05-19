@@ -50,11 +50,14 @@ clean-test: ## remove test and coverage artifacts
 
 export COMPOSE_DOCKER_CLI_BUILD=1
 
+stack: ## write the docker-stack.yml file
+	docker compose -f docker-compose.develop.yml config > docker-stack.yml
+
 build: ## build the docker-stack.yml file
 	docker compose -f docker-stack.yml build
 
 restart: ## restart the redis server and the background workers
-	docker compose -f docker-stack.yml restart redis celeryworker
+	docker compose -f docker-stack.yml restart redis bg_worker beat_worker
 
 test: clean ## run tests quickly with the default Python
 	bash scripts/test.sh -xsv
@@ -66,10 +69,12 @@ coverage: clean restart ## check code coverage quickly with the default Python
 typecheck: clean ## run static type checker
 	mypy stormpiper/stormpiper
 
-develop: clean ## build the development environment and launch containers in background
-	bash scripts/build_dev.sh
+develop: clean stack build ## build the development environment 
+
+up: ## bring up the containers
+	docker compose -f docker-stack.yml up 
 	
-up: ## bring up the containers in '-d' mode 
+up-d: ## bring up the containers in '-d' mode 
 	docker compose -f docker-stack.yml up -d
 
 down: ## bring down the containers and detach volumes
