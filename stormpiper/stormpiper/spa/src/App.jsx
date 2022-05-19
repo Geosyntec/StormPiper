@@ -125,7 +125,7 @@ function App() {
       <div
         id={prjStatDisplayState ? "prj-stat-panel" : "prj-stat-panel-hidden"}
       >
-        <div style={{ textAlign: "left", padding: "5px 0 5px" }}>
+        <div>
           <BMPStatWindow
             displayStatus={prjStatDisplayState}
             displayController={_toggleprjStatDisplayState}

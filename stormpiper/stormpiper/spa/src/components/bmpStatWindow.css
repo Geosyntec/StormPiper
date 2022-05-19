@@ -6,7 +6,44 @@
 } */
 
 .panel-header{
-    display:flex
+    display:flex;
+    
+    justify-content: center;
+    background:rgb(137, 189, 238);
+    margin:0px;
+}
+
+.title-container{
+    position:relative
+}
+
+.cancel-container{
+    /* display:flex; */
+    position:fixed;
+    justify-content: end;
+    /* min-width: 25%; */
+}
+
+.stats-table{
+    /* display:flex; */
+    margin:5px;
+    border:2px solid black;
+}
+
+.stats-table p{
+    font-size: 0.75em;
+    cursor:pointer;
+}
+
+.stats-table p.active{
+    font-weight:bold;
+}
+
+.table-header{
+    display:flex;
+    flex-flow: row wrap;
+    border-bottom: 1px solid black;
+    justify-content: space-around;
 }
 
 #cancel-icon{

@@ -106,11 +106,11 @@
 	position: fixed;
 	z-index: 9;
 	top: 20%;
-  left: 75%;
+  left: 60%;
   overflow-x: hidden;
   overflow-y: auto;
   height: 50%;
-  width: 25%;
+  width: 40%;
   background: rgba(255, 255, 255, 0.8);
 }
 
