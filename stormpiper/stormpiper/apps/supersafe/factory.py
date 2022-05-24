@@ -6,7 +6,7 @@ from .users import (
     create_db_and_tables,
     fastapi_users,
 )
-from .config import settings
+from stormpiper.core.config import settings
 from . import __version__
 
 
@@ -58,11 +58,6 @@ def create_app(
     async def startup():
         # Not needed if you setup a migration system like Alembic
         await create_db_and_tables()
-
-        # if "sqlite" in _settings.DATABASE_URL_ASYNC:
-        #     from .scripts import init_users
-
-        #     await init_users.create_all()
 
     setattr(app, "startup", startup)
 

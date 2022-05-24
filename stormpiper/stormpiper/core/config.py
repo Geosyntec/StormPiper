@@ -1,6 +1,8 @@
 import secrets
 from importlib import resources
 from typing import List, Literal, Optional, Union
+import json
+from pathlib import Path
 
 from pydantic import AnyHttpUrl, BaseSettings, validator
 
@@ -38,6 +40,21 @@ class Settings(BaseSettings):
     EE_PROJECT_DIRECTORY: str = ""
     EE_JSON_BASE64: str = ""
 
+    # Database
+    ADMIN_ACCOUNT_PASSWORD: str = "change me with an env variable"
+    SECRET: str = "change me with an env variable"
+    DATABASE_URL_ASYNC: str = "sqlite+aiosqlite:///./supersafe.db"
+    DATABASE_URL_SYNC: str = "sqlite:///./supersafe.db"
+    DATABASE_USERS_TABLE_NAME: str = "users"
+
+    # Worker
+    BROKER_URL: str = "redis://redis:6379/0"
+    RESULT_BACKEND: str = "redis://redis:6379/0"
+    ENABLE_BEAT_SCHEDULE: bool = False
+
+    # logger
+    LOGLEVEL: str = "INFO"
+
     class Config:
         extra = "allow"
         env_prefix = "STP_"
@@ -52,3 +69,7 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+external_resources = json.loads(
+    (Path(__file__).parent / "external_resources.json").read_text()
+)

@@ -22,5 +22,5 @@ fi
 
 echo "starting application...."
 
-# Start Uvicorn with live reload
-exec uvicorn --reload --host $HOST --port $PORT --log-level $LOG_LEVEL "$APP_MODULE" --reload-exclude "stormpiper/spa/node_modules"
+# Start Uvicorn 
+exec uvicorn --host $HOST --port $PORT --log-level $LOG_LEVEL "$APP_MODULE" --proxy-headers
