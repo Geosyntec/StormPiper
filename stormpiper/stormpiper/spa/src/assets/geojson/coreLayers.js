@@ -202,6 +202,7 @@ const activeLocalSWFacility = {
     highlightColor:[42,213,232],
     dashJustified: true,
     dashGapPickable: true,
+    onByDefault:true,
   },
 };
 

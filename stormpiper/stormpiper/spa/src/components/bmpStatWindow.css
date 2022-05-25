@@ -19,8 +19,9 @@
 
 .cancel-container{
     /* display:flex; */
-    position:fixed;
+    position:absolute;
     justify-content: end;
+    right:5%;
     /* min-width: 25%; */
 }
 
@@ -37,6 +38,15 @@
 
 .stats-table p.active{
     font-weight:bold;
+}
+
+.stat{
+    display:flex;
+    flex-flow:row;
+    padding: 5 5 5 15px;
+}
+.stat p{
+    cursor:auto
 }
 
 .table-header{

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useParams,useNavigate } from "react-router-dom";
 import { layerDict } from "./assets/geojson/coreLayers";
 import LayerSelector from "./components/layerSelector";
 import DeckGLMap from "./components/map";
@@ -8,8 +9,10 @@ import "./App.css";
 
 function App() {
   const [lyrSelectDisplayState, setlyrSelectDisplayState] = useState(false); // when true, control panel is displayed
-  const [prjStatDisplayState, setprjStatDisplayState] = useState(false); // when true, project stats panel is displayed
-  const [focusFeature, setFocusFeature] = useState(null);
+  let params = useParams();
+  let navigate = useNavigate()
+  const [prjStatDisplayState, setprjStatDisplayState] = useState(params?.id?true:false); // when true, project stats panel is displayed
+  const [focusFeature, setFocusFeature] = useState(params?.id || null);
   const [activeLayers, setActiveLayers] = useState(() => {
     var res = {};
     Object.keys(layerDict).map((category) => {
@@ -21,21 +24,21 @@ function App() {
           for (const layer in layerGroup) {
             const layerID = layerGroup[layer].props?.id;
 
-            res[layerID] = false;
+            res[layerID] = layerGroup[layer].props?.onByDefault||false;
           }
           return false;
         });
       } else {
         for (const layer in layerGroup) {
           const layerID = layerGroup[layer].props?.id;
-          res[layerID] = false;
+          res[layerID] = layerGroup[layer].props?.onByDefault||false;
         }
       }
       return false;
     });
     return res;
   });
-
+  
   function _toggleLayer(layerName, updateFunction = setActiveLayers) {
     var currentActiveLayers = { ...activeLayers };
     currentActiveLayers[layerName] = !currentActiveLayers[layerName];
@@ -53,7 +56,7 @@ function App() {
             props.data = getData();
           }
 
-          if (visState[props.id]) {
+          if (visState[props.id]||props.onByDefault) {
             props = _injectLayerAccessors(props)
             layersToRender.push(new Layer(props));
           }
@@ -72,9 +75,10 @@ function App() {
     setlyrSelectDisplayState(!lyrSelectDisplayState);
   }
   function _toggleprjStatDisplayState() {
-    if(prjStatDisplayState){ //note that state will not be updated immediately after setting it
+    if(prjStatDisplayState){
       console.log('Clearing Focused Feature')
       setFocusFeature(null)
+      navigate("/map")
     }
     setprjStatDisplayState(!prjStatDisplayState);
   }
@@ -86,16 +90,18 @@ function App() {
         //users can click on another facility without hiding the panel
         _toggleprjStatDisplayState();
       }
-      setFocusFeature(objInfo);
+      setFocusFeature(objInfo.object.properties.ALTID);
+      navigate("/map/tmnt/"+objInfo.object.properties.ALTID)
     }
   }
 
   function _injectLayerAccessors(props){
       props.getFillColor = (d)=>{
-        return d.id===focusFeature?.object?.id? [52,222,235]:[160, 160, 180, 200]
+        // console.log("checking feature: ",d)
+        return d.properties.ALTID===focusFeature? [52,222,235]:[160, 160, 180, 200]
       }
       props.updateTriggers = {
-        getFillColor:[focusFeature?focusFeature.object.id:null]
+        getFillColor:[focusFeature||null]
       }
     return props
   }
