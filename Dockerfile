@@ -76,9 +76,9 @@ COPY --from=core-env --chown=${IMG_USER} /opt/venv /opt/venv
 COPY --chown=${IMG_USER} ./stormpiper/prestart-worker.sh /stormpiper/prestart-worker.sh
 COPY --chown=${IMG_USER} ./stormpiper/scripts/run-worker.sh /run-worker.sh
 COPY --chown=${IMG_USER} ./stormpiper/scripts/run-beat.sh /run-beat.sh
-# RUN chmod gu+x /run-worker.sh /run-beat.sh
 COPY --chown=${IMG_USER} ./stormpiper/stormpiper /stormpiper/stormpiper
 CMD ["/run-worker.sh"]
+
 
 FROM core-env as server-env
 COPY --from=builder /gunicorn /gunicorn
@@ -93,8 +93,3 @@ RUN pip install \
 FROM base-app as stormpiper
 COPY --from=server-env /opt/venv /opt/venv
 COPY ./stormpiper/gunicorn_conf.py /gunicorn_conf.py
-# COPY ./stormpiper/scripts/start.sh /start.sh
-# COPY ./stormpiper/scripts/start-reload.sh /start-reload.sh
-# EXPOSE 80
-# COPY ./stormpiper/stormpiper /stormpiper/stormpiper
-# COPY --from=build-frontend /app/build/ /stormpiper/stormpiper/spa/build

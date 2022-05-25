@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: default
+  name: worker-dev
+  labels:
+    app: stormpiper-dev
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stormpiper-dev
+  template:
+    metadata:
+      labels:
+        app: stormpiper-dev
+    spec:
+      containers:
+        - name: worker-dev
+          image: bg_worker:latest
+          command:
+            - /run-worker.sh
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: dev-secrets

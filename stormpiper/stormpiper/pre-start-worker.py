@@ -8,8 +8,8 @@ logger = logging.getLogger(__name__)
 
 def init() -> None:  # pragma: no cover
 
-    startup.get_redis_connection()
     startup.get_database_connection()
+    startup.get_redis_connection()
 
     return
 

@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  labels:
+    type: redis-service
+    app: stormpiper
+spec:
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    type: redis-pod
+    app: stormpiper
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: default
+  name: redis
+  labels:
+    app: stormpiper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      type: redis-pod
+      app: stormpiper
+  template:
+    metadata:
+      labels:
+        type: redis-pod
+        app: stormpiper
+    spec:
+      containers:
+        - name: redis
+          image: redis:latest
+          ports:
+            - containerPort: 6379

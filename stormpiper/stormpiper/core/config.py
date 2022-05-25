@@ -48,8 +48,8 @@ class Settings(BaseSettings):
     DATABASE_USERS_TABLE_NAME: str = "users"
 
     # Worker
-    BROKER_URL: str = "redis://redis:6379/0"
-    RESULT_BACKEND: str = "redis://redis:6379/0"
+    REDIS_BROKER_URL: str = "redis://redis:6379/0"
+    REDIS_RESULT_BACKEND: str = "redis://redis:6379/0"
     ENABLE_BEAT_SCHEDULE: bool = False
 
     # logger
