@@ -35,7 +35,17 @@ const fieldLabelDict = {
 
 
 
+
 function BMPStatWindow(props) {
+  let baseURL = (import.meta.env.BASE_URL).toString().split("/")
+  baseURL.pop()
+  baseURL.pop()
+  console.log("Base URL popped: ",baseURL)
+  const revisedURL = baseURL.length > 1 ? baseURL.join("/") : "/";
+
+
+  console.log("Altered Base URL: ",revisedURL)
+
 
   const [state,setState] = useState({
     header:"Overview",
@@ -50,44 +60,22 @@ function BMPStatWindow(props) {
       ...state,
       isLoaded:false
     })
-    setTimeout(() => {
-      let mockItems = {
-        altid: props?.feature,
-        facilitytype: "Swale",
-        design_storm_depth_inches: 2,
-        tributary_area_tc_min: 10,
-        total_volume_cuft: 500,
-        retention_volume_cuft: 500,
-      }
-      setState({
-        ...state,
-        isLoaded:true,
-        header:"Overview",
-        items:mockItems,
-        stats:statsDict.overview.fields
+    fetch(revisedURL+"api/rest/tmnt_facility/"+props.feature)
+      .then(res=>res.json())
+      .then(result=>{
+        console.log("Fetch Results: ",result)
+        setState({
+          ...state,
+          isLoaded:true,
+          header:"Overview",
+          items:{...result},
+          stats:statsDict.overview.fields
+        })
       })
-    }, 1000);
+      .catch(err=>{
+        console.log("TMNT fetch failed: ",err)
+      })
   }, [props?.feature]);
-    // Note: the empty deps array [] means
-    // this useEffect will run once
-    // similar to componentDidMount()
-    // useEffect(() => {
-    //   fetch("https://api.example.com/items")
-    //     .then((res) => res.json())
-    //     .then(
-    //       (result) => {
-    //         setIsLoaded(true);
-    //         setItems(result);
-    //       },
-    //       // Note: it's important to handle errors here
-    //       // instead of a catch() block so that we don't swallow
-    //       // exceptions from actual bugs in components.
-    //       (error) => {
-    //         setIsLoaded(true);
-    //         setError(error);
-    //       }
-    //     );
-    // }, []);
 
   function ActiveHeader(props){
     return(
