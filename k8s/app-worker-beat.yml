@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: default
+  name: beat
+  labels:
+    app: stormpiper
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stormpiper
+  template:
+    metadata:
+      labels:
+        app: stormpiper
+    spec:
+      containers:
+        - name: beat
+          image: bg_worker:latest
+          command:
+            - /run-beat.sh
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: prod-secrets

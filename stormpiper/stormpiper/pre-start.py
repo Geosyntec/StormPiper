@@ -8,9 +8,9 @@ logger = logging.getLogger(__name__)
 
 def init() -> None:
 
+    startup.get_database_connection()
     startup.get_redis_connection()
     startup.get_background_worker_connection()
-    startup.get_database_connection()
 
     return
 

@@ -85,3 +85,6 @@ dev-server: ## start a development server
 
 release: ## push production images to registry
 	bash scripts/push_release.sh
+
+cluster: ## bring up local kubenertes cluster
+	bash scripts/local_cluster.sh
