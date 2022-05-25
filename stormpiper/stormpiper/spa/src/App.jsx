@@ -78,7 +78,7 @@ function App() {
     if(prjStatDisplayState){
       console.log('Clearing Focused Feature')
       setFocusFeature(null)
-      navigate("/map")
+      navigate("/app/map")
     }
     setprjStatDisplayState(!prjStatDisplayState);
   }
@@ -91,7 +91,7 @@ function App() {
         _toggleprjStatDisplayState();
       }
       setFocusFeature(objInfo.object.properties.ALTID);
-      navigate("/map/tmnt/"+objInfo.object.properties.ALTID)
+      navigate("/app/map/tmnt/"+objInfo.object.properties.ALTID)
     }
   }
 

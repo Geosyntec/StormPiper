@@ -9,14 +9,15 @@ ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App/>}></Route>
-        <Route path="/map" element={<App/>}>
+        <Route path="/app/" element={<App/>}></Route>
+        <Route path="/app/map/" element={<App/>}>
           <Route path="tmnt" element={<App/>}>
             <Route path=":id" element = {<App/>}></Route>
           </Route>
         </Route>
       </Routes>
     </BrowserRouter>
+    {/* <App/> */}
   </React.StrictMode>,
   document.getElementById("root")
 );
