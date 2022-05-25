@@ -1,0 +1,29 @@
+services:
+  stormpiper:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: stormpiper
+    image: gcr.io/tacoma-app/stormpiper:${VERSION:-latest}
+  
+  stormpiper-pod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: stormpiper-pod
+    image: gcr.io/tacoma-app/stormpiper-pod:${VERSION:-latest}
+    
+  bg_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: bg_worker
+    image: gcr.io/tacoma-app/bg_worker:${VERSION:-latest}
+
+  redis:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: redis
+    image: gcr.io/tacoma-app/redis:${VERSION:-latest}
+   

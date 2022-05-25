@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: stormpiper-dev
+  labels:
+    type: stormpiper-dev-service
+    app: stormpiper-dev
+spec:
+  ports:
+    - protocol: TCP
+      name: web
+      port: 80
+  selector:
+    type: stormpiper-pod
+    app: stormpiper-dev
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: default
+  name: stormpiper-dev
+  labels:
+    app: stormpiper-dev
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      type: stormpiper-pod
+      app: stormpiper-dev
+  template:
+    metadata:
+      labels:
+        type: stormpiper-pod
+        app: stormpiper-dev
+    spec:
+      containers:
+        - name: stormpiper-dev
+          image: stormpiper-pod:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: web
+              containerPort: 80
+          envFrom:
+            - secretRef:
+                name: dev-secrets
