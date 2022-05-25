@@ -19,7 +19,7 @@ max_tries = int(60 / wait_seconds * try_for_minutes)
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-redis_conn = redis.Redis(host="redis", port=6379)
+redis_conn = redis.Redis.from_url(settings.REDIS_BROKER_URL)
 
 
 @retry(

@@ -15,8 +15,8 @@ celery_app.conf.update(
     task_serializer="json",
     accept_content=["json"],  # Ignore other content
     result_serializer="json",
-    broker_url=settings.BROKER_URL,
-    result_backend=settings.RESULT_BACKEND,
+    broker_url=settings.REDIS_BROKER_URL,
+    result_backend=settings.REDIS_RESULT_BACKEND,
     timezone="US/Pacific",
 )
 

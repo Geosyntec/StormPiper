@@ -1,10 +1,11 @@
 services:
-  stormpiper:
+  stormpiper-pod:
     build:
       context: .
       dockerfile: Dockerfile
       target: stormpiper-pod
-    command: /start-reload.sh
+    command: bash /start-reload.sh
+    image: stormpiper-pod
     environment:
       NEREID_ASYNC_MODE: none
     env_file:
@@ -29,7 +30,8 @@ services:
       context: .
       dockerfile: Dockerfile
       target: bg_worker
-    command: /run-worker.sh
+    command: bash /run-worker.sh
+    image: bg_worker
     environment:
       NEREID_ASYNC_MODE: none
     env_file:
@@ -46,7 +48,7 @@ services:
       context: .
       dockerfile: Dockerfile
       target: bg_worker
-    command: /run-beat.sh
+    command: bash /run-beat.sh
     environment:
       NEREID_ASYNC_MODE: none
       STP_ENABLE_BEAT_SCHEDULE: true
@@ -64,6 +66,7 @@ services:
       context: .
       dockerfile: Dockerfile
       target: redis
+    image: redis
     ports:
       - target: 6379
         published: 6379

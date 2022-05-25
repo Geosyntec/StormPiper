@@ -1,7 +1,9 @@
 import logging
+from typing import List
 
 import geopandas
-from sqlalchemy import MetaData
+import sqlalchemy as sa
+from sqlalchemy.event import listen
 from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
 
 
@@ -9,8 +11,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def merge_metadata(*Bases) -> MetaData:
-    merged = MetaData()
+def merge_metadata(*Bases) -> sa.MetaData:
+    merged = sa.MetaData()
 
     for Base in Bases:
         for table in Base.metadata.tables.values():
@@ -19,9 +21,16 @@ def merge_metadata(*Bases) -> MetaData:
     return merged
 
 
-row2dict = lambda row: dict(
-    (col, getattr(row, col)) for col in row.__table__.columns.keys()
-)
+def orm_to_dict(row) -> dict:
+    """Convert an ORM return object to a dict."""
+    row_dict = {col: getattr(row, col) for col in row.__table__.columns.keys()}
+    return row_dict
+
+
+def scalars_to_records(rows) -> List[dict]:
+    """Convert ORM scalars to list of dicts [records]"""
+
+    return [orm_to_dict(row) for row in rows]
 
 
 def delete_and_replace_postgis_table(
@@ -53,4 +62,30 @@ def reconnect_engine(engine):
 
     except Exception as e:
         logger.error(e)
+        logger.info("Engine connection url:", engine.url)
         raise e
+
+
+def load_spatialite_extension(conn, connection_record):
+    conn.enable_load_extension(True)
+    conn.load_extension("mod_spatialite")
+
+
+def load_spatialite(engine):
+    listen(engine, "connect", load_spatialite_extension)
+    with engine.begin() as conn:
+        conn.execute(sa.select([sa.func.InitSpatialMetaData()]))
+
+
+def init_spatial(engine):
+    inspector = sa.inspect(engine)
+    if "spatial_ref_sys" in inspector.get_table_names():
+        logger.info("spatial plugins already enabled.")
+        return
+
+    if "sqlite" in engine.url:
+        logger.info("enabling spatialite...")
+        load_spatialite(engine)
+        logger.info("enabling spatialite...complete.")
+
+    logger.error("postgis or libspatialite required.")
