@@ -3,12 +3,12 @@ bases:
 commonLabels:
   app: stormpiper
 images:
-  - name: stormpiper-pod
-    newName: stormpiper-pod
+  - name: gcr.io/tacoma-app/stormpiper-pod
+    newName: gcr.io/tacoma-app/stormpiper-pod
     newTag: latest
-  - name: bg_worker
-    newName: bg_worker
+  - name: gcr.io/tacoma-app/bg_worker
+    newName: gcr.io/tacoma-app/bg_worker
     newTag: latest
-  - name: redis
-    newName: redis
+  - name: gcr.io/tacoma-app/redis
+    newName: gcr.io/tacoma-app/redis
     newTag: latest
