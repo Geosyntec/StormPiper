@@ -1,0 +1,14 @@
+bases:
+  - ../base
+commonLabels:
+  app: stormpiper
+images:
+  - name: stormpiper-pod
+    newName: stormpiper-pod
+    newTag: latest
+  - name: bg_worker
+    newName: bg_worker
+    newTag: latest
+  - name: redis
+    newName: redis
+    newTag: latest
