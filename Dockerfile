@@ -32,7 +32,7 @@ COPY --from=build-frontend /app/build/ /stormpiper/stormpiper/spa/build
 
 FROM python:3.9-buster as builder
 RUN apt-get update -y \
-    && apt-get install -y --no-install-recommends gcc g++ unixodbc-dev libpq-dev libspatialindex-dev \ 
+    && apt-get install -y --no-install-recommends gcc g++ unixodbc-dev libpq-dev libspatialindex-dev libgdal-dev \ 
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 COPY ./stormpiper/requirements.txt /requirements.txt
