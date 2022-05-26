@@ -85,10 +85,10 @@ def delete_and_refresh_tmnt_tables():  # pragma: no cover
 #     logger.info("setting up celery beat task schedules...")
 celery_app.conf.beat_schedule = {
     ## this task is for demonstration purposes.
-    "ping-every-3-mins": {
-        "task": "stormpiper.bg_worker.ping",
-        "schedule": 3 * 60,
-    },
+    # "ping-every-10-mins": {
+    #     "task": "stormpiper.bg_worker.ping",
+    #     "schedule": 10 * 60,
+    # },
     "delete_and_refresh_tmnt_tables": {
         "task": "stormpiper.bg_worker.delete_and_refresh_tmnt_tables",
         # daily at 6am
