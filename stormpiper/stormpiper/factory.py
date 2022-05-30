@@ -100,11 +100,21 @@ def create_app(
         request: Request,
         user: ss.users.User = Depends(ss.users.current_user_safe(optional=True)),
     ):
-        if user is None:
-            return RedirectResponse(
-                request.scope["router"].url_path_for("login:get_login")
-            )
+        # if user is None:
+        #     return RedirectResponse(
+        #         request.scope["router"].url_path_for("login:get_login")
+        #     )
 
-        return user
+        msg = {
+            "message": "welcome home.",
+            "version": _settings.VERSION,
+            "user": user,
+            "redirect_url_path_for": request.scope["router"].url_path_for(
+                "login:get_login"
+            ),
+            "redirect_url_for": request.url_for("login:get_login"),
+        }
+
+        return msg
 
     return app
