@@ -47,6 +47,12 @@ class Settings(BaseSettings):
     DATABASE_URL_SYNC: str = "sqlite:///./supersafe.db"
     DATABASE_USERS_TABLE_NAME: str = "users"
 
+    # Users Auth
+    COOKIE_SECURE: bool = True
+    COOKIE_HTTPONLY: bool = True
+    COOKIE_SAMESITE: str = "lax"
+    BEARER_TOKEN_URL: str = "auth/jwt-bearer/login"
+
     # Worker
     REDIS_BROKER_URL: str = "redis://redis:6379/0"
     REDIS_RESULT_BACKEND: str = "redis://redis:6379/0"

@@ -15,7 +15,7 @@ from stormpiper.site import site_router
 
 from stormpiper.apps import supersafe as ss
 
-supersafe = ss.create_app(app_kwargs=dict(root_path="/supersafe"))
+ss_router = ss.create_router()
 
 
 def create_app(
@@ -52,9 +52,6 @@ def create_app(
         # log into ee
         login_earth_engine()
 
-        # startup sub-applications
-        await supersafe.startup()
-
     @app.on_event("shutdown")
     async def shutdown():
 
@@ -81,7 +78,7 @@ def create_app(
     app.include_router(api_router)
     app.include_router(rpc_router)
     app.include_router(site_router)
-    app.mount(path="/supersafe", app=supersafe)
+    app.include_router(ss_router)
 
     app.mount(
         "/site/static",
@@ -96,14 +93,14 @@ def create_app(
     )
 
     @app.get("/", name="home")
-    async def home(
+    async def home(request: Request):
+        return RedirectResponse("/app")
+
+    @app.get("/ping", name="ping")
+    async def ping(
         request: Request,
         user: ss.users.User = Depends(ss.users.current_user_safe(optional=True)),
     ):
-        # if user is None:
-        #     return RedirectResponse(
-        #         request.scope["router"].url_path_for("login:get_login")
-        #     )
 
         msg = {
             "message": "welcome home.",
