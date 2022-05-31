@@ -1,5 +1,6 @@
 from typing import Optional, Dict, Any
-from fastapi import FastAPI
+from fastapi import APIRouter, FastAPI
+
 from .users import (
     bearer_backend,
     cookie_backend,
@@ -8,6 +9,37 @@ from .users import (
 )
 from stormpiper.core.config import settings
 from . import __version__
+
+
+def create_router(**kwargs):
+
+    router = APIRouter(**kwargs)
+
+    router.include_router(
+        fastapi_users.get_auth_router(bearer_backend),
+        prefix="/auth/jwt-bearer",
+        tags=["auth"],
+    )
+    router.include_router(
+        fastapi_users.get_auth_router(cookie_backend),
+        prefix="/auth/jwt-cookie",
+        tags=["auth"],
+    )
+    router.include_router(
+        fastapi_users.get_register_router(), prefix="/auth", tags=["auth"]
+    )
+    router.include_router(
+        fastapi_users.get_reset_password_router(),
+        prefix="/auth",
+        tags=["auth"],
+    )
+    router.include_router(
+        fastapi_users.get_verify_router(),
+        prefix="/auth",
+        tags=["auth"],
+    )
+
+    return router
 
 
 def create_app(
@@ -31,29 +63,8 @@ def create_app(
     )
     setattr(app, "_settings", _settings)
 
-    app.include_router(
-        fastapi_users.get_auth_router(bearer_backend),
-        prefix="/auth/jwt-bearer",
-        tags=["auth"],
-    )
-    app.include_router(
-        fastapi_users.get_auth_router(cookie_backend),
-        prefix="/auth/jwt-cookie",
-        tags=["auth"],
-    )
-    app.include_router(
-        fastapi_users.get_register_router(), prefix="/auth", tags=["auth"]
-    )
-    app.include_router(
-        fastapi_users.get_reset_password_router(),
-        prefix="/auth",
-        tags=["auth"],
-    )
-    app.include_router(
-        fastapi_users.get_verify_router(),
-        prefix="/auth",
-        tags=["auth"],
-    )
+    router = create_router()
+    app.include_router(router)
 
     async def startup():
         # Not needed if you setup a migration system like Alembic

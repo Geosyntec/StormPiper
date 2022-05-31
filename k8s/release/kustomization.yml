@@ -1,5 +1,5 @@
 bases:
-  - ../crd
-  - ../dev
+  # - ../crd
+  # - ../dev
   - ../prod
   - ../traefik
