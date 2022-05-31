@@ -58,6 +58,10 @@ class Settings(BaseSettings):
     REDIS_RESULT_BACKEND: str = "redis://redis:6379/0"
     ENABLE_BEAT_SCHEDULE: bool = False
 
+    # Email via https://dev.mailjet.com/email/guides/send-api-v31/
+    EMAIL_API_KEY: str = ""
+    EMAIL_API_SECRET: str = ""
+
     # logger
     LOGLEVEL: str = "INFO"
 
