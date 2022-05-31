@@ -1,19 +1,21 @@
 # apiVersion: traefik.containo.us/v1alpha1
 # kind: IngressRoute
 # metadata:
-#   name: simpleingressroute
+#   name: http
 #   namespace: default
+#   # annotations:
+#   #   kubernetes.io/ingress.global-static-ip-name: "traefik-ip"
 # spec:
 #   entryPoints:
 #     - web
 #   routes:
-#     - match: Host(`localhost`) && PathPrefix(`/notls`)
+#     - match: Path(`/`)
 #       kind: Rule
 #       services:
-#         - name: whoami
+#         - name: web
 #           port: 80
-#       middlewares:
-#         - name: https-redirect
+      # middlewares:
+      #   - name: https-redirect
 
 # ---
 # apiVersion: traefik.containo.us/v1alpha1
@@ -25,7 +27,7 @@
 #   entryPoints:
 #     - websecure
 #   routes:
-#     - match: Host(`localhost`) && PathPrefix(`/tls`)
+#     - match: PathPrefix(`/tls`)
 #       kind: Rule
 #       services:
 #         - name: whoami
@@ -51,49 +53,95 @@
 #       middlewares:
 #         - name: https-redirect
 
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: http
-  namespace: default
-spec:
-  entryPoints:
-    - web
-  routes:
-    - match: Host(`localhost`)
-      kind: Rule
-      services:
-        - name: stormpiper
-          port: 80
-      middlewares:
-        - name: https-redirect
-    - match: Host(`dev.localhost`)
-      kind: Rule
-      services:
-        - name: stormpiper-dev
-          port: 80
-      middlewares:
-        - name: https-redirect
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: https
-  namespace: default
-spec:
-  entryPoints:
-    - websecure
-  routes:
-    - match: Host(`localhost`)
-      kind: Rule
-      services:
-        - name: stormpiper
-          port: 80
-    - match: Host(`dev.localhost`)
-      kind: Rule
-      services:
-        - name: stormpiper-dev
-          port: 80
-  tls:
-    certResolver: myresolver
+# ---
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: IngressRoute
+# metadata:
+#   name: http
+#   namespace: default
+# spec:
+#   entryPoints:
+#     - web
+#   routes:
+#     - match: Host(`localhost`)
+#       kind: Rule
+#       services:
+#         - name: stormpiper
+#           port: 80
+#       middlewares:
+#         - name: https-redirect
+#     - match: Host(`dev.localhost`)
+#       kind: Rule
+#       services:
+#         - name: stormpiper-dev
+#           port: 80
+#       middlewares:
+#         - name: https-redirect
+# ---
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: IngressRoute
+# metadata:
+#   name: https
+#   namespace: default
+# spec:
+#   entryPoints:
+#     - websecure
+#   routes:
+#     - match: Host(`localhost`)
+#       kind: Rule
+#       services:
+#         - name: stormpiper
+#           port: 80
+#     - match: Host(`dev.localhost`)
+#       kind: Rule
+#       services:
+#         - name: stormpiper-dev
+#           port: 80
+#   tls:
+#     certResolver: myresolver
+
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: IngressRoute
+# metadata:
+#   name: http
+#   namespace: default
+# spec:
+#   entryPoints:
+#     - web
+#   routes:
+#     - match: PathPrefix(`/prod`)
+#       kind: Rule
+#       services:
+#         - name: stormpiper
+#           port: 80
+      # middlewares:
+      #   - name: https-redirect
+    # - match: PathPrefix(`/dev`)
+    #   kind: Rule
+    #   services:
+    #     - name: stormpiper-dev
+    #       port: 80
+    #   middlewares:
+    #     - name: https-redirect
+# ---
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: IngressRoute
+# metadata:
+#   name: https
+#   namespace: default
+# spec:
+#   entryPoints:
+#     - websecure
+#   routes:
+#     - match: PathPrefix(`/prod`)
+#       kind: Rule
+#       services:
+#         - name: stormpiper
+#           port: 80
+    # - match: PathPrefix(`/dev`)
+    #   kind: Rule
+    #   services:
+    #     - name: stormpiper-dev
+    #       port: 80
+  # tls:
+  #   certResolver: myresolver
