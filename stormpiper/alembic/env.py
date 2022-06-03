@@ -1,7 +1,6 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from sqlalchemy import engine_from_config, pool, MetaData
 
 from alembic import context
 
@@ -25,7 +24,7 @@ if config.config_file_name is not None:
 from stormpiper.database.schemas.base import Base
 
 # target_metadata = mymodel.Base.metadata
-target_metadata = [Base.metadata]
+target_metadata: MetaData = Base.metadata  # type: ignore
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -38,13 +37,13 @@ def include_name(name, type_, parent_names):
     if type_ == "table":
         # use schema_qualified_table_name directly
         tablename = parent_names["schema_qualified_table_name"]
-        return any([tablename in m.tables for m in target_metadata])
+        return tablename in target_metadata.tables
     else:
         return True
 
 
 def process_revision_directives(context, revision, directives):
-    if config.cmd_opts.autogenerate:
+    if config.cmd_opts.autogenerate:  # type: ignore
         script = directives[0]
         if script.upgrade_ops.is_empty():
             directives[:] = []
@@ -84,6 +83,8 @@ def run_migrations_online():
 
     """
     configuration = config.get_section(config.config_ini_section)
+    if not configuration:
+        return
     configuration["sqlalchemy.url"] = url
 
     connectable = engine_from_config(
