@@ -19,5 +19,9 @@
   },
   "tmnt_facility_delineations": {
     "url": "error unknown Url"
+  },
+  "subbasins": {
+    "url": "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/41/query?where=1%3D1&outFields=*&returnGeometry=true&f=pjson",
+    "columns": ["BASINNAME", "SUBBASIN", "geometry"]
   }
 }

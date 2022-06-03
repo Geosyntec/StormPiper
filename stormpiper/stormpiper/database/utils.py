@@ -2,6 +2,8 @@ import logging
 from typing import List
 
 import geopandas
+from geoalchemy2.shape import to_shape
+import pandas
 import sqlalchemy as sa
 from sqlalchemy.event import listen
 from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
@@ -9,16 +11,6 @@ from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixe
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-
-def merge_metadata(*Bases) -> sa.MetaData:
-    merged = sa.MetaData()
-
-    for Base in Bases:
-        for table in Base.metadata.tables.values():
-            table.to_metadata(merged)
-
-    return merged
 
 
 def orm_to_dict(row) -> dict:
@@ -31,6 +23,19 @@ def scalars_to_records(rows) -> List[dict]:
     """Convert ORM scalars to list of dicts [records]"""
 
     return [orm_to_dict(row) for row in rows]
+
+
+def scalar_records_to_gdf(records, crs=None, geometry="geom"):
+    if crs is None:
+        crs = 4326
+    data = pandas.DataFrame(records).assign(
+        geometry=lambda df: df[geometry].apply(lambda x: to_shape(x))
+    )
+    gdf = geopandas.GeoDataFrame(data, geometry="geometry", crs=crs)
+
+    if geometry != "geometry":
+        gdf = gdf.drop(columns=[geometry])
+    return gdf
 
 
 def delete_and_replace_postgis_table(
@@ -87,5 +92,6 @@ def init_spatial(engine):
         logger.info("enabling spatialite...")
         load_spatialite(engine)
         logger.info("enabling spatialite...complete.")
+        return
 
     logger.error("postgis or libspatialite required.")

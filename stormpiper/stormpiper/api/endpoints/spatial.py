@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import JSONResponse
 
 
-from stormpiper import earth_engine
+import stormpiper.earth_engine as ee
 
 router = APIRouter()
 
@@ -13,13 +13,13 @@ async def get_elevation(
 ) -> JSONResponse:
     """mt_rainer = [-121.756163642, 46.85166326]"""
 
-    return earth_engine.get_elevation(long, lat)
+    return ee.get_elevation(long, lat)
 
 
 @router.get("/ee/assets", response_class=JSONResponse)
 async def get_ee_assets() -> JSONResponse:
 
-    rsp = earth_engine.assets()
+    rsp = ee.assets()
 
     if not rsp:  # pragma: no cover
         raise HTTPException(status_code=404, detail=f"not found")
