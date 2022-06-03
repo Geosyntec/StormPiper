@@ -50,11 +50,23 @@ def delete_and_refresh_tmnt_facility_delineation_table():  # pragma: no cover
 
 
 @celery_app.task(acks_late=True, track_started=True)
-def delete_and_refresh_tmnt_tables():  # pragma: no cover
-    logger.info("background delete_and_refresh_tmnt_tables")
+def delete_and_refresh_subbasin_table():  # pragma: no cover
+    logger.info("background delete_and_refresh_subbasin_table")
+    try:
+        tasks.delete_and_refresh_subbasin_table()
+    except Exception as e:
+        logger.exception(e)
+        return False
+    return True
+
+
+@celery_app.task(acks_late=True, track_started=True)
+def delete_and_refresh_tacoma_gis_tables():  # pragma: no cover
+    logger.info("background delete_and_refresh_tacoma_gis_tables")
     try:
         tasks.delete_and_refresh_tmnt_facility_table()
         tasks.delete_and_refresh_tmnt_facility_delineation_table()
+        tasks.delete_and_refresh_subbasin_table()
     except Exception as e:
         logger.exception(e)
         return False

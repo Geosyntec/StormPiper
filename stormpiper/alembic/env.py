@@ -22,13 +22,10 @@ if config.config_file_name is not None:
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-from stormpiper.database import UsersBase, TMNTBase
+from stormpiper.database.schemas.base import Base
 
 # target_metadata = mymodel.Base.metadata
-target_metadata = [
-    UsersBase.metadata,
-    TMNTBase.metadata,
-]
+target_metadata = [Base.metadata]
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

@@ -33,6 +33,10 @@ def _get_tmnt_facilities(*, url=None):
     return geopandas.read_file(url)
 
 
+def facility_node_id(altid):
+    return altid
+
+
 def get_tmnt_facilities(*, bmp_url=None, codes_url=None, cols=None):
 
     if cols is None:
@@ -70,11 +74,17 @@ def get_tmnt_facilities(*, bmp_url=None, codes_url=None, cols=None):
         raw_gdf.replace({"FACILITYTYPE": code_lu})
         .reindex(columns=cols)
         .rename(columns=lambda c: c.lower())
-        .assign(node_id=lambda df: df["altid"])
+        .assign(node_id=lambda df: df["altid"].apply(facility_node_id))
         # ref: database.schemas.tmnt
     )
 
     return gdf
+
+
+def delineation_node_id(relid, altid):
+    """altid is the id of the delineation, relid is the altid of the related bmp"""
+
+    return f"ls_{relid}_{altid}"
 
 
 def get_tmnt_facility_delineations(*, url=None):
@@ -87,13 +97,34 @@ def get_tmnt_facility_delineations(*, url=None):
 
     delineations = (
         geopandas.read_file(url)
-        .to_crs(2927)
+        .to_crs(settings.TACOMA_EPSG)
         .reset_index(drop=True)
         .rename(columns=lambda c: c.lower())
-        .rename(columns={"treatment_facility_altid": "altid"})
-        .assign(id=lambda df: df.index)
-        .assign(node_id=lambda df: "ls_" + df["altid"] + "_" + df.index.astype(str))
-        .reindex(columns=["altid", "node_id", "geometry"])  # ref: database.schemas.tmnt
+        .assign(relid=lambda df: df.altid)
+        .assign(altid=lambda df: df.index)
+        .assign(
+            node_id=lambda df: df.apply(
+                lambda r: delineation_node_id(r.relid, r.altid), axis=1
+            )
+        )
+        .reindex(
+            columns=["node_id", "altid", "relid", "geometry"]
+        )  # ref: database.schemas.tmnt
     )
 
     return delineations.loc[~delineations.geometry.is_empty]
+
+
+def get_subbasins(*, url=None, cols=None):
+    if url is None:
+        url = external_resources["subbasins"]["url"]
+    if cols is None:
+        cols = external_resources["subbasins"]["columns"]
+
+    subbasins = (
+        geopandas.read_file(url)
+        .reindex(columns=cols)
+        .rename(columns=lambda c: c.lower())
+    )
+
+    return subbasins.loc[~subbasins.geometry.is_empty]

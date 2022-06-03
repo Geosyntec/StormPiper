@@ -65,6 +65,9 @@ class Settings(BaseSettings):
     # logger
     LOGLEVEL: str = "INFO"
 
+    # AGOL
+    TACOMA_EPSG: int = 2927
+
     class Config:
         extra = "allow"
         env_prefix = "STP_"

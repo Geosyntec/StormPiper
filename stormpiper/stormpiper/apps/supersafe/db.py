@@ -7,9 +7,7 @@ from sqlalchemy import Column, String, Enum
 from .models import UserDB, Role
 from stormpiper.core.config import settings
 from stormpiper.database.connection import async_engine, get_async_session
-
-
-Base: DeclarativeMeta = declarative_base()
+from stormpiper.database.schemas.base_class import Base
 
 
 class UserTable(Base, SQLAlchemyBaseUserTable):

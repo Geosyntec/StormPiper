@@ -1,20 +1,21 @@
 import sqlalchemy as sa
 from sqlalchemy import Column, String, Integer, Float
-from sqlalchemy.ext.declarative import declarative_base
 from geoalchemy2 import Geometry
 
-from .base import TrackedTable
-from .hacks import view
+from .base_class import Base, TrackedTable
+from ..hacks import view
 
-Base = declarative_base()
+from stormpiper.core.config import settings
+from stormpiper.connections import arcgis
 
-TACOMA_EPSG = 2927
+
+__all__ = ["TMNTFacilityDelineation", "TMNTFacility", "TMNTFacilityAttr", "TMNT_View"]
 
 
 def delin_node_id(context):
-    id = context.get_current_parameters()["id"]
+    relid = context.get_current_parameters()["relid"]
     altid = context.get_current_parameters()["altid"]
-    return f"ls_{altid}_{id}"
+    return arcgis.delineation_node_id(relid, altid)
 
 
 class TMNTFacilityDelineation(Base, TrackedTable):
@@ -23,12 +24,14 @@ class TMNTFacilityDelineation(Base, TrackedTable):
 
     id = Column(Integer, primary_key=True)
     altid = Column(String)
+    relid = Column(String)
     node_id = Column(String, default=delin_node_id, onupdate=delin_node_id)
-    geom = Column(Geometry(srid=TACOMA_EPSG))
+    geom = Column(Geometry(srid=settings.TACOMA_EPSG))
 
 
 def facility_node_id(context):
-    return context.get_current_parameters()["altid"]
+    altid = context.get_current_parameters()["altid"]
+    return arcgis.facility_node_id(altid)
 
 
 class TMNTFacility(Base, TrackedTable):
@@ -51,7 +54,7 @@ class TMNTFacility(Base, TrackedTable):
     flowcontroltype = Column(String)
     waterqualitytype = Column(String)
 
-    geom = Column(Geometry(srid=TACOMA_EPSG))
+    geom = Column(Geometry(srid=settings.TACOMA_EPSG))
 
 
 class TMNTFacilityAttr(Base, TrackedTable):
