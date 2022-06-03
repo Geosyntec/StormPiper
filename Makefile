@@ -71,7 +71,7 @@ typecheck: clean ## run static type checker
 
 develop: clean stack build ## build the development environment 
 
-up: ## bring up the containers
+up: ## bring up the containers and run startup commands
 	docker compose -f docker-stack.yml up 
 	
 up-d: ## bring up the containers in '-d' mode 
@@ -81,7 +81,7 @@ down: ## bring down the containers and detach volumes
 	docker compose -f docker-stack.yml down -v
 
 dev-server: ## start a development server
-	docker compose -f docker-compose.develop.yml run -p 8080:80 -e LOG_LEVEL=debug stormpiper bash /start-reload.sh
+	docker compose -f docker-stack.yml run -p 8080:80 -e LOG_LEVEL=debug stormpiper-pod bash /start-reload.sh
 
 release: ## push production images to registry
 	bash scripts/push_release.sh

@@ -1,0 +1,5 @@
+bases:
+  # - ../crd
+  # - ../dev
+  - ../prod
+  - ../traefik

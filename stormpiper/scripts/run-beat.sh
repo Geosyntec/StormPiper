@@ -17,4 +17,4 @@ fi
 
 echo "starting beat worker...."
 
-celery --app stormpiper.bg_worker beat
+celery --app stormpiper.bg_worker beat -l INFO

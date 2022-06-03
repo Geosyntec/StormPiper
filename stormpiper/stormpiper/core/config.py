@@ -47,13 +47,26 @@ class Settings(BaseSettings):
     DATABASE_URL_SYNC: str = "sqlite:///./supersafe.db"
     DATABASE_USERS_TABLE_NAME: str = "users"
 
+    # Users Auth
+    COOKIE_SECURE: bool = True
+    COOKIE_HTTPONLY: bool = True
+    COOKIE_SAMESITE: str = "lax"
+    BEARER_TOKEN_URL: str = "auth/jwt-bearer/login"
+
     # Worker
     REDIS_BROKER_URL: str = "redis://redis:6379/0"
     REDIS_RESULT_BACKEND: str = "redis://redis:6379/0"
     ENABLE_BEAT_SCHEDULE: bool = False
 
+    # Email via https://dev.mailjet.com/email/guides/send-api-v31/
+    EMAIL_API_KEY: str = ""
+    EMAIL_API_SECRET: str = ""
+
     # logger
     LOGLEVEL: str = "INFO"
+
+    # AGOL
+    TACOMA_EPSG: int = 2927
 
     class Config:
         extra = "allow"

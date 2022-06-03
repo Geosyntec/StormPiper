@@ -1,0 +1,9 @@
+resources:
+  - gke_ingress.yml
+  # - traefik-cr.yml
+  # - traefik-crb.yml
+  # - traefik-ingress.yml
+  # - traefik-middlewares.yml
+  # - traefik-service-acc.yml
+  # - traefik-traefik.yml
+  # - traefik-whoami.yml

@@ -37,3 +37,15 @@ def delete_and_refresh_tmnt_facility_delineation_table(*, url=None):
     logger.info("TASK COMPLETE: replaced tmnt_facility_delineation table.")
 
     return gdf
+
+
+def delete_and_refresh_subbasin_table(*, url=None, cols=None):
+
+    logger.info("fetching subbasin info")
+    gdf = arcgis.get_subbasins(url=url, cols=cols)
+
+    logger.info("deleting and replacing subbasin table")
+    delete_and_replace_postgis_table(gdf=gdf, table_name="subbasin", engine=engine)
+    logger.info("TASK COMPLETE: replaced subbasin table.")
+
+    return gdf

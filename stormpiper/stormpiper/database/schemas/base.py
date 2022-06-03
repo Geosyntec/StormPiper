@@ -1,12 +1,6 @@
-import sqlalchemy as sa
+"""This module is imported by alembic only"""
 
-
-class TrackedTable:
-    id = sa.Column(sa.Integer)
-    time_created = sa.Column(sa.DateTime(timezone=True), server_default=sa.func.now())
-    time_updated = sa.Column(sa.DateTime(timezone=True), onupdate=sa.func.now())
-    updated_by = sa.Column(sa.String)
-
-    def __repr__(self):
-        rep = f"{self.__class__.__name__}(id={self.id})"
-        return rep
+from .base_class import Base as Base
+from stormpiper.apps.supersafe.db import UserTable
+from .tmnt import *
+from .subbasin import Subbasin

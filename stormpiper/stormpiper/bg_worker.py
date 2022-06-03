@@ -50,11 +50,23 @@ def delete_and_refresh_tmnt_facility_delineation_table():  # pragma: no cover
 
 
 @celery_app.task(acks_late=True, track_started=True)
-def delete_and_refresh_tmnt_tables():  # pragma: no cover
-    logger.info("background delete_and_refresh_tmnt_tables")
+def delete_and_refresh_subbasin_table():  # pragma: no cover
+    logger.info("background delete_and_refresh_subbasin_table")
+    try:
+        tasks.delete_and_refresh_subbasin_table()
+    except Exception as e:
+        logger.exception(e)
+        return False
+    return True
+
+
+@celery_app.task(acks_late=True, track_started=True)
+def delete_and_refresh_tacoma_gis_tables():  # pragma: no cover
+    logger.info("background delete_and_refresh_tacoma_gis_tables")
     try:
         tasks.delete_and_refresh_tmnt_facility_table()
         tasks.delete_and_refresh_tmnt_facility_delineation_table()
+        tasks.delete_and_refresh_subbasin_table()
     except Exception as e:
         logger.exception(e)
         return False
@@ -85,10 +97,10 @@ def delete_and_refresh_tmnt_tables():  # pragma: no cover
 #     logger.info("setting up celery beat task schedules...")
 celery_app.conf.beat_schedule = {
     ## this task is for demonstration purposes.
-    "ping-every-3-mins": {
-        "task": "stormpiper.bg_worker.ping",
-        "schedule": 3 * 60,
-    },
+    # "ping-every-10-mins": {
+    #     "task": "stormpiper.bg_worker.ping",
+    #     "schedule": 10 * 60,
+    # },
     "delete_and_refresh_tmnt_tables": {
         "task": "stormpiper.bg_worker.delete_and_refresh_tmnt_tables",
         # daily at 6am

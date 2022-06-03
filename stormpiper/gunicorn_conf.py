@@ -51,7 +51,7 @@ timeout = int(timeout_str)
 keepalive = int(keepalive_str)
 proxy_allow_ips = "*"
 proxy_protocol = True
-forwarded_allow_ips="*"
+forwarded_allow_ips = "*"
 
 
 # For debugging and testing

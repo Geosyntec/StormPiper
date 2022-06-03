@@ -1,4 +1,4 @@
-FROM redis:6.2.7-alpine3.15 as redis
+FROM redis:6.2-alpine as redis
 COPY ./stormpiper/redis.conf /redis.conf
 CMD ["redis-server", "/redis.conf"]
 
@@ -28,11 +28,12 @@ COPY ./stormpiper/prestart.sh /stormpiper/prestart.sh
 COPY ./stormpiper/alembic /stormpiper/alembic
 COPY ./stormpiper/stormpiper /stormpiper/stormpiper
 COPY --from=build-frontend /app/build/ /stormpiper/stormpiper/spa/build
+RUN chmod +x /start.sh /start-pod.sh /start-reload.sh
 
 
 FROM python:3.9-buster as builder
 RUN apt-get update -y \
-    && apt-get install -y --no-install-recommends gcc g++ unixodbc-dev libpq-dev libspatialindex-dev \ 
+    && apt-get install -y --no-install-recommends gcc g++ unixodbc-dev libpq-dev libspatialindex-dev libgdal-dev \ 
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 COPY ./stormpiper/requirements.txt /requirements.txt
@@ -77,6 +78,7 @@ COPY --chown=${IMG_USER} ./stormpiper/prestart-worker.sh /stormpiper/prestart-wo
 COPY --chown=${IMG_USER} ./stormpiper/scripts/run-worker.sh /run-worker.sh
 COPY --chown=${IMG_USER} ./stormpiper/scripts/run-beat.sh /run-beat.sh
 COPY --chown=${IMG_USER} ./stormpiper/stormpiper /stormpiper/stormpiper
+RUN chmod gu+x /run-worker.sh /run-beat.sh /stormpiper/prestart-worker.sh
 CMD ["/run-worker.sh"]
 
 

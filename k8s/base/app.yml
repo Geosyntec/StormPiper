@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: stormpiper
+  labels:
+    type: stormpiper-service
+    app: stormpiper
+spec:
+  type: NodePort
+  ports:
+    - protocol: TCP
+      name: web
+      port: 80
+      targetPort: 80
+  selector:
+    type: stormpiper-pod
+    app: stormpiper
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: default
+  name: stormpiper
+  labels:
+    app: stormpiper
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      type: stormpiper-pod
+      app: stormpiper
+  template:
+    metadata:
+      labels:
+        type: stormpiper-pod
+        app: stormpiper
+    spec:
+      containers:
+        - name: stormpiper
+          image: gcr.io/tacoma-app/stormpiper-pod
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: web
+              containerPort: 80
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: 80
+          envFrom:
+            - secretRef:
+                name: prod-secrets

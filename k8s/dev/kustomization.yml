@@ -1,0 +1,34 @@
+bases:
+  - ../base
+nameSuffix: -dev
+commonLabels:
+  app: stormpiper-dev
+images:
+  - name: gcr.io/tacoma-app/stormpiper-pod
+    newName: gcr.io/tacoma-app/stormpiper-pod
+    newTag: latest
+  - name: gcr.io/tacoma-app/bg_worker
+    newName: gcr.io/tacoma-app/bg_worker
+    newTag: latest
+  - name: gcr.io/tacoma-app/redis
+    newName: gcr.io/tacoma-app/redis
+    newTag: latest
+patchesJSON6902:
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: stormpiper-dev
+    path: secrets.yml
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: worker-dev
+    path: secrets.yml
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: beat-dev
+    path: secrets.yml

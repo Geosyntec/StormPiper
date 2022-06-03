@@ -1,0 +1,5 @@
+resources:
+  - app.yml
+  - app-redis.yml
+  - app-worker-beat.yml
+  - app-worker.yml
