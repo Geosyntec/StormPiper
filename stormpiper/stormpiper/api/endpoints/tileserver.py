@@ -1,7 +1,6 @@
 from io import BytesIO
-from typing import Dict
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import RedirectResponse, StreamingResponse
 
 from stormpiper import earth_engine
