@@ -22,8 +22,7 @@ cycler==0.11.0
 dnspython==2.2.1
 earthengine-api==0.1.307
 email-validator==1.1.3
-fastapi-users==9.3.1
-fastapi-users-db-sqlalchemy==3.0.1
+fastapi-users[sqlalchemy]==10.0.6
 Fiona==1.8.21
 fonttools==4.33.3
 frozenlist==1.3.0
@@ -86,7 +85,6 @@ Shapely==1.8.1.post1
 six==1.16.0
 sniffio==1.2.0
 SQLAlchemy==1.4.36
-starlette==0.17.1
 typing_extensions==4.2.0
 uritemplate==3.0.1
 urllib3==1.26.9
@@ -97,6 +95,7 @@ websockets==10.3
 yarl==1.7.2
 celery[redis]
 watchfiles
-fastapi
+fastapi==0.78.0
+starlette==0.19.1
 tenacity
 alembic

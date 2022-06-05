@@ -1,8 +1,9 @@
+import uuid
 from enum import Enum
 from functools import total_ordering
 
 
-from fastapi_users import models
+from fastapi_users import schemas
 from pydantic import BaseModel
 
 
@@ -25,19 +26,19 @@ class UserExtras(BaseModel):
     last_name: str = ""
 
 
-class User(UserExtras, models.BaseUser):
+class UserRead(UserExtras, schemas.BaseUser[uuid.UUID]):
     role: Role = Role.none
     pass
 
 
-class UserCreate(UserExtras, models.BaseUserCreate):
+class UserCreate(UserExtras, schemas.BaseUserCreate):
     pass
 
 
-class UserUpdate(UserExtras, models.BaseUserUpdate):
+class UserUpdate(UserExtras, schemas.BaseUserUpdate):
     role: Role = Role.none
     pass
 
 
-class UserDB(User, models.BaseUserDB):
-    pass
+# class UserDB(User, schemas.BaseUserDB):
+#     pass

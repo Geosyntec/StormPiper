@@ -5,21 +5,21 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.apps.supersafe.users import (
-    UserTable,
     User,
     check_admin,
     check_protect_role_field,
     get_async_session,
     fastapi_users,
 )
+from stormpiper.apps.supersafe import models
 from stormpiper.apps.supersafe.init_users import create_admin, create_public
 
 
-router = fastapi_users.get_users_router()
+router = fastapi_users.get_users_router(models.UserRead, models.UserUpdate)
 rpc_router = APIRouter()
 
 
-class UserResponse(User):
+class UserResponse(models.UserRead):
     class Config:
         orm_mode = True
 
@@ -30,7 +30,7 @@ class UserResponse(User):
 @router.get("/", response_model=List[UserResponse], name="users:get_users")
 async def get_users(db: AsyncSession = Depends(get_async_session)):
 
-    result = await db.execute(select(UserTable))
+    result = await db.execute(select(User))
     return result.scalars().all()
 
 

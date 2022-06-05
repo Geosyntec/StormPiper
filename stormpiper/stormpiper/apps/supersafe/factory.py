@@ -7,6 +7,7 @@ from .users import (
     create_db_and_tables,
     fastapi_users,
 )
+from . import models
 from stormpiper.core.config import settings
 from . import __version__
 
@@ -26,7 +27,9 @@ def create_router(**kwargs):
         tags=["auth"],
     )
     router.include_router(
-        fastapi_users.get_register_router(), prefix="/auth", tags=["auth"]
+        fastapi_users.get_register_router(models.UserRead, models.UserCreate),
+        prefix="/auth",
+        tags=["auth"],
     )
     router.include_router(
         fastapi_users.get_reset_password_router(),
@@ -34,7 +37,7 @@ def create_router(**kwargs):
         tags=["auth"],
     )
     router.include_router(
-        fastapi_users.get_verify_router(),
+        fastapi_users.get_verify_router(models.UserRead),
         prefix="/auth",
         tags=["auth"],
     )
