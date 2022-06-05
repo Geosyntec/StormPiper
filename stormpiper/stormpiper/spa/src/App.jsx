@@ -1,91 +1,142 @@
 import { useState } from "react";
+import { useParams,useNavigate } from "react-router-dom";
 import { layerDict } from "./assets/geojson/coreLayers";
-import LayerSelector from "./components/layerSelector"
+import LayerSelector from "./components/layerSelector";
 import DeckGLMap from "./components/map";
 import ProminentAppBar from "./components/topMenu";
+import BMPStatWindow from "./components/bmpStatWindow";
 import "./App.css";
 
 function App() {
-
-  const [activeLayers, setActiveLayers] = useState(()=>{
-    var res = {}  
+  const [lyrSelectDisplayState, setlyrSelectDisplayState] = useState(false); // when true, control panel is displayed
+  let params = useParams();
+  let navigate = useNavigate()
+  const [prjStatDisplayState, setprjStatDisplayState] = useState(params?.id?true:false); // when true, project stats panel is displayed
+  const [focusFeature, setFocusFeature] = useState(params?.id || null);
+  const [activeLayers, setActiveLayers] = useState(() => {
+    var res = {};
     Object.keys(layerDict).map((category) => {
       const layerGroup = layerDict[category];
-      if(!layerGroup.length){
-        const nestedLayerGroup = layerDict[category]
-        Object.keys(nestedLayerGroup).map((nestedCategory)=>{
+      if (!layerGroup.length) {
+        const nestedLayerGroup = layerDict[category];
+        Object.keys(nestedLayerGroup).map((nestedCategory) => {
           const layerGroup = nestedLayerGroup[nestedCategory];
-          for(const layer in layerGroup){
-            const layerID = layerGroup[layer].props?.id
+          for (const layer in layerGroup) {
+            const layerID = layerGroup[layer].props?.id;
 
-            res[layerID] = false
+            res[layerID] = layerGroup[layer].props?.onByDefault||false;
           }
-          return false
-        })
-      }else{
-        for(const layer in layerGroup){
-          const layerID = layerGroup[layer].props?.id
-          res[layerID] = false
+          return false;
+        });
+      } else {
+        for (const layer in layerGroup) {
+          const layerID = layerGroup[layer].props?.id;
+          res[layerID] = layerGroup[layer].props?.onByDefault||false;
         }
       }
       return false;
     });
-    return res
+    return res;
   });
-
+  
   function _toggleLayer(layerName, updateFunction = setActiveLayers) {
     var currentActiveLayers = { ...activeLayers };
     currentActiveLayers[layerName] = !currentActiveLayers[layerName];
-    console.log('Current Active Layers:',currentActiveLayers)
+    // console.log('Current Active Layers:',currentActiveLayers)
     updateFunction(currentActiveLayers);
   }
 
-  function _renderLayers(layerDict, visState,layersToRender = []) {
+  function _renderLayers(layerDict, visState, layersToRender = []) {
     Object.keys(layerDict).map((category) => {
       const layerGroup = layerDict[category];
-      if(layerGroup.length){
+      if (layerGroup.length) {
         Object.keys(layerGroup).map((id) => {
-          const { layer: Layer, props, getData } = layerGroup[id];
+          let { layer: Layer, props, getData } = layerGroup[id];
           if (getData && !props.data) {
             props.data = getData();
           }
-  
-          if (visState[props.id]) {
+
+          if (visState[props.id]||props.onByDefault) {
+            props = _injectLayerAccessors(props)
             layersToRender.push(new Layer(props));
           }
           return false;
         });
-      }else{
-        layersToRender = _renderLayers(layerGroup,visState,layersToRender)
+      } else {
+        layersToRender = _renderLayers(layerGroup, visState, layersToRender);
       }
       return false;
     });
-    console.log('Layers to Render:',layersToRender)
+    // console.log('Layers to Render:',layersToRender)
     return layersToRender;
   }
 
-  const [displayState,setDisplayState] = useState(false) // when true, control panel is displayed
+  function _togglelyrSelectDisplayState() {
+    setlyrSelectDisplayState(!lyrSelectDisplayState);
+  }
+  function _toggleprjStatDisplayState() {
+    if(prjStatDisplayState){
+      console.log('Clearing Focused Feature')
+      setFocusFeature(null)
+      navigate("/app/map")
+    }
+    setprjStatDisplayState(!prjStatDisplayState);
+  }
 
-  function _toggleDisplayState(){
-    setDisplayState(!displayState)
+  function _lyrClickHandlers(objInfo) {
+    console.log("Top level map click: ",objInfo)
+    if (objInfo?.layer?.id === "activeSWFacility") {
+      if (!prjStatDisplayState) {
+        //users can click on another facility without hiding the panel
+        _toggleprjStatDisplayState();
+      }
+      setFocusFeature(objInfo.object.properties.ALTID);
+      navigate("/app/map/tmnt/"+objInfo.object.properties.ALTID)
+    }
+  }
+
+  function _injectLayerAccessors(props){
+      props.getFillColor = (d)=>{
+        // console.log("checking feature: ",d)
+        return d.properties.ALTID===focusFeature? [52,222,235]:[160, 160, 180, 200]
+      }
+      props.updateTriggers = {
+        getFillColor:[focusFeature||null]
+      }
+    return props
   }
 
   return (
     <div className="App">
       <ProminentAppBar></ProminentAppBar>
       <div>
-        <DeckGLMap layers={_renderLayers(layerDict, activeLayers)}>
-        </DeckGLMap>
+        <DeckGLMap
+          layers={_renderLayers(layerDict, activeLayers)}
+          onClick={_lyrClickHandlers.bind(this)}
+        ></DeckGLMap>
       </div>
-      <div id={displayState ? "control-panel" : "control-panel-hidden"}>
+      <div
+        id={lyrSelectDisplayState ? "control-panel" : "control-panel-hidden"}
+      >
         <div style={{ textAlign: "left", padding: "5px 0 5px" }}>
           <LayerSelector
-            layerDict = {layerDict}
-            activeLayers = {activeLayers}
-            _onToggleLayer = {_toggleLayer}
-            displayStatus = {displayState}
-            displayController = {_toggleDisplayState}
+            layerDict={layerDict}
+            activeLayers={activeLayers}
+            _onToggleLayer={_toggleLayer}
+            displayStatus={lyrSelectDisplayState}
+            displayController={_togglelyrSelectDisplayState}
           ></LayerSelector>
+        </div>
+      </div>
+      <div
+        id={prjStatDisplayState ? "prj-stat-panel" : "prj-stat-panel-hidden"}
+      >
+        <div>
+          <BMPStatWindow
+            displayStatus={prjStatDisplayState}
+            displayController={_toggleprjStatDisplayState}
+            feature={focusFeature}
+          ></BMPStatWindow>
         </div>
       </div>
     </div>

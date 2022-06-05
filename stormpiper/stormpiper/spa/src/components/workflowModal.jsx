@@ -48,7 +48,6 @@ export default function WorkflowModal(props) {
         <Typography variant = "body2">{props.workflowTitle}</Typography>
       </Button>
       <Dialog
-        fullWidth="true"
         maxWidth="lg"
         open={open}
         onClose={handleClose}

@@ -51,12 +51,12 @@
 }
 
 #control-panel {
-  transition-property: height,width;
+  transition-property: height,width,left;
   transition-duration: 500ms;
 	position: fixed;
 	z-index: 9;
 	top: 20%;
-  left: 75%;
+  left: 0%;
   overflow-x: hidden;
   overflow-y: auto;
   height: 75%;
@@ -65,12 +65,12 @@
 }
 
 #control-panel-hidden{
-  transition-property: height,width;
+  transition-property: height,width,left;
   transition-duration: 500ms;
   position: fixed;
 	z-index: 9;
 	top: 20%;
-  left: 75%;
+  left: 5%;
   overflow-x: hidden;
   overflow-y: hidden;
   height:6%;
@@ -98,4 +98,32 @@
   margin: 8px;
   max-width: 300px;
   font-size: 10px;
+}
+
+#prj-stat-panel {
+  transition-property: height,width,left;
+  transition-duration: 500ms;
+	position: fixed;
+	z-index: 9;
+	top: 20%;
+  left: 60%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 50%;
+  width: 40%;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+#prj-stat-panel-hidden{
+  transition-property: height,width,left;
+  transition-duration: 500ms;
+  position: fixed;
+	z-index: 9;
+	top: 20%;
+  left: 125%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  height:50%;
+  width: 25%;
+  background: rgba(255, 255, 255, 0.8);
 }
