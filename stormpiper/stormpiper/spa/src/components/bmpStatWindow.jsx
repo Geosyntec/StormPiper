@@ -67,6 +67,7 @@ function BMPStatWindow(props) {
         setState({
           ...state,
           isLoaded:true,
+          error:false,
           header:"Overview",
           items:{...result},
           stats:statsDict.overview.fields
@@ -74,6 +75,10 @@ function BMPStatWindow(props) {
       })
       .catch(err=>{
         console.log("TMNT fetch failed: ",err)
+        setState({
+          ...state,
+          error:true
+        })
       })
   }, [props?.feature]);
 

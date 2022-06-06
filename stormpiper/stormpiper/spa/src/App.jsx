@@ -90,15 +90,15 @@ function App() {
         //users can click on another facility without hiding the panel
         _toggleprjStatDisplayState();
       }
-      setFocusFeature(objInfo.object.properties.ALTID);
-      navigate("/app/map/tmnt/"+objInfo.object.properties.ALTID)
+      setFocusFeature(objInfo.object.properties.altid);
+      navigate("/app/map/tmnt/"+objInfo.object.properties.altid)
     }
   }
 
   function _injectLayerAccessors(props){
       props.getFillColor = (d)=>{
         // console.log("checking feature: ",d)
-        return d.properties.ALTID===focusFeature? [52,222,235]:[160, 160, 180, 200]
+        return d.properties.altid===focusFeature? [52,222,235]:[160, 160, 180, 200]
       }
       props.updateTriggers = {
         getFillColor:[focusFeature||null]
@@ -113,6 +113,7 @@ function App() {
         <DeckGLMap
           layers={_renderLayers(layerDict, activeLayers)}
           onClick={_lyrClickHandlers.bind(this)}
+          currentFeature={focusFeature}
         ></DeckGLMap>
       </div>
       <div
