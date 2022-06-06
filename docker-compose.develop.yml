@@ -16,8 +16,8 @@ services:
       ## add this to work on front end.
       - .env-dev
       ## comment these out to work on front end.
-      - ./stormpiper/.env
-      - .env
+      # - ./stormpiper/.env
+      # - .env
     ports:
       - published: 8080
         target: 80
@@ -38,8 +38,8 @@ services:
       ## add this to work on front end.
       - .env-dev
       ## comment these out to work on front end.
-      - ./stormpiper/.env
-      - .env
+      # - ./stormpiper/.env
+      # - .env
     volumes:
       - ./stormpiper/stormpiper:/stormpiper/stormpiper
 
@@ -56,8 +56,8 @@ services:
       ## add this to work on front end.
       - .env-dev
       ## comment these out to work on front end.
-      - ./stormpiper/.env
-      - .env
+      # - ./stormpiper/.env
+      # - .env
     volumes:
       - ./stormpiper/stormpiper:/stormpiper/stormpiper
   
