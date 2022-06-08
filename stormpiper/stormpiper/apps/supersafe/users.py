@@ -20,12 +20,6 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     reset_password_token_secret = settings.SECRET
     verification_token_secret = settings.SECRET
 
-    def __init__(self, *args, secret=None, **kwargs):
-        super().__init__(*args, **kwargs)
-        if secret:
-            self.reset_password_token_secret = secret
-            self.verification_token_secret = secret
-
     async def on_after_register(self, user: User, request: Optional[Request] = None):
         print(f"User {user.id} has registered.")
 
@@ -76,10 +70,10 @@ fastapi_users = FastAPIUsers[User, uuid.UUID](
 
 def current_user_safe(**kwargs):
     async def _get_current_user(
-        user: UserRead = Depends(fastapi_users.current_user(**kwargs)),
+        user: User = Depends(fastapi_users.current_user(**kwargs)),
     ) -> Optional[UserRead]:
         if user:
-            return UserRead(**user.dict())
+            return UserRead.from_orm(user)
 
     return _get_current_user
 

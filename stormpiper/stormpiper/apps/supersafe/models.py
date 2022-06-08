@@ -1,6 +1,7 @@
 import uuid
 from enum import Enum
 from functools import total_ordering
+from typing import Optional
 
 
 from fastapi_users import schemas
@@ -22,8 +23,8 @@ class Role(Enum):
 
 
 class UserExtras(BaseModel):
-    first_name: str = ""
-    last_name: str = ""
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
 
 
 class UserRead(UserExtras, schemas.BaseUser[uuid.UUID]):

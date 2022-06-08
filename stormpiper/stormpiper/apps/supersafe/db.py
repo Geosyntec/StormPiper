@@ -17,7 +17,7 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
     # Don't forget to add them to the models
     first_name = Column(String)
     last_name = Column(String)
-    role = Column(Enum(Role))
+    role = Column(Enum(Role), server_default="none")
 
 
 async def create_db_and_tables():

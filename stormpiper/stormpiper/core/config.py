@@ -45,7 +45,7 @@ class Settings(BaseSettings):
     SECRET: str = "change me with an env variable"
     DATABASE_URL_ASYNC: str = "sqlite+aiosqlite:///./supersafe.db"
     DATABASE_URL_SYNC: str = "sqlite:///./supersafe.db"
-    DATABASE_USERS_TABLE_NAME: str = "users"
+    DATABASE_USERS_TABLE_NAME: str = "user"
 
     # Users Auth
     COOKIE_SECURE: bool = True
