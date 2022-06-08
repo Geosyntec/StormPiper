@@ -1,6 +1,10 @@
 import logging
 
-from stormpiper import startup
+from stormpiper.startup import (
+    get_database_connection,
+    get_redis_connection,
+    get_background_worker_connection,
+)
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -8,9 +12,9 @@ logger = logging.getLogger(__name__)
 
 def init() -> None:
 
-    startup.get_database_connection()
-    startup.get_redis_connection()
-    startup.get_background_worker_connection()
+    get_database_connection()
+    get_redis_connection()
+    get_background_worker_connection()
 
     return
 

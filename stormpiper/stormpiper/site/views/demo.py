@@ -1,10 +1,9 @@
-from email import header
 from fastapi import APIRouter, Request, Response, Depends
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
 
 
-from stormpiper import earth_engine
+from stormpiper.earth_engine import get_layers
 from stormpiper.core.config import stormpiper_path
 from stormpiper.apps.supersafe import users
 
@@ -20,7 +19,7 @@ templates = Jinja2Templates(directory=str(stormpiper_path / "site" / "templates"
 )
 async def tileservice_view(request: Request) -> Response:
 
-    layers = earth_engine.get_layers()
+    layers = get_layers()
 
     return templates.TemplateResponse(
         "tileserver.html", {"request": request, "layers": layers.values()}

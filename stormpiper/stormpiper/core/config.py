@@ -13,7 +13,7 @@ with resources.path("stormpiper", "__init__.py") as file:
 
 
 class Settings(BaseSettings):
-    VERSION: str = stormpiper.__version__
+    VERSION: str = stormpiper.__version__  # type: ignore
     ENVIRONMENT: str = "development"
 
     SECRET_KEY: str = secrets.token_urlsafe(32)

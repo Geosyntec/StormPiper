@@ -10,9 +10,10 @@ from stormpiper.database.schemas import tmnt
 from stormpiper.database.utils import scalars_to_records, scalar_records_to_gdf
 from stormpiper.core.config import settings
 from stormpiper.models.tmnt_view import TMNTView
+from stormpiper.apps.supersafe.users import check_user
 
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(check_user)])
 
 
 @router.get("/", response_model=List[TMNTView], name="tmnt_facility:get_all_tmnt")
@@ -27,10 +28,13 @@ async def get_all_tmnt(
     scalars = result.scalars().all()
 
     if f == "geojson":
+        # TODO: cache this server-side
         records = scalars_to_records(scalars)
         gdf = scalar_records_to_gdf(
             records, crs=settings.TACOMA_EPSG, geometry="geom"
         ).to_crs(epsg=4326)
+        if not gdf:
+            return
         return Response(
             content=gdf.to_json(),
             media_type="application/json",

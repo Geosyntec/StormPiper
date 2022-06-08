@@ -12,8 +12,7 @@ logger = logging.getLogger(__name__)
 def _get_tmnt_facility_type_codes(*, url=None):
     if url is None:
         url = external_resources["tmnt_facility_codes"]["url"]
-    params = {"f": "json", "layers": [1]}
-    r = requests.get(url, params)
+    r = requests.get(url)
     data = r.json()
 
     field_info = next(
@@ -92,16 +91,12 @@ def get_tmnt_facility_delineations(*, url=None):
     if url is None:
         url = external_resources["tmnt_facility_delineations"]["url"]
 
-        # todo:
-        url = stormpiper_path / "data" / "geojson" / "facility_sheds_wALTID.geojson"
-
     delineations = (
         geopandas.read_file(url)
         .to_crs(settings.TACOMA_EPSG)
         .reset_index(drop=True)
         .rename(columns=lambda c: c.lower())
-        .assign(relid=lambda df: df.altid)
-        .assign(altid=lambda df: df.index)
+        .assign(relid=lambda df: df.rel_id)
         .assign(
             node_id=lambda df: df.apply(
                 lambda r: delineation_node_id(r.relid, r.altid), axis=1

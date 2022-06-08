@@ -3,7 +3,7 @@ import asyncio
 import platform
 
 import redis
-from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
+from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed  # type: ignore
 
 import stormpiper.bg_worker as bg
 from stormpiper.core.config import settings

@@ -106,7 +106,13 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
         await db.execute(q)
         await db.commit()
 
-        return await self.get(db=db, id=id)
+        obj = await self.get(db=db, id=id)
+
+        if obj is None:
+            raise ValueError(
+                f"Attemped to update item which does not exist for {self.id}={id}"
+            )
+        return obj
 
     # def update_many(
     #     self,
