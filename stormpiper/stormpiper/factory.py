@@ -1,4 +1,5 @@
 from typing import Any, Dict, Optional
+import asyncio
 
 import aiohttp
 from brotli_asgi import BrotliMiddleware
@@ -11,7 +12,7 @@ from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from stormpiper.api import api_router, rpc_router
 from stormpiper.core.config import settings, stormpiper_path
-from stormpiper.earth_engine import login as login_earth_engine
+from stormpiper.earth_engine import ee_continuous_login
 from stormpiper.site import site_router
 from stormpiper.apps import supersafe as ss
 
@@ -50,8 +51,8 @@ def create_app(
         }
         setattr(app, "sessions", sessions)
 
-        # log into ee
-        login_earth_engine()
+        # login to ee
+        asyncio.create_task(ee_continuous_login(_settings.EE_LOGIN_INTERVAL_SECONDS))
 
     @app.on_event("shutdown")
     async def shutdown():

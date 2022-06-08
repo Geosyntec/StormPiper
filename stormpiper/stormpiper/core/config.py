@@ -39,6 +39,7 @@ class Settings(BaseSettings):
     EE_SERVICE_ACCOUNT: str = ""
     EE_PROJECT_DIRECTORY: str = ""
     EE_JSON_BASE64: str = ""
+    EE_LOGIN_INTERVAL_SECONDS: int = 3600*4 # every four hours
 
     # Database
     ADMIN_ACCOUNT_PASSWORD: str = "change me with an env variable"

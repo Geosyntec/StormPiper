@@ -1,10 +1,14 @@
 import json
+import logging
 from typing import Any, Dict
 from functools import lru_cache
 
 import ee
 
-from stormpiper.core.config import stormpiper_path
+from stormpiper.core.config import stormpiper_path, settings
+
+logging.basicConfig(level=settings.LOGLEVEL)
+logger = logging.getLogger(__name__)
 
 
 def _init_url(layer_spec):
@@ -93,8 +97,8 @@ def _init_layers():
     for name, layer_spec in raw_layers.items():
         try:
             layer_dict[name] = _init_url(layer_spec)
-        except ee.ee_exception.EEException as e:  # pragma: no cover
-            print(f"ERROR loading layer {name}", e)
+        except Exception as e:  # pragma: no cover
+            logger.exception(f"ERROR loading layer {name}")
             continue
 
     TSS = layer_dict["tnc_tss_ug_L"]["layer"]["image"]
