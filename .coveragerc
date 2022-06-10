@@ -1,0 +1,15 @@
+# .coveragerc to control coverage.py
+[run]
+source = stormpiper
+branch = True
+omit = 
+    **/_no_git*
+
+[report]
+include = stormpiper/*.py
+ignore_errors = True
+skip_empty = True
+omit = 
+    *pre-start*.py
+    *bg_*
+    **/_no_git*

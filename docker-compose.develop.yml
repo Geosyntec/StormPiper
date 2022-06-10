@@ -25,6 +25,20 @@ services:
       - ./stormpiper/stormpiper:/stormpiper/stormpiper
       - ./stormpiper/alembic:/stormpiper/alembic
 
+  stormpiper-test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: stormpiper-test
+    environment:
+      NEREID_ASYNC_MODE: none
+    env_file:
+      ## add this to work on front end.
+      - .env-dev
+
+    volumes:
+      - ./stormpiper/stormpiper:/stormpiper/stormpiper
+
   bg_worker:
     build:
       context: .

@@ -37,9 +37,9 @@ clean-build: ## remove build artifacts
 	find . -name '*.egg' -exec rm -f {} +
 
 clean-pyc: ## remove Python file artifacts
-	find . -name '*.pyc' -exec rm -f {} +
-	find . -name '*.pyo' -exec rm -f {} +
-	find . -name '__pycache__' -exec rm -fr {} +
+	find stormpiper/stormpiper -name '*.pyc' -exec rm -f {} +
+	find stormpiper/stormpiper -name '*.pyo' -exec rm -f {} +
+	find stormpiper/stormpiper -name '__pycache__' -exec rm -fr {} +
 
 clean-test: ## remove test and coverage artifacts
 	rm -fr .tox/
@@ -59,28 +59,37 @@ build: ## build the docker-stack.yml file
 restart: ## restart the redis server and the background workers
 	docker compose -f docker-stack.yml restart redis bg_worker beat_worker
 
-test: clean ## run tests quickly with the default Python
-	bash scripts/test.sh -xsv
+test: stack up-d ## run tests quickly with the default Python
+	docker compose -f docker-stack.yml exec stormpiper-test pytest -xsv
+
+test-ci: stack ## run tests quickly with the default Python
+	docker compose -f docker-stack.yml up -d stormpiper-test
+	docker compose -f docker-stack.yml exec stormpiper-test pytest -xv -m "not integration"
+
+coverage-ci: stack ## run tests on CI with the default Python
+	docker compose -f docker-stack.yml up -d stormpiper-test
+	docker compose -f docker-stack.yml exec stormpiper-test coverage run -m pytest -xv -m "not integration"
+	docker compose -f docker-stack.yml exec stormpiper-test coverage report -mi
 
 coverage: clean restart ## check code coverage quickly with the default Python
-	docker compose -f docker-stack.yml exec stormpiper coverage run -m pytest -x
-	docker compose -f docker-stack.yml exec stormpiper coverage report -mi
+	docker compose -f docker-stack.yml exec stormpiper-test coverage run -m pytest -x
+	docker compose -f docker-stack.yml exec stormpiper-test coverage report -mi
 
 typecheck: clean ## run static type checker
 	mypy stormpiper/stormpiper
 
 develop: clean stack build ## build the development environment 
 
-up: ## bring up the containers and run startup commands
+up: stack ## bring up the containers and run startup commands
 	docker compose -f docker-stack.yml up 
 	
-up-d: ## bring up the containers in '-d' mode 
+up-d: stack ## bring up the containers in '-d' mode 
 	docker compose -f docker-stack.yml up -d
 
 down: ## bring down the containers and detach volumes
 	docker compose -f docker-stack.yml down -v
 
-dev-server: ## start a development server
+dev-server: stack ## start a development server
 	docker compose -f docker-stack.yml run -p 8080:80 -e LOG_LEVEL=debug stormpiper-pod bash /start-reload.sh
 
 release: ## push production images to registry
