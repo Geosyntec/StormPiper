@@ -102,17 +102,17 @@ def create_app(
 
     app.mount(
         "/site/static",
-        StaticFiles(directory=stormpiper_path / "site" / "static"),
+        StaticFiles(directory="stormpiper/site/static"),
         name="site/static",
     )
 
     app.mount(
         "/app/assets",
-        StaticFiles(directory=stormpiper_path / "spa" / "build" / "assets"),
+        StaticFiles(directory="stormpiper/spa/build/assets"),
         name="app",
     )
 
-    templates = Jinja2Templates(directory=str(stormpiper_path / "spa" / "build"))
+    templates = Jinja2Templates(directory="stormpiper/spa/build")
 
     @app.get("/app")
     @app.get("/app/{fullpath:path}")
