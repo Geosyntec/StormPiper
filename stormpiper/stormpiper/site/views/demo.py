@@ -1,3 +1,4 @@
+from typing import Dict
 from fastapi import APIRouter, Request, Response, Depends
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
@@ -17,9 +18,9 @@ templates = Jinja2Templates(directory=str(stormpiper_path / "site" / "templates"
     include_in_schema=False,
     dependencies=[Depends(users.current_active_user)],
 )
-async def tileservice_view(request: Request) -> Response:
-
-    layers = get_layers()
+async def tileservice_view(
+    request: Request, layers: Dict[str, str] = Depends(get_layers)
+) -> Response:
 
     return templates.TemplateResponse(
         "tileserver.html", {"request": request, "layers": layers.values()}

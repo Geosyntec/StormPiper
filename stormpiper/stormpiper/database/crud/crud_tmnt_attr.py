@@ -9,4 +9,4 @@ class CRUDTMNTFacilityAttr(
     pass
 
 
-tmnt_attr = CRUDTMNTFacilityAttr(TMNTFacilityAttr, id='altid')
+tmnt_attr = CRUDTMNTFacilityAttr(TMNTFacilityAttr, id="altid")

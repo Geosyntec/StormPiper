@@ -1,4 +1,5 @@
 from io import BytesIO
+from typing import Dict
 
 from fastapi import APIRouter, HTTPException, Request, Depends
 from fastapi.responses import RedirectResponse, StreamingResponse
@@ -12,10 +13,14 @@ router = APIRouter(dependencies=[Depends(check_user)])
 
 @router.get("/redirect/{tilename}/{z}/{x}/{y}/{s}")
 async def get_tile_zxy_redirect(
-    tilename: str, z: int, x: int, y: int, s: str = "none"
+    tilename: str,
+    z: int,
+    x: int,
+    y: int,
+    s: str = "none",
+    tile_registry: Dict = Depends(get_tile_registry),
 ) -> RedirectResponse:
 
-    tile_registry = get_tile_registry()
     url = tile_registry.get(tilename, "").format(**dict(x=x, y=y, z=z, s=s))
 
     if not url:
@@ -32,9 +37,9 @@ async def get_tile_file_zxy(
     x: int,
     y: int,
     s: str = "a",
+    tile_registry: Dict = Depends(get_tile_registry),
 ) -> StreamingResponse:
 
-    tile_registry = get_tile_registry()
     url = tile_registry.get(tilename, "").format(**dict(x=x, y=y, z=z, s=s))
 
     if not url:
