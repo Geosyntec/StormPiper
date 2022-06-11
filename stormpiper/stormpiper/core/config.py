@@ -1,5 +1,5 @@
 import secrets
-from importlib import resources
+from pathlib import Path
 from typing import List, Literal, Optional, Union
 import json
 from pathlib import Path
@@ -8,8 +8,8 @@ from pydantic import AnyHttpUrl, BaseSettings, validator
 
 import stormpiper
 
-with resources.path("stormpiper", "__init__.py") as file:
-    stormpiper_path = file.parent
+
+stormpiper_path = Path(__file__).parent.parent.resolve()
 
 
 class Settings(BaseSettings):
