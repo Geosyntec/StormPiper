@@ -34,6 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       COMPOSE_FILE: docker-stack.yml
+      COMPOSE_DOCKER_CLI_BUILD: 1
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -43,9 +44,7 @@ jobs:
       # Runs a single command using the runners shell
       - name: build stack
         run: |
-          make stack
-          docker-compose build stormpiper-test
-          docker-compose up -d stormpiper-test
+          make develop
 
       - name: run tests
         run: make coverage-ci
