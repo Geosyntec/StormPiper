@@ -44,12 +44,7 @@ jobs:
       # Runs a single command using the runners shell
       - name: build stack
         run: |
-          make stack
-          cat docker-stack.yml
-          docker info
-          docker compose version
-          echo docker compose build stormpiper-test
-          echo docker compose up -d stormpiper-test
+          make develop
 
       - name: run tests
         run: make coverage-ci
