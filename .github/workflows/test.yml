@@ -43,7 +43,8 @@ jobs:
       # Runs a single command using the runners shell
       - name: build stack
         run: |
-          make develop
+          make stack
+          docker-compose build stormpiper-test
           docker-compose up -d stormpiper-test
 
       - name: run tests
