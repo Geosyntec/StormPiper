@@ -34,7 +34,7 @@ services:
       NEREID_ASYNC_MODE: none
     env_file:
       ## add this to work on front end.
-      - .env-dev
+      - .env-test
 
     volumes:
       - ./stormpiper/stormpiper:/stormpiper/stormpiper

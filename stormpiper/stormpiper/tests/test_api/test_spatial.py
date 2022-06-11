@@ -20,7 +20,6 @@ def test_tileserver_api_response(client, route, user_token):
     )
 
 
-@pytest.mark.integration
 @pytest.mark.parametrize(
     "route",
     [
@@ -28,7 +27,8 @@ def test_tileserver_api_response(client, route, user_token):
         "/api/rest/tileserver/redirect/carto-db/9/89/206/b",
     ],
 )
-def test_redirect_tileserver_api_response(client, route, user_token):
+def test_redirect_tileserver_api_response(client_local, route, user_token):
+    client = client_local
     response = client.get(
         route,
         allow_redirects=False,
@@ -37,6 +37,7 @@ def test_redirect_tileserver_api_response(client, route, user_token):
     assert response.status_code == 307, response.text
 
 
+@pytest.mark.integration
 @pytest.mark.parametrize(
     "route",
     [
@@ -76,6 +77,7 @@ def test_elevation(client, long, lat, user_token):
     )
 
 
+@pytest.mark.integration
 def test_assets(client, user_token):
     response = client.get(
         "/api/rest/spatial/ee/assets",
