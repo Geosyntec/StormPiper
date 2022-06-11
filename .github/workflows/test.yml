@@ -45,8 +45,11 @@ jobs:
       - name: build stack
         run: |
           make stack
-          docker-compose build stormpiper-test
-          docker-compose up -d stormpiper-test
+          cat docker-stack.yml
+          docker info
+          docker compose version
+          echo docker compose build stormpiper-test
+          echo docker compose up -d stormpiper-test
 
       - name: run tests
         run: make coverage-ci
