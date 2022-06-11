@@ -26,7 +26,7 @@ COPY ./stormpiper/alembic.ini /stormpiper/alembic.ini
 COPY ./stormpiper/prestart.sh /stormpiper/prestart.sh
 COPY ./stormpiper/alembic /stormpiper/alembic
 COPY ./stormpiper/stormpiper /stormpiper/stormpiper
-COPY --from=build-frontend /app/build/ /stormpiper/stormpiper/spa/build
+COPY --from=build-frontend /app/build/ /stormpiper/stormpiper/spa/build/
 RUN chmod +x /start.sh /start-pod.sh /start-reload.sh
 
 
