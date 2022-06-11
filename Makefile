@@ -51,7 +51,15 @@ clean-test: ## remove test and coverage artifacts
 export COMPOSE_DOCKER_CLI_BUILD=1
 
 stack: ## write the docker-stack.yml file
-	docker compose -f docker-compose.develop.yml config > docker-stack.yml
+	docker compose \
+		-f docker-compose.develop.yml \
+		-f docker-compose.dev-volume.yml \
+		config > docker-stack.yml
+
+stack-ci: ## write the docker-stack.yml file for ci
+	docker compose \
+		-f docker-compose.develop.yml \
+		config > docker-stack.yml
 
 build: ## build the docker-stack.yml file
 	docker compose -f docker-stack.yml build
@@ -62,11 +70,11 @@ restart: ## restart the redis server and the background workers
 test: stack up-d ## run tests quickly with the default Python
 	docker compose -f docker-stack.yml exec stormpiper-test pytest -xsv
 
-test-ci: stack ## run tests quickly with the default Python
+test-ci: stack-ci ## run tests quickly with the default Python
 	docker compose -f docker-stack.yml up -d stormpiper-test
 	docker compose -f docker-stack.yml exec stormpiper-test pytest -xv -m "not integration"
 
-coverage-ci: stack ## run tests on CI with the default Python
+coverage-ci: stack-ci ## run tests on CI with the default Python
 	docker compose -f docker-stack.yml up -d stormpiper-test
 	docker compose -f docker-stack.yml exec stormpiper-test coverage run -m pytest -xv -m "not integration"
 	docker compose -f docker-stack.yml exec stormpiper-test coverage report -mi

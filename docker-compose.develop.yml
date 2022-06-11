@@ -17,9 +17,6 @@ services:
     ports:
       - published: 8080
         target: 80
-    volumes:
-      - ./stormpiper/stormpiper:/stormpiper/stormpiper
-      - ./stormpiper/alembic:/stormpiper/alembic
 
   stormpiper-test:
     build:
@@ -30,8 +27,6 @@ services:
       NEREID_ASYNC_MODE: none
     env_file:
       - .env-test
-    volumes:
-      - ./stormpiper/stormpiper:/stormpiper/stormpiper
 
   bg_worker:
     build:
@@ -49,8 +44,6 @@ services:
       ## comment these out to work on front end.
       # - ./stormpiper/.env
       # - .env
-    volumes:
-      - ./stormpiper/stormpiper:/stormpiper/stormpiper
 
   beat_worker:
     build:
@@ -68,8 +61,6 @@ services:
       ## comment these out to work on front end.
       # - ./stormpiper/.env
       # - .env
-    volumes:
-      - ./stormpiper/stormpiper:/stormpiper/stormpiper
   
   redis:
     build:
