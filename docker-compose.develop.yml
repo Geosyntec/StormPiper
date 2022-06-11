@@ -5,19 +5,15 @@ services:
       dockerfile: Dockerfile
       target: stormpiper-pod
     command: bash /start-reload.sh
-    image: stormpiper-pod
     environment:
       NEREID_ASYNC_MODE: none
     env_file:
+      - .env-test
+      ## add this to work on front end.
+      # - .env-dev
       ## comment these out to work on front end.
       # - ./stormpiper/.env
       # - .env
-
-      ## add this to work on front end.
-      - .env-dev
-      ## comment these out to work on front end.
-      - ./stormpiper/.env
-      - .env
     ports:
       - published: 8080
         target: 80
@@ -33,9 +29,7 @@ services:
     environment:
       NEREID_ASYNC_MODE: none
     env_file:
-      ## add this to work on front end.
       - .env-test
-
     volumes:
       - ./stormpiper/stormpiper:/stormpiper/stormpiper
 
@@ -49,11 +43,12 @@ services:
     environment:
       NEREID_ASYNC_MODE: none
     env_file:
+      - .env-test
       ## add this to work on front end.
-      - .env-dev
+      # - .env-dev
       ## comment these out to work on front end.
-      - ./stormpiper/.env
-      - .env
+      # - ./stormpiper/.env
+      # - .env
     volumes:
       - ./stormpiper/stormpiper:/stormpiper/stormpiper
 
@@ -67,11 +62,12 @@ services:
       NEREID_ASYNC_MODE: none
       STP_ENABLE_BEAT_SCHEDULE: true
     env_file:
+      - .env-test
       ## add this to work on front end.
-      - .env-dev
+      # - .env-dev
       ## comment these out to work on front end.
-      - ./stormpiper/.env
-      - .env
+      # - ./stormpiper/.env
+      # - .env
     volumes:
       - ./stormpiper/stormpiper:/stormpiper/stormpiper
   
