@@ -17,8 +17,9 @@ const INITIAL_VIEW_STATE = {
 
 
 const MAPBOX_ACCESS_TOKEN =
-  "pk.eyJ1IjoiYWNhbmctZ3MiLCJhIjoiY2tzcnp3eHozMGV1ODJxbGJ6aDlsa3lneCJ9.1j73ov85i7lJOy9pdDTY-A";
+  "pk.eyJ1IjoiYWNhbmctZ3MiLCJhIjoiY2w0NGl1YWwyMDE0YzNpb2hhbzN3dzcxdiJ9.3V1BdATyCSerixms7Er3Rw";
 
+  
 // DeckGL react component
 function DeckGLMap(props) {
   const loc = useLocation()
