@@ -1,5 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
+import { Typography } from "@material-ui/core";
 import { BMPForm } from "./bmpForm";
 import "./bmpStatWindow.css";
 
