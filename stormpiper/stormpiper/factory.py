@@ -1,20 +1,20 @@
+import asyncio
 from typing import Any, Dict, Optional
 
 import aiohttp
 from brotli_asgi import BrotliMiddleware
-from fastapi import FastAPI, Depends, Request
-from fastapi.responses import RedirectResponse
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from stormpiper.api import api_router, rpc_router
-from stormpiper.core.config import settings, stormpiper_path
-from stormpiper.earth_engine import login as login_earth_engine
-from stormpiper.site import site_router
 from stormpiper.apps import supersafe as ss
-
+from stormpiper.core.config import settings
+from stormpiper.earth_engine import ee_continuous_login
+from stormpiper.site import site_router
 
 ss_router = ss.create_router()
 
@@ -50,8 +50,8 @@ def create_app(
         }
         setattr(app, "sessions", sessions)
 
-        # log into ee
-        login_earth_engine()
+        # login to ee
+        asyncio.create_task(ee_continuous_login(_settings.EE_LOGIN_INTERVAL_SECONDS))
 
     @app.on_event("shutdown")
     async def shutdown():
@@ -101,17 +101,17 @@ def create_app(
 
     app.mount(
         "/site/static",
-        StaticFiles(directory=stormpiper_path / "site" / "static"),
+        StaticFiles(directory="stormpiper/site/static"),
         name="site/static",
     )
 
     app.mount(
         "/app/assets",
-        StaticFiles(directory=stormpiper_path / "spa" / "build" / "assets"),
+        StaticFiles(directory="stormpiper/spa/build/assets"),
         name="app",
     )
 
-    templates = Jinja2Templates(directory=str(stormpiper_path / "spa" / "build"))
+    templates = Jinja2Templates(directory="stormpiper/spa/build")
 
     @app.get("/app")
     @app.get("/app/{fullpath:path}")

@@ -2,12 +2,15 @@ import logging
 from typing import List
 
 import geopandas
-from geoalchemy2.shape import to_shape
 import pandas
 import sqlalchemy as sa
+from geoalchemy2.shape import to_shape
 from sqlalchemy.event import listen
-from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
-
+from tenacity import after_log  # type: ignore
+from tenacity import before_log  # type: ignore
+from tenacity import stop_after_attempt  # type: ignore
+from tenacity import wait_fixed  # type: ignore
+from tenacity import retry
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -31,7 +34,7 @@ def scalar_records_to_gdf(records, crs=None, geometry="geom"):
     data = pandas.DataFrame(records).assign(
         geometry=lambda df: df[geometry].apply(lambda x: to_shape(x))
     )
-    gdf = geopandas.GeoDataFrame(data, geometry="geometry", crs=crs)
+    gdf = geopandas.GeoDataFrame(data, geometry="geometry", crs=crs)  # type: ignore
 
     if geometry != "geometry":
         gdf = gdf.drop(columns=[geometry])
@@ -48,9 +51,8 @@ def delete_and_replace_postgis_table(
     with engine.begin() as conn:
         if engine.dialect.has_table(conn, table_name):
             conn.execute(f"delete from {table_name}")
-        return gdf.rename_geometry("geom").to_postgis(
-            table_name, con=conn, if_exists="append", **kwargs
-        )
+        gdf = gdf.rename_geometry("geom")  # type: ignore
+        return gdf.to_postgis(table_name, con=conn, if_exists="append", **kwargs)
 
 
 @retry(

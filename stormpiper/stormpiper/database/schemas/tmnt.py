@@ -1,13 +1,12 @@
 import sqlalchemy as sa
-from sqlalchemy import Column, String, Integer, Float
 from geoalchemy2 import Geometry
+from sqlalchemy import Column, Float, Integer, String
 
-from .base_class import Base, TrackedTable
-from ..hacks import view
-
-from stormpiper.core.config import settings
 from stormpiper.connections import arcgis
+from stormpiper.core.config import settings
 
+from ..hacks import view
+from .base_class import Base, TrackedTable
 
 __all__ = ["TMNTFacilityDelineation", "TMNTFacility", "TMNTFacilityAttr", "TMNT_View"]
 

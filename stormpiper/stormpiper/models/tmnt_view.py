@@ -3,7 +3,6 @@ from typing import Optional
 from stormpiper.models.base import BaseModel
 
 
-
 class TMNTView(BaseModel):
     # id:str
     node_id: str

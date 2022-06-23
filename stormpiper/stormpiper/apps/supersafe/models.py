@@ -1,8 +1,9 @@
+import uuid
 from enum import Enum
 from functools import total_ordering
+from typing import Optional
 
-
-from fastapi_users import models
+from fastapi_users import schemas
 from pydantic import BaseModel
 
 
@@ -21,23 +22,23 @@ class Role(Enum):
 
 
 class UserExtras(BaseModel):
-    first_name: str = ""
-    last_name: str = ""
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
 
 
-class User(UserExtras, models.BaseUser):
+class UserRead(UserExtras, schemas.BaseUser[uuid.UUID]):
     role: Role = Role.none
     pass
 
 
-class UserCreate(UserExtras, models.BaseUserCreate):
+class UserCreate(UserExtras, schemas.BaseUserCreate):
     pass
 
 
-class UserUpdate(UserExtras, models.BaseUserUpdate):
+class UserUpdate(UserExtras, schemas.BaseUserUpdate):
     role: Role = Role.none
     pass
 
 
-class UserDB(User, models.BaseUserDB):
-    pass
+# class UserDB(User, schemas.BaseUserDB):
+#     pass

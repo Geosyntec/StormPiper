@@ -1,14 +1,13 @@
 from re import S
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 
+import sqlalchemy as sa
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
-import sqlalchemy as sa
-from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 
 from stormpiper.database.schemas.base import Base
-
 
 SchemaType = TypeVar("SchemaType", bound=Base)
 CreateModelType = TypeVar("CreateModelType", bound=BaseModel)
@@ -106,7 +105,13 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
         await db.execute(q)
         await db.commit()
 
-        return await self.get(db=db, id=id)
+        obj = await self.get(db=db, id=id)
+
+        if obj is None:
+            raise ValueError(
+                f"Attemped to update item which does not exist for {self.id}={id}"
+            )
+        return obj
 
     # def update_many(
     #     self,

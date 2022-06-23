@@ -1,10 +1,13 @@
 import json
-from typing import Any, Dict
+import logging
 from functools import lru_cache
 
 import ee
 
-from stormpiper.core.config import stormpiper_path
+from stormpiper.core.config import settings, stormpiper_path
+
+logging.basicConfig(level=settings.LOGLEVEL)
+logger = logging.getLogger(__name__)
 
 
 def _init_url(layer_spec):
@@ -62,6 +65,31 @@ def _init_layers():
                     },
                 },
             },
+            "TNC_80s_runoff_mm": {
+                "sourceName": "City of Tacoma",
+                # "units": "°C",
+                # "description": "Evening temperature measurements",
+                "safe_name": "TNC_80s_runoff_mm",
+                "layer": {
+                    "eeObject": "projects/ee-stormwaterheatmap/assets/production/Mean_Annual_Q_4_epochs",
+                    "visParams": {
+                        "bands": "runoff_1980s",
+                        "min": 0,
+                        "max": 600,
+                        "palette": [
+                            "#4575b4",
+                            "#91bfdb",
+                            "#e0f3f8",
+                            "#ffffbf",
+                            "#fee090",
+                            "#fc8d59",
+                            "#d73027",
+                        ],
+                        "opacity": 0.8,
+                        "name": "TNC_80s_runoff_mm",
+                    },
+                },
+            },
             "tnc_tss_ug_L": {
                 "sourceName": "City of Tacoma",
                 # "units": "°C",
@@ -93,8 +121,8 @@ def _init_layers():
     for name, layer_spec in raw_layers.items():
         try:
             layer_dict[name] = _init_url(layer_spec)
-        except ee.ee_exception.EEException as e:  # pragma: no cover
-            print(f"ERROR loading layer {name}", e)
+        except Exception as e:  # pragma: no cover
+            logger.exception(f"ERROR loading layer {name}")
             continue
 
     TSS = layer_dict["tnc_tss_ug_L"]["layer"]["image"]

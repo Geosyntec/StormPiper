@@ -1,5 +1,6 @@
-import pandas
 from typing import List
+
+import pandas
 
 
 def columns_of_dtype(df: pandas.DataFrame, selector: str) -> List[str]:

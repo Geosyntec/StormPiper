@@ -5,14 +5,14 @@ from fastapi.responses import Response
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from stormpiper.apps.supersafe.users import check_user
+from stormpiper.core.config import settings
 from stormpiper.database.connection import get_async_session
 from stormpiper.database.schemas import subbasin
-from stormpiper.database.utils import scalars_to_records, scalar_records_to_gdf
-from stormpiper.core.config import settings
+from stormpiper.database.utils import scalar_records_to_gdf, scalars_to_records
 from stormpiper.models.base import BaseModel
 
-
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(check_user)])
 
 
 class SubbasinResponse(BaseModel):
@@ -35,14 +35,18 @@ async def get_all_subbasins(
     db: AsyncSession = Depends(get_async_session),
 ):
 
-    result = await db.execute(select(subbasin.Subbasin).offset(offset).limit(limit))
+    q = select(subbasin.Subbasin).offset(offset).limit(limit)
+    result = await db.execute(q)
     scalars = result.scalars().all()
 
     if f == "geojson":
+        # TODO: cache this server-side
         records = scalars_to_records(scalars)
         gdf = scalar_records_to_gdf(
             records, crs=settings.TACOMA_EPSG, geometry="geom"
         ).to_crs(epsg=4326)
+        if not gdf:
+            return
         return Response(
             content=gdf.to_json(),
             media_type="application/json",
@@ -62,10 +66,8 @@ async def get_subbasin(
     db: AsyncSession = Depends(get_async_session),
 ):
 
-    result = await db.execute(
-        select(subbasin.Subbasin).where(subbasin.Subbasin.subbasin == subbasin_id)
-    )
-
+    q = select(subbasin.Subbasin).where(subbasin.Subbasin.subbasin == subbasin_id)
+    result = await db.execute(q)
     scalars = result.scalars().first()
 
     return scalars

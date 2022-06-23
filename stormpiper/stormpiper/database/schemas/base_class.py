@@ -1,10 +1,7 @@
 import sqlalchemy as sa
-from sqlalchemy.ext.declarative import as_declarative
+from sqlalchemy.ext.declarative import declarative_base
 
-
-@as_declarative()
-class Base:
-    pass
+Base = declarative_base()
 
 
 class TrackedTable:

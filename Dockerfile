@@ -21,13 +21,12 @@ ENV PATH=/opt/venv/bin:$PATH
 
 
 FROM core-runtime as base-app
-EXPOSE 80
 COPY ./stormpiper/scripts /
 COPY ./stormpiper/alembic.ini /stormpiper/alembic.ini
 COPY ./stormpiper/prestart.sh /stormpiper/prestart.sh
 COPY ./stormpiper/alembic /stormpiper/alembic
 COPY ./stormpiper/stormpiper /stormpiper/stormpiper
-COPY --from=build-frontend /app/build/ /stormpiper/stormpiper/spa/build
+COPY --from=build-frontend /app/build /stormpiper/stormpiper/spa/build
 RUN chmod +x /start.sh /start-pod.sh /start-reload.sh
 
 
@@ -53,7 +52,8 @@ COPY ./stormpiper/requirements.txt /requirements.txt
 RUN python -m venv /opt/venv
 # Make sure we use the virtualenv:
 ENV PATH=/opt/venv/bin:$PATH
-RUN pip install \
+RUN pip install --upgrade pip \
+    && pip install \
     --no-index \
     --no-cache-dir \
     --find-links=/core \
@@ -63,7 +63,18 @@ RUN pip install \
 
 FROM base-app as stormpiper-pod
 COPY --from=core-env /opt/venv /opt/venv
+EXPOSE 80
 CMD /start-pod.sh
+
+
+FROM stormpiper-pod as stormpiper-test
+COPY ./stormpiper/requirements_test.txt /requirements_test.txt
+COPY ./stormpiper/pytest.ini /stormpiper/pytest.ini
+RUN pip install -r /requirements_test.txt
+COPY .coveragerc /stormpiper/.coveragerc
+## This will make the container wait, doing nothing, but alive
+CMD ["bash", "-c", "while true; do sleep 1; done"]
+
 
 
 FROM core-runtime as bg_worker
@@ -95,3 +106,4 @@ RUN pip install \
 FROM base-app as stormpiper
 COPY --from=server-env /opt/venv /opt/venv
 COPY ./stormpiper/gunicorn_conf.py /gunicorn_conf.py
+EXPOSE 80

@@ -1,6 +1,7 @@
 """This module is imported by alembic only"""
 
+from stormpiper.apps.supersafe.db import User
+
 from .base_class import Base as Base
-from stormpiper.apps.supersafe.db import UserTable
-from .tmnt import *
 from .subbasin import Subbasin
+from .tmnt import *

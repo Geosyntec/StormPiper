@@ -1,14 +1,11 @@
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
+
 from fastapi import APIRouter, FastAPI
 
-from .users import (
-    bearer_backend,
-    cookie_backend,
-    create_db_and_tables,
-    fastapi_users,
-)
 from stormpiper.core.config import settings
-from . import __version__
+
+from . import __version__, models
+from .users import bearer_backend, cookie_backend, create_db_and_tables, fastapi_users
 
 
 def create_router(**kwargs):
@@ -26,7 +23,9 @@ def create_router(**kwargs):
         tags=["auth"],
     )
     router.include_router(
-        fastapi_users.get_register_router(), prefix="/auth", tags=["auth"]
+        fastapi_users.get_register_router(models.UserRead, models.UserCreate),
+        prefix="/auth",
+        tags=["auth"],
     )
     router.include_router(
         fastapi_users.get_reset_password_router(),
@@ -34,7 +33,7 @@ def create_router(**kwargs):
         tags=["auth"],
     )
     router.include_router(
-        fastapi_users.get_verify_router(),
+        fastapi_users.get_verify_router(models.UserRead),
         prefix="/auth",
         tags=["auth"],
     )

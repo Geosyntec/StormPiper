@@ -1,0 +1,17 @@
+services:
+  stormpiper-pod:
+    volumes:
+      - ./stormpiper/stormpiper:/stormpiper/stormpiper
+      - ./stormpiper/alembic:/stormpiper/alembic
+
+  stormpiper-test:
+    volumes:
+      - ./stormpiper/stormpiper:/stormpiper/stormpiper
+
+  bg_worker:
+    volumes:
+      - ./stormpiper/stormpiper:/stormpiper/stormpiper
+
+  beat_worker:
+    volumes:
+      - ./stormpiper/stormpiper:/stormpiper/stormpiper

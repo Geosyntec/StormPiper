@@ -1,15 +1,15 @@
 from fastapi import APIRouter, Depends
-
 from fastapi.exceptions import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from stormpiper.apps import supersafe as ss
+from stormpiper.apps.supersafe.users import check_user
+from stormpiper.database import crud
 from stormpiper.database.connection import get_async_session
 from stormpiper.models.tmnt_attr import TMNTFacilityAttr, TMNTFacilityAttrUpdate
-from stormpiper.database import crud
-from stormpiper.apps import supersafe as ss
 
+router = APIRouter(dependencies=[Depends(check_user)])
 
-router = APIRouter()
 
 @router.get(
     "/{altid}",

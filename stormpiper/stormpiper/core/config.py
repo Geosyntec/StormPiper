@@ -1,19 +1,17 @@
-import secrets
-from importlib import resources
-from typing import List, Literal, Optional, Union
 import json
+import secrets
 from pathlib import Path
+from typing import List, Literal, Optional, Union
 
 from pydantic import AnyHttpUrl, BaseSettings, validator
 
 import stormpiper
 
-with resources.path("stormpiper", "__init__.py") as file:
-    stormpiper_path = file.parent
+stormpiper_path = Path(__file__).parent.parent.resolve()
 
 
 class Settings(BaseSettings):
-    VERSION: str = stormpiper.__version__
+    VERSION: str = stormpiper.__version__  # type: ignore
     ENVIRONMENT: str = "development"
 
     SECRET_KEY: str = secrets.token_urlsafe(32)
@@ -39,13 +37,14 @@ class Settings(BaseSettings):
     EE_SERVICE_ACCOUNT: str = ""
     EE_PROJECT_DIRECTORY: str = ""
     EE_JSON_BASE64: str = ""
+    EE_LOGIN_INTERVAL_SECONDS: int = 3600 * 4  # every four hours
 
     # Database
     ADMIN_ACCOUNT_PASSWORD: str = "change me with an env variable"
     SECRET: str = "change me with an env variable"
     DATABASE_URL_ASYNC: str = "sqlite+aiosqlite:///./supersafe.db"
     DATABASE_URL_SYNC: str = "sqlite:///./supersafe.db"
-    DATABASE_USERS_TABLE_NAME: str = "users"
+    DATABASE_USERS_TABLE_NAME: str = "user"
 
     # Users Auth
     COOKIE_SECURE: bool = True

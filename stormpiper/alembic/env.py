@@ -1,8 +1,7 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config, pool, MetaData
-
 from alembic import context
+from sqlalchemy import MetaData, engine_from_config, pool
 
 from stormpiper.core.config import settings
 

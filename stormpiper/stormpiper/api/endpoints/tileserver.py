@@ -1,19 +1,25 @@
 from io import BytesIO
+from typing import Dict
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import RedirectResponse, StreamingResponse
 
-from stormpiper import earth_engine
+from stormpiper.apps.supersafe.users import check_user
+from stormpiper.earth_engine import get_tile_registry
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(check_user)])
 
 
 @router.get("/redirect/{tilename}/{z}/{x}/{y}/{s}")
 async def get_tile_zxy_redirect(
-    tilename: str, z: int, x: int, y: int, s: str = "none"
+    tilename: str,
+    z: int,
+    x: int,
+    y: int,
+    s: str = "none",
+    tile_registry: Dict = Depends(get_tile_registry),
 ) -> RedirectResponse:
 
-    tile_registry = earth_engine.get_tile_registry()
     url = tile_registry.get(tilename, "").format(**dict(x=x, y=y, z=z, s=s))
 
     if not url:
@@ -30,9 +36,9 @@ async def get_tile_file_zxy(
     x: int,
     y: int,
     s: str = "a",
+    tile_registry: Dict = Depends(get_tile_registry),
 ) -> StreamingResponse:
 
-    tile_registry = earth_engine.get_tile_registry()
     url = tile_registry.get(tilename, "").format(**dict(x=x, y=y, z=z, s=s))
 
     if not url:

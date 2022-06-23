@@ -1,9 +1,10 @@
 {
   "tmnt_facility_codes": {
-    "url": "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/21/queryDomains"
+    "url": "https://services3.arcgis.com/SCwJH1pD8WSn5T5y/arcgis/rest/services/swFacilities/FeatureServer/0/query?where=1%3D1&outFields=*&returnQueryGeometry=false&resultRecordCount=1&f=pjson"
   },
   "tmnt_facilities": {
-    "url": "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/21/query?where=1%3D1&outFields=*&returnGeometry=true&f=pjson",
+    "url": "https://services3.arcgis.com/SCwJH1pD8WSn5T5y/arcgis/rest/services/swFacilities/FeatureServer/0/query?where=1%3D1&outFields=*&returnGeometry=true&f=pjson",
+    "old_url": "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/21/query?where=1%3D1&outFields=*&returnGeometry=true&f=pjson",
     "columns": [
       "ALTID",
       "COMMONNAME",
@@ -18,7 +19,8 @@
     ]
   },
   "tmnt_facility_delineations": {
-    "url": "error unknown Url"
+    "url": "https://services3.arcgis.com/SCwJH1pD8WSn5T5y/arcgis/rest/services/swFacilitiesContAreas/FeatureServer/1/query?where=1%3D1&outFields=*&returnGeometry=true&f=pjson",
+    "old_url": "error unknown Url"
   },
   "subbasins": {
     "url": "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/41/query?where=1%3D1&outFields=*&returnGeometry=true&f=pjson",
