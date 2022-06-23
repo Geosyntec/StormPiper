@@ -6,8 +6,6 @@ import ee
 
 from stormpiper.core.config import settings, stormpiper_path
 
-from stormpiper.core.config import stormpiper_path, settings
-
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
 
