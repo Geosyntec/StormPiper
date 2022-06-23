@@ -1,15 +1,11 @@
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
+
 from fastapi import APIRouter, FastAPI
 
-from .users import (
-    bearer_backend,
-    cookie_backend,
-    create_db_and_tables,
-    fastapi_users,
-)
-from . import models
 from stormpiper.core.config import settings
-from . import __version__
+
+from . import __version__, models
+from .users import bearer_backend, cookie_backend, create_db_and_tables, fastapi_users
 
 
 def create_router(**kwargs):

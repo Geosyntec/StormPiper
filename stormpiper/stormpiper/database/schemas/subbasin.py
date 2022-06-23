@@ -1,7 +1,8 @@
-from sqlalchemy import Column, String, Integer
 from geoalchemy2 import Geometry
+from sqlalchemy import Column, Integer, String
 
 from stormpiper.core.config import settings
+
 from .base_class import Base
 
 

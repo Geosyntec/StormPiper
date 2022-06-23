@@ -1,21 +1,20 @@
-from typing import Any, Dict, Optional
 import asyncio
+from typing import Any, Dict, Optional
 
 import aiohttp
 from brotli_asgi import BrotliMiddleware
-from fastapi import FastAPI, Depends, Request
-from fastapi.responses import RedirectResponse
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from stormpiper.api import api_router, rpc_router
-from stormpiper.core.config import settings, stormpiper_path
+from stormpiper.apps import supersafe as ss
+from stormpiper.core.config import settings
 from stormpiper.earth_engine import ee_continuous_login
 from stormpiper.site import site_router
-from stormpiper.apps import supersafe as ss
-
 
 ss_router = ss.create_router()
 

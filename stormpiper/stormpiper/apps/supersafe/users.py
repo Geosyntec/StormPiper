@@ -1,8 +1,8 @@
+import logging
 import uuid
 from typing import Optional
-import logging
 
-from fastapi import Depends, Request, HTTPException, status
+from fastapi import Depends, HTTPException, Request, status
 from fastapi_users import BaseUserManager, FastAPIUsers, UUIDIDMixin
 from fastapi_users.authentication import (
     AuthenticationBackend,
@@ -12,9 +12,10 @@ from fastapi_users.authentication import (
 )
 from fastapi_users.db import SQLAlchemyUserDatabase
 
-from .db import get_user_db, create_db_and_tables, User, get_async_session
-from .models import UserRead, UserCreate, UserUpdate, Role
 from stormpiper.core.config import settings
+
+from .db import User, create_db_and_tables, get_async_session, get_user_db
+from .models import Role, UserCreate, UserRead, UserUpdate
 
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)

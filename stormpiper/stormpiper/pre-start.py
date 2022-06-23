@@ -1,9 +1,9 @@
 import logging
 
 from stormpiper.startup import (
+    get_background_worker_connection,
     get_database_connection,
     get_redis_connection,
-    get_background_worker_connection,
 )
 
 logging.basicConfig(level=logging.DEBUG)

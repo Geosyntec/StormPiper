@@ -4,15 +4,14 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from stormpiper.apps.supersafe import models
 from stormpiper.apps.supersafe.users import (
     User,
     check_admin,
     check_protect_role_field,
-    get_async_session,
     fastapi_users,
+    get_async_session,
 )
-from stormpiper.apps.supersafe import models
-
 
 router = fastapi_users.get_users_router(models.UserRead, models.UserUpdate)
 

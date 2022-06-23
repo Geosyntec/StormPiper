@@ -1,6 +1,7 @@
-from .base import CRUDBase
-from ..schemas.tmnt import TMNTFacilityAttr
 from stormpiper.models.tmnt_attr import TMNTFacilityAttrCreate, TMNTFacilityAttrUpdate
+
+from ..schemas.tmnt import TMNTFacilityAttr
+from .base import CRUDBase
 
 
 class CRUDTMNTFacilityAttr(

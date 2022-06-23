@@ -1,9 +1,9 @@
 import logging
 
 from stormpiper.connections import arcgis
-from stormpiper.database.utils import delete_and_replace_postgis_table
-from stormpiper.database.connection import engine
 from stormpiper.core.config import settings
+from stormpiper.database.connection import engine
+from stormpiper.database.utils import delete_and_replace_postgis_table
 
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)

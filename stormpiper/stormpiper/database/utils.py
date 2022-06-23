@@ -2,12 +2,15 @@ import logging
 from typing import List
 
 import geopandas
-from geoalchemy2.shape import to_shape
 import pandas
 import sqlalchemy as sa
+from geoalchemy2.shape import to_shape
 from sqlalchemy.event import listen
-from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed  # type: ignore
-
+from tenacity import after_log  # type: ignore
+from tenacity import before_log  # type: ignore
+from tenacity import stop_after_attempt  # type: ignore
+from tenacity import wait_fixed  # type: ignore
+from tenacity import retry
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

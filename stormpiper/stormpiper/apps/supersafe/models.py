@@ -3,7 +3,6 @@ from enum import Enum
 from functools import total_ordering
 from typing import Optional
 
-
 from fastapi_users import schemas
 from pydantic import BaseModel
 

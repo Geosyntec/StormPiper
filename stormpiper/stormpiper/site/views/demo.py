@@ -1,12 +1,12 @@
 from typing import Dict
-from fastapi import APIRouter, Request, Response, Depends
-from fastapi.templating import Jinja2Templates
+
+from fastapi import APIRouter, Depends, Request, Response
 from fastapi.responses import RedirectResponse
+from fastapi.templating import Jinja2Templates
 
-
-from stormpiper.earth_engine import get_layers
-from stormpiper.core.config import stormpiper_path
 from stormpiper.apps.supersafe import users
+from stormpiper.core.config import stormpiper_path
+from stormpiper.earth_engine import get_layers
 
 router = APIRouter()
 

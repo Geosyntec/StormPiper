@@ -1,9 +1,10 @@
 import json
 import logging
-from typing import Any, Dict
 from functools import lru_cache
 
 import ee
+
+from stormpiper.core.config import settings, stormpiper_path
 
 from stormpiper.core.config import stormpiper_path, settings
 
@@ -63,6 +64,31 @@ def _init_layers():
                         ],
                         "opacity": 0.8,
                         "name": "tnc_runoff_mm",
+                    },
+                },
+            },
+            "TNC_80s_runoff_mm": {
+                "sourceName": "City of Tacoma",
+                # "units": "°C",
+                # "description": "Evening temperature measurements",
+                "safe_name": "TNC_80s_runoff_mm",
+                "layer": {
+                    "eeObject": "projects/ee-stormwaterheatmap/assets/production/Mean_Annual_Q_4_epochs",
+                    "visParams": {
+                        "bands": "runoff_1980s",
+                        "min": 0,
+                        "max": 600,
+                        "palette": [
+                            "#4575b4",
+                            "#91bfdb",
+                            "#e0f3f8",
+                            "#ffffbf",
+                            "#fee090",
+                            "#fc8d59",
+                            "#d73027",
+                        ],
+                        "opacity": 0.8,
+                        "name": "TNC_80s_runoff_mm",
                     },
                 },
             },

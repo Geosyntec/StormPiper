@@ -5,13 +5,12 @@ from fastapi.responses import Response
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from stormpiper.apps.supersafe.users import check_user
+from stormpiper.core.config import settings
 from stormpiper.database.connection import get_async_session
 from stormpiper.database.schemas import subbasin
-from stormpiper.database.utils import scalars_to_records, scalar_records_to_gdf
-from stormpiper.core.config import settings
+from stormpiper.database.utils import scalar_records_to_gdf, scalars_to_records
 from stormpiper.models.base import BaseModel
-from stormpiper.apps.supersafe.users import check_user
-
 
 router = APIRouter(dependencies=[Depends(check_user)])
 

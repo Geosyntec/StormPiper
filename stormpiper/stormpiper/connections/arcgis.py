@@ -1,7 +1,7 @@
 import logging
 
-import requests
 import geopandas
+import requests
 
 from stormpiper.core.config import external_resources, settings, stormpiper_path
 

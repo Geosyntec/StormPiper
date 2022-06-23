@@ -2,8 +2,8 @@ from pathlib import Path
 
 import sqlalchemy as sa
 
-from stormpiper.database.schemas.base import Base
 from stormpiper.database import utils
+from stormpiper.database.schemas.base import Base
 
 
 def build_test_db():

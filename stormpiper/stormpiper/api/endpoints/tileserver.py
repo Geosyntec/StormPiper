@@ -1,12 +1,11 @@
 from io import BytesIO
 from typing import Dict
 
-from fastapi import APIRouter, HTTPException, Request, Depends
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import RedirectResponse, StreamingResponse
 
-from stormpiper.earth_engine import get_tile_registry
 from stormpiper.apps.supersafe.users import check_user
-
+from stormpiper.earth_engine import get_tile_registry
 
 router = APIRouter(dependencies=[Depends(check_user)])
 

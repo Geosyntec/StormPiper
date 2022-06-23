@@ -1,14 +1,13 @@
 from re import S
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 
+import sqlalchemy as sa
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
-import sqlalchemy as sa
-from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 
 from stormpiper.database.schemas.base import Base
-
 
 SchemaType = TypeVar("SchemaType", bound=Base)
 CreateModelType = TypeVar("CreateModelType", bound=BaseModel)
