@@ -8,7 +8,7 @@ from stormpiper.database import utils
 
 def build_test_db():
 
-    path = Path(__file__).parent.resolve() / "test.db"
+    path = Path(__file__).parent.resolve() / "_no_git_test.db"
     path.unlink(missing_ok=True)
     engine = sa.create_engine(f"sqlite:///{path}")
 

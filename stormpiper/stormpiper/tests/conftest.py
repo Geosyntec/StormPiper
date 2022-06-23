@@ -15,19 +15,23 @@ def pytest_configure(config):
     )
 
 
-@pytest.fixture(scope="module")
-def client():
+@pytest.fixture(scope="session")
+def db():
     utils.reset_db()
-    app = create_app()
-    app.dependency_overrides[get_async_session] = utils.get_async_session
-    with TestClient(app) as client:
-        yield client
+    yield
     utils.clear_db()
 
 
 @pytest.fixture(scope="module")
-def client_local():
-    utils.reset_db()
+def client(db):
+    app = create_app()
+    app.dependency_overrides[get_async_session] = utils.get_async_session
+    with TestClient(app) as client:
+        yield client
+
+
+@pytest.fixture(scope="module")
+def client_local(db):
     app = create_app()
     app.dependency_overrides[get_async_session] = utils.get_async_session
 
@@ -48,7 +52,6 @@ def client_local():
 
     with TestClient(app) as client:
         yield client
-    utils.clear_db()
 
 
 @pytest.fixture(scope="module")

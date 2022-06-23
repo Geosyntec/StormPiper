@@ -5,15 +5,6 @@ services:
       dockerfile: Dockerfile
       target: stormpiper-pod
     command: bash /start-reload.sh
-    environment:
-      NEREID_ASYNC_MODE: none
-    env_file:
-      - .env-test
-      ## add this to work on front end.
-      # - .env-dev
-      ## comment these out to work on front end.
-      # - ./stormpiper/.env
-      # - .env
     ports:
       - published: 8080
         target: 80
@@ -23,10 +14,6 @@ services:
       context: .
       dockerfile: Dockerfile
       target: stormpiper-test
-    environment:
-      NEREID_ASYNC_MODE: none
-    env_file:
-      - .env-test
 
   bg_worker:
     build:
@@ -34,16 +21,6 @@ services:
       dockerfile: Dockerfile
       target: bg_worker
     command: bash /run-worker.sh
-    image: bg_worker
-    environment:
-      NEREID_ASYNC_MODE: none
-    env_file:
-      - .env-test
-      ## add this to work on front end.
-      # - .env-dev
-      ## comment these out to work on front end.
-      # - ./stormpiper/.env
-      # - .env
 
   beat_worker:
     build:
@@ -51,23 +28,12 @@ services:
       dockerfile: Dockerfile
       target: bg_worker
     command: bash /run-beat.sh
-    environment:
-      NEREID_ASYNC_MODE: none
-      STP_ENABLE_BEAT_SCHEDULE: true
-    env_file:
-      - .env-test
-      ## add this to work on front end.
-      # - .env-dev
-      ## comment these out to work on front end.
-      # - ./stormpiper/.env
-      # - .env
   
   redis:
     build:
       context: .
       dockerfile: Dockerfile
       target: redis
-    image: redis
     ports:
       - target: 6379
         published: 6379

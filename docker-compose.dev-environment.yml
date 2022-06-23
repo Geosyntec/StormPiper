@@ -1,0 +1,45 @@
+services:
+  stormpiper-pod:
+    environment:
+      NEREID_ASYNC_MODE: none
+    env_file:
+      ## add this to work on front end.
+      - .env-dev
+      ## comment these out to work on front end.
+      # - ./stormpiper/.env
+      # - .env
+      # - ./k8s/.env-dev
+
+  stormpiper-test:
+    environment:
+      NEREID_ASYNC_MODE: none
+    env_file:
+      ## add this to work on front end.
+      - .env-dev
+      ## comment these out to work on front end.
+      # - ./stormpiper/.env
+      # - .env
+      # - ./k8s/.env-dev
+
+  bg_worker:
+    environment:
+      NEREID_ASYNC_MODE: none
+    env_file:
+      ## add this to work on front end.
+      - .env-dev
+      ## comment these out to work on front end.
+      # - ./stormpiper/.env
+      # - .env
+      # - ./k8s/.env-dev
+
+  beat_worker:
+    environment:
+      NEREID_ASYNC_MODE: none
+      STP_ENABLE_BEAT_SCHEDULE: true
+    env_file:
+      ## add this to work on front end.
+      - .env-dev
+      ## comment these out to work on front end.
+      # - ./stormpiper/.env
+      # - .env
+      # - ./k8s/.env-dev

@@ -54,6 +54,7 @@ stack: ## write the docker-stack.yml file
 	docker compose \
 		-f docker-compose.develop.yml \
 		-f docker-compose.dev-volume.yml \
+		-f docker-compose.dev-environment.yml \
 		config > docker-stack.yml
 
 stack-ci: ## write the docker-stack.yml file for ci
@@ -67,8 +68,8 @@ build: ## build the docker-stack.yml file
 restart: ## restart the redis server and the background workers
 	docker compose -f docker-stack.yml restart redis bg_worker beat_worker
 
-test: stack up-d ## run tests quickly with the default Python
-	docker compose -f docker-stack.yml exec stormpiper-test pytest -xsv
+test: ## run tests quickly with the default Python
+	scripts/test.sh
 
 test-ci: stack-ci ## run tests quickly with the default Python
 	docker compose -f docker-stack.yml up -d stormpiper-test
