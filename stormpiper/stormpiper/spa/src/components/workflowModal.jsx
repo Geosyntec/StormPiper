@@ -62,8 +62,8 @@ export default function WorkflowModal(props) {
       <CustomButton  selected={props.selected} onClick={props.clickHandler}>
         {props.iconComponent}
         {props.displayTitle
-          ? <Typography variant = "body2">{props.workflowTitle}</Typography>
-          : <p></p>}
+          ? <Typography variant = "body2" style={{padding:"5px"}}>{props.workflowTitle}</Typography>
+          : <></>}
       </CustomButton>
       {/* <Dialog
         maxWidth="lg"

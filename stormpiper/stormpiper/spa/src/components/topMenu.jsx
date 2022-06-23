@@ -182,6 +182,7 @@ export default function ProminentAppBar(props) {
         >
           <Toolbar>
             <IconButton
+              id="top-menu-hamburger"
               color="inherit"
               aria-label="open drawer"
               onClick={handleDrawerOpen}
@@ -204,7 +205,7 @@ export default function ProminentAppBar(props) {
       </CustomAppBar>
       <CustomDrawer variant="permanent" open={open}>
         <div>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton id="top-menu-chevron" onClick={handleDrawerClose}>
             {theme.direction === "ltr" ? (
               <ChevronLeftIcon />
             ) : (
@@ -212,65 +213,41 @@ export default function ProminentAppBar(props) {
             )}
           </IconButton>
         </div>
-        <DrawerHeader sx={{minHeight:0}}>
+        <DrawerHeader sx={{ minHeight: 0 }}>
           <List>
-            {
-              open  
-                ? <ListItem>
-                  <Typography variant="subtitle1">Hello User</Typography>
-                  </ListItem>
-                : <p></p>
-            }
-            {
-              open  
-                ? <ListItem>
-                  <Typography variant="subtitle2">user@stormpiper.com</Typography>
-                  </ListItem>
-                : <p></p>
-            }
+            {open ? (
+              <ListItem>
+                <Typography variant="subtitle1">Hello User</Typography>
+              </ListItem>
+            ) : (
+              <p></p>
+            )}
+            {open ? (
+              <ListItem>
+                <Typography variant="subtitle2">user@stormpiper.com</Typography>
+              </ListItem>
+            ) : (
+              <p></p>
+            )}
           </List>
         </DrawerHeader>
-        <List>
-          {
-            Object.keys(buttonConfig).map(b=>{
-              const button = buttonConfig[b]
-              return(
-                <ListItem>
-                  <WorkflowModal
-                    workflowTitle={button.label}
-                    iconComponent={button.icon}
-                    displayTitle={open}
-                    clickHandler={()=>{
-                      setSelectedButton(button.label)
-                    }}
-                    selected={selectedButton}
-            ></WorkflowModal>
-          </ListItem>
-              )
-            })
-          }
-          
-          {/* <ListItem>
-            <WorkflowModal
-              workflowTitle="Evaluate Project"
-              iconComponent={<ScatterPlotRoundedIcon />}
-              displayTitle={open}
-            ></WorkflowModal>
-          </ListItem>
-          <ListItem>
-            <WorkflowModal
-              workflowTitle="Evaluate Watersheds"
-              iconComponent={<GridOnRoundedIcon />}
-              displayTitle={open}
-            ></WorkflowModal>
-          </ListItem>
-          <ListItem>
-            <WorkflowModal
-              workflowTitle="About"
-              iconComponent={<InfoRoundedIcon />}
-              displayTitle={open}
-            ></WorkflowModal>
-          </ListItem> */}
+        <List alignItems="flex-start">
+          {Object.keys(buttonConfig).map((b) => {
+            const button = buttonConfig[b];
+            return (
+              <ListItem>
+                <WorkflowModal
+                  workflowTitle={button.label}
+                  iconComponent={button.icon}
+                  displayTitle={open}
+                  clickHandler={() => {
+                    setSelectedButton(button.label);
+                  }}
+                  selected={selectedButton}
+                ></WorkflowModal>
+              </ListItem>
+            );
+          })}
         </List>
       </CustomDrawer>
     </div>

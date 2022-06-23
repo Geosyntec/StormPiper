@@ -111,6 +111,7 @@ function App() {
       <ProminentAppBar></ProminentAppBar>
       <div>
         <DeckGLMap
+          id="main-map"
           layers={_renderLayers(layerDict, activeLayers)}
           onClick={_lyrClickHandlers.bind(this)}
           currentFeature={focusFeature}
