@@ -1,4 +1,3 @@
-import * as vectorData from "./vectorLayerData";
 import { COORDINATE_SYSTEM } from "@deck.gl/core";
 import { GeoJsonLayer, BitmapLayer } from "@deck.gl/layers";
 import { TileLayer } from "@deck.gl/geo-layers";
