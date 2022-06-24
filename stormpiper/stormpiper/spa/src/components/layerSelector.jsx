@@ -1,5 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
+import LayersRoundedIcon from "@material-ui/icons/LayersRounded"
 import { useState } from "react";
 import "./layerSelector.css"
 
@@ -61,8 +62,20 @@ function LayerSelector(props) {
 
   return (
     <div className="layer-selector">
-      <Typography variant = {props.displayStatus ? "h4" : "h6"} id = {props.displayStatus ? "layer-toggler-title" : "layer-toggler-title-hidden"} className = {classes.layerTogglerTitle} onClick = {props.displayController}>Layers</Typography>
-      <Typography variant = "subtitle2" className = {classes.layerTogglerTitle}>(Scroll down for more layers)</Typography>
+      {
+        props.displayStatus
+          ?<div id = "layer-toggler-title">
+            <Typography variant = "h4"  className = {classes.layerTogglerTitle}>Layers</Typography>
+            <div className="cancel-container">
+              <h4 id="cancel-icon" onClick={props.displayController}>
+                &#10005;
+              </h4>
+            </div>
+           </div>
+          
+          :<div id = "layer-toggler-title-hidden" ><LayersRoundedIcon onClick = {props.displayController}/></div>
+      }
+      
       {_renderCategories(
         props.layerDict,
         props._onToggleLayer,
