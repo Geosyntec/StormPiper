@@ -6,11 +6,10 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.apps.supersafe.users import check_user
-from stormpiper.core import utils
 from stormpiper.core.config import settings
 from stormpiper.database.connection import get_async_session
 from stormpiper.database.schemas import tmnt
-from stormpiper.database.utils import scalar_records_to_gdf, scalars_to_records
+from stormpiper.database.utils import scalars_to_gdf
 from stormpiper.models.tmnt_delineation import TMNTFacilityDelineation
 
 router = APIRouter(dependencies=[Depends(check_user)])
@@ -34,13 +33,8 @@ async def get_all_tmnt_delineations(
 
     if f == "geojson":
         # TODO: cache this server-side
-        records = scalars_to_records(scalars)
-        gdf = scalar_records_to_gdf(
-            records, crs=settings.TACOMA_EPSG, geometry="geom"
-        ).to_crs(epsg=4326)
-        if not gdf:
-            return
-        gdf = utils.datetime_to_isoformat(gdf)
+        gdf = scalars_to_gdf(scalars, crs=settings.TACOMA_EPSG, geometry="geom")
+        gdf.to_crs(epsg=4326, inplace=True)
         return Response(
             content=gdf.to_json(),
             media_type="application/json",
