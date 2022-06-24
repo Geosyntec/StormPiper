@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import List, Optional
 
 import geopandas
 import pandas
@@ -11,6 +11,8 @@ from tenacity import before_log  # type: ignore
 from tenacity import stop_after_attempt  # type: ignore
 from tenacity import wait_fixed  # type: ignore
 from tenacity import retry
+
+from stormpiper.core.utils import datetime_to_isoformat
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -28,17 +30,28 @@ def scalars_to_records(rows) -> List[dict]:
     return [orm_to_dict(row) for row in rows]
 
 
-def scalar_records_to_gdf(records, crs=None, geometry="geom"):
+def scalar_records_to_gdf(
+    records: List[dict], crs: Optional[int] = None, geometry: str = "geom"
+) -> geopandas.GeoDataFrame:
     if crs is None:
         crs = 4326
-    data = pandas.DataFrame(records).assign(
-        geometry=lambda df: df[geometry].apply(lambda x: to_shape(x))
+    data = (
+        pandas.DataFrame(records)
+        .assign(geometry=lambda df: df[geometry].apply(lambda x: to_shape(x)))
+        .pipe(datetime_to_isoformat)
     )
     gdf = geopandas.GeoDataFrame(data, geometry="geometry", crs=crs)  # type: ignore
 
     if geometry != "geometry":
-        gdf = gdf.drop(columns=[geometry])
+        gdf.drop(columns=[geometry], inplace=True)
     return gdf
+
+
+def scalars_to_gdf(
+    scalars: List, crs: Optional[int] = None, geometry: str = "geom"
+) -> geopandas.GeoDataFrame:
+    records = scalars_to_records(scalars)
+    return scalar_records_to_gdf(records, crs=crs, geometry=geometry)
 
 
 def delete_and_replace_postgis_table(
