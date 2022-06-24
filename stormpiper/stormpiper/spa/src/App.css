@@ -51,30 +51,26 @@
 }
 
 #control-panel {
-  transition-property: height,width,left;
-  transition-duration: 500ms;
 	position: fixed;
 	z-index: 9;
-	top: 20%;
-  left: 0%;
+	top: 10%;
+  left: 8%;
   overflow-x: hidden;
   overflow-y: auto;
   height: 75%;
   width: 25%;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 1);
 }
 
 #control-panel-hidden{
-  transition-property: height,width,left;
-  transition-duration: 500ms;
   position: fixed;
 	z-index: 9;
-	top: 20%;
-  left: 5%;
+	top: 10%;
+  left: 8%;
   overflow-x: hidden;
   overflow-y: hidden;
-  height:6%;
-  width: 15%;
+  height:5%;
+  width: 3%;
   background: rgba(255, 255, 255, 0.8);
 }
 
@@ -105,13 +101,13 @@
   transition-duration: 500ms;
 	position: fixed;
 	z-index: 9;
-	top: 20%;
+	top: 8%;
   left: 60%;
   overflow-x: hidden;
   overflow-y: auto;
   height: 50%;
   width: 40%;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 1);
 }
 
 #prj-stat-panel-hidden{
@@ -119,7 +115,7 @@
   transition-duration: 500ms;
   position: fixed;
 	z-index: 9;
-	top: 20%;
+	top: 8%;
   left: 125%;
   overflow-x: hidden;
   overflow-y: hidden;

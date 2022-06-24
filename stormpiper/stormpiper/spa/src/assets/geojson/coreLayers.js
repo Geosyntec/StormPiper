@@ -1,4 +1,3 @@
-import * as vectorData from "./vectorLayerData";
 import { COORDINATE_SYSTEM } from "@deck.gl/core";
 import { GeoJsonLayer, BitmapLayer } from "@deck.gl/layers";
 import { TileLayer } from "@deck.gl/geo-layers";
@@ -186,7 +185,8 @@ const landUseDesignations = {
 const activeLocalSWFacility = {
   layer: GeoJsonLayer,
   props: {
-    data:"https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/21/query?where=1%3D1&outFields=*&returnGeometry=true&f=geojson&outSR=4326",
+    // data:"https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/21/query?where=1%3D1&outFields=*&returnGeometry=true&f=geojson&outSR=4326",
+    data:"/api/rest/tmnt_facility/?f=geojson",
     id: "activeSWFacility",
     label: "Active Surface Water Facilities",
     getPointRadius: 20,
