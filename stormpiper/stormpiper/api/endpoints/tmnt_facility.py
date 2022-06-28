@@ -1,8 +1,7 @@
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, Query
-from fastapi.exceptions import HTTPException
-from fastapi.responses import Response, JSONResponse
+from fastapi.responses import Response
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
