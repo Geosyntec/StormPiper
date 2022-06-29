@@ -4,6 +4,7 @@ from stormpiper.connections import arcgis
 from stormpiper.core.config import settings
 from stormpiper.database.connection import engine
 from stormpiper.database.utils import delete_and_replace_postgis_table
+from stormpiper.src.tmnt import default_attrs
 
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
@@ -11,6 +12,15 @@ logger = logging.getLogger(__name__)
 
 def ping():
     return True
+
+
+def update_tmnt_attributes(engine=engine, overwrite=None):
+    if overwrite is None:
+        overwrite = False
+
+    df = default_attrs.update_tmnt_attributes(engine, overwrite=overwrite)
+
+    return df
 
 
 def delete_and_refresh_tmnt_facility_table(*, bmp_url=None, codes_url=None, cols=None):
