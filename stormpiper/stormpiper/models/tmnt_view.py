@@ -7,7 +7,14 @@ class TMNTView(BaseModel):
     # id:str
     node_id: str
     altid: str
-    facilitytype: str
+    facilitytype: Optional[str]
+    commonname: Optional[str]
+    facilitydetail: Optional[str]
+    flowcontrol: Optional[str]
+    infiltrated: Optional[str]
+    waterquality: Optional[str]
+    flowcontroltype: Optional[str]
+    waterqualitytype: Optional[str]
     # treatment_strategy: Optional[str]
     facility_type: Optional[str]
     # ref_data_key:Optional[str]

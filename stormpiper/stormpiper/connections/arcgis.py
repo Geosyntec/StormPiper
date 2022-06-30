@@ -74,6 +74,7 @@ def get_tmnt_facilities(*, bmp_url=None, codes_url=None, cols=None):
         .reindex(columns=cols)
         .rename(columns=lambda c: c.lower())
         .assign(node_id=lambda df: df["altid"].apply(facility_node_id))
+        .replace({"None": None, "NA": None})
         # ref: database.schemas.tmnt
     )
 
