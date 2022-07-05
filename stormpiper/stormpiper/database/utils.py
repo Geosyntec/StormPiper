@@ -56,7 +56,7 @@ def scalars_to_gdf(
 
 def delete_and_replace_postgis_table(
     *, gdf: geopandas.GeoDataFrame, table_name: str, engine, **kwargs
-):
+) -> None:
     """
     Overwrites contents of `table_name` with contents of gdf.
     gdf schema must match destination table if the table already exists.
@@ -66,6 +66,19 @@ def delete_and_replace_postgis_table(
             conn.execute(f"delete from {table_name}")
         gdf = gdf.rename_geometry("geom")  # type: ignore
         return gdf.to_postgis(table_name, con=conn, if_exists="append", **kwargs)
+
+
+def delete_and_replace_table(
+    *, df: pandas.DataFrame, table_name: str, engine, **kwargs
+) -> None:
+    """
+    Overwrites contents of `table_name` with contents of df.
+    df schema must match destination table if the table already exists.
+    """
+    with engine.begin() as conn:
+        if engine.dialect.has_table(conn, table_name):
+            conn.execute(f"delete from {table_name}")
+        return df.to_sql(table_name, con=conn, if_exists="append", **kwargs)
 
 
 @retry(

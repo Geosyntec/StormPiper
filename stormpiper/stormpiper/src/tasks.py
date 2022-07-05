@@ -3,8 +3,12 @@ import logging
 from stormpiper.connections import arcgis
 from stormpiper.core.config import settings
 from stormpiper.database.connection import engine
-from stormpiper.database.utils import delete_and_replace_postgis_table
-from stormpiper.src.tmnt import default_attrs
+from stormpiper.database.utils import (
+    delete_and_replace_postgis_table,
+    delete_and_replace_table,
+)
+from stormpiper.src.tmnt import default_attrs, spatial
+from . import loading
 
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
@@ -59,3 +63,28 @@ def delete_and_refresh_subbasin_table(*, url=None, cols=None):
     logger.info("TASK COMPLETE: replaced subbasin table.")
 
     return gdf
+
+
+def delete_and_refresh_lgu_boundary_table():
+    logger.info("Creating lgu_boundary with the overlay rodeo")
+    gdf = spatial.overlay_rodeo()
+
+    logger.info("deleting and replacing lgu_boundary table")
+    delete_and_replace_postgis_table(gdf=gdf, table_name="lgu_boundary", engine=engine)
+    logger.info("TASK COMPLETE: replaced lgu_boundary table.")
+
+    return gdf
+
+
+def delete_and_refresh_lgu_load_table():
+    logger.info("Recomputing LGU Loading with Earth Engine")
+    df = loading.compute_loading()
+
+    if df is None:
+        return
+
+    logger.info("deleting and replacing lgu_load table")
+    delete_and_replace_table(df=df, table_name="lgu_load", engine=engine, index=False)
+    logger.info("TASK COMPLETE: replaced lgu_load table.")
+
+    return df

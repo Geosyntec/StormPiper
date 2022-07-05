@@ -1,6 +1,6 @@
 import logging
 
-from celery import Celery
+from celery import Celery, chain, group
 from celery.schedules import crontab
 
 from stormpiper.core.config import settings
@@ -72,13 +72,52 @@ def delete_and_refresh_subbasin_table():  # pragma: no cover
 
 
 @celery_app.task(acks_late=True, track_started=True)
+def delete_and_refresh_lgu_boundary_table():  # pragma: no cover
+    logger.info("background delete_and_refresh_lgu_boundary_table")
+    try:
+        tasks.delete_and_refresh_lgu_boundary_table()
+    except Exception as e:
+        logger.exception(e)
+        return False
+    return True
+
+
+@celery_app.task(acks_late=True, track_started=True)
+def delete_and_refresh_lgu_load_table():  # pragma: no cover
+    logger.info("background delete_and_refresh_lgu_load_table")
+    try:
+        tasks.delete_and_refresh_lgu_load_table()
+    except Exception as e:
+        logger.exception(e)
+        return False
+    return True
+
+
+@celery_app.task(acks_late=True, track_started=True)
 def delete_and_refresh_tacoma_gis_tables():  # pragma: no cover
     logger.info("background delete_and_refresh_tacoma_gis_tables")
+    # chain runs elements in sequence
+    # group runs elements in parallel
     try:
-        tasks.delete_and_refresh_tmnt_facility_table()
-        tasks.update_tmnt_attributes()
-        tasks.delete_and_refresh_tmnt_facility_delineation_table()
-        tasks.delete_and_refresh_subbasin_table()
+        chain(
+            # parallel refresh client data from web, including esri/arcgis
+            group(
+                delete_and_refresh_tmnt_facility_table.si(),
+                delete_and_refresh_tmnt_facility_delineation_table.si(),
+                delete_and_refresh_subbasin_table.si(),
+            ),
+            # parallel jobs to update secondary derived tables and resources
+            group(
+                # requires updated tmnt facility and subbasin tables
+                update_tmnt_attributes.si(),
+                # this rodeo requires updated delineations and subbasins
+                chain(
+                    delete_and_refresh_lgu_boundary_table.si(),
+                    delete_and_refresh_lgu_load_table.si(),
+                ),
+            ),
+        ).apply_async()
+
     except Exception as e:
         logger.exception(e)
         return False

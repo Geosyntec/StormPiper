@@ -2,6 +2,7 @@ import json
 from typing import Any, Dict
 
 import geopandas
+import numpy
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
@@ -50,3 +51,28 @@ async def delete_and_refresh_tacoma_gis_tables() -> Dict[str, Any]:
         response["data"] = task.result
 
     return response
+
+
+@rpc_router.get("/overlay_rodeo", response_class=JSONResponse)
+async def overlay_rodeo() -> Dict[str, Any]:
+
+    with engine.begin() as conn:
+        delin = geopandas.read_postgis("tmnt_facility_delineation", con=conn)
+        subs = geopandas.read_postgis("subbasin", con=conn)
+        out = (
+            geopandas.overlay(delin, subs, how="union", keep_geom_type=True)
+            .assign(subbasin=lambda df: df["subbasin"].fillna("None").astype(str))
+            .assign(
+                node_id=lambda df: numpy.where(
+                    df["node_id"].isna(),
+                    "SB_" + df["subbasin"],
+                    df["node_id"] + "_SB_" + df["subbasin"],
+                )
+            )
+            .loc[lambda df: df.geometry.area > 1.0]
+            .reindex(columns=['node_id', 'altid', 'relid', 'subbasin', 'basinname', 'geometry'])
+        )
+
+        json_str = out.pipe(utils.datetime_to_isoformat).to_crs(4326).to_json()
+
+        return json.loads(json_str)
