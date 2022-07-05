@@ -1,8 +1,13 @@
+from typing import Union
+
+import geopandas
 import numpy
 import pandas
 
 
-def set_default_tmnt_attributes(tmnt_facility_df: pandas.DataFrame):
+def set_default_tmnt_attributes(
+    tmnt_facility_df: Union[pandas.DataFrame, geopandas.GeoDataFrame]
+):
 
     df = tmnt_facility_df
 
@@ -61,7 +66,6 @@ def set_default_tmnt_attributes(tmnt_facility_df: pandas.DataFrame):
             )
         )
         .assign(facility_type=lambda df: df["facility_type"].astype(str) + "_simple")
-        .reindex(columns=["altid", "facility_type", "captured_pct", "retained_pct"])
     )
 
     return df
@@ -69,7 +73,7 @@ def set_default_tmnt_attributes(tmnt_facility_df: pandas.DataFrame):
 
 def update_tmnt_attributes(engine, overwrite=False):
 
-    df = pandas.read_sql("select * from tmnt_facility", con=engine).pipe(
+    df = geopandas.read_postgis("tmnt_facility", con=engine).pipe(  # type: ignore
         set_default_tmnt_attributes
     )
 
@@ -85,6 +89,18 @@ def update_tmnt_attributes(engine, overwrite=False):
         df = df.query("altid not in @existing_altids")
 
         if not df.empty:
+            subs = geopandas.read_postgis("subbasin", con=engine)
+            df = df.sjoin(subs).reindex(
+                columns=[
+                    "altid",
+                    "basinname",
+                    "subbasin",
+                    "facility_type",
+                    "captured_pct",
+                    "retained_pct",
+                ]
+            )
+
             df.to_sql(
                 "tmnt_facility_attributes", con=conn, if_exists="append", index=False
             )

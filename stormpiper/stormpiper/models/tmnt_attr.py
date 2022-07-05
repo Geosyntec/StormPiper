@@ -42,6 +42,9 @@ class TMNTFacilityAttrUpdate(TMNTFacilityAttrBase):
 class TMNTFacilityAttrInDBBase(TMNTFacilityAttrBase):
     altid: str
 
+    basinname: Optional[str] = None
+    subbasin: Optional[str] = None
+
     class Config:
         orm_mode = True
 

@@ -1,11 +1,15 @@
-from fastapi import APIRouter, Depends
+from typing import List, Optional
+
+from fastapi import APIRouter, Depends, Query
 from fastapi.exceptions import HTTPException
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.apps import supersafe as ss
 from stormpiper.apps.supersafe.users import check_user
 from stormpiper.database import crud
 from stormpiper.database.connection import get_async_session
+from stormpiper.database.schemas import tmnt
 from stormpiper.models.tmnt_attr import TMNTFacilityAttr, TMNTFacilityAttrUpdate
 
 router = APIRouter(dependencies=[Depends(check_user)])
@@ -54,3 +58,21 @@ async def patch_tmnt_attr(
     attr = await crud.tmnt_attr.update(db=db, id=altid, new_obj=attr_in)
 
     return attr
+
+
+@router.get(
+    "/",
+    response_model=List[TMNTFacilityAttr],
+    name="tmnt_facility_attr:get_all_tmnt_attr",
+)
+async def get_all_tmnt_attr(
+    limit: Optional[int] = Query(int(1e6)),
+    offset: int = Query(0),
+    db: AsyncSession = Depends(get_async_session),
+):
+
+    q = select(tmnt.TMNTFacilityAttr).offset(offset).limit(limit)
+    result = await db.execute(q)
+    scalars = result.scalars().all()
+
+    return scalars

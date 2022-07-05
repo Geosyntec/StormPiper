@@ -98,6 +98,7 @@ def get_tmnt_facility_delineations(*, url=None):
         .reset_index(drop=True)
         .rename(columns=lambda c: c.lower())
         .assign(relid=lambda df: df.rel_id)
+        .dropna(subset="relid")
         .assign(
             node_id=lambda df: df.apply(
                 lambda r: delineation_node_id(r.relid, r.altid), axis=1

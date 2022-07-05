@@ -63,6 +63,9 @@ class TMNTFacilityAttr(Base, TrackedTable):
     id = Column(Integer, primary_key=True)
     altid = Column(String, unique=True)
 
+    basinname = Column(String)
+    subbasin = Column(String)
+
     # modeling attrs
     treatment_strategy = Column(String)
     facility_type = Column(String)
@@ -104,6 +107,8 @@ class TMNT_View(Base):
             tmnt.c.waterquality,
             tmnt.c.flowcontroltype,
             tmnt.c.waterqualitytype,
+            tmnt_attrs.c.basinname,
+            tmnt_attrs.c.subbasin,
             tmnt_attrs.c.treatment_strategy,
             tmnt_attrs.c.facility_type,
             tmnt_attrs.c.ref_data_key,
