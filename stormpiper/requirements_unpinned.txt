@@ -16,7 +16,7 @@ earthengine-api
 fastapi-users[sqlalchemy]>=10.0.7
 
 fiona
-GeoAlchemy2>=0.9.3,<0.11.0
+GeoAlchemy2>=0.12.0
 geopandas>=0.10.2,<0.11.0
 pygeos
 shapely>=1.8.1,<2.0.0
