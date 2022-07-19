@@ -33,3 +33,4 @@ class LGULoad(Base):
     epoch = Column(String)
     variable = Column(String)
     value = Column(Float)
+    units = Column(String)

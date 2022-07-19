@@ -33,11 +33,15 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
-    # EE Auth
+    # EE
     EE_SERVICE_ACCOUNT: str = ""
     EE_PROJECT_DIRECTORY: str = ""
     EE_JSON_BASE64: str = ""
     EE_LOGIN_INTERVAL_SECONDS: int = 3600 * 4  # every four hours
+    EE_RUNOFF_PATH = (
+        "projects/ee-stormwaterheatmap/assets/production/Mean_Annual_Q_4_epochs"
+    )
+    EE_COC_PATH = "projects/ee-tacoma-watershed/assets/production/coc_concentrations"
 
     # Database
     ADMIN_ACCOUNT_PASSWORD: str = "change me with an env variable"

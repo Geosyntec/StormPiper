@@ -2,6 +2,7 @@ from fastapi import APIRouter
 
 from stormpiper.api.endpoints import (
     bg_worker,
+    results,
     spatial,
     subbasin,
     tileserver,
@@ -23,6 +24,10 @@ api_router.include_router(
 )
 api_router.include_router(tmnt_attr.router, prefix="/tmnt_attr", tags=["tmnt_attr"])
 api_router.include_router(users.router, prefix="/users", tags=["users"])
+api_router.include_router(
+    results.router, prefix="/results", tags=["tmnt_facility", "results"]
+)
+
 api_router.include_router(bg_worker.router, prefix="/tasks", tags=["bg"])
 
 

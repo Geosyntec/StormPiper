@@ -48,4 +48,4 @@ watchgod
 Jinja2
 email-validator
 
-https://github.com/Geosyntec/nereid/archive/v0.5.3.zip
+https://github.com/Geosyntec/nereid/archive/v0.6.0.zip

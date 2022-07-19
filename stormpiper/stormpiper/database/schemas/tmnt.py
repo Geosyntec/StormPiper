@@ -1,3 +1,5 @@
+from enum import Enum
+
 import sqlalchemy as sa
 from geoalchemy2 import Geometry
 from sqlalchemy import Column, Float, Integer, String
@@ -127,4 +129,37 @@ class TMNT_View(Base):
             tmnt_attrs.c.retained_pct,
             tmnt.c.geom,
         ).select_from(tmnt.join(tmnt_attrs, tmnt.c.altid == tmnt_attrs.c.altid)),
+    )
+
+
+class Direction(Enum):
+    upstream = "Upstream"
+    downstream = "Downstream"
+
+
+class TMNTSourceControl(Base, TrackedTable):
+    """This table is user editable."""
+
+    __tablename__ = "tmnt_source_control"
+
+    id = Column(Integer, primary_key=True)
+    subbasin = Column(String, nullable=False)
+    pollutant = Column(String, nullable=False)
+    # if multiple for same subbasin and pollutant, will be applied in order least to greatest
+    # default is last.
+    order = Column(Integer, default=1e6)
+
+    activity = Column(String, nullable=False)
+
+    direction = Column(sa.Enum(Direction), nullable=False)
+
+    # must be float between 0.0 and 100.0
+    percent_reduction = Column(Float, default=0.0)
+
+    __table_args__ = (
+        # allow one order per pollutant & subbasin combo
+        sa.UniqueConstraint("direction", "subbasin", "pollutant", "order"),
+        # allow one activity per subbasin
+        sa.UniqueConstraint("direction", "subbasin", "pollutant", "activity"),
+        sa.CheckConstraint("percent_reduction between 0.0 and 100.0"),
     )

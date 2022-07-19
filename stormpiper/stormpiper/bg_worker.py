@@ -94,27 +94,98 @@ def delete_and_refresh_lgu_load_table():  # pragma: no cover
 
 
 @celery_app.task(acks_late=True, track_started=True)
+def refresh_lgu_tables():  # pragma: no cover
+    logger.info("background refresh_lgu_tables")
+    try:
+
+        chain(
+            # this rodeo requires updated delineations and subbasins
+            delete_and_refresh_lgu_boundary_table.si(),
+            # this hits ee with the rodeo overlay result
+            delete_and_refresh_lgu_load_table.si(),
+        ).apply_async()
+
+    except Exception as e:
+        logger.exception(e)
+        return False
+    return True
+
+
+@celery_app.task(acks_late=True, track_started=True)
+def delete_and_refresh_static_reference_tables():  # pragma: no cover
+    logger.info("background delete_and_refresh_static_reference_tables")
+    try:
+        logger.info("background delete_and_refresh_met_table")
+        tasks.delete_and_refresh_met_table()
+    except Exception as e:
+        logger.exception(e)
+        return False
+    return True
+
+
+@celery_app.task(acks_late=True, track_started=True)
+def delete_and_refresh_graph_edge_table():  # pragma: no cover
+    logger.info("background delete_and_refresh_graph_edge_table")
+    try:
+        logger.info("background delete_and_refresh_graph_edge_table")
+        tasks.delete_and_refresh_graph_edge_table()
+    except Exception as e:
+        logger.exception(e)
+        return False
+    return True
+
+
+@celery_app.task(acks_late=True, track_started=True)
+def delete_and_refresh_result_table():  # pragma: no cover
+    logger.info("background delete_and_refresh_result_table")
+    try:
+        logger.info("background delete_and_refresh_result_table")
+        tasks.delete_and_refresh_result_table()
+    except Exception as e:
+        logger.exception(e)
+        return False
+    return True
+
+
+@celery_app.task(acks_late=True, track_started=True)
 def delete_and_refresh_tacoma_gis_tables():  # pragma: no cover
     logger.info("background delete_and_refresh_tacoma_gis_tables")
+    try:
+
+        # parallel refresh client data from web, including esri/arcgis
+        group(
+            delete_and_refresh_static_reference_tables.si(),
+            delete_and_refresh_tmnt_facility_table.si(),
+            delete_and_refresh_tmnt_facility_delineation_table.si(),
+            delete_and_refresh_subbasin_table.si(),
+        ).apply_async()
+
+    except Exception as e:
+        logger.exception(e)
+        return False
+    return True
+
+
+@celery_app.task(acks_late=True, track_started=True)
+def refresh_all_tables():  # pragma: no cover
+    logger.info("background refresh_all_tables")
     # chain runs elements in sequence
     # group runs elements in parallel
     try:
         chain(
             # parallel refresh client data from web, including esri/arcgis
-            group(
-                delete_and_refresh_tmnt_facility_table.si(),
-                delete_and_refresh_tmnt_facility_delineation_table.si(),
-                delete_and_refresh_subbasin_table.si(),
-            ),
+            delete_and_refresh_tacoma_gis_tables.si(),
             # parallel jobs to update secondary derived tables and resources
             group(
                 # requires updated tmnt facility and subbasin tables
                 update_tmnt_attributes.si(),
-                # this rodeo requires updated delineations and subbasins
+                refresh_lgu_tables.si(),
+            ),
+            group(
                 chain(
-                    delete_and_refresh_lgu_boundary_table.si(),
-                    delete_and_refresh_lgu_load_table.si(),
-                ),
+                    delete_and_refresh_graph_edge_table.si(),
+                    delete_and_refresh_result_table.si(),
+                )
             ),
         ).apply_async()
 
@@ -152,8 +223,8 @@ celery_app.conf.beat_schedule = {
     #     "task": "stormpiper.bg_worker.ping",
     #     "schedule": 10 * 60,
     # },
-    "delete_and_refresh_tmnt_tables": {
-        "task": "stormpiper.bg_worker.delete_and_refresh_tmnt_tables",
+    "refresh_all_tables": {
+        "task": "stormpiper.bg_worker.refresh_all_tables",
         # daily at 6am
         "schedule": crontab(0, "6"),
     },

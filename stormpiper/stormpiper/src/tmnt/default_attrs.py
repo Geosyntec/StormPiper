@@ -48,13 +48,16 @@ def set_default_tmnt_attributes(
     df.loc[(df["facilitytype"] == "Swale"), "facility_type"] = "vegetated_swale"
     df.loc[(df["facilitytype"] == "Pond"), "facility_type"] = "wet_pond"
 
-    retains = [
+    retains_full = [
         "bioretention_with_full_infiltration",
+        "infiltration",
+        "pervious_pavement",
+    ]
+
+    retains_partial = [
         "bioretention_with_partial_infiltration",
         "dry_extended_detention",
         "flow_duration_control_tank",
-        "infiltration",
-        "pervious_pavement",
         "vegetated_swale",
     ]
 
@@ -62,7 +65,11 @@ def set_default_tmnt_attributes(
         df.assign(captured_pct=91.0)
         .assign(
             retained_pct=lambda df: numpy.where(
-                df["facility_type"].isin(retains), 20.0, 0.0
+                df["facility_type"].isin(retains_partial),
+                20.0,
+                numpy.where(
+                    df["facility_type"].isin(retains_full), df["captured_pct"], 0.0
+                ),
             )
         )
         .assign(facility_type=lambda df: df["facility_type"].astype(str) + "_simple")
@@ -90,7 +97,7 @@ def update_tmnt_attributes(engine, overwrite=False):
 
         if not df.empty:
             subs = geopandas.read_postgis("subbasin", con=engine)
-            df = df.sjoin(subs).reindex(
+            df = df.sjoin(subs, how="left").reindex(
                 columns=[
                     "altid",
                     "basinname",

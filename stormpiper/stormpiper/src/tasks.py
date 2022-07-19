@@ -8,7 +8,8 @@ from stormpiper.database.utils import (
     delete_and_replace_table,
 )
 from stormpiper.src.tmnt import default_attrs, spatial
-from . import loading
+
+from . import graph, loading, met, solve_structural_wq
 
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
@@ -81,10 +82,47 @@ def delete_and_refresh_lgu_load_table():
     df = loading.compute_loading()
 
     if df is None:
+        logger.error("TASK FAILED: delete_and_refresh_lgu_load_table.")
         return
 
     logger.info("deleting and replacing lgu_load table")
     delete_and_replace_table(df=df, table_name="lgu_load", engine=engine, index=False)
     logger.info("TASK COMPLETE: replaced lgu_load table.")
+
+    return df
+
+
+def delete_and_refresh_met_table():
+    logger.info("Reloading Met Table")
+    df = met.create_met_dataframe()
+
+    logger.info("deleting and replacing met table")
+    delete_and_replace_table(df=df, table_name="met", engine=engine)
+    logger.info("TASK COMPLETE: replaced met table.")
+
+    return df
+
+
+def delete_and_refresh_graph_edge_table():
+    logger.info("Reloading Graph Edge Table")
+    df = graph.build_edge_list_from_database()
+
+    logger.info("deleting and replacing graph_edge table")
+    delete_and_replace_table(df=df, table_name="graph_edge", engine=engine)
+    logger.info("TASK COMPLETE: replaced graph_edge table.")
+
+    return df
+
+
+def delete_and_refresh_result_table():
+    logger.info("Solving Watershed...")
+
+    df = solve_structural_wq.solve_wq_epochs_from_db()
+
+    logger.info("deleting and replacing results_blob table")
+    delete_and_replace_table(
+        df=df, table_name="result_blob", engine=engine, index=False
+    )
+    logger.info("TASK COMPLETE: replaced results_blob table.")
 
     return df

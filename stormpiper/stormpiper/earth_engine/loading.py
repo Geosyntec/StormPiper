@@ -85,7 +85,6 @@ def zonal_stats(
     zones can be a string path to eeobject or json.dumps
     """
 
-
     zones_fc = FeatureCollection(json.loads(zones))
 
     runoff = Image(runoff_path)
@@ -94,11 +93,15 @@ def zonal_stats(
     ro_dct = get_loading_zonal_stats(
         runoff.multiply(Image.pixelArea()), zones=zones_fc
     ).getInfo()
-    df = get_loading_zonal_stats_df(ro_dct).melt(
-        join_id,
-        ro_bands,
-        var_name="epoch",
-        value_name=f"runoff_{ro_units}_x_m2".replace("/", "_per_"),
+    df = (
+        get_loading_zonal_stats_df(ro_dct)
+        .melt(
+            join_id,
+            ro_bands,
+            var_name="epoch",
+            value_name=f"runoff_{ro_units}_x_m2".replace("/", "_per_"),
+        )
+        .assign(epoch=lambda df: df["epoch"].str.split("_").str[-1])
     )
 
     poc_dfs = []
@@ -111,22 +114,15 @@ def zonal_stats(
         poc_df = (
             get_loading_zonal_stats_df(poc_dct)
             .reindex(columns=[join_id] + c_band)
-            .assign(epoch=epoch)
+            .assign(epoch=epoch.split("_")[-1])
         )
 
         poc_dfs.append(poc_df)
 
     poc_df = pandas.concat(poc_dfs)
-    df_wide = (
-        df.merge(
-            poc_df,
-            on=[join_id, "epoch"],
-            how="left",
-        )
-        .rename(
-            columns=lambda c: c.replace("mm_per_year_x_m2", "L").replace(
-                "mcg_per_L_x_L", "mcg"
-            )
+    df_wide = df.merge(poc_df, on=[join_id, "epoch"], how="left",).rename(
+        columns=lambda c: c.replace("mm_per_year_x_m2", "L").replace(
+            "mcg_per_L_x_L", "mcg"
         )
     )
 

@@ -107,4 +107,4 @@ watchgod==0.8.2
 wcwidth==0.2.5
 wrapt==1.14.1
 yarl==1.7.2
-https://github.com/Geosyntec/nereid/archive/v0.5.3.zip
+https://github.com/Geosyntec/nereid/archive/v0.6.0.zip

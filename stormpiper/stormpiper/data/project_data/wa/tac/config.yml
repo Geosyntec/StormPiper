@@ -1,0 +1,283 @@
+config_date: "2022-07-14"
+pint_unit_registry:
+  # all units must be either compatible with `pint` or be defined here.
+  - mcg = microgram
+
+api_recognize:
+  treatment_facility:
+    preprocess:
+      - remaps:
+          - left: hsg
+            right: inf_rate_inhr
+            how: left # interpreted as 'right' = mapping['left'] if 'left' exists
+            fillna: 1.0e-6
+            mapping:
+              # TODO: update these for Tacoma
+              a: 5.67
+              b: 1.42
+              c: 0.14
+              d: 0.07 # half of c rate
+              lined: 1.0e-6
+
+    facility_type:
+      # Default is No Treatment
+      no_treatment:
+        validator: NTFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: ¯\_(ツ)_/¯
+        label: No Treatment
+
+      # Infiltration BMPs
+
+      infiltration:
+        validator: RetentionFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: ¯\_(ツ)_/¯ # wq improvement via retention only
+        label: Infiltration Basin/Trench
+
+      infiltration_simple:
+        validator: SimpleRetFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: ¯\_(ツ)_/¯ # wq improvement via retention only
+        label: Infiltration Basin/Trench (simple)
+
+      dispersion_area:
+        validator: RetentionFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: ¯\_(ツ)_/¯ # wq improvement via retention only
+        label: Dispersion Area
+
+      dispersion_area_simple:
+        validator: SimpleRetFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: ¯\_(ツ)_/¯ # wq improvement via retention only
+        label: Dispersion Area (simple)
+
+      pervious_pavement:
+        validator: RetentionFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: ¯\_(ツ)_/¯ # wq improvement via retention only
+        label: Pervious Pavement
+
+      pervious_pavement_simple:
+        validator: SimpleRetFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: ¯\_(ツ)_/¯ # wq improvement via retention only
+        label: Pervious Pavement (simple)
+
+      # Bioretention BMPs
+      bioretention_with_full_infiltration: # aka infiltration
+        validator: RetentionFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: ¯\_(ツ)_/¯ # wq improvement via retention only
+        label: Bioretention with Full Infiltration
+
+      bioretention_with_full_infiltration_simple: # aka infiltration
+        validator: SimpleRetFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: ¯\_(ツ)_/¯ # wq improvement via retention only
+        label: Bioretention with Full Infiltration (simple)
+
+      bioretention_with_partial_infiltration: # aka bioinfiltration or bioretention
+        validator: BioInfFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: Biofiltration/Bioretention
+        label: Bioretention with Partial Infiltration
+
+      bioretention_with_partial_infiltration_simple: # aka bioinfiltration or bioretention
+        validator: SimpleFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: Biofiltration/Bioretention
+        label: Bioretention with Partial Infiltration (simple)
+
+      bioretention_with_no_infiltration: # aka biofiltration
+        validator: TmntFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: Biofiltration/Bioretention
+        label: Bioretention with No Infiltration
+
+      bioretention_with_no_infiltration_simple: # aka biofiltration
+        validator: SimpleTmntFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: Biofiltration/Bioretention
+        label: Bioretention with No Infiltration (simple)
+
+      sand_filter:
+        validator: TmntFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: Sand Filter
+        label: Sand Filter
+
+      sand_filter_simple:
+        validator: SimpleTmntFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: Sand Filter
+        label: Sand Filter (simple)
+
+      media_filter:
+        validator: TmntFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: Biofiltration/Bioretention
+        label: Media Filter
+
+      media_filter_simple:
+        validator: SimpleTmntFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: Biofiltration/Bioretention
+        label: Media Filter (simple)
+
+      wet_pond:
+        validator: PermPoolFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: Wet Pond
+        label: Wet Pond
+
+      wet_pond_simple:
+        validator: SimpleTmntFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: Wet Pond
+        label: Wet Pond (simple)
+
+      dry_extended_detention:
+        validator: RetAndTmntFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: Detention Basin
+        label: Dry Extended Detention Basin/Tank
+
+      dry_extended_detention_simple:
+        validator: SimpleFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: Detention Basin
+        label: Dry Extended Detention Basin/Tank (simple)
+
+      flow_duration_control_tank:
+        validator: RetAndTmntFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: Detention Basin
+        label: Flow Duration Control Tank
+
+      flow_duration_control_tank_simple:
+        validator: SimpleFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: Detention Basin
+        label: Flow Duration Control Tank (simple)
+
+      hydrodynamic_separator:
+        validator: FlowFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: Hydrodynamic Separator
+        label: Hydrodynamic Separator
+
+      hydrodynamic_separator_simple:
+        validator: SimpleTmntFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: Hydrodynamic Separator
+        label: Hydrodynamic Separator (simple)
+
+      oil_water_separator:
+        validator: FlowFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: Hydrodynamic Separator
+        label: Oil-Water Separator
+
+      oil_water_separator_simple:
+        validator: SimpleTmntFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: Hydrodynamic Separator
+        label: Oil-Water Separator (simple)
+
+      vegetated_swale:
+        validator: FlowAndRetFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: Vegetated Swale
+        label: Vegetated Swale
+
+      vegetated_swale_simple:
+        validator: SimpleFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: Vegetated Swale
+        label: Vegetated Swale (simple)
+
+      vegetated_box:
+        validator: FlowFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: ¯\_(ツ)_/¯ # no data yet for performance curves
+        label: Filterra/Vegetated Box
+
+      vegetated_box_simple:
+        validator: SimpleTmntFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: ¯\_(ツ)_/¯ # no data yet for performance curves
+        label: Filterra/Vegetated Box (simple)
+
+      # Other BMPs
+
+      drywell:
+        validator: DryWellFacilityFlowOrVolume
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: ¯\_(ツ)_/¯
+        label: Drywell
+
+      drywell_simple:
+        validator: SimpleRetFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: ¯\_(ツ)_/¯
+        label: Drywell (simple)
+
+project_reference_data:
+  # met_table:
+  #   file: met_data_20210907_1349.json
+  #   volume_nomo:
+  #     x_col: size_fraction
+  #     t_col: ddt_hr
+  #     y_col: capture_fraction
+  #   flow_nomo:
+  #     x_col: intensity_inhr
+  #     t_col: tc_minutes
+  #     y_col: capture_fraction
+
+  #   nomographs:
+  #     - file_key: volume_nomograph
+  #       type: volume_capture
+  #       constructor: VolumeNomograph
+  #       x_col: size_fraction
+  #       t_col: ddt_hr
+  #       y_col: capture_fraction
+
+  #     - file_key: flow_nomograph
+  #       type: volume_capture
+  #       constructor: FlowNomograph
+  #       x_col: intensity_inhr
+  #       t_col: tc_minutes
+  #       y_col: capture_fraction
+
+  tmnt_performance_table:
+    file: bmp_params_20220103_1443.json
+    facility_column: bmp
+    pollutant_column: pollutant
+
+  # long names and short names must be unique in the config. e.g., cannot have TSS for two tables,
+  # you must have a prefix or suffix
+  land_surface_emc_table:
+    parameters:
+      # units must be compatible with the `pint` library
+      - long_name: Total Suspended Solids # long_name must match bmp performance parameters
+        short_name: TSS # short_name must match EMC pollutant prefix e.g., TSS_conc_mg/l
+        concentration_unit: mg/L
+        load_unit: lbs
+      - long_name: Total Nitrogen
+        short_name: TN
+        concentration_unit: mg/L
+        load_unit: lbs
+      - long_name: Total Phosphorus
+        short_name: TP
+        concentration_unit: mg/L
+        load_unit: lbs
+      - long_name: Total Zinc
+        short_name: TZn
+        concentration_unit: ug/L
+        load_unit: lbs
+      - long_name: Total Copper
+        short_name: TCu
+        concentration_unit: ug/L
+        load_unit: lbs
