@@ -33,13 +33,12 @@ clean-build: ## remove build artifacts
 	rm -fr build/
 	rm -fr dist/
 	rm -fr .eggs/
-	find . -name '*.egg-info' -exec rm -fr {} +
-	find . -name '*.egg' -exec rm -f {} +
+	find . -maxdepth 3 -name '*.egg-info' -exec rm -fr {} +
+	find . -maxdepth 3 -name '*.egg' -exec rm -f {} +
 
 clean-pyc: ## remove Python file artifacts
-	find stormpiper/stormpiper -name '*.pyc' -exec rm -f {} +
-	find stormpiper/stormpiper -name '*.pyo' -exec rm -f {} +
-	find stormpiper/stormpiper -name '__pycache__' -exec rm -fr {} +
+	find stormpiper -path '*/node_modules' -prune -o -name '*.pyo' -o -name '*.pyc' -exec rm -f {} +
+	find stormpiper -path '*/node_modules' -prune -o -name '__pycache__' -exec rm -fr {} +
 
 clean-test: ## remove test and coverage artifacts
 	rm -fr .tox/
