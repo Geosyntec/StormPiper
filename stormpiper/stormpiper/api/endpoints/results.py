@@ -37,6 +37,6 @@ async def get_result(
     result = await db.execute(
         select(results.Result_View).where(results.Result_View.id == altid)
     )
-    scalars = result.scalars().last()
+    scalars = result.scalars().first()
 
     return scalars
