@@ -49,6 +49,7 @@ class Settings(BaseSettings):
     DATABASE_URL_ASYNC: str = "sqlite+aiosqlite:///./supersafe.db"
     DATABASE_URL_SYNC: str = "sqlite:///./supersafe.db"
     DATABASE_USERS_TABLE_NAME: str = "user"
+    DATABASE_POOL_RECYCLE: int = 1800
 
     # Users Auth
     COOKIE_SECURE: bool = True
