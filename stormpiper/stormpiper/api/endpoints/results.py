@@ -1,15 +1,12 @@
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, Query
-from fastapi.responses import Response
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.apps.supersafe.users import check_user
-from stormpiper.core.config import settings
 from stormpiper.database.connection import get_async_session
 from stormpiper.database.schemas import results
-from stormpiper.database.utils import scalars_to_gdf
 from stormpiper.models.result_view import ResultView
 
 router = APIRouter(dependencies=[Depends(check_user)])
