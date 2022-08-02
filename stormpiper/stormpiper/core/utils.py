@@ -41,9 +41,6 @@ async def wait_a_sec_and_see_if_we_can_return_some_data(
     if exp is None:
         exp = 1
 
-    _max_timeout = 120  # seconds
-    timeout = min(timeout, _max_timeout)  # prevent long timeout requests.
-
     t = 0.0
     inc = 0.05  # check back every inc seconds
     while t < timeout:
