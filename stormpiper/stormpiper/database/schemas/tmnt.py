@@ -8,7 +8,7 @@ from stormpiper.connections import arcgis
 from stormpiper.core.config import settings
 
 from ..hacks import view
-from .base_class import Base, TrackedTable
+from .base_class import Base, MutableTrackedTable
 
 __all__ = ["TMNTFacilityDelineation", "TMNTFacility", "TMNTFacilityAttr", "TMNT_View"]
 
@@ -19,7 +19,7 @@ def delin_node_id(context):
     return arcgis.delineation_node_id(relid, altid)
 
 
-class TMNTFacilityDelineation(Base, TrackedTable):
+class TMNTFacilityDelineation(Base):
 
     __tablename__ = "tmnt_facility_delineation"
 
@@ -35,7 +35,7 @@ def facility_node_id(context):
     return arcgis.facility_node_id(altid)
 
 
-class TMNTFacility(Base, TrackedTable):
+class TMNTFacility(Base):
     """This table comes directly from the Tacoma GIS team.
 
     The node_id column is computed at the time of insertion.
@@ -58,7 +58,7 @@ class TMNTFacility(Base, TrackedTable):
     geom = Column(Geometry(srid=settings.TACOMA_EPSG))
 
 
-class TMNTFacilityAttr(Base, TrackedTable):
+class TMNTFacilityAttr(Base, MutableTrackedTable):
 
     __tablename__ = "tmnt_facility_attributes"
 
@@ -137,7 +137,7 @@ class Direction(Enum):
     downstream = "Downstream"
 
 
-class TMNTSourceControl(Base, TrackedTable):
+class TMNTSourceControl(Base, MutableTrackedTable):
     """This table is user editable."""
 
     __tablename__ = "tmnt_source_control"
