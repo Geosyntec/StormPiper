@@ -296,10 +296,10 @@ class Workflows:
 
     # each of these have no dependencies, so they all run in parallel
     delete_and_refresh_tacoma_gis_tables = group(
-            delete_and_refresh_static_reference_tables.si(),
-            delete_and_refresh_tmnt_facility_table.si(),
-            delete_and_refresh_tmnt_facility_delineation_table.si(),
-            delete_and_refresh_subbasin_table.si(),
+        delete_and_refresh_static_reference_tables.si(),
+        delete_and_refresh_tmnt_facility_table.si(),
+        delete_and_refresh_tmnt_facility_delineation_table.si(),
+        delete_and_refresh_subbasin_table.si(),
     ) | check_results.s(can_raise=True, msg="pulled static gis resources")
 
     __chain_lgu_tables = chain(
@@ -386,14 +386,14 @@ def _deprecated_refresh_all_tables():  # pragma: no cover
         )
 
         group2 = group(
-                update_tmnt_attributes.si(),
+            update_tmnt_attributes.si(),
             chain_refresh_lgu_tables,
         ) | check_results.s(msg="update tmnt and refresh LGU tables")
 
         group3 = group(
-                chain(
-                    delete_and_refresh_graph_edge_table.si(),
-                    delete_and_refresh_result_table.si(),
+            chain(
+                delete_and_refresh_graph_edge_table.si(),
+                delete_and_refresh_result_table.si(),
                 check_results.s(msg="update graph and resolve results"),
             ),
         ) | check_results.s(msg="update results")
@@ -405,7 +405,7 @@ def _deprecated_refresh_all_tables():  # pragma: no cover
                     group2,
                     group3,
                     check_results.s(msg="refresh all tables"),
-            ),
+                ),
             ]
         )(check_results.s(msg="finalize task"))
 
