@@ -1,7 +1,9 @@
 import asyncio
+import datetime
 from typing import List, Optional
 
 import pandas
+import pytz
 from celery.result import AsyncResult
 
 
@@ -51,3 +53,7 @@ async def wait_a_sec_and_see_if_we_can_return_some_data(
             t += inc
             await asyncio.sleep(inc)
     return
+
+
+def datetime_now():
+    return datetime.datetime.now(pytz.timezone("US/Pacific"))

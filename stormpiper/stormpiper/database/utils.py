@@ -13,6 +13,8 @@ from tenacity import wait_fixed  # type: ignore
 from tenacity import retry
 
 from stormpiper.core.utils import datetime_to_isoformat
+from .changelog import sync_log
+from .connection import session_maker
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -65,7 +67,12 @@ def delete_and_replace_postgis_table(
         if engine.dialect.has_table(conn, table_name):
             conn.execute(f"delete from {table_name}")
         gdf = gdf.rename_geometry("geom")  # type: ignore
-        return gdf.to_postgis(table_name, con=conn, if_exists="append", **kwargs)
+        gdf.to_postgis(table_name, con=conn, if_exists="append", **kwargs)
+
+        with session_maker() as session:
+            sync_log(tablename=table_name, db=session)
+
+        return None
 
 
 def delete_and_replace_table(
@@ -78,7 +85,12 @@ def delete_and_replace_table(
     with engine.begin() as conn:
         if engine.dialect.has_table(conn, table_name):
             conn.execute(f"delete from {table_name}")
-        return df.to_sql(table_name, con=conn, if_exists="append", **kwargs)
+        df.to_sql(table_name, con=conn, if_exists="append", **kwargs)
+
+        with session_maker() as session:
+            sync_log(tablename=table_name, db=session)
+
+        return None
 
 
 @retry(
