@@ -33,9 +33,13 @@ class TMNTFacilityAttrCreate(TMNTFacilityAttrBase):
 
 
 # Properties to receive on update
-class TMNTFacilityAttrUpdate(TMNTFacilityAttrBase):
-    class Config:
-        extra = "allow"
+class TMNTFacilityAttrPatch(TMNTFacilityAttrBase):
+    pass
+
+
+# Properties to send on update
+class TMNTFacilityAttrUpdate(TMNTFacilityAttrPatch):
+    updated_by: Optional[str] = None
 
 
 # Properties shared by models stored in DB
