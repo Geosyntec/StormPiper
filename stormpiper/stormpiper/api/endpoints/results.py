@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from stormpiper.apps.supersafe.users import check_user
 from stormpiper.database.connection import get_async_session
 from stormpiper.database.schemas import results
+from stormpiper.src.results import is_dirty
 from stormpiper.models.result_view import ResultView
 
 router = APIRouter(dependencies=[Depends(check_user)])
@@ -23,6 +24,14 @@ async def get_all_results(
     scalars = result.scalars().all()
 
     return scalars
+
+
+@router.get("/is_dirty", name="results:get_result_is_dirty")
+async def get_result_is_dirty(db: AsyncSession = Depends(get_async_session)):
+
+    result = await is_dirty(db=db)
+
+    return {"is_dirty": result}
 
 
 @router.get("/{altid}", response_model=ResultView, name="results:get_result")
