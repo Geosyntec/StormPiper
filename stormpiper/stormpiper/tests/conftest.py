@@ -11,13 +11,13 @@ from . import utils
 
 def pytest_configure(config):
     config.addinivalue_line(
-        "markers", "integration: mark test as requireing a data connection"
+        "markers", "integration: mark test as requiring a data connection"
     )
 
 
 @pytest.fixture(scope="session")
 def db():
-    utils.reset_db()
+    utils.seed_db()
     yield
     utils.clear_db()
 

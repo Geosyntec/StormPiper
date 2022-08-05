@@ -26,6 +26,7 @@ def get_async_engine():
 
 engine = get_engine()
 async_engine = get_async_engine()
+session_maker = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
@@ -35,13 +36,6 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
     )
 
     async with async_session_maker() as session:
-        yield session
-
-
-def get_session() -> Generator:
-    session_maker = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-    with session_maker() as session:
         yield session
 
 
@@ -65,11 +59,8 @@ def get_token(app, username, password):
 
 
 def seed_db():
-    with engine.begin() as conn:
-        Base.metadata.create_all(conn)
 
-    Session = sessionmaker(bind=engine)
-    with Session.begin() as session:
+    with session_maker.begin() as session:
 
         admin = User(
             email="admin@geosyntec.com",
@@ -99,6 +90,6 @@ def seed_db():
     # .. initial data here
 
 
-def reset_db():
-    clear_db()
-    seed_db()
+# def reset_db():
+#     clear_db()
+#     seed_db()
