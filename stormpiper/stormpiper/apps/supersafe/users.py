@@ -56,7 +56,9 @@ cookie_transport = CookieTransport(
 
 
 def get_jwt_strategy() -> JWTStrategy:
-    return JWTStrategy(secret=settings.SECRET, lifetime_seconds=3600)
+    return JWTStrategy(
+        secret=settings.SECRET, lifetime_seconds=settings.JWT_LIFETIME_SECONDS
+    )
 
 
 bearer_backend = AuthenticationBackend(

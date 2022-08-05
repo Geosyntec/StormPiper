@@ -56,6 +56,7 @@ class Settings(BaseSettings):
     COOKIE_HTTPONLY: bool = True
     COOKIE_SAMESITE: str = "lax"
     BEARER_TOKEN_URL: str = "auth/jwt-bearer/login"
+    JWT_LIFETIME_SECONDS: int = 24 * 3600
 
     # Worker
     REDIS_BROKER_URL: str = "redis://redis:6379/0"
