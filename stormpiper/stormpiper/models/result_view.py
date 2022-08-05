@@ -14,5 +14,8 @@ class Config(BaseConfig):
 ResultView = create_model(
     "ResultView",
     __config__=Config,
-    **{c: (Optional[str] if c in strings else Optional[float], ...) for c in COLS},
+    **{
+        c: (Optional[str] if c in strings else Optional[float], ...)
+        for c in ["epoch_id"] + COLS
+    },
 )

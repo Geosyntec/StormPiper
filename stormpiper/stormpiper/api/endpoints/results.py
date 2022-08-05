@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Path, Query
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -29,20 +29,22 @@ async def get_all_results(
 @router.get("/is_dirty", name="results:get_result_is_dirty")
 async def get_result_is_dirty(db: AsyncSession = Depends(get_async_session)):
 
-    result = await is_dirty(db=db)
-
-    return {"is_dirty": result}
+    return await is_dirty(db=db)
 
 
-@router.get("/{altid}", response_model=ResultView, name="results:get_result")
+@router.get("/{node_id}", response_model=List[ResultView], name="results:get_result")
 async def get_result(
-    altid: str,
+    node_id: str = Path(..., title="node id or altid", example="SWFA-100002"),
+    epoch: str = Query(None, example="1980s"),
     db: AsyncSession = Depends(get_async_session),
 ):
 
-    result = await db.execute(
-        select(results.Result_View).where(results.Result_View.id == altid)
-    )
-    scalars = result.scalars().first()
+    q = select(results.Result_View).where(results.Result_View.id == node_id)
+
+    if epoch is not None:
+        q = q.where(results.Result_View.epoch_id == epoch)
+
+    result = await db.execute(q)
+    scalars = result.scalars().all()
 
     return scalars
