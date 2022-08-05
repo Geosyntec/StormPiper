@@ -7,8 +7,9 @@ from stormpiper.database.utils import (
     delete_and_replace_postgis_table,
     delete_and_replace_table,
 )
-from .tmnt import default_attrs, spatial
+
 from . import graph, loading, met, solve_structural_wq
+from .tmnt import default_attrs, spatial
 
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)

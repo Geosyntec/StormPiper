@@ -17,7 +17,7 @@ def overlay_rodeo():
         ]
 
         # keep only the delineations that _definately_ have a match in the facility table.
-        delin = geopandas.read_postgis("tmnt_facility_delineation", con=engine).query(
+        delin = geopandas.read_postgis("tmnt_facility_delineation", con=engine).query(  # type: ignore
             "relid in @relid"
         )
         subs = geopandas.read_postgis("subbasin", con=conn)

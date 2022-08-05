@@ -1,7 +1,7 @@
 from enum import Enum
-from typing import Any, Dict
+from typing import Any, Dict, Type
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from fastapi.responses import JSONResponse
 
 import stormpiper.bg_worker as bg
@@ -39,7 +39,8 @@ TaskName: StrEnum = StrEnum("TaskName", {k: k for k in _tasks})
 
 @rpc_router.get("/run_task/{taskname}", response_class=JSONResponse)
 async def run_task(
-    taskname: TaskName, timeout: float = Query(0.5, le=120)
+    taskname: TaskName,  # type: ignore
+    timeout: float = Query(0.5, le=120),
 ) -> Dict[str, Any]:
 
     task = bg.celery_app.send_task(taskname)
@@ -57,7 +58,8 @@ Workflows = StrEnum("Workflows", {k: k for k in _tasks})
 
 @rpc_router.get("/run_workflow/{taskname}", response_class=JSONResponse)
 async def run_workflow(
-    taskname: Workflows, timeout: float = Query(0.5, le=120)
+    taskname: Workflows,  # type: ignore
+    timeout: float = Query(0.5, le=120),
 ) -> Dict[str, Any]:
 
     t = getattr(bg.Workflows, taskname, None)

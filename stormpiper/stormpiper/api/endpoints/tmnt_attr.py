@@ -21,7 +21,6 @@ from stormpiper.models.tmnt_attr import (
     TMNTFacilityAttrUpdate,
 )
 
-
 router = APIRouter(dependencies=[Depends(check_user)])
 
 

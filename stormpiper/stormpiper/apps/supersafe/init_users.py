@@ -1,6 +1,7 @@
 import contextlib
 
 from fastapi_users.exceptions import UserAlreadyExists
+from pydantic import EmailStr
 
 from stormpiper.core.config import settings
 
@@ -13,7 +14,9 @@ get_user_db_context = contextlib.asynccontextmanager(get_user_db)
 get_user_manager_context = contextlib.asynccontextmanager(get_user_manager)
 
 
-async def create_user(email: str, password: str, is_superuser: bool = False, **kwargs):
+async def create_user(
+    email: EmailStr, password: str, is_superuser: bool = False, **kwargs
+):
     try:
         print(f"trying to create user {email}")
         async with get_async_session_context() as session:
@@ -34,15 +37,15 @@ async def create_user(email: str, password: str, is_superuser: bool = False, **k
 
 async def create_admin():
     return await create_user(
-        email="admin@geosyntec.com",
-        password=settings.ADMIN_ACCOUNT_PASSWORD,  # type: ignore
+        email="admin@geosyntec.com",  # type: ignore
+        password=settings.ADMIN_ACCOUNT_PASSWORD,
         is_superuser=True,
     )
 
 
 async def create_public():
     return await create_user(
-        email="public@nowhere.com",
+        email="public@nowhere.com",  # type: ignore
         password="unsafe_password",
     )
 

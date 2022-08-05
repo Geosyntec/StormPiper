@@ -12,7 +12,7 @@ from tenacity import stop_after_attempt  # type: ignore
 from tenacity import wait_fixed  # type: ignore
 from tenacity import retry
 
-from stormpiper.core.utils import datetime_to_isoformat
+from ..core.utils import datetime_to_isoformat
 from .changelog import sync_log
 from .connection import session_maker
 

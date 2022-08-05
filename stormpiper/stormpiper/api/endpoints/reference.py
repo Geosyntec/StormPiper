@@ -4,7 +4,6 @@ from fastapi.responses import JSONResponse
 from stormpiper.apps.supersafe.users import check_user
 from stormpiper.core.context import get_context
 
-
 router = APIRouter(dependencies=[Depends(check_user)])
 
 

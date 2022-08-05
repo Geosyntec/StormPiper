@@ -7,8 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from stormpiper.apps.supersafe.users import check_user
 from stormpiper.database.connection import get_async_session
 from stormpiper.database.schemas import results
-from stormpiper.src.results import is_dirty
 from stormpiper.models.result_view import ResultView
+from stormpiper.src.results import is_dirty
 
 router = APIRouter(dependencies=[Depends(check_user)])
 
