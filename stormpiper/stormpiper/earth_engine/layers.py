@@ -6,6 +6,8 @@ import ee
 
 from stormpiper.core.config import settings, stormpiper_path
 
+from .loading import get_loading_layers
+
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
 
@@ -155,6 +157,13 @@ def _init_layers():
         "safe_name": "TSS_mg_sqm",
         "layer": {"url": url, "image": load},
     }
+
+    runoff_path = settings.EE_RUNOFF_PATH
+    concentration_path = settings.EE_COC_PATH
+
+    load_layer_dict = get_loading_layers(runoff_path, concentration_path)
+
+    layer_dict.update(load_layer_dict)
 
     return layer_dict
 

@@ -3,7 +3,7 @@ from typing import Any, Dict, Optional
 
 import aiohttp
 from brotli_asgi import BrotliMiddleware
-from fastapi import Depends, FastAPI, Request
+from fastapi import Depends, FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -85,7 +85,7 @@ def create_app(
     async def ping(
         request: Request,
         user: ss.users.User = Depends(ss.users.current_user_safe(optional=True)),
-    ):
+    ) -> Dict:
 
         msg = {
             "message": "welcome home.",
@@ -115,11 +115,11 @@ def create_app(
 
     @app.get("/app")
     @app.get("/app/{fullpath:path}")
-    async def serve_spa(request: Request, fullpath: Optional[str] = None):
+    async def serve_spa(request: Request, fullpath: Optional[str] = None) -> Response:
         return templates.TemplateResponse("index.html", {"request": request})
 
     @app.get("/", name="home")
-    async def home(request: Request):
+    async def home(request: Request) -> Response:
         return RedirectResponse("/app")
 
     return app

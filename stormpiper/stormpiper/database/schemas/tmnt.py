@@ -1,3 +1,5 @@
+from enum import Enum
+
 import sqlalchemy as sa
 from geoalchemy2 import Geometry
 from sqlalchemy import Column, Float, Integer, String
@@ -6,7 +8,7 @@ from stormpiper.connections import arcgis
 from stormpiper.core.config import settings
 
 from ..hacks import view
-from .base_class import Base, TrackedTable
+from .base_class import Base, MutableTrackedTable
 
 __all__ = ["TMNTFacilityDelineation", "TMNTFacility", "TMNTFacilityAttr", "TMNT_View"]
 
@@ -17,7 +19,7 @@ def delin_node_id(context):
     return arcgis.delineation_node_id(relid, altid)
 
 
-class TMNTFacilityDelineation(Base, TrackedTable):
+class TMNTFacilityDelineation(Base):
 
     __tablename__ = "tmnt_facility_delineation"
 
@@ -33,7 +35,7 @@ def facility_node_id(context):
     return arcgis.facility_node_id(altid)
 
 
-class TMNTFacility(Base, TrackedTable):
+class TMNTFacility(Base):
     """This table comes directly from the Tacoma GIS team.
 
     The node_id column is computed at the time of insertion.
@@ -56,12 +58,15 @@ class TMNTFacility(Base, TrackedTable):
     geom = Column(Geometry(srid=settings.TACOMA_EPSG))
 
 
-class TMNTFacilityAttr(Base, TrackedTable):
+class TMNTFacilityAttr(Base, MutableTrackedTable):
 
     __tablename__ = "tmnt_facility_attributes"
 
     id = Column(Integer, primary_key=True)
     altid = Column(String, unique=True)
+
+    basinname = Column(String)
+    subbasin = Column(String)
 
     # modeling attrs
     treatment_strategy = Column(String)
@@ -104,6 +109,8 @@ class TMNT_View(Base):
             tmnt.c.waterquality,
             tmnt.c.flowcontroltype,
             tmnt.c.waterqualitytype,
+            tmnt_attrs.c.basinname,
+            tmnt_attrs.c.subbasin,
             tmnt_attrs.c.treatment_strategy,
             tmnt_attrs.c.facility_type,
             tmnt_attrs.c.ref_data_key,
@@ -122,4 +129,37 @@ class TMNT_View(Base):
             tmnt_attrs.c.retained_pct,
             tmnt.c.geom,
         ).select_from(tmnt.join(tmnt_attrs, tmnt.c.altid == tmnt_attrs.c.altid)),
+    )
+
+
+class Direction(Enum):
+    upstream = "Upstream"
+    downstream = "Downstream"
+
+
+class TMNTSourceControl(Base, MutableTrackedTable):
+    """This table is user editable."""
+
+    __tablename__ = "tmnt_source_control"
+
+    id = Column(Integer, primary_key=True)
+    subbasin = Column(String, nullable=False)
+    pollutant = Column(String, nullable=False)
+    # if multiple for same subbasin and pollutant, will be applied in order least to greatest
+    # default is last.
+    order = Column(Integer, default=1e6)
+
+    activity = Column(String, nullable=False)
+
+    direction = Column(sa.Enum(Direction), nullable=False)
+
+    # must be float between 0.0 and 100.0
+    percent_reduction = Column(Float, default=0.0)
+
+    __table_args__ = (
+        # allow one order per pollutant & subbasin combo
+        sa.UniqueConstraint("direction", "subbasin", "pollutant", "order"),
+        # allow one activity per subbasin
+        sa.UniqueConstraint("direction", "subbasin", "pollutant", "activity"),
+        sa.CheckConstraint("percent_reduction between 0.0 and 100.0"),
     )

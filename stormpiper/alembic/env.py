@@ -1,6 +1,7 @@
 from logging.config import fileConfig
 
 from alembic import context
+from geoalchemy2 import alembic_helpers
 from sqlalchemy import MetaData, engine_from_config, pool
 
 from stormpiper.core.config import settings
@@ -46,6 +47,7 @@ def process_revision_directives(context, revision, directives):
         script = directives[0]
         if script.upgrade_ops.is_empty():
             directives[:] = []
+    alembic_helpers.writer(context, revision, directives)
 
 
 def run_migrations_offline():
@@ -68,6 +70,7 @@ def run_migrations_offline():
         include_name=include_name,
         include_schemas=True,
         process_revision_directives=process_revision_directives,
+        render_item=alembic_helpers.render_item,
     )
 
     with context.begin_transaction():
@@ -99,6 +102,7 @@ def run_migrations_online():
             include_name=include_name,
             include_schemas=True,
             process_revision_directives=process_revision_directives,
+            render_item=alembic_helpers.render_item,
         )
 
         with context.begin_transaction():

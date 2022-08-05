@@ -1,8 +1,13 @@
+from typing import Union
+
+import geopandas
 import numpy
 import pandas
 
 
-def set_default_tmnt_attributes(tmnt_facility_df: pandas.DataFrame):
+def set_default_tmnt_attributes(
+    tmnt_facility_df: Union[pandas.DataFrame, geopandas.GeoDataFrame]
+):
 
     df = tmnt_facility_df
 
@@ -43,13 +48,16 @@ def set_default_tmnt_attributes(tmnt_facility_df: pandas.DataFrame):
     df.loc[(df["facilitytype"] == "Swale"), "facility_type"] = "vegetated_swale"
     df.loc[(df["facilitytype"] == "Pond"), "facility_type"] = "wet_pond"
 
-    retains = [
+    retains_full = [
         "bioretention_with_full_infiltration",
+        "infiltration",
+        "pervious_pavement",
+    ]
+
+    retains_partial = [
         "bioretention_with_partial_infiltration",
         "dry_extended_detention",
         "flow_duration_control_tank",
-        "infiltration",
-        "pervious_pavement",
         "vegetated_swale",
     ]
 
@@ -57,11 +65,14 @@ def set_default_tmnt_attributes(tmnt_facility_df: pandas.DataFrame):
         df.assign(captured_pct=91.0)
         .assign(
             retained_pct=lambda df: numpy.where(
-                df["facility_type"].isin(retains), 20.0, 0.0
+                df["facility_type"].isin(retains_partial),
+                20.0,
+                numpy.where(
+                    df["facility_type"].isin(retains_full), df["captured_pct"], 0.0
+                ),
             )
         )
         .assign(facility_type=lambda df: df["facility_type"].astype(str) + "_simple")
-        .reindex(columns=["altid", "facility_type", "captured_pct", "retained_pct"])
     )
 
     return df
@@ -69,7 +80,7 @@ def set_default_tmnt_attributes(tmnt_facility_df: pandas.DataFrame):
 
 def update_tmnt_attributes(engine, overwrite=False):
 
-    df = pandas.read_sql("select * from tmnt_facility", con=engine).pipe(
+    df = geopandas.read_postgis("tmnt_facility", con=engine).pipe(  # type: ignore
         set_default_tmnt_attributes
     )
 
@@ -85,6 +96,18 @@ def update_tmnt_attributes(engine, overwrite=False):
         df = df.query("altid not in @existing_altids")
 
         if not df.empty:
+            subs = geopandas.read_postgis("subbasin", con=engine)
+            df = df.sjoin(subs, how="left").reindex(
+                columns=[
+                    "altid",
+                    "basinname",
+                    "subbasin",
+                    "facility_type",
+                    "captured_pct",
+                    "retained_pct",
+                ]
+            )
+
             df.to_sql(
                 "tmnt_facility_attributes", con=conn, if_exists="append", index=False
             )

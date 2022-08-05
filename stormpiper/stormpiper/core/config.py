@@ -33,11 +33,15 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
-    # EE Auth
+    # EE
     EE_SERVICE_ACCOUNT: str = ""
     EE_PROJECT_DIRECTORY: str = ""
     EE_JSON_BASE64: str = ""
     EE_LOGIN_INTERVAL_SECONDS: int = 3600 * 4  # every four hours
+    EE_RUNOFF_PATH = (
+        "projects/ee-stormwaterheatmap/assets/production/Mean_Annual_Q_4_epochs"
+    )
+    EE_COC_PATH = "projects/ee-tacoma-watershed/assets/production/coc_concentrations"
 
     # Database
     ADMIN_ACCOUNT_PASSWORD: str = "change me with an env variable"
@@ -45,12 +49,14 @@ class Settings(BaseSettings):
     DATABASE_URL_ASYNC: str = "sqlite+aiosqlite:///./supersafe.db"
     DATABASE_URL_SYNC: str = "sqlite:///./supersafe.db"
     DATABASE_USERS_TABLE_NAME: str = "user"
+    DATABASE_POOL_RECYCLE: int = 1800
 
     # Users Auth
     COOKIE_SECURE: bool = True
     COOKIE_HTTPONLY: bool = True
     COOKIE_SAMESITE: str = "lax"
     BEARER_TOKEN_URL: str = "auth/jwt-bearer/login"
+    JWT_LIFETIME_SECONDS: int = 24 * 3600
 
     # Worker
     REDIS_BROKER_URL: str = "redis://redis:6379/0"

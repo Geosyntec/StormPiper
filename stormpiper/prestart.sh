@@ -9,8 +9,10 @@ python /stormpiper/stormpiper/pre-start.py
 
 
 # Run migrations
-echo "$prefix running migrations on db..."
-alembic upgrade head
+if [[ -n $RUN_PRESTART_MIGRATION ]]; then 
+    echo "$prefix running migrations on db..."
+    alembic upgrade head
+fi
 
 # initialize database
 echo "$prefix bootstrapping database..."

@@ -1,4 +1,4 @@
-from re import S
+import datetime
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 
 import sqlalchemy as sa
@@ -7,7 +7,8 @@ from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 
-from stormpiper.database.schemas.base import Base
+from ..schemas.base import Base, TableChangeLog
+from ..changelog import async_log, sync_log
 
 SchemaType = TypeVar("SchemaType", bound=Base)
 CreateModelType = TypeVar("CreateModelType", bound=BaseModel)
@@ -24,7 +25,9 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
         * `base`: A SQLAlchemy class
         """
         self.base = base
+        self.tablename = self.base.__tablename__
         self.id = id
+        self.changelog = TableChangeLog
 
     async def get(self, db: AsyncSession, id: Any) -> Optional[SchemaType]:
         result = await db.execute(
@@ -111,7 +114,15 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
             raise ValueError(
                 f"Attemped to update item which does not exist for {self.id}={id}"
             )
+        _ = await self.log(db=db)
+
         return obj
+
+    def sync_log(self, db: Session):
+        sync_log(tablename=self.tablename, db=db, changelog=self.changelog)
+
+    async def log(self, db: AsyncSession):
+        await async_log(tablename=self.tablename, db=db, changelog=self.changelog)
 
     # def update_many(
     #     self,

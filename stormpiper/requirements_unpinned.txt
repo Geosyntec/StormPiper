@@ -16,11 +16,11 @@ earthengine-api
 fastapi-users[sqlalchemy]>=10.0.7
 
 fiona
-GeoAlchemy2>=0.9.3,<0.11.0
-geopandas>=0.10.2,<0.11.0
-pygeos
+GeoAlchemy2>=0.12.0
+geopandas>=0.10.2,<0.12.0
 shapely>=1.8.1,<2.0.0
 pyproj
+rtree
 
 pydot
 graphviz
@@ -38,14 +38,12 @@ alembic
 
 celery[redis]
 
-watchfiles
-fastapi==0.78.0
+fastapi==0.79.0
 starlette
 pydantic
 orjson
 uvicorn
-watchgod
 Jinja2
 email-validator
 
-https://github.com/Geosyntec/nereid/archive/v0.5.3.zip
+https://github.com/Geosyntec/nereid/archive/v0.6.0.zip
