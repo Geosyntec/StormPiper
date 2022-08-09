@@ -26,7 +26,6 @@ def sync_log(*, tablename: str, db: Session, changelog: Base = TableChangeLog):
         q = sa.insert(changelog).values(tablename=tablename)
 
     db.execute(q)
-    db.commit()
 
 
 async def async_log(

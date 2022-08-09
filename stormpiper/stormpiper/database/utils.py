@@ -14,7 +14,7 @@ from tenacity import retry
 
 from ..core.utils import datetime_to_isoformat
 from .changelog import sync_log
-from .connection import session_maker
+from .connection import get_session
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -56,6 +56,15 @@ def scalars_to_gdf(
     return scalar_records_to_gdf(records, crs=crs, geometry=geometry)
 
 
+def delete_from_table(*, engine, table_name: str):
+    with engine.begin() as conn:
+        if engine.dialect.has_table(conn, table_name):
+            logger.info(f"db has table {table_name}. Deleting...")
+            conn.execute(f"delete from {table_name}")
+            logger.info(f"{table_name}. Deleted.")
+    return None
+
+
 def delete_and_replace_postgis_table(
     *, gdf: geopandas.GeoDataFrame, table_name: str, engine, **kwargs
 ) -> None:
@@ -63,16 +72,29 @@ def delete_and_replace_postgis_table(
     Overwrites contents of `table_name` with contents of gdf.
     gdf schema must match destination table if the table already exists.
     """
-    with engine.begin() as conn:
-        if engine.dialect.has_table(conn, table_name):
-            conn.execute(f"delete from {table_name}")
-        gdf = gdf.rename_geometry("geom")  # type: ignore
-        gdf.to_postgis(table_name, con=conn, if_exists="append", **kwargs)
+    model = kwargs.pop("model", None)
+    delete_from_table(engine=engine, table_name=table_name)
 
-        with session_maker() as session:
-            sync_log(tablename=table_name, db=session)
+    gdf = gdf.rename_geometry("geom")  # type: ignore
+    Session = get_session(engine=engine)
+    if "sqlite" in engine.url and model is not None:
+        logger.info("db type assumes sqlite...")
+        srid = gdf.crs.to_epsg()
+        df = gdf.assign(geom=lambda df: f"SRID={srid};" + df.geom.to_wkt())
+        with Session.begin() as session:
 
-        return None
+            batch = [model(**row) for row in df.to_dict(orient="records")]
+            session.add_all(batch)
+    else:
+        logger.info("db type assumes postgis...")
+        with engine.begin() as conn:
+            gdf.to_postgis(table_name, con=conn, if_exists="append", **kwargs)
+
+    with Session.begin() as session:
+        logger.info("recording table change...")
+        sync_log(tablename=table_name, db=session)
+
+    return None
 
 
 def delete_and_replace_table(
@@ -82,15 +104,16 @@ def delete_and_replace_table(
     Overwrites contents of `table_name` with contents of df.
     df schema must match destination table if the table already exists.
     """
+    Session = get_session(engine=engine)
     with engine.begin() as conn:
         if engine.dialect.has_table(conn, table_name):
             conn.execute(f"delete from {table_name}")
         df.to_sql(table_name, con=conn, if_exists="append", **kwargs)
 
-        with session_maker() as session:
-            sync_log(tablename=table_name, db=session)
+    with Session.begin() as session:
+        sync_log(tablename=table_name, db=session)
 
-        return None
+    return None
 
 
 @retry(
@@ -117,12 +140,12 @@ def load_spatialite_extension(conn, connection_record):
 
 
 def load_spatialite(engine):
-    listen(engine, "connect", load_spatialite_extension)
     with engine.begin() as conn:
-        conn.execute(sa.select([sa.func.InitSpatialMetaData()]))
+        conn.execute(sa.select([sa.func.InitSpatialMetaData(1)]))
 
 
 def init_spatial(engine):
+    listen(engine, "connect", load_spatialite_extension)
     inspector = sa.inspect(engine)
     if "spatial_ref_sys" in inspector.get_table_names():
         logger.info("spatial plugins already enabled.")

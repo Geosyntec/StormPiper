@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, HTTPException
 from fastapi.responses import Response
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -46,8 +46,13 @@ async def get_tmnt(
     db: AsyncSession = Depends(get_async_session),
 ):
 
-    result = await db.execute(
-        select(tmnt.TMNT_View).where(tmnt.TMNT_View.altid == altid)
+    result = (
+        (await db.execute(select(tmnt.TMNT_View).where(tmnt.TMNT_View.altid == altid)))
+        .scalars()
+        .first()
     )
 
-    return result.scalars().first()
+    if result is None:
+        raise HTTPException(status_code=404, detail=f"not found: {altid}")
+
+    return result
