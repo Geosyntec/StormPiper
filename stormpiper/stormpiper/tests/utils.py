@@ -1,49 +1,24 @@
-from pathlib import Path
-from typing import AsyncGenerator, Generator
-
-import sqlalchemy as sa
+import geopandas
+import pandas
 from passlib.context import CryptContext
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker
+
 
 from stormpiper.core.config import settings
+from stormpiper.database.connection import get_session
 from stormpiper.database.schemas.base import Base, User
+from stormpiper.database import utils
+from stormpiper.tests.data import _base
+from stormpiper.src import tasks
+
 
 hasher = CryptContext(schemes=["bcrypt"], deprecated="auto").hash
 
 
-def get_engine():
-    path = Path(__file__).parent.resolve() / "test.db"
-    engine = sa.create_engine(f"sqlite:///{path}")
-    return engine
-
-
-def get_async_engine():
-    path = Path(__file__).parent.resolve() / "test.db"
-    async_engine = create_async_engine(f"sqlite+aiosqlite:///{path}")
-    return async_engine
-
-
-engine = get_engine()
-async_engine = get_async_engine()
-session_maker = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-
-async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
-
-    async_session_maker = sessionmaker(
-        async_engine, class_=AsyncSession, expire_on_commit=False
-    )
-
-    async with async_session_maker() as session:
-        yield session
-
-
-def clear_db():
+def clear_db(engine):
     tables = Base.metadata.tables.keys()
     with engine.begin() as conn:
         for table in tables:
-            conn.execute(f"delete from {table}")
+            conn.execute(f'delete from "{table}";')
 
 
 def get_token(app, username, password):
@@ -58,11 +33,25 @@ def get_token(app, username, password):
     return response
 
 
-def seed_db():
+def admin_token(client):
+    response = get_token(client, "admin@geosyntec.com", settings.ADMIN_ACCOUNT_PASSWORD)
 
-    with session_maker.begin() as session:
+    return response.json()
 
-        admin = User(
+
+def user_token(client):
+    response = get_token(client, "existing_user@example.com", "existing_user_password")
+
+    return response.json()
+
+
+def seed_users(engine):
+
+    Session = get_session(engine)
+
+    with Session.begin() as session:  # type: ignore
+
+        admin = User(  # type: ignore
             email="admin@geosyntec.com",
             hashed_password=hasher(settings.ADMIN_ACCOUNT_PASSWORD),
             is_active=True,
@@ -71,7 +60,7 @@ def seed_db():
             role="admin",
         )
 
-        existing_user = User(
+        existing_user = User(  # type: ignore
             email="existing_user@example.com",
             hashed_password=hasher("existing_user_password"),
             is_active=True,
@@ -81,15 +70,48 @@ def seed_db():
         batch = [admin, existing_user]
 
         session.add_all(batch)
-        session.commit()
-
-    # with Session.begin() as session:
-    #     result = session.query(User)
-    #     print([(i.id, i.email, i.hashed_password) for i in result.all()])
-
-    # .. initial data here
 
 
-# def reset_db():
-#     clear_db()
-#     seed_db()
+def seed_tacoma_gis_tables(engine):
+
+    jsons = _base.datadir.glob("*.geojson")
+
+    for f in jsons:
+        gdf = geopandas.read_file(f).to_crs(settings.TACOMA_EPSG)
+        table_name = f.stem
+
+        utils.delete_and_replace_postgis_table(
+            gdf=gdf,
+            table_name=table_name,
+            engine=engine,
+            index=False,
+        )
+
+
+def seed_tacoma_derived_tables(engine):
+
+    jsons = _base.datadir.glob("*.json")
+
+    for f in jsons:
+        df = pandas.read_json(f, orient="table")
+        table_name = f.stem
+
+        utils.delete_and_replace_table(
+            df=df,  # type: ignore
+            table_name=table_name,
+            engine=engine,
+            index=False,
+        )
+
+    tasks.delete_and_refresh_met_table(engine=engine)
+    tasks.delete_and_refresh_graph_edge_table(engine=engine)
+    tasks.delete_and_refresh_result_table(engine=engine)
+
+
+def seed_db(engine):
+
+    clear_db(engine)
+    seed_users(engine)
+    seed_tacoma_gis_tables(engine)
+    tasks.update_tmnt_attributes(engine=engine)
+    seed_tacoma_derived_tables(engine)
