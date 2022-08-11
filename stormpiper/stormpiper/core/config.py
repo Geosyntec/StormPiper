@@ -34,6 +34,7 @@ class Settings(BaseSettings):
         raise ValueError(v)
 
     # EE
+    EE_LOGIN_ON_STARTUP: bool = True
     EE_SERVICE_ACCOUNT: str = ""
     EE_PROJECT_DIRECTORY: str = ""
     EE_JSON_BASE64: str = ""

@@ -51,7 +51,10 @@ def create_app(
         setattr(app, "sessions", sessions)
 
         # login to ee
-        asyncio.create_task(ee_continuous_login(_settings.EE_LOGIN_INTERVAL_SECONDS))
+        if _settings.EE_LOGIN_ON_STARTUP:
+            asyncio.create_task(
+                ee_continuous_login(_settings.EE_LOGIN_INTERVAL_SECONDS)
+            )
 
     @app.on_event("shutdown")
     async def shutdown():
