@@ -56,15 +56,6 @@ def scalars_to_gdf(
     return scalar_records_to_gdf(records, crs=crs, geometry=geometry)
 
 
-def delete_from_table(*, engine, table_name: str):
-    with engine.begin() as conn:
-        if engine.dialect.has_table(conn, table_name):
-            logger.info(f"db has table {table_name}. Deleting...")
-            conn.execute(f"delete from {table_name}")
-            logger.info(f"{table_name}. Deleted.")
-    return None
-
-
 def delete_and_replace_postgis_table(
     *, gdf: geopandas.GeoDataFrame, table_name: str, engine, **kwargs
 ) -> None:
@@ -72,27 +63,20 @@ def delete_and_replace_postgis_table(
     Overwrites contents of `table_name` with contents of gdf.
     gdf schema must match destination table if the table already exists.
     """
-    model = kwargs.pop("model", None)
-    delete_from_table(engine=engine, table_name=table_name)
+    if len(gdf) == 0:
+        raise ValueError(f"No data provided to replace table {table_name}. Aborting.")
 
     gdf = gdf.rename_geometry("geom")  # type: ignore
     Session = get_session(engine=engine)
-    if "sqlite" in engine.url and model is not None:
-        logger.info("db type assumes sqlite...")
-        srid = gdf.crs.to_epsg()
-        df = gdf.assign(geom=lambda df: f"SRID={srid};" + df.geom.to_wkt())
+
+    with engine.begin() as conn:
+        if engine.dialect.has_table(conn, table_name):
+            conn.execute(f'delete from "{table_name}";')
+        gdf.to_postgis(table_name, con=conn, if_exists="append", **kwargs)
+
         with Session.begin() as session:
-
-            batch = [model(**row) for row in df.to_dict(orient="records")]
-            session.add_all(batch)
-    else:
-        logger.info("db type assumes postgis...")
-        with engine.begin() as conn:
-            gdf.to_postgis(table_name, con=conn, if_exists="append", **kwargs)
-
-    with Session.begin() as session:
-        logger.info("recording table change...")
-        sync_log(tablename=table_name, db=session)
+            logger.info("recording table change...")
+            sync_log(tablename=table_name, db=session)
 
     return None
 
@@ -104,14 +88,16 @@ def delete_and_replace_table(
     Overwrites contents of `table_name` with contents of df.
     df schema must match destination table if the table already exists.
     """
+    if len(df) == 0:
+        raise ValueError(f"No data provided to replace table {table_name}. Aborting.")
     Session = get_session(engine=engine)
     with engine.begin() as conn:
         if engine.dialect.has_table(conn, table_name):
-            conn.execute(f"delete from {table_name}")
+            conn.execute(f'delete from "{table_name}";')
         df.to_sql(table_name, con=conn, if_exists="append", **kwargs)
 
-    with Session.begin() as session:
-        sync_log(tablename=table_name, db=session)
+        with Session.begin() as session:
+            sync_log(tablename=table_name, db=session)
 
     return None
 
