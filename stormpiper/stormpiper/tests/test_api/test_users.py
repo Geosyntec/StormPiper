@@ -2,8 +2,11 @@ import uuid
 
 import pytest
 
+from .. import utils as test_utils
 
-def test_create_user(client, admin_token):
+
+def test_create_user(client):
+    admin_token = test_utils.admin_token(client)
     # create it
     response = client.post(
         "/auth/register",
@@ -38,8 +41,8 @@ def test_create_user(client, admin_token):
         ("/api/rest/users/0001", "get", {}, False),
     ],
 )
-def test_user_mods(client, route, method, blob, authorized, user_token):
-
+def test_user_mods(client, route, method, blob, authorized):
+    user_token = test_utils.user_token(client)
     base_response = client.get(
         "/api/rest/users/me",
         headers={"Authorization": f"Bearer {user_token['access_token']}"},

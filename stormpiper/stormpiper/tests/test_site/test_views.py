@@ -1,13 +1,15 @@
 import pytest
 
+from .. import utils as test_utils
+
 
 @pytest.mark.parametrize(
     "route",
     ["/tileserver"],
 )
-def test_tileserver_view_response(client_local, route, user_token):
-    client = client_local
-    response = client.get(
+def test_tileserver_view_response(client_local, route):
+    user_token = test_utils.user_token(client_local)
+    response = client_local.get(
         route,
         headers={"Authorization": f"Bearer {user_token['access_token']}"},
     )
