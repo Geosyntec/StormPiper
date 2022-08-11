@@ -85,7 +85,10 @@ def validate_facility_patch(
     model = getattr(treatment_facility_models, model_str, None)
 
     if model is None:
-        e = f"facility type '{facility_type}' is invalid. Valid facility types are: {list(facility_type_context.keys())}"
+        e = (
+            f"facility type '{facility_type}' is invalid. "
+            f"Valid facility types are: {list(facility_type_context.keys())}"
+        )
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=e)
     md = dict(node_id="", ref_data_key="", design_storm_depth_inches=1)
     md.update(
