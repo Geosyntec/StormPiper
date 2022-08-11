@@ -3,6 +3,9 @@ COPY ./stormpiper/redis.conf /redis.conf
 CMD ["redis-server", "/redis.conf"]
 
 
+FROM postgis/postgis:14-3.2 as postgis
+
+
 FROM node:16-buster as build-frontend
 WORKDIR /app
 COPY ./stormpiper/stormpiper/spa/package*.json /app/
