@@ -70,10 +70,10 @@ restart: ## restart the redis server and the background workers
 	docker compose -f docker-stack.yml restart redis bg_worker beat_worker
 
 test: ## run tests quickly with the default Python
-	scripts/test.sh -xsv -m "not integration"
+	bash scripts/test.sh -xsv -m "not integration"
 
 lint: clean
-	scripts/lint.sh
+	bash scripts/lint.sh
 
 test-ci: stack-ci ## run tests quickly with the default Python
 	docker compose -f docker-stack.yml up -d stormpiper-test postgis
