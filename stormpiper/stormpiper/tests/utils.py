@@ -2,14 +2,12 @@ import geopandas
 import pandas
 from passlib.context import CryptContext
 
-
 from stormpiper.core.config import settings
+from stormpiper.database import utils
 from stormpiper.database.connection import get_session
 from stormpiper.database.schemas.base import Base, User
-from stormpiper.database import utils
-from stormpiper.tests.data import _base
 from stormpiper.src import tasks
-
+from stormpiper.tests.data import _base
 
 hasher = CryptContext(schemes=["bcrypt"], deprecated="auto").hash
 

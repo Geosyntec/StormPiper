@@ -40,7 +40,10 @@ def compute_loading_zonal_stats(
         zones = lgu_boundary.to_crs(4326).to_json()  # type: ignore  # type: ignore
 
         df_wide = loading.zonal_stats(
-            runoff_path=runoff_path, concentration_path=coc_path, zones=zones, join_id="node_id"
+            runoff_path=runoff_path,
+            concentration_path=coc_path,
+            zones=zones,
+            join_id="node_id",
         )
     else:
         logger.error("cannot log in to Earth Engine. Aborting loading calculation.")

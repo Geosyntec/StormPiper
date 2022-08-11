@@ -1,8 +1,8 @@
-from ._base import datadir
-
 from stormpiper.connections import arcgis
-from stormpiper.src.tmnt import spatial
 from stormpiper.src import loading
+from stormpiper.src.tmnt import spatial
+
+from ._base import datadir
 
 
 def fetch_tacoma_gis_data():  # pragma: no cover
