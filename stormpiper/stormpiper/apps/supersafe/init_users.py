@@ -16,7 +16,7 @@ get_user_manager_context = contextlib.asynccontextmanager(get_user_manager)
 
 async def create_user(
     email: EmailStr, password: str, is_superuser: bool = False, **kwargs
-):
+):  # pragma: no cover
     try:
         print(f"trying to create user {email}")
         async with get_async_session_context() as session:
@@ -35,7 +35,7 @@ async def create_user(
         print(f"User {email} already exists")
 
 
-async def create_admin():
+async def create_admin():  # pragma: no cover
     return await create_user(
         email="admin@geosyntec.com",  # type: ignore
         password=settings.ADMIN_ACCOUNT_PASSWORD,
@@ -43,19 +43,19 @@ async def create_admin():
     )
 
 
-async def create_public():
+async def create_public():  # pragma: no cover
     return await create_user(
         email="public@nowhere.com",  # type: ignore
         password="unsafe_password",
     )
 
 
-async def create_all():
+async def create_all():  # pragma: no cover
     await create_admin()
     await create_public()
 
 
-def main():
+def main():  # pragma: no cover
     import asyncio
     import platform
 
@@ -65,5 +65,5 @@ def main():
     asyncio.run(create_all())
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()

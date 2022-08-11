@@ -5,7 +5,7 @@ from fastapi import APIRouter, FastAPI
 from stormpiper.core.config import settings
 
 from . import __version__, models
-from .users import bearer_backend, cookie_backend, create_db_and_tables, fastapi_users
+from .users import bearer_backend, cookie_backend, fastapi_users
 
 
 def create_router(**kwargs):
@@ -64,15 +64,5 @@ def create_app(
 
     router = create_router()
     app.include_router(router)
-
-    async def startup():
-        # Not needed if you setup a migration system like Alembic
-        await create_db_and_tables()
-
-    setattr(app, "startup", startup)
-
-    @app.on_event("startup")
-    async def call_startup():
-        await startup()
 
     return app
