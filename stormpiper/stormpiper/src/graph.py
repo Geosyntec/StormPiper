@@ -3,15 +3,13 @@ import pandas
 from stormpiper.database.connection import engine
 
 
-def build_edge_list_from_database():
-    lgu = (
-        pandas.read_sql("lgu_boundary", con=engine)
-        .assign(basinname=lambda df: "B_" + df["basinname"].str.replace(" ", "_"))
-        .assign(ntype="land_surface")
-    )
-    fac = pandas.read_sql("select * from tmnt_v", con=engine).assign(
-        ntype="tmnt_structural"
-    )
+def build_edge_list(lgu_boundary, tmnt_v):
+
+    lgu = lgu_boundary.assign(
+        basinname=lambda df: "B_" + df["basinname"].str.replace(" ", "_")
+    ).assign(ntype="land_surface")
+
+    fac = tmnt_v.assign(ntype="tmnt_structural")
 
     da_to_tmnt = (
         lgu.dropna(subset=["altid"])
@@ -54,3 +52,13 @@ def build_edge_list_from_database():
     )
 
     return edge_list
+
+
+def build_edge_list_from_database(*, engine=engine):
+
+    with engine.begin() as conn:
+
+        lgu = pandas.read_sql("lgu_boundary", con=conn)
+        fac = pandas.read_sql("select * from tmnt_v", con=conn)
+
+    return build_edge_list(lgu, fac)
