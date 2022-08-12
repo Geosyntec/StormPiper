@@ -39,16 +39,16 @@ def view_doesnt_exist(ddl, target, connection, **kw):
 def view(name, metadata, selectable):
     t = table(name)
 
-    t._columns._populate_separate_keys(
+    t._columns._populate_separate_keys(  # type: ignore
         col._make_proxy(t) for col in selectable.selected_columns
     )
 
     event.listen(
         metadata,
         "after_create",
-        CreateView(name, selectable).execute_if(callable_=view_doesnt_exist),
+        CreateView(name, selectable).execute_if(callable_=view_doesnt_exist),  # type: ignore
     )
     event.listen(
-        metadata, "before_drop", DropView(name).execute_if(callable_=view_exists)
+        metadata, "before_drop", DropView(name).execute_if(callable_=view_exists)  # type: ignore
     )
     return t

@@ -1,4 +1,5 @@
 from typing import Any, Dict
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -19,7 +20,7 @@ async def is_dirty(db: AsyncSession) -> Dict[str, Any]:
         .scalars()
         .first()
     )
-    if not result:
+    if not result:  # pragma: no cover
         return response  # it's dirty if there are no results
 
     result_record = orm_to_dict(result)

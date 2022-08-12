@@ -2,10 +2,9 @@ from fastapi import Depends
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID, SQLAlchemyUserDatabase
 from sqlalchemy import Column, Enum, String
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 
 from stormpiper.core.config import settings
-from stormpiper.database.connection import async_engine, get_async_session
+from stormpiper.database.connection import get_async_session
 from stormpiper.database.schemas.base_class import Base
 
 from .models import Role
@@ -21,7 +20,7 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
     role = Column(Enum(Role), server_default="none")
 
 
-async def create_db_and_tables():
+async def create_db_and_tables(async_engine):
     async with async_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 

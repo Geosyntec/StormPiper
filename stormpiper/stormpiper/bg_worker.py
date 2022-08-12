@@ -1,7 +1,7 @@
 import logging
 from typing import Optional
 
-from celery import Celery, chain, group, chord
+from celery import Celery, chain, group
 from celery.schedules import crontab
 
 from stormpiper.core.config import settings
@@ -371,86 +371,6 @@ def run_refresh_task():
 
     _ = Workflows._group3().get(disable_sync_subtasks=False, timeout=120)
 
-    return True
-
-
-@celery_app.task(acks_late=True, track_started=True)
-def _deprecated_refresh_all_tables():  # pragma: no cover
-    logger.info("background refresh_all_tables")
-    # chain runs elements in sequence
-    # group runs elements in parallel
-    try:
-
-        group1 = group_delete_and_refresh_tacoma_gis_tables | check_results.s(
-            msg="pulled static gis resources"
-        )
-
-        group2 = group(
-            update_tmnt_attributes.si(),
-            chain_refresh_lgu_tables,
-        ) | check_results.s(msg="update tmnt and refresh LGU tables")
-
-        group3 = group(
-            chain(
-                delete_and_refresh_graph_edge_table.si(),
-                delete_and_refresh_result_table.si(),
-                check_results.s(msg="update graph and resolve results"),
-            ),
-        ) | check_results.s(msg="update results")
-
-        tst = chord(
-            [
-                chain(
-                    group1,
-                    group2,
-                    group3,
-                    check_results.s(msg="refresh all tables"),
-                ),
-            ]
-        )(check_results.s(msg="finalize task"))
-
-        return getattr(tst, "id", "error -- no task id")
-
-        # t2 = chord(
-        #     # requires updated tmnt facility and subbasin tables
-        #     [
-        #         update_tmnt_attributes.si(),
-        #         refresh_lgu_tables.si(),
-        #     ]
-        # )(check_chord_results.s(msg="update tmnt and refresh LGU tables"))
-
-        # for t in [t1, t2]:
-        #     t.get()
-        #     if not t.status.lower() == "success":
-        #         return False
-
-        # tsk = chord(chain(t1, t2))(check_chord_results.s(msg="refresh all tables"))
-
-        # tsk = chain(
-        # parallel refresh client data from web, including esri/arcgis
-        # delete_and_refresh_tacoma_gis_tables.si(),
-        # parallel jobs to update secondary derived tables and resources
-        # chord(
-        #     # requires updated tmnt facility and subbasin tables
-        #     [
-        #         update_tmnt_attributes.si(),
-        #         refresh_lgu_tables.si(),
-        #     ]
-        # )(check_chord_results.s()).si(),
-        # chord(
-        #     [
-        # chain(
-        #     delete_and_refresh_graph_edge_table.si(),
-        #     delete_and_refresh_result_table.si(),
-        # )
-        #     ]
-        # )(check_chord_results.s()),
-        # )
-        # tsk.apply_async()
-
-    except Exception as e:
-        logger.exception(e)
-        return False
     return True
 
 

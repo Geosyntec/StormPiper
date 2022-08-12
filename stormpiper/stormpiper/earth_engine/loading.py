@@ -79,7 +79,7 @@ def get_loading_zonal_stats_df(info: dict) -> pandas.DataFrame:
 
 @lru_cache
 def zonal_stats(
-    runoff_path: str, concentration_path: str, zones: str, join_id="id"
+    *, runoff_path: str, concentration_path: str, zones: str, join_id="id"
 ) -> pandas.DataFrame:
     """
     zones can be a string path to eeobject or json.dumps

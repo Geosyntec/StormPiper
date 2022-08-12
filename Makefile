@@ -54,11 +54,13 @@ stack: ## write the docker-stack.yml file
 		-f docker-compose.develop.yml \
 		-f docker-compose.dev-volume.yml \
 		-f docker-compose.dev-environment.yml \
+		-f docker-compose.dev-postgis.yml \
 		config > docker-stack.yml
 
 stack-ci: ## write the docker-stack.yml file for ci
 	docker compose \
 		-f docker-compose.develop.yml \
+		-f docker-compose.dev-postgis.yml \
 		config > docker-stack.yml
 
 build: ## build the docker-stack.yml file
@@ -68,18 +70,23 @@ restart: ## restart the redis server and the background workers
 	docker compose -f docker-stack.yml restart redis bg_worker beat_worker
 
 test: ## run tests quickly with the default Python
-	scripts/test.sh
+	bash scripts/test.sh -xsv -m "not integration"
+
+lint: clean
+	bash scripts/lint.sh
 
 test-ci: stack-ci ## run tests quickly with the default Python
-	docker compose -f docker-stack.yml up -d stormpiper-test
-	docker compose -f docker-stack.yml exec stormpiper-test pytest -xv -m "not integration"
+	docker compose -f docker-stack.yml up stormpiper-test postgis -d
+	docker compose -f docker-stack.yml exec stormpiper-test bash prestart-tests.sh  
+	docker compose -f docker-stack.yml exec stormpiper-test pytest -xsv  -m "not integration"
 
 coverage-ci: stack-ci ## run tests on CI with the default Python
-	docker compose -f docker-stack.yml up -d stormpiper-test
+	docker compose -f docker-stack.yml up stormpiper-test postgis -d
+	docker compose -f docker-stack.yml exec stormpiper-test bash prestart-tests.sh  
 	docker compose -f docker-stack.yml exec stormpiper-test coverage run -m pytest -xv -m "not integration"
-	docker compose -f docker-stack.yml exec stormpiper-test coverage report -mi
 
 coverage: clean restart ## check code coverage quickly with the default Python
+	docker compose -f docker-stack.yml up -d stormpiper-test postgis
 	docker compose -f docker-stack.yml exec stormpiper-test coverage run -m pytest -x
 	docker compose -f docker-stack.yml exec stormpiper-test coverage report -mi
 
@@ -94,7 +101,10 @@ up: stack ## bring up the containers and run startup commands
 up-d: stack ## bring up the containers in '-d' mode 
 	docker compose -f docker-stack.yml up -d
 
-down: ## bring down the containers and detach volumes
+down: ## bring down the containers
+	docker compose -f docker-stack.yml down
+
+down-v: ## bring down the containers and detach volumes
 	docker compose -f docker-stack.yml down -v
 
 dev-server: stack ## start a development server

@@ -7,8 +7,9 @@ from stormpiper.database.utils import (
     delete_and_replace_postgis_table,
     delete_and_replace_table,
 )
-from .tmnt import default_attrs, spatial
+
 from . import graph, loading, met, solve_structural_wq
+from .tmnt import default_attrs, spatial
 
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
@@ -27,7 +28,9 @@ def update_tmnt_attributes(engine=engine, overwrite=None):
     return df
 
 
-def delete_and_refresh_tmnt_facility_table(*, bmp_url=None, codes_url=None, cols=None):
+def delete_and_refresh_tmnt_facility_table(
+    *, engine=engine, bmp_url=None, codes_url=None, cols=None
+):
 
     logger.info("fetching tmnt facilities")
     gdf = arcgis.get_tmnt_facilities(bmp_url=bmp_url, codes_url=codes_url, cols=cols)
@@ -39,7 +42,7 @@ def delete_and_refresh_tmnt_facility_table(*, bmp_url=None, codes_url=None, cols
     return gdf
 
 
-def delete_and_refresh_tmnt_facility_delineation_table(*, url=None):
+def delete_and_refresh_tmnt_facility_delineation_table(*, engine=engine, url=None):
 
     logger.info("fetching tmnt facility delineations")
     gdf = arcgis.get_tmnt_facility_delineations(url=url)
@@ -53,7 +56,7 @@ def delete_and_refresh_tmnt_facility_delineation_table(*, url=None):
     return gdf
 
 
-def delete_and_refresh_subbasin_table(*, url=None, cols=None):
+def delete_and_refresh_subbasin_table(*, engine=engine, url=None, cols=None):
 
     logger.info("fetching subbasin info")
     gdf = arcgis.get_subbasins(url=url, cols=cols)
@@ -65,9 +68,9 @@ def delete_and_refresh_subbasin_table(*, url=None, cols=None):
     return gdf
 
 
-def delete_and_refresh_lgu_boundary_table():
+def delete_and_refresh_lgu_boundary_table(*, engine=engine):
     logger.info("Creating lgu_boundary with the overlay rodeo")
-    gdf = spatial.overlay_rodeo()
+    gdf = spatial.overlay_rodeo_from_database(engine)
 
     logger.info("deleting and replacing lgu_boundary table")
     delete_and_replace_postgis_table(gdf=gdf, table_name="lgu_boundary", engine=engine)
@@ -76,9 +79,9 @@ def delete_and_refresh_lgu_boundary_table():
     return gdf
 
 
-def delete_and_refresh_lgu_load_table():
+def delete_and_refresh_lgu_load_table(*, engine=engine):
     logger.info("Recomputing LGU Loading with Earth Engine")
-    df = loading.compute_loading()
+    df = loading.compute_loading_db(engine=engine)
 
     if df is None:
         logger.error("TASK FAILED: delete_and_refresh_lgu_load_table.")
@@ -91,7 +94,7 @@ def delete_and_refresh_lgu_load_table():
     return df
 
 
-def delete_and_refresh_met_table():
+def delete_and_refresh_met_table(*, engine=engine):
     logger.info("Reloading Met Table")
     df = met.create_met_dataframe()
 
@@ -102,9 +105,9 @@ def delete_and_refresh_met_table():
     return df
 
 
-def delete_and_refresh_graph_edge_table():
+def delete_and_refresh_graph_edge_table(*, engine=engine):
     logger.info("Reloading Graph Edge Table")
-    df = graph.build_edge_list_from_database()
+    df = graph.build_edge_list_from_database(engine=engine)
 
     logger.info("deleting and replacing graph_edge table")
     delete_and_replace_table(df=df, table_name="graph_edge", engine=engine)
@@ -113,10 +116,10 @@ def delete_and_refresh_graph_edge_table():
     return df
 
 
-def delete_and_refresh_result_table():
+def delete_and_refresh_result_table(*, engine=engine):
     logger.info("Solving Watershed...")
 
-    df = solve_structural_wq.solve_wq_epochs_from_db()
+    df = solve_structural_wq.solve_wq_epochs_from_db(engine=engine)
 
     logger.info("deleting and replacing results_blob table")
     delete_and_replace_table(

@@ -17,5 +17,6 @@ ResultView = create_model(
     **{
         c: (Optional[str] if c in strings else Optional[float], ...)
         for c in ["epoch_id"] + COLS
+        if not c.startswith("_")
     },
 )

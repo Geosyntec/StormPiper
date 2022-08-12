@@ -14,7 +14,7 @@ from fastapi_users.db import SQLAlchemyUserDatabase
 
 from stormpiper.core.config import settings
 
-from .db import User, create_db_and_tables, get_async_session, get_user_db
+from .db import User, get_async_session, get_user_db
 from .models import Role, UserCreate, UserRead, UserUpdate
 
 logging.basicConfig(level=settings.LOGLEVEL)

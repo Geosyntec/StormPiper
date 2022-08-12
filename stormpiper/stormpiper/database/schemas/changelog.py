@@ -1,6 +1,5 @@
 from sqlalchemy import Column, DateTime, Integer, String, func
 
-
 from .base_class import Base, TrackedTable
 
 

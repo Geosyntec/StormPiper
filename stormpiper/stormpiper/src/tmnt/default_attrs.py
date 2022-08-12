@@ -72,7 +72,13 @@ def set_default_tmnt_attributes(
                 ),
             )
         )
-        .assign(facility_type=lambda df: df["facility_type"].astype(str) + "_simple")
+        .assign(
+            facility_type=lambda df: numpy.where(
+                df["facility_type"] != "no_treatment",
+                df["facility_type"].astype(str) + "_simple",
+                df["facility_type"],
+            )
+        )
     )
 
     return df

@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import Response
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,7 +9,7 @@ from stormpiper.apps.supersafe.users import check_user
 from stormpiper.core.config import settings
 from stormpiper.database.connection import get_async_session
 from stormpiper.database.schemas import subbasin
-from stormpiper.database.utils import scalar_records_to_gdf, scalars_to_records
+from stormpiper.database.utils import scalars_to_gdf
 from stormpiper.models.base import BaseModel
 
 router = APIRouter(dependencies=[Depends(check_user)])
@@ -41,12 +41,10 @@ async def get_all_subbasins(
 
     if f == "geojson":
         # TODO: cache this server-side
-        records = scalars_to_records(scalars)
-        gdf = scalar_records_to_gdf(
-            records, crs=settings.TACOMA_EPSG, geometry="geom"
-        ).to_crs(epsg=4326)
-        if not gdf:
-            return
+
+        gdf = scalars_to_gdf(scalars, crs=settings.TACOMA_EPSG, geometry="geom")
+        gdf.to_crs(epsg=4326, inplace=True)
+
         return Response(
             content=gdf.to_json(),
             media_type="application/json",
@@ -58,7 +56,7 @@ async def get_all_subbasins(
 
 @router.get(
     "/{subbasin_id}",
-    response_model=List[SubbasinResponse],
+    response_model=SubbasinResponse,
     name="subbasin:get_subbasin",
 )
 async def get_subbasin(
@@ -68,6 +66,9 @@ async def get_subbasin(
 
     q = select(subbasin.Subbasin).where(subbasin.Subbasin.subbasin == subbasin_id)
     result = await db.execute(q)
-    scalars = result.scalars().first()
+    scalar = result.scalars().first()
 
-    return scalars
+    if scalar is None:
+        raise HTTPException(status_code=404, detail=f"not found: {subbasin_id}")
+
+    return scalar

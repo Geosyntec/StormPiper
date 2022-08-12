@@ -12,9 +12,9 @@ from tenacity import stop_after_attempt  # type: ignore
 from tenacity import wait_fixed  # type: ignore
 from tenacity import retry
 
-from stormpiper.core.utils import datetime_to_isoformat
+from ..core.utils import datetime_to_isoformat
 from .changelog import sync_log
-from .connection import session_maker
+from .connection import get_session
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -63,16 +63,22 @@ def delete_and_replace_postgis_table(
     Overwrites contents of `table_name` with contents of gdf.
     gdf schema must match destination table if the table already exists.
     """
+    if len(gdf) == 0:
+        raise ValueError(f"No data provided to replace table {table_name}. Aborting.")
+
+    gdf = gdf.rename_geometry("geom")  # type: ignore
+    Session = get_session(engine=engine)
+
     with engine.begin() as conn:
         if engine.dialect.has_table(conn, table_name):
-            conn.execute(f"delete from {table_name}")
-        gdf = gdf.rename_geometry("geom")  # type: ignore
+            conn.execute(f'delete from "{table_name}";')
         gdf.to_postgis(table_name, con=conn, if_exists="append", **kwargs)
 
-        with session_maker() as session:
+        with Session.begin() as session:
+            logger.info("recording table change...")
             sync_log(tablename=table_name, db=session)
 
-        return None
+    return None
 
 
 def delete_and_replace_table(
@@ -82,15 +88,18 @@ def delete_and_replace_table(
     Overwrites contents of `table_name` with contents of df.
     df schema must match destination table if the table already exists.
     """
+    if len(df) == 0:
+        raise ValueError(f"No data provided to replace table {table_name}. Aborting.")
+    Session = get_session(engine=engine)
     with engine.begin() as conn:
         if engine.dialect.has_table(conn, table_name):
-            conn.execute(f"delete from {table_name}")
+            conn.execute(f'delete from "{table_name}";')
         df.to_sql(table_name, con=conn, if_exists="append", **kwargs)
 
-        with session_maker() as session:
+        with Session.begin() as session:
             sync_log(tablename=table_name, db=session)
 
-        return None
+    return None
 
 
 @retry(
@@ -117,12 +126,12 @@ def load_spatialite_extension(conn, connection_record):
 
 
 def load_spatialite(engine):
-    listen(engine, "connect", load_spatialite_extension)
     with engine.begin() as conn:
-        conn.execute(sa.select([sa.func.InitSpatialMetaData()]))
+        conn.execute(sa.select([sa.func.InitSpatialMetaData(1)]))
 
 
 def init_spatial(engine):
+    listen(engine, "connect", load_spatialite_extension)
     inspector = sa.inspect(engine)
     if "spatial_ref_sys" in inspector.get_table_names():
         logger.info("spatial plugins already enabled.")

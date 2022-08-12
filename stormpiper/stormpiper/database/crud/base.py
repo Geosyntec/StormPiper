@@ -7,8 +7,8 @@ from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 
-from ..schemas.base import Base, TableChangeLog
 from ..changelog import async_log, sync_log
+from ..schemas.base import Base, TableChangeLog
 
 SchemaType = TypeVar("SchemaType", bound=Base)
 CreateModelType = TypeVar("CreateModelType", bound=BaseModel)

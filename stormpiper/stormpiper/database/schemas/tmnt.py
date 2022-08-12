@@ -113,7 +113,7 @@ class TMNT_View(Base):
             tmnt_attrs.c.subbasin,
             tmnt_attrs.c.treatment_strategy,
             tmnt_attrs.c.facility_type,
-            tmnt_attrs.c.ref_data_key,
+            tmnt_attrs.c.ref_data_key,  # type: ignore
             tmnt_attrs.c.design_storm_depth_inches,
             tmnt_attrs.c.tributary_area_tc_min,
             tmnt_attrs.c.total_volume_cuft,

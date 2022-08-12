@@ -1,5 +1,6 @@
 import logging
 from textwrap import dedent
+from typing import Optional
 
 import geopandas
 import pandas
@@ -25,24 +26,28 @@ POC_REMAPPER = {
 
 
 def compute_loading_zonal_stats(
-    engine=engine, runoff_path=settings.EE_RUNOFF_PATH, coc_path=settings.EE_COC_PATH
-):
+    *,
+    lgu_boundary: geopandas.GeoDataFrame,
+    runoff_path: Optional[str] = None,
+    coc_path: Optional[str] = None,
+) -> pandas.DataFrame:
+
+    runoff_path = runoff_path or settings.EE_RUNOFF_PATH
+    coc_path = coc_path or settings.EE_COC_PATH
 
     if login():
 
-        with engine.begin() as conn:
-            zones = (
-                geopandas.read_postgis("lgu_boundary", con=conn)
-                .to_crs(4326)  # type: ignore
-                .to_json()  # type: ignore
-            )
+        zones = lgu_boundary.to_crs(4326).to_json()  # type: ignore  # type: ignore
 
         df_wide = loading.zonal_stats(
-            runoff_path, coc_path, zones=zones, join_id="node_id"
+            runoff_path=runoff_path,
+            concentration_path=coc_path,
+            zones=zones,
+            join_id="node_id",
         )
     else:
         logger.error("cannot log in to Earth Engine. Aborting loading calculation.")
-        return
+        return pandas.DataFrame([])
 
     return df_wide
 
@@ -72,16 +77,27 @@ def wide_load_to_tidy_load(wide_load: pandas.DataFrame, poc_remapper=POC_REMAPPE
     return df_tidy
 
 
-def compute_loading(engine=engine):
+def compute_loading(*, lgu_boundary, runoff_path=None, coc_path=None):
     try:
-        wide_load = compute_loading_zonal_stats(engine=engine)
-        if wide_load is not None:
+        wide_load = compute_loading_zonal_stats(
+            lgu_boundary=lgu_boundary, runoff_path=runoff_path, coc_path=coc_path
+        )
+        if len(wide_load) > 0:
             tidy_load = wide_load_to_tidy_load(wide_load)
             return tidy_load
         return
     except Exception:
         logger.error("Could not create loading zonal stats from ee.")
         raise
+
+
+def compute_loading_db(engine=engine, runoff_path=None, coc_path=None):
+
+    with engine.begin() as conn:
+        zones = geopandas.read_postgis("lgu_boundary", con=conn)
+
+    df = compute_loading(lgu_boundary=zones, runoff_path=runoff_path, coc_path=coc_path)
+    return df
 
 
 ### prep loading data for input into nereid
