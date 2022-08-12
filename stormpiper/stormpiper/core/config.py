@@ -47,8 +47,8 @@ class Settings(BaseSettings):
     # Database
     ADMIN_ACCOUNT_PASSWORD: str = "change me with an env variable"
     SECRET: str = "change me with an env variable"
-    DATABASE_URL_ASYNC: str = "sqlite+aiosqlite:///./supersafe.db"
-    DATABASE_URL_SYNC: str = "sqlite:///./supersafe.db"
+    DATABASE_URL_ASYNC: str = ""
+    DATABASE_URL_SYNC: str = ""
     DATABASE_USERS_TABLE_NAME: str = "user"
     DATABASE_POOL_RECYCLE: int = 1800
 
