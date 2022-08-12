@@ -1,0 +1,864 @@
+,node_id,altid,facilitytype,commonname,facilitydetail,flowcontrol,infiltrated,waterquality,flowcontroltype,waterqualitytype,facility_type,design_storm_depth_inches,tributary_area_tc_min,total_volume_cuft,area_sqft,inf_rate_inhr,retention_volume_cuft,media_filtration_rate_inhr,hsg,minimum_retention_pct_override,treatment_rate_cfs,depth_ft,captured_pct,retained_pct
+0,SWFA-100002,SWFA-100002,Pervious Pavement,Little Sprague,Concrete,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+1,SWFA-100005,SWFA-100005,Bioretention,Sprague,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+2,SWFA-100006,SWFA-100006,Pervious Pavement,Landfill Parking,Asphalt,,,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+3,SWFA-100007,SWFA-100007,Pervious Pavement,Landfill Parking,Concrete,,,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+4,SWFA-100008,SWFA-100008,Pervious Pavement,Landfill Parking,Block/Brick,,,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+5,SWFA-100009,SWFA-100009,Tank,Heron Ridge,Detention,,,,IP,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+6,SWFA-100013,SWFA-100013,Pervious Pavement,Little Sprague,Concrete,,,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+7,SWFA-100014,SWFA-100014,Pervious Pavement,Little Sprague,Concrete,,,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+8,SWFA-100018,SWFA-100018,Bioretention,Pacific Avenue,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+9,SWFA-100019,SWFA-100019,Bioretention,Pacific Avenue,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+10,SWFA-100026,SWFA-100026,Bioretention,Pacific Avenue,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+11,SWFA-100027,SWFA-100027,Bioretention,Pacific Avenue,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+12,SWFA-100028,SWFA-100028,Bioretention,Pacific Avenue,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+13,SWFA-100029,SWFA-100029,Bioretention,Pacific Avenue,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+14,SWFA-100030,SWFA-100030,Bioretention,Pacific Avenue,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+15,SWFA-100031,SWFA-100031,Bioretention,Pacific Avenue,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+16,SWFA-100032,SWFA-100032,Bioretention,Pacific Avenue,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+17,SWFA-100033,SWFA-100033,Bioretention,Pacific Avenue,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+18,SWFA-100034,SWFA-100034,Bioretention,Pacific Avenue,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+19,SWFA-100035,SWFA-100035,Bioretention,Pacific Avenue,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+20,SWFA-100036,SWFA-100036,Bioretention,Pacific Avenue,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+21,SWFA-100040,SWFA-100040,Pervious Pavement,Little Sprague,Concrete,,,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+22,SWFA-100042,SWFA-100042,Pervious Pavement,Little Sprague,Concrete,,,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+23,SWFA-100044,SWFA-100044,Pervious Pavement,Little Sprague,Concrete,,,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+24,SWFA-100046,SWFA-100046,Swale,Marine View Drive Swales,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+25,SWFA-100047,SWFA-100047,Swale,Marine View Drive Swales,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+26,SWFA-100048,SWFA-100048,Swale,Marine View Drive Swales,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+27,SWFA-100049,SWFA-100049,Swale,Marine View Drive Swales,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+28,SWFA-100050,SWFA-100050,Swale,Marine View Drive Swales,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+29,SWFA-100051,SWFA-100051,Swale,Marine View Drive Swales,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+30,SWFA-100052,SWFA-100052,Swale,Marine View Drive Swales,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+31,SWFA-100053,SWFA-100053,Swale,Marine View Drive Swales,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+32,SWFA-100054,SWFA-100054,Swale,Marine View Drive Swales,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+33,SWFA-100055,SWFA-100055,Swale,Marine View Drive Swales,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+34,SWFA-100056,SWFA-100056,Tank,Larabee Terrace,Detention,,,,Wetland,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+35,SWFA-100057,SWFA-100057,Tank,Larabee Terrace,Detention,,,,Wetland,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+36,SWFA-100058,SWFA-100058,Tank,Larabee Terrace,Detention,,,,Wetland,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+37,SWFA-100059,SWFA-100059,Tank,Larabee Terrace,Detention,,,,Wetland,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+38,SWFA-100060,SWFA-100060,Pond,21st and Pearl Overflow,Detention,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+39,SWFA-100061,SWFA-100061,Pond,"Landfill Southwest
+",Combined,,,,,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+40,SWFA-100062,SWFA-100062,Pond,Kirkview,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+41,SWFA-100063,SWFA-100063,Pond,Nguyen Plat,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+42,SWFA-100064,SWFA-100064,Pond,"Landfill East
+",Combined,,,,,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+43,SWFA-100065,SWFA-100065,Pond,Loma Court,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+44,SWFA-100066,SWFA-100066,Bioretention,Sprague,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+45,SWFA-100067,SWFA-100067,Tank,Heron Ridge,Detention,,,,IP,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+46,SWFA-100068,SWFA-100068,Tank,Heron Ridge,Detention,,,,IP,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+47,SWFA-100069,SWFA-100069,Bioretention,Sprague,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+48,SWFA-100070,SWFA-100070,Swale,CITY OF TACOMA DECANT FACILITY,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+49,SWFA-100071,SWFA-100071,Bioretention,Cheney Sustainable Stormwater Project,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+50,SWFA-100072,SWFA-100072,Bioretention,Cheney Sustainable Stormwater Project,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+51,SWFA-100073,SWFA-100073,Pond,Scarsella,Stormwater Treatment Wetland,,,,Stream,Enhanced,wet_pond_simple,,,,,,,,,,,,91,0
+52,SWFA-100074,SWFA-100074,Tank,Tacoma Rescue Mission Adams Square,Detention,,,,,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+53,SWFA-100075,SWFA-100075,Tank,Northshore Parkway Tanks,Detention,,,,,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+54,SWFA-100076,SWFA-100076,Tank,Northshore Parkway Tanks,Detention,,,,,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+55,SWFA-100077,SWFA-100077,Tank,Northshore Parkway Tanks,Detention,,,,,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+56,SWFA-100078,SWFA-100078,Tank,Northshore Parkway Tanks,Detention,,,,,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+57,SWFA-100081,SWFA-100081,Swale,VersaCold,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+58,SWFA-100082,SWFA-100082,Pond,Rehe,Wet,,,,,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+59,SWFA-100083,SWFA-100083,Swale,"Lincoln Ave grade seperation
+",Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+60,SWFA-100084,SWFA-100084,Bioretention,S 70th and Huson Storm Improvements,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+61,SWFA-100085,SWFA-100085,Bioretention,S 70th and Huson Storm Improvements,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+62,SWFA-100086,SWFA-100086,Swale,"Lincoln Ave grade seperation
+",Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+63,SWFA-100087,SWFA-100087,Swale,Marine View Drive Swales,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+64,SWFA-100088,SWFA-100088,Swale,Marine View Drive Swales,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+65,SWFA-100089,SWFA-100089,Swale,Marine View Drive Swales,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+66,SWFA-100090,SWFA-100090,Swale,Marine View Drive Swales,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+67,SWFA-100091,SWFA-100091,Pond,Landfill North,Combined,,,,,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+68,SWFA-100092,SWFA-100092,Swale,Wapato Ridge,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+69,SWFA-100093,SWFA-100093,Swale,Marine View Drive Swales,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+70,SWFA-100094,SWFA-100094,Swale,Marine View Drive Swales,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+71,SWFA-100095,SWFA-100095,Swale,Marine View Drive Swales,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+72,SWFA-100096,SWFA-100096,Swale,Marine View Drive Swales,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+73,SWFA-100097,SWFA-100097,Swale,Marine View Drive Swales,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+74,SWFA-100098,SWFA-100098,Tank,Trolly Court,Detention,,,,IP,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+75,SWFA-100099,SWFA-100099,Tank,Trolly Court,Detention,,,,IP,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+76,SWFA-100101,SWFA-100101,Swale,"Puyallup Tribe
+",Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+77,SWFA-100102,SWFA-100102,Swale,Puyallup Tribe,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+78,SWFA-100103,SWFA-100103,Swale,Public Works Regional WQ Swale,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+79,SWFA-100104,SWFA-100104,Swale,Public Works Regional WQ Swale,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+80,SWFA-100105,SWFA-100105,Pond,Westridge,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+81,SWFA-100106,SWFA-100106,Swale,S 67th and Proctor Storm Improvements,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+82,SWFA-100107,SWFA-100107,Swale,205 & 211 E 52nd St Swales,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+83,SWFA-100108,SWFA-100108,Swale,205 & 211 E 52nd St Swales,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+84,SWFA-100109,SWFA-100109,Bioretention,S. Visscher St. Storm Improvements 18th to 19th.,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+85,SWFA-100110,SWFA-100110,Bioretention,S. Visscher St. Storm Improvements 18th to 19th.,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+86,SWFA-100112,SWFA-100112,Swale,Larabee Terrace,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+87,SWFA-100113,SWFA-100113,Swale,1615 s 92nd Swales,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+88,SWFA-100115,SWFA-100115,Swale,Trolly Court,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+89,SWFA-100116,SWFA-100116,Swale,Char Hill LLC Short Plat,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+90,SWFA-100117,SWFA-100117,Swale,Norpoint Way Biofiltration Swale,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+91,SWFA-100118,SWFA-100118,Pond,Harbor Ridge Estates,Detention,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+92,SWFA-100119,SWFA-100119,Pond,Dash Point Estates,Detention,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+93,SWFA-100120,SWFA-100120,Pond,Pim Estates Division I,Detention,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+94,SWFA-100121,SWFA-100121,Pond,Northshore Ponds,Combined,,,,IP,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+95,SWFA-100122,SWFA-100122,Pond,Northshore Ponds,Combined,,,,IP,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+96,SWFA-100123,SWFA-100123,Pond,Northshore Ponds,Combined,,,,IP,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+97,SWFA-100124,SWFA-100124,Pond,Meadow Ridge,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+98,SWFA-100125,SWFA-100125,Pond,Northwood II,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+99,SWFA-100126,SWFA-100126,Pond,Korosumo,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+100,SWFA-100127,SWFA-100127,Pond,Northwood Meadows,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+101,SWFA-100128,SWFA-100128,Pond,Dash Pointe Plat,Detention,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+102,SWFA-100129,SWFA-100129,Pond,NorthShore Division IV,Detention,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+103,SWFA-100130,SWFA-100130,Pond,57th/Mckinley Plat,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+104,SWFA-100131,SWFA-100131,Tank,Trolly Court,Detention,,,,IP,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+105,SWFA-100132,SWFA-100132,Sand Filter,Little Sprague,,,,,,,sand_filter_simple,,,,,,,,,,,,91,0
+106,SWFA-100133,SWFA-100133,Sand Filter,Little Sprague,,,,,,,sand_filter_simple,,,,,,,,,,,,91,0
+107,SWFA-100134,SWFA-100134,Sand Filter,Little Sprague,,,,,,,sand_filter_simple,,,,,,,,,,,,91,0
+108,SWFA-100135,SWFA-100135,Vegetated Box,"Community Health
+",Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+109,SWFA-100136,SWFA-100136,Media Filter,The Vintage 4023 S. Lawrence St.,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+110,SWFA-100137,SWFA-100137,Media Filter,Court A,Bayfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+111,SWFA-100138,SWFA-100138,Media Filter,St. Joseph,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+112,SWFA-100139,SWFA-100139,Media Filter,Court A,Bayfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+113,SWFA-100142,SWFA-100142,Media Filter,St. Joseph,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+114,SWFA-100143,SWFA-100143,Media Filter,Norpoint Heights,FloGard Perk Filter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+115,SWFA-100144,SWFA-100144,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+116,SWFA-100145,SWFA-100145,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+117,SWFA-100146,SWFA-100146,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+118,SWFA-100147,SWFA-100147,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+119,SWFA-100148,SWFA-100148,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+120,SWFA-100149,SWFA-100149,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+121,SWFA-100150,SWFA-100150,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+122,SWFA-100151,SWFA-100151,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+123,SWFA-100152,SWFA-100152,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+124,SWFA-100153,SWFA-100153,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+125,SWFA-100154,SWFA-100154,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+126,SWFA-100155,SWFA-100155,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+127,SWFA-100156,SWFA-100156,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+128,SWFA-100157,SWFA-100157,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+129,SWFA-100158,SWFA-100158,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+130,SWFA-100159,SWFA-100159,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+131,SWFA-100160,SWFA-100160,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+132,SWFA-100161,SWFA-100161,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+133,SWFA-100162,SWFA-100162,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+134,SWFA-100163,SWFA-100163,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+135,SWFA-100164,SWFA-100164,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+136,SWFA-100165,SWFA-100165,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+137,SWFA-100166,SWFA-100166,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+138,SWFA-100167,SWFA-100167,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+139,SWFA-100168,SWFA-100168,Media Filter,Lemay,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+140,SWFA-100169,SWFA-100169,Media Filter,Lemay,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+141,SWFA-100170,SWFA-100170,Vegetated Box,Grandview,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+142,SWFA-100171,SWFA-100171,Vegetated Box,Grandview,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+143,SWFA-100172,SWFA-100172,Vegetated Box,Grandview,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+144,SWFA-100173,SWFA-100173,Vegetated Box,Grandview,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+145,SWFA-100174,SWFA-100174,Media Filter,NW Eye Center,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+146,SWFA-100175,SWFA-100175,Media Filter,Lemay,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+147,SWFA-100176,SWFA-100176,Media Filter,Lemay,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+148,SWFA-100177,SWFA-100177,Vegetated Box,Gilcrist Buick GMC,Filterra,,,,,,vegetated_box_simple,,,,,,,,,,,,91,0
+149,SWFA-100178,SWFA-100178,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+150,SWFA-100179,SWFA-100179,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+151,SWFA-100180,SWFA-100180,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+152,SWFA-100181,SWFA-100181,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+153,SWFA-100182,SWFA-100182,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+154,SWFA-100183,SWFA-100183,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+155,SWFA-100184,SWFA-100184,Vegetated Box,Point Ruston,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+156,SWFA-100185,SWFA-100185,"To Be Determined
+To Be Determined",Grandview Ave FC Riser,,,,,,,no_treatment,,,,,,,,,,,,91,0
+157,SWFA-100187,SWFA-100187,Media Filter,Junett,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+158,SWFA-100188,SWFA-100188,Media Filter,38th AutoZone,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+159,SWFA-100189,SWFA-100189,Media Filter,Olympic View South,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+160,SWFA-100190,SWFA-100190,Media Filter,Olympic View South,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+161,SWFA-100191,SWFA-100191,Media Filter,Olympic View South,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+162,SWFA-100192,SWFA-100192,Media Filter,Olympic View South,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+163,SWFA-100193,SWFA-100193,Media Filter,4101 S. 56th,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+164,SWFA-100194,SWFA-100194,Vegetated Box,3860 S. 69th Street improvements,Filterra,,,,,,vegetated_box_simple,,,,,,,,,,,,91,0
+165,SWFA-100195,SWFA-100195,Vegetated Box,3860 S. 69th Street improvements,Filterra,,,,,,vegetated_box_simple,,,,,,,,,,,,91,0
+166,SWFA-100196,SWFA-100196,Vegetated Box,3860 S. 69th Street improvements,Filterra,,,,,,vegetated_box_simple,,,,,,,,,,,,91,0
+167,SWFA-100197,SWFA-100197,Media Filter,Baker Middle School,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+168,SWFA-100198,SWFA-100198,Media Filter,Baker Middle School,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+169,SWFA-100199,SWFA-100199,Oil Water Separator,Harbor Ridge,API,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+170,SWFA-100200,SWFA-100200,Vault,Lincoln Ave,Conveyance,,,,,Basic,no_treatment,,,,,,,,,,,,91,0
+171,SWFA-100201,SWFA-100201,Vault,East 32nd,Wet,,,,,Basic,no_treatment,,,,,,,,,,,,91,0
+172,SWFA-100202,SWFA-100202,Vault,"72nd and G st
+",Wet,,,,,Basic,no_treatment,,,,,,,,,,,,91,0
+173,SWFA-100203,SWFA-100203,Vault,Nielsen Pacific,Wet,,,,,,no_treatment,,,,,,,,,,,,91,0
+174,SWFA-100204,SWFA-100204,Media Filter,11th and Shirley,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+175,SWFA-100206,SWFA-100206,Media Filter,Tacoma Rescue Mission Adams Square SF,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+176,SWFA-100207,SWFA-100207,Media Filter,"Cedar Court
+",Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+177,SWFA-100208,SWFA-100208,Media Filter,"Cedar Court
+",Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+178,SWFA-100210,SWFA-100210,Media Filter,"Site 1 Esplanade
+",Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+179,SWFA-100211,SWFA-100211,Media Filter,"East 35th
+",MFS,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+180,SWFA-100212,SWFA-100212,Vegetated Box,3860 S. 69th Street improvements,Filterra,,,,,,vegetated_box_simple,,,,,,,,,,,,91,0
+181,SWFA-100213,SWFA-100213,Vegetated Box,3860 S. 69th Street improvements,Filterra,,,,,,vegetated_box_simple,,,,,,,,,,,,91,0
+182,SWFA-100214,SWFA-100214,Vegetated Box,3860 S. 69th Street improvements,Filterra,,,,,,vegetated_box_simple,,,,,,,,,,,,91,0
+183,SWFA-100215,SWFA-100215,Media Filter,BLACK BOOK - 6648 S PUGET SOUND AVE,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+184,SWFA-100216,SWFA-100216,"To Be Determined
+To Be Determined",Salishan,,,,,,,no_treatment,,,,,,,,,,,,91,0
+185,SWFA-100217,SWFA-100217,"To Be Determined
+To Be Determined",Salishan,,,,,,,no_treatment,,,,,,,,,,,,91,0
+186,SWFA-100218,SWFA-100218,"To Be Determined
+To Be Determined",Salishan,,,,,,,no_treatment,,,,,,,,,,,,91,0
+187,SWFA-100219,SWFA-100219,Media Filter,Center for Urban Waters,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+188,SWFA-100220,SWFA-100220,Media Filter,East R,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+189,SWFA-100221,SWFA-100221,Media Filter,East R,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+190,SWFA-100222,SWFA-100222,Media Filter,East R,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+191,SWFA-100223,SWFA-100223,Media Filter,East R,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+192,SWFA-100224,SWFA-100224,Swirl Separator,1821 Dock St. Esplanade,Stormceptor,,,,,Pretreatment,hydrodynamic_separator_simple,,,,,,,,,,,,91,0
+193,SWFA-100225,SWFA-100225,Media Filter,23rd and Ferry,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+194,SWFA-100227,SWFA-100227,Media Filter,Alley Improvement BTWN  2519 Cushman and 2518 Sher,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+195,SWFA-100228,SWFA-100228,Media Filter,1730 S L St alley,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+196,SWFA-100229,SWFA-100229,Media Filter,Proctor & N 9th,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+197,SWFA-100230,SWFA-100230,Media Filter,Alley Improvements BTWN 2551 L st and 1107 S. 27th,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+198,SWFA-100231,SWFA-100231,Media Filter,East R,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+199,SWFA-100232,SWFA-100232,Media Filter,"Lawrence townhomes
+",Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+200,SWFA-100233,SWFA-100233,Media Filter,"Lawrence townhomes
+",Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+201,SWFA-100234,SWFA-100234,Media Filter,"Lawrence townhomes
+",Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+202,SWFA-100236,SWFA-100236,Media Filter,"Lincoln Ave grade seperation
+",Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+203,SWFA-100237,SWFA-100237,Vegetated Box,Puget Sound Filterra,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+204,SWFA-100238,SWFA-100238,Vegetated Box,Puget Sound Filterra,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+205,SWFA-100239,SWFA-100239,Vegetated Box,Puget Sound Filterra,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+206,SWFA-100240,SWFA-100240,Vegetated Box,Puget Sound Filterra,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+207,SWFA-100241,SWFA-100241,Vault,60th and Adams Vault,Wet,,,,,,no_treatment,,,,,,,,,,,,91,0
+208,SWFA-100242,SWFA-100242,"To Be Determined
+To Be Determined",Salishan,,,,,,,no_treatment,,,,,,,,,,,,91,0
+209,SWFA-100243,SWFA-100243,Media Filter,"Lincoln Ave grade seperation
+",Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+210,SWFA-100244,SWFA-100244,Media Filter,Lincoln Ave grade separation,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+211,SWFA-100245,SWFA-100245,Media Filter,Lincoln Ave grade separation,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+212,SWFA-100246,SWFA-100246,Media Filter,Titus Will Toyota,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+213,SWFA-100247,SWFA-100247,Vegetated Box,"Junet Townhomes
+",Filterra,,,,,,vegetated_box_simple,,,,,,,,,,,,91,0
+214,SWFA-100248,SWFA-100248,Vegetated Box,"Junet Townhomes
+",Filterra,,,,,,vegetated_box_simple,,,,,,,,,,,,91,0
+215,SWFA-100249,SWFA-100249,Vault,,Conveyance,,,,,,no_treatment,,,,,,,,,,,,91,0
+216,SWFA-100250,SWFA-100250,Media Filter,Lincoln Ave grade seperation,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+217,SWFA-100251,SWFA-100251,Swirl Separator,,Stormceptor,,,,,Pretreatment,hydrodynamic_separator_simple,,,,,,,,,,,,91,0
+218,SWFA-100252,SWFA-100252,Bioretention,Pacific Avenue,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+219,SWFA-100253,SWFA-100253,Bioretention,Gray Middle school,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+220,SWFA-100254,SWFA-100254,Bioretention,Gray Middle school,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+221,SWFA-100255,SWFA-100255,Bioretention,Gray Middle school,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+222,SWFA-100256,SWFA-100256,Bioretention,Gray Middle school,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+223,SWFA-100257,SWFA-100257,Bioretention,Gray Middle school,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+224,SWFA-100258,SWFA-100258,Bioretention,Gray Middle school,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+225,SWFA-100259,SWFA-100259,Bioretention,Gray Middle school,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+226,SWFA-100260,SWFA-100260,Bioretention,Gray Middle school,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+227,SWFA-100261,SWFA-100261,Bioretention,Gray Middle school,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+228,SWFA-100262,SWFA-100262,Bioretention,Gray Middle school,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+229,SWFA-100272,SWFA-100272,Bioretention,COT Asphalt Plant,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+230,SWFA-100283,SWFA-100283,Swale,South Intermodal,,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+231,SWFA-100289,SWFA-100289,Swale,Central Police Substation,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+232,SWFA-100294,SWFA-100294,Trench,Central Police Substation,Infiltration,,Full,,,Basic,infiltration_simple,,,,,,,,,,,,91,91
+233,SWFA-100298,SWFA-100298,Swale,Truman Middle School,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+234,SWFA-100300,SWFA-100300,Swale,Mann Elementary,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+235,SWFA-100305,SWFA-100305,Bioretention,COT Solid Waste,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+236,SWFA-100307,SWFA-100307,Swale,Coast Engine & Equipment,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+237,SWFA-100313,SWFA-100313,Swale,Wilson High School,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+238,SWFA-100314,SWFA-100314,Swale,Tacoma Firs,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+239,SWFA-100315,SWFA-100315,Swale,Tacoma Firs,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+240,SWFA-100316,SWFA-100316,Swale,TCC Info Center,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+241,SWFA-100325,SWFA-100325,Swale,Bates Technical College - South Campus,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+242,SWFA-100336,SWFA-100336,Swale,Tacoma Schools Gianudrone Middle School,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+243,SWFA-100340,SWFA-100340,Holding Basin,"Hosmer Holding
+HOSMER HOLDING BASIN
+",,,,,IP,,no_treatment,,,,,,,,,,,,91,0
+244,SWFA-100341,SWFA-100341,Holding Basin,Gravel Pit,,,,,Stream,,no_treatment,,,,,,,,,,,,91,0
+245,SWFA-100342,SWFA-100342,Holding Basin,Wapato Lake,,,,,IP,,no_treatment,,,,,,,,,,,,91,0
+246,SWFA-100343,SWFA-100343,Holding Basin,Flett Holding Pond 2,,,,,IP,,no_treatment,,,,,,,,,,,,91,0
+247,SWFA-100344,SWFA-100344,Holding Basin,Ward's Lake,,,,,IP,,no_treatment,,,,,,,,,,,,91,0
+248,SWFA-100345,SWFA-100345,Holding Basin,Leach Holding,,,,,IP,,no_treatment,,,,,,,,,,,,91,0
+249,SWFA-100346,SWFA-100346,Tank,Loma Court,Detention,,,,IP,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+250,SWFA-100347,SWFA-100347,Vault,Vista View,Conveyance,,,,,Basic,no_treatment,,,,,,,,,,,,91,0
+251,SWFA-100348,SWFA-100348,Oil Water Separator,Landfill,API,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+252,SWFA-100349,SWFA-100349,Vault,Murray Morgan wetvault,Wet,,,,,Basic,no_treatment,,,,,,,,,,,,91,0
+253,SWFA-100350,SWFA-100350,Swale,Trolly Court,Vegetated Filter Strips,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+254,SWFA-100351,SWFA-100351,Swale,"Hylebos Bridge
+Hylebos Bridge
+Hylebos Bridge
+",Media Filter Strips,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+255,SWFA-100352,SWFA-100352,Swale,Hylebos Bridge,Media Filter Strips,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+256,SWFA-100353,SWFA-100353,Swale,Hylebos Bridge,Media Filter Strips,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+257,SWFA-100354,SWFA-100354,Vegetated Box,ETI Building,Filterra,,,,,,vegetated_box_simple,,,,,,,,,,,,91,0
+258,SWFA-100355,SWFA-100355,Vegetated Box,Walmart,Filterra,,,,,,vegetated_box_simple,,,,,,,,,,,,91,0
+259,SWFA-100356,SWFA-100356,Media Filter,Baker Middle School,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+260,SWFA-100357,SWFA-100357,Media Filter,East Q Street,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+261,SWFA-100358,SWFA-100358,Media Filter,Hylebos Bridge,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+262,SWFA-100359,SWFA-100359,Media Filter,Hylebos Bridge,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+263,SWFA-100360,SWFA-100360,Media Filter,"Murray Morgan Bridge
+",Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+264,SWFA-100361,SWFA-100361,Media Filter,"Community Health
+",Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+265,SWFA-100362,SWFA-100362,Trench,S. Oakes,Infiltration,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+266,SWFA-100363,SWFA-100363,Trench,WoodWorth,Dispersion,,,,,,infiltration_simple,,,,,,,,,,,,91,91
+267,SWFA-100364,SWFA-100364,Trench,WoodWorth,Dispersion,,,,,,infiltration_simple,,,,,,,,,,,,91,91
+268,SWFA-100365,SWFA-100365,Swirl Separator,East R Street,Aqua Swirl,,,,,Pretreatment,hydrodynamic_separator_simple,,,,,,,,,,,,91,0
+269,SWFA-100366,SWFA-100366,Oil Water Separator,East R Street,Spill Control,,,,,,oil_water_separator_simple,,,,,,,,,,,,91,0
+270,SWFA-100367,SWFA-100367,Swirl Separator,UWT,CDS,,,,,Pretreatment,hydrodynamic_separator_simple,,,,,,,,,,,,91,0
+271,SWFA-100368,SWFA-100368,Bioretention,UWT,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+272,SWFA-100369,SWFA-100369,Bioretention,Murray Morgan Bridge,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+273,SWFA-100370,SWFA-100370,Bioretention,615 Sprague,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+274,SWFA-100371,SWFA-100371,Trench,"Puyallup Tribe
+",Dispersion,,,,,,infiltration_simple,,,,,,,,,,,,91,91
+275,SWFA-100372,SWFA-100372,Pervious Pavement,Alaska,Concrete,,,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+276,SWFA-100377,SWFA-100377,Pervious Pavement,Alaska,Concrete,,,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+277,SWFA-100378,SWFA-100378,Pervious Pavement,Alaska,Concrete,,,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+278,SWFA-100379,SWFA-100379,Pervious Pavement,Alaska,Concrete,,,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+279,SWFA-100381,SWFA-100381,Pervious Pavement,Alaska,Concrete,,,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+280,SWFA-100382,SWFA-100382,Pervious Pavement,Alaska,Concrete,,,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+281,SWFA-100384,SWFA-100384,Pervious Pavement,Alaska,Concrete,,,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+282,SWFA-100386,SWFA-100386,Vault,Pacific Avenue,Silva Cell,,,,,Basic,no_treatment,,,,,,,,,,,,91,0
+283,SWFA-100387,SWFA-100387,Vault,Pacific Avenue,Silva Cell,,,,,Basic,no_treatment,,,,,,,,,,,,91,0
+284,SWFA-100388,SWFA-100388,Vault,Pacific Avenue,Silva Cell,,,,,Basic,no_treatment,,,,,,,,,,,,91,0
+285,SWFA-100389,SWFA-100389,Vault,Pacific Avenue,Silva Cell,,,,,Basic,no_treatment,,,,,,,,,,,,91,0
+286,SWFA-100390,SWFA-100390,Vault,Pacific Avenue,Silva Cell,,,,,Basic,no_treatment,,,,,,,,,,,,91,0
+287,SWFA-100391,SWFA-100391,Media Filter,Pacific Avenue,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+288,SWFA-100392,SWFA-100392,Pervious Pavement,Marine View Pervious,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+289,SWFA-100393,SWFA-100393,Pond,HWY 16,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+290,SWFA-100394,SWFA-100394,Pond,HWY 16,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+291,SWFA-100395,SWFA-100395,Trench,Sunway Park,Dispersion,,,,,,infiltration_simple,,,,,,,,,,,,91,91
+292,SWFA-100397,SWFA-100397,Bioretention,Gray Middle school,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+293,SWFA-100398,SWFA-100398,Bioretention,Gray Middle school,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+294,SWFA-100400,SWFA-100400,Tank,,Detention,,,,IP,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+295,SWFA-100401,SWFA-100401,Tank,,Detention,,,,IP,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+296,SWFA-100408,SWFA-100408,Tank,,Detention,,,,IP,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+297,SWFA-100409,SWFA-100409,Trench,Burlington Way PERF. PIPE,Infiltration,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+298,SWFA-100411,SWFA-100411,Media Filter,Waterview Stormfilters,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+299,SWFA-100412,SWFA-100412,Trench,,Infiltration,,Full,,IP,,infiltration_simple,,,,,,,,,,,,91,91
+300,SWFA-100413,SWFA-100413,Trench,,Dispersion,,,,,,infiltration_simple,,,,,,,,,,,,91,91
+301,SWFA-100415,SWFA-100415,Vegetated Box,Sunset Estates,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+302,SWFA-100416,SWFA-100416,Pond,Tacoma Fire Station #8,Detention,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+303,SWFA-100417,SWFA-100417,Swale,Tacoma Fire Station #8,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+304,SWFA-100420,SWFA-100420,Bioretention,Pine Street Apartments,,,Full,,Stream,Enhanced,bioretention_with_full_infiltration_simple,,,,,,,,,,,,91,91
+305,SWFA-100421,SWFA-100421,Bioretention,Pine Street Apartments,,,Full,,Stream,Enhanced,bioretention_with_full_infiltration_simple,,,,,,,,,,,,91,91
+306,SWFA-100422,SWFA-100422,Bioretention,Pine Street Apartments,,,Full,,Stream,Enhanced,bioretention_with_full_infiltration_simple,,,,,,,,,,,,91,91
+307,SWFA-100423,SWFA-100423,Media Filter,Pine Street Apartments,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+308,SWFA-100424,SWFA-100424,Pond,Norpoint Park,Combined,,,,IP,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+309,SWFA-100426,SWFA-100426,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+310,SWFA-100427,SWFA-100427,Vegetated Box,Point Defiance Regional Treatment Facility,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+311,SWFA-100431,SWFA-100431,Swale,Tacoma Schools Stafford Elementary,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+312,SWFA-100432,SWFA-100432,Vegetated Box,,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+313,SWFA-100434,SWFA-100434,Media Filter,1301 EAST 34TH ST,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+314,SWFA-100438,SWFA-100438,Pond,Wilson High School,Detention,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+315,SWFA-100441,SWFA-100441,Pond,WSDOT 00000359 SR-16 at 19th,Combined,,,,,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+316,SWFA-100442,SWFA-100442,Pond,WSDOT 00000372 SR-16 Orchard,Detention,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+317,SWFA-100443,SWFA-100443,Swale,Cheney Stadium,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+318,SWFA-100446,SWFA-100446,Pond,OAKLAND HIGH SCHOOL,Detention,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+319,SWFA-100451,SWFA-100451,Bioretention,Norpoint Park,,,Partial,,,Basic,bioretention_with_partial_infiltration_simple,,,,,,,,,,,,91,20
+320,SWFA-100452,SWFA-100452,Bioretention,Norpoint Park,,,Partial,,,Basic,bioretention_with_partial_infiltration_simple,,,,,,,,,,,,91,20
+321,SWFA-100449,SWFA-100449,Pump Station,Leach Creek Pump Station,,,,,,,no_treatment,,,,,,,,,,,,91,0
+322,SWFA-100453,SWFA-100453,Bioretention,Norpoint Park,,,Partial,,,Basic,bioretention_with_partial_infiltration_simple,,,,,,,,,,,,91,20
+323,SWFA-100454,SWFA-100454,Swale,Meeker Middle & Crescent Heights Elem,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+324,SWFA-100459,SWFA-100459,Pond,3400 Taylor Way,Detention,,,,Wetland,,wet_pond_simple,,,,,,,,,,,,91,0
+325,SWFA-100462,SWFA-100462,Pond,SR 509 N Frontage Road Ramp,,,,,,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+326,SWFA-100463,SWFA-100463,Pond,,Wet,,,,,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+327,SWFA-100465,SWFA-100465,Pond,5417 N Court St,Detention,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+328,SWFA-100473,SWFA-100473,Pond,WSDOT Narrows Bridge,Wet,,,,,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+329,SWFA-100478,SWFA-100478,Media Filter,Pacific Charter School,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+330,SWFA-100480,SWFA-100480,Pond,MOUNT TAHOMA HIGH SCHOOL,Wet,,,,,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+331,SWFA-100481,SWFA-100481,Pond,MOUNT TAHOMA HIGH SCHOOL,Wet,,,,,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+332,SWFA-100504,SWFA-100504,Pump Station,Fleet Creek Pump Station,,,,,,,no_treatment,,,,,,,,,,,,91,0
+333,SWFA-100510,SWFA-100510,Swale,,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+334,SWFA-100526,SWFA-100526,Pond,E 21st,Wet,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+335,SWFA-100529,SWFA-100529,Pond,WSDOT SR-509 E D ST,Detention,,,,Wetland,,wet_pond_simple,,,,,,,,,,,,91,0
+336,SWFA-100531,SWFA-100531,Pond,Gray Middle School,Wet,,,,,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+337,SWFA-100532,SWFA-100532,Media Filter,Sound Transit,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+338,SWFA-100533,SWFA-100533,Media Filter,Sound Transit,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+339,SWFA-100543,SWFA-100543,Vault,,Conveyance,,,,,,no_treatment,,,,,,,,,,,,91,0
+340,SWFA-101708,SWFA-101708,Trench,Burlington Way,Infiltration,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+341,SWFA-100545,SWFA-100545,Trench,Burlington Way,Infiltration,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+342,SWFA-100546,SWFA-100546,Trench,Burlington Way,Infiltration,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+343,SWFA-100547,SWFA-100547,Vault,,Conveyance,,,,,,no_treatment,,,,,,,,,,,,91,0
+344,SWFA-100549,SWFA-100549,Vault,,Conveyance,,,,,,no_treatment,,,,,,,,,,,,91,0
+345,SWFA-100550,SWFA-100550,Vault,,Conveyance,,,,,,no_treatment,,,,,,,,,,,,91,0
+346,SWFA-100551,SWFA-100551,Media Filter,Theresa Estates,FloGard Perk Filter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+347,SWFA-100552,SWFA-100552,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+348,SWFA-100553,SWFA-100553,Media Filter,Nalley Valley,FloGard Perk Filter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+349,SWFA-100561,SWFA-100561,Vault,,Conveyance,,,,,Basic,no_treatment,,,,,,,,,,,,91,0
+350,SWFA-100597,SWFA-100597,Bioretention,TACOMA SCHOOLS GEIGER ELEMENTARY,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+351,SWFA-100598,SWFA-100598,Bioretention,TACOMA SCHOOLS GEIGER ELEMENTARY,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+352,SWFA-100599,SWFA-100599,Bioretention,TACOMA SCHOOLS GEIGER ELEMENTARY,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+353,SWFA-100600,SWFA-100600,Media Filter,TACOMA SCHOOLS GEIGER ELEMENTARY,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+354,SWFA-100601,SWFA-100601,Media Filter,TACOMA SCHOOLS GEIGER ELEMENTARY,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+355,SWFA-101704,SWFA-101704,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+356,SWFA-100661,SWFA-100661,Media Filter,TACOMA SCHOOLS GRAY MIDDLE SCHOOL,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+357,SWFA-100662,SWFA-100662,Media Filter,TACOMA SCHOOLS GRAY MIDDLE SCHOOL,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+358,SWFA-100687,SWFA-100687,Media Filter,TACOMA SCHOOLS GRAY MIDDLE SCHOOL,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+359,SWFA-100726,SWFA-100726,Swirl Separator,"TACOMA PUBLIC UTILITIES, POWER",Vortechnics,,,,,Pretreatment,hydrodynamic_separator_simple,,,,,,,,,,,,91,0
+360,SWFA-100727,SWFA-100727,Swirl Separator,"TACOMA PUBLIC UTILITIES, POWER",Vortechnics,,,,,Pretreatment,hydrodynamic_separator_simple,,,,,,,,,,,,91,0
+361,SWFA-100728,SWFA-100728,Media Filter,"TACOMA PUBLIC UTILITIES, POWER",Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+362,SWFA-100729,SWFA-100729,Media Filter,"TACOMA PUBLIC UTILITIES, POWER",Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+363,SWFA-100730,SWFA-100730,Oil Water Separator,PORT COMMERCE CENTER BLDNG #5,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+364,SWFA-100731,SWFA-100731,Oil Water Separator,PORT COMMERCE CENTER BLDNG #5,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+365,SWFA-100737,SWFA-100737,Media Filter,TACOMA SCHOOLS MASON MIDDLE SCHOOL,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+366,SWFA-100745,SWFA-100745,Media Filter,CITY OF TACOMA FLEET SERVICES,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+367,SWFA-100746,SWFA-100746,Oil Water Separator,CITY OF TACOMA FLEET SERVICES,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+368,SWFA-100747,SWFA-100747,Oil Water Separator,CITY OF TACOMA FLEET SERVICES,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+369,SWFA-100748,SWFA-100748,Media Filter,COT POLICE HEADQUARTERS,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+370,SWFA-100749,SWFA-100749,Media Filter,CITY OF TACOMA FLEET SERVICES,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+371,SWFA-100766,SWFA-100766,Oil Water Separator,TACOMA PUBLIC UTILITIES RAIL,API,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+372,SWFA-100767,SWFA-100767,Oil Water Separator,TACOMA PUBLIC UTILITIES RAIL,API,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+373,SWFA-100795,SWFA-100795,Media Filter,TACOMA COMMUNITY COLLEGE,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+374,SWFA-100810,SWFA-100810,Media Filter,TACOMA SCHOOLS HENRY FOSS HIGH SCHOOL,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+375,SWFA-100830,SWFA-100830,Media Filter,TACOMA SCHOOLS LARCHMONT ELEMENTARY,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+376,SWFA-100831,SWFA-100831,Media Filter,TACOMA SCHOOLS LARCHMONT ELEMENTARY,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+377,SWFA-100832,SWFA-100832,Media Filter,TACOMA SCHOOLS LARCHMONT ELEMENTARY,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+378,SWFA-100833,SWFA-100833,Oil Water Separator,COT FIRE STATION #8,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+379,SWFA-100836,SWFA-100836,Media Filter,TACOMA SCHOOLS GIAUDRONE MIDDLE SCHOOL,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+380,SWFA-100848,SWFA-100848,Tank,TACOMA SCHOOLS LARCHMONT ELEMENTARY,Detention,,,,,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+381,SWFA-101627,SWFA-101627,Media Filter,LID 8654,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+382,SWFA-101631,SWFA-101631,Media Filter,2351 Lincoln Ave,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+383,SWFA-101632,SWFA-101632,Bioretention,Baker Middle School,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+384,SWFA-101633,SWFA-101633,Trench,Baker Middle School,Infiltration,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+385,SWFA-101634,SWFA-101634,Vegetated Box,Baker Middle School,Null,,,,,Enhanced,vegetated_box_simple,,,,,,,,,,,,91,0
+386,SWFA-101635,SWFA-101635,Bioretention,Baker Middle School,,,Full,,Stream,Enhanced,bioretention_with_full_infiltration_simple,,,,,,,,,,,,91,91
+387,SWFA-101641,SWFA-101641,Pervious Pavement,Cheney Stadium,Asphalt,,Full,,Stream,,pervious_pavement_simple,,,,,,,,,,,,91,91
+388,SWFA-101642,SWFA-101642,Trench,Cheney Stadium,Infiltration,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+389,SWFA-101643,SWFA-101643,Pervious Pavement,Cheney Stadium,Asphalt,,Full,,Stream,,pervious_pavement_simple,,,,,,,,,,,,91,91
+390,SWFA-101645,SWFA-101645,Media Filter,Emerald Queen,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+391,SWFA-101646,SWFA-101646,Media Filter,Baker Middle School,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+392,SWFA-101647,SWFA-101647,Trench,Cheney Stadium,Infiltration,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+393,SWFA-101652,SWFA-101652,Pervious Pavement,Vassault,Concrete,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+394,SWFA-101664,SWFA-101664,Media Filter,East 31st,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+395,SWFA-101665,SWFA-101665,Pervious Pavement,LID8653-1,Asphalt,,Full,,,Basic,pervious_pavement_simple,,,,,,,,,,,,91,91
+396,SWFA-101666,SWFA-101666,Pervious Pavement,LID8653-2,Asphalt,,Full,,,Basic,pervious_pavement_simple,,,,,,,,,,,,91,91
+397,SWFA-101667,SWFA-101667,Pervious Pavement,LID8659-3,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+398,SWFA-101671,SWFA-101671,Pervious Pavement,Asotin,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+399,SWFA-101674,SWFA-101674,Pervious Pavement,Asotin,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+400,SWFA-101680,SWFA-101680,Pervious Pavement,Asotin,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+401,SWFA-101681,SWFA-101681,Pervious Pavement,Asotin,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+402,SWFA-101682,SWFA-101682,Pervious Pavement,Asotin,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+403,SWFA-101683,SWFA-101683,Pervious Pavement,Asotin,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+404,SWFA-101684,SWFA-101684,Pervious Pavement,LID 8654-3,Asphalt,,Full,,,Basic,pervious_pavement_simple,,,,,,,,,,,,91,91
+405,SWFA-101698,SWFA-101698,Tank,,Detention,,,,,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+406,SWFA-101699,SWFA-101699,Tank,,Detention,,,,,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+407,SWFA-101700,SWFA-101700,Vegetated Box,Emerald Queen Casino,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+408,SWFA-101701,SWFA-101701,Vegetated Box,Emerald Queen Casino,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+409,SWFA-101702,SWFA-101702,Vegetated Box,Emerald Queen Casino,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+410,SWFA-101703,SWFA-101703,Media Filter,Emerald Queen,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+411,SWFA-101722,SWFA-101722,Media Filter,BOY'S AND GIRL'S CLUB,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+412,SWFA-101720,SWFA-101720,Pond,AMERICOLD,Combined,,,,IP,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+413,SWFA-101729,SWFA-101729,Vegetated Box,,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+414,SWFA-101736,SWFA-101736,Bioretention,METRO KANDLE PARK,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+415,SWFA-101737,SWFA-101737,Bioretention,METRO KANDLE PARK,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+416,SWFA-101738,SWFA-101738,Bioretention,METRO KANDLE PARK,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+417,SWFA-101739,SWFA-101739,Bioretention,METRO KANDLE PARK,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+418,SWFA-101740,SWFA-101740,Media Filter,METRO KANDLE PARK,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+419,SWFA-101741,SWFA-101741,Tank,METRO KANDLE PARK,Detention,,,,IP,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+420,SWFA-101742,SWFA-101742,Vault,METRO KANDLE PARK,Detention,,,,IP,,no_treatment,,,,,,,,,,,,91,0
+421,SWFA-101747,SWFA-101747,Trench,COT Police Sector Two,Infiltration,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+422,SWFA-101762,SWFA-101762,Vegetated Box,COT Lemay America's Car Museum,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+423,SWFA-101773,SWFA-101773,Swale,Center for Urban Waters,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+424,SWFA-101796,SWFA-101796,Oil Water Separator,CARLILE,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+425,SWFA-101797,SWFA-101797,Oil Water Separator,CARLILE,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+426,SWFA-101798,SWFA-101798,Pond,CARLILE,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+427,SWFA-101799,SWFA-101799,Swale,Aspen Court,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+428,SWFA-101804,SWFA-101804,Oil Water Separator,Americold,API,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+429,SWFA-101809,SWFA-101809,Swirl Separator,Center for Urban Waters,CDS,,,,,Pretreatment,hydrodynamic_separator_simple,,,,,,,,,,,,91,0
+430,SWFA-101810,SWFA-101810,Pond,WSDOT SR 509/705 JUNCTION - RSTR 104,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+431,SWFA-101811,SWFA-101811,Swale,WSDOT SR 509/705 JUNCTION - RSTR 104,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+432,SWFA-101812,SWFA-101812,Bioretention,Baker Middle School,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+433,SWFA-101813,SWFA-101813,Vault,,Conveyance,,,,,Basic,no_treatment,,,,,,,,,,,,91,0
+434,SWFA-101814,SWFA-101814,Vault,,Conveyance,,,,,Basic,no_treatment,,,,,,,,,,,,91,0
+435,SWFA-101817,SWFA-101817,Vault,,Conveyance,,,,,,no_treatment,,,,,,,,,,,,91,0
+436,SWFA-101819,SWFA-101819,Trench,,Null,,,,,,infiltration_simple,,,,,,,,,,,,91,91
+437,SWFA-101831,SWFA-101831,Trench,Boy's and Girls Club,Null,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+438,SWFA-101832,SWFA-101832,Pervious Pavement,,Asphalt,,Partial,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+439,SWFA-101833,SWFA-101833,Pervious Pavement,,Concrete,,Partial,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+440,SWFA-101834,SWFA-101834,Media Filter,Harbor View,Bayfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+441,SWFA-101835,SWFA-101835,Pond,Harbor View,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+442,SWFA-101837,SWFA-101837,Swale,,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+443,SWFA-101843,SWFA-101843,Media Filter,"Tacoma Public Utilities, Power",Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+444,SWFA-101844,SWFA-101844,Trench,TPU,Infiltration,,Full,,,Basic,infiltration_simple,,,,,,,,,,,,91,91
+445,SWFA-101857,SWFA-101857,Pond,MOUNT TAHOMA HIGH SCHOOL,Detention,,Full,,Stream,,wet_pond_simple,,,,,,,,,,,,91,0
+446,SWFA-101858,SWFA-101858,Pond,MOUNT TAHOMA HIGH SCHOOL,Detention,,Full,,Stream,,wet_pond_simple,,,,,,,,,,,,91,0
+447,SWFA-101871,SWFA-101871,Media Filter,Arlington Elem,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+448,SWFA-101876,SWFA-101876,Media Filter,201 Norpoint Way NE alley,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+449,SWFA-101879,SWFA-101879,Media Filter,3126 N Ferdinand alley,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+450,SWFA-101914,SWFA-101914,Vegetated Box,West Truck Parking Lot,Null,,,,,Enhanced,vegetated_box_simple,,,,,,,,,,,,91,0
+451,SWFA-101919,SWFA-101919,Oil Water Separator,COT Solid Waste,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+452,SWFA-101920,SWFA-101920,Media Filter,NARROWS RIDGE ,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+453,SWFA-101927,SWFA-101927,Media Filter,84th & C St,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+454,SWFA-101928,SWFA-101928,Media Filter,84th & C St,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+455,SWFA-101932,SWFA-101932,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+456,SWFA-101935,SWFA-101935,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+457,SWFA-101936,SWFA-101936,Swale,Point Defiance Regional Treatment Facility,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+458,SWFA-101937,SWFA-101937,Swirl Separator,Point Defiance Regional Treatment Facility,CDS,,,,,Pretreatment,hydrodynamic_separator_simple,,,,,,,,,,,,91,0
+459,SWFA-101942,SWFA-101942,Pervious Pavement,Center for Urban Waters,Block/Brick,,Full,,,Basic,pervious_pavement_simple,,,,,,,,,,,,91,91
+460,SWFA-101967,SWFA-101967,Pervious Pavement,MASON AVENUE APARTMENTS,Concrete,,Full,,Stream,,pervious_pavement_simple,,,,,,,,,,,,91,91
+461,SWFA-101976,SWFA-101976,Media Filter,,Bayfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+462,SWFA-101979,SWFA-101979,Pump Station,CTP Floodwall Bypass,,,,,,,no_treatment,,,,,,,,,,,,91,0
+463,SWFA-101998,SWFA-101998,Pervious Pavement,Mason Apts,Concrete,,,,Stream,,pervious_pavement_simple,,,,,,,,,,,,91,91
+464,SWFA-102019,SWFA-102019,Trench,Cheney,Infiltration,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+465,SWFA-102020,SWFA-102020,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+466,SWFA-102022,SWFA-102022,Tank,TCC,Detention,,,,,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+467,SWFA-102023,SWFA-102023,Pervious Pavement,TCC Overflow parking,Block/Brick,,,,Stream,,pervious_pavement_simple,,,,,,,,,,,,91,91
+468,SWFA-102025,SWFA-102025,Vault,Narrows Marina,Conveyance,,,,,Basic,no_treatment,,,,,,,,,,,,91,0
+469,SWFA-102026,SWFA-102026,Vault,Narrows Marina,Conveyance,,,,,Basic,no_treatment,,,,,,,,,,,,91,0
+470,SWFA-102027,SWFA-102027,Pond,TCC,Detention,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+471,SWFA-102028,SWFA-102028,Oil Water Separator,TCC,Null,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+472,SWFA-102029,SWFA-102029,Pond,TCC,Detention,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+473,SWFA-102031,SWFA-102031,Tank,TCC,Detention,,,,,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+474,SWFA-102032,SWFA-102032,Swale,TCC,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+475,SWFA-102033,SWFA-102033,Vault,TCC,Detention,,,,,,no_treatment,,,,,,,,,,,,91,0
+476,SWFA-102034,SWFA-102034,Swirl Separator,TCC,Stormceptor,,,,,Pretreatment,hydrodynamic_separator_simple,,,,,,,,,,,,91,0
+477,SWFA-102035,SWFA-102035,Tank,TCC,Detention,,,,,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+478,SWFA-102030,SWFA-102030,Media Filter,COT Fire Station #5,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+479,SWFA-102053,SWFA-102053,Bioretention,TACOMA SCHOOLS GEIGER ELEMENTARY,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+480,SWFA-102055,SWFA-102055,Media Filter,Geiger Elementry,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+481,SWFA-102062,SWFA-102062,Swirl Separator,Jason Lee Middle School,Vortechnics,,,,,Pretreatment,hydrodynamic_separator_simple,,,,,,,,,,,,91,0
+482,SWFA-102071,SWFA-102071,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+483,SWFA-102085,SWFA-102085,Vault,Truman Middle School,Detention,,,,IP,,no_treatment,,,,,,,,,,,,91,0
+484,SWFA-102123,SWFA-102123,Pump Station,Cleveland Way Pump Station,,,,,,,no_treatment,,,,,,,,,,,,91,0
+485,SWFA-102126,SWFA-102126,Trench,Cheney Stadium,Infiltration,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+486,SWFA-102143,SWFA-102143,Pond,WSDOT I-5 Yakima-Delin,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+487,SWFA-102144,SWFA-102144,Pond,WSDOT I-5 Yakima-Delin,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+488,SWFA-102145,SWFA-102145,Oil Water Separator,WSDOT Narrows Bridge,API,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+489,SWFA-102146,SWFA-102146,Pond,WSDOT 00000360 SR16 at 19th,Detention,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+490,SWFA-102148,SWFA-102148,Pond,WSDOT 00000362 SR-16 at 19th st,Wet,,,,,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+491,SWFA-102149,SWFA-102149,Pond,WSDOT HWY-16 to SB I-5,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+492,SWFA-102150,SWFA-102150,Pond,WSDOT 00000373 SR-16 at 12th,Combined,,,,,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+493,SWFA-102151,SWFA-102151,Pond,WSDOT SR-16 at Union,Detention,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+494,SWFA-102152,SWFA-102152,Pond,,Detention,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+495,SWFA-102153,SWFA-102153,Pond,WSDOT SR-16 at 6th ave,Detention,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+496,SWFA-102154,SWFA-102154,Pond,WSDOT 00000374 SR-16 at Pearl,Detention,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+497,SWFA-102155,SWFA-102155,Pond,WSDOT 00000367 SR-16 at Center st,Combined,,,,,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+498,SWFA-102156,SWFA-102156,Pond,WSDOT 00000381 SR-16 at Center st,Combined,,,,,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+499,SWFA-102157,SWFA-102157,Pond,WSDOT 00000380 SR-16 at Center st,Detention,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+500,SWFA-102158,SWFA-102158,Pond,WSDOT SR-16 at Union,Detention,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+501,SWFA-102159,SWFA-102159,Pond,WSDOT SR-509 at Milwaukee,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+502,SWFA-102160,SWFA-102160,Pond,WSDOT SR-509 at Port of Tacoma Rd,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+503,SWFA-102161,SWFA-102161,Pond,WSDOT I-5 at M st,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+504,SWFA-102162,SWFA-102162,Pond,WSDOT I-5 at M st,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+505,SWFA-102163,SWFA-102163,Pond,WSDOT SR-16 at I-5,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+506,SWFA-102164,SWFA-102164,Pond,WSDOT SR-16 at I-5,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+507,SWFA-102194,SWFA-102194,Pond,WSDOT 00000375 SR-16 at 19th,Combined,,,,,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+508,SWFA-102203,SWFA-102203,Swale,WSDOT DITC00035646 SR-509 at dock street,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+509,SWFA-102206,SWFA-102206,Swale,COT Peoples Community Center,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+510,SWFA-102209,SWFA-102209,Swirl Separator,COT Fire Station #16,Stormceptor,,,,,Pretreatment,hydrodynamic_separator_simple,,,,,,,,,,,,91,0
+511,SWFA-102210,SWFA-102210,Media Filter,Tacoma Police Stewart Heights,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+512,SWFA-102211,SWFA-102211,Media Filter,Tacoma Police Stewart Heights,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+513,SWFA-102213,SWFA-102213,Swale,COT Police Wapato,Vegetated Filter Strips,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+514,SWFA-102254,SWFA-102254,Vegetated Box,Wapato Park,Filterra,,,,,,vegetated_box_simple,,,,,,,,,,,,91,0
+515,SWFA-102255,SWFA-102255,Pond,Wapato Park,Detention,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+516,SWFA-102256,SWFA-102256,Pond,Wapato Park,Detention,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+517,SWFA-102268,SWFA-102268,Oil Water Separator,Point Defiance Park - Owens Beach,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+518,SWFA-102311,SWFA-102311,Media Filter,Temco,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+519,SWFA-102312,SWFA-102312,Media Filter,Temco,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+520,SWFA-102313,SWFA-102313,Media Filter,Temco,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+521,SWFA-102326,SWFA-102326,Swirl Separator,26TH STREET NE,Aqua Swirl,,,,,Pretreatment,hydrodynamic_separator_simple,,,,,,,,,,,,91,0
+522,SWFA-102382,SWFA-102382,Media Filter,Blix Elementary,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+523,SWFA-102383,SWFA-102383,Vault,Blix Elementary,,,,,,Basic,no_treatment,,,,,,,,,,,,91,0
+524,SWFA-102384,SWFA-102384,Trench,Edison Elementary,Infiltration,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+525,SWFA-102385,SWFA-102385,Bioretention,Edison Elementary,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+526,SWFA-102386,SWFA-102386,Media Filter,Tacoma Schools Fern Hill,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+527,SWFA-102387,SWFA-102387,Media Filter,Tacoma Schools Fern Hill,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+528,SWFA-102388,SWFA-102388,Bioretention,Tacoma Schools Fern Hill,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+529,SWFA-102390,SWFA-102390,Pond,Tacoma Schools First Creek,Combined,,,,IP,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+530,SWFA-102391,SWFA-102391,Pond,Tacoma Schools First Creek,Combined,,,,Wetland,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+531,SWFA-102396,SWFA-102396,Oil Water Separator,TPU Sto-Beh-Lah SubStation,API,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+532,SWFA-102398,SWFA-102398,Media Filter,Tacoma Schools Stafford Elementary,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+533,SWFA-102420,SWFA-102420,Swale,Tagro Business Operations,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+534,SWFA-102435,SWFA-102435,Trench,,Null,,,,,Basic,infiltration_simple,,,,,,,,,,,,91,91
+535,SWFA-102440,SWFA-102440,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+536,SWFA-102441,SWFA-102441,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+537,SWFA-102448,SWFA-102448,Bioretention,Stadium Way,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+538,SWFA-102450,SWFA-102450,Pond,Dry Gulch,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+539,SWFA-102465,SWFA-102465,Trench,COT FIRE ADDITIONAL LAND - 3812,Infiltration,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+540,SWFA-102466,SWFA-102466,Trench,COT FIRE STATION #11,Infiltration,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+541,SWFA-102468,SWFA-102468,Trench,COT FIRE STATION #6,Infiltration,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+542,SWFA-102469,SWFA-102469,Trench,COT FIRE STATION #7,Infiltration,,Full,,,Basic,infiltration_simple,,,,,,,,,,,,91,91
+543,SWFA-102484,SWFA-102484,Bioretention,Totem Ocean Trailer Express Inc,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+544,SWFA-102485,SWFA-102485,Trench,95th st Infiltration,Infiltration,,Full,,,Basic,infiltration_simple,,,,,,,,,,,,91,91
+545,SWFA-102486,SWFA-102486,Trench,95th st Infiltration,Infiltration,,Full,,,Basic,infiltration_simple,,,,,,,,,,,,91,91
+546,SWFA-102487,SWFA-102487,Trench,Lee Short Plat,Infiltration,,Full,,IP,Basic,infiltration_simple,,,,,,,,,,,,91,91
+547,SWFA-102489,SWFA-102489,Bioretention,Hood St,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+548,SWFA-102496,SWFA-102496,Swale,E 40th & Howe,Null,,,,,,vegetated_swale_simple,,,,,,,,,,,,91,20
+549,SWFA-102497,SWFA-102497,Swale,E 40th & Howe,Null,,,,,,vegetated_swale_simple,,,,,,,,,,,,91,20
+550,SWFA-102498,SWFA-102498,Swale,E 40th & Howe,Null,,,,,,vegetated_swale_simple,,,,,,,,,,,,91,20
+551,SWFA-102499,SWFA-102499,Swale,E 40th & Howe,Null,,,,,,vegetated_swale_simple,,,,,,,,,,,,91,20
+552,SWFA-102500,SWFA-102500,Swale,E 40th & Howe,Null,,,,,,vegetated_swale_simple,,,,,,,,,,,,91,20
+553,SWFA-102501,SWFA-102501,Swale,E 40th & Howe,Null,,,,,,vegetated_swale_simple,,,,,,,,,,,,91,20
+554,SWFA-102502,SWFA-102502,Swale,E 40th & Howe,Null,,,,,,vegetated_swale_simple,,,,,,,,,,,,91,20
+555,SWFA-102503,SWFA-102503,Swale,E 40th & Howe,Null,,,,,,vegetated_swale_simple,,,,,,,,,,,,91,20
+556,SWFA-102514,SWFA-102514,Trench,,Dispersion,,,,,,infiltration_simple,,,,,,,,,,,,91,91
+557,SWFA-102515,SWFA-102515,Trench,,Dispersion,,,,,,infiltration_simple,,,,,,,,,,,,91,91
+558,SWFA-102516,SWFA-102516,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+559,SWFA-102519,SWFA-102519,Pervious Pavement,Bell St,Asphalt,,,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+560,SWFA-102520,SWFA-102520,Pervious Pavement,Macintosh Court,Asphalt,,,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+561,SWFA-102531,SWFA-102531,Media Filter,E 25th & G St,FloGard Perk Filter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+562,SWFA-102532,SWFA-102532,Media Filter,E 25th & G St,FloGard Perk Filter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+563,SWFA-102533,SWFA-102533,Media Filter,E 25th & G St,FloGard Perk Filter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+564,SWFA-102542,SWFA-102542,Media Filter,1500 Orchard Apartments,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+565,SWFA-102562,SWFA-102562,Media Filter,815 S Vassault,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+566,SWFA-102563,SWFA-102563,Media Filter,815 S Vassault,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+567,SWFA-102564,SWFA-102564,Media Filter,815 S Vassault,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+568,SWFA-102565,SWFA-102565,Media Filter,101 E 46th,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+569,SWFA-102566,SWFA-102566,Media Filter,101 E 46th,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+570,SWFA-102567,SWFA-102567,Media Filter,101 E 46th,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+571,SWFA-102571,SWFA-102571,Vault,,Conveyance,,,,,Basic,no_treatment,,,,,,,,,,,,91,0
+572,SWFA-102593,SWFA-102593,Tank,South End NeighborHood Center,Detention,,Full,,,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+573,SWFA-102596,SWFA-102596,Tank,Stonegate II - Div. 1,Detention,,,,IP,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+574,SWFA-102597,SWFA-102597,Tank,Stonegate II - Div. 1,Detention,,,,IP,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+575,SWFA-102598,SWFA-102598,Tank,Stonegate II - Div. 2,Detention,,,,IP,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+576,SWFA-102599,SWFA-102599,Tank,Stonegate II - Div. 4,Detention,,,,IP,,dry_extended_detention_simple,,,,,,,,,,,,91,20
+577,SWFA-102608,SWFA-102608,Pond,,Combined Wetland,,Partial,,Stream,Enhanced,wet_pond_simple,,,,,,,,,,,,91,0
+578,SWFA-102609,SWFA-102609,Pond,,Wet,,,,,Pretreatment,wet_pond_simple,,,,,,,,,,,,91,0
+579,SWFA-102613,SWFA-102613,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+580,SWFA-102614,SWFA-102614,Pervious Pavement,Dupree's Landing,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+581,SWFA-102629,SWFA-102629,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+582,SWFA-102630,SWFA-102630,Bioretention,Point Defiance Aquarium,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+583,SWFA-102632,SWFA-102632,Pond,Prologis,Combined Wetland,,,,IP,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+584,SWFA-102633,SWFA-102633,Pond,Prologis,Combined Wetland,,,,IP,Basic,wet_pond_simple,,,,,,,,,,,,91,0
+585,SWFA-102704,SWFA-102704,Bioretention,,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+586,SWFA-102705,SWFA-102705,Bioretention,,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+587,SWFA-102706,SWFA-102706,Bioretention,,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+588,SWFA-102707,SWFA-102707,Bioretention,,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+589,SWFA-102708,SWFA-102708,Bioretention,,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+590,SWFA-102709,SWFA-102709,Bioretention,,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+591,SWFA-102720,SWFA-102720,Vegetated Box,,Null,,,,,,vegetated_box_simple,,,,,,,,,,,,91,0
+592,SWFA-102726,SWFA-102726,Swale,,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+593,SWFA-102727,SWFA-102727,Swale,,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+594,SWFA-102715,SWFA-102715,Media Filter,M St Dental,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+595,SWFA-102725,SWFA-102725,Vault,,Conveyance,,,,,Basic,no_treatment,,,,,,,,,,,,91,0
+596,SWFA-102728,SWFA-102728,Vegetated Box,,Null,,,,,,vegetated_box_simple,,,,,,,,,,,,91,0
+597,SWFA-102729,SWFA-102729,Vegetated Box,,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+598,SWFA-102730,SWFA-102730,Vegetated Box,,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+599,SWFA-102731,SWFA-102731,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+600,SWFA-102732,SWFA-102732,Vault,,Detention,,Partial,,IP,,no_treatment,,,,,,,,,,,,91,0
+601,SWFA-102733,SWFA-102733,Bioretention,,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+602,SWFA-102734,SWFA-102734,Bioretention,,,,Full,,,Basic,bioretention_with_full_infiltration_simple,,,,,,,,,,,,91,91
+603,SWFA-102736,SWFA-102736,Pervious Pavement,E 40th,Asphalt,,Full,,,Basic,pervious_pavement_simple,,,,,,,,,,,,91,91
+604,SWFA-102737,SWFA-102737,Pervious Pavement,E 40th,Concrete,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+605,SWFA-102738,SWFA-102738,Pervious Pavement,E 40th,Concrete,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+606,SWFA-102739,SWFA-102739,Pervious Pavement,E 40th,Asphalt,,Full,,,Basic,pervious_pavement_simple,,,,,,,,,,,,91,91
+607,SWFA-102740,SWFA-102740,Pervious Pavement,E 40th,Asphalt,,Full,,,Basic,pervious_pavement_simple,,,,,,,,,,,,91,91
+608,SWFA-102741,SWFA-102741,Pervious Pavement,E 40th,Asphalt,,Full,,,Basic,pervious_pavement_simple,,,,,,,,,,,,91,91
+609,SWFA-102742,SWFA-102742,Pervious Pavement,E 40th,Asphalt,,Full,,,Basic,pervious_pavement_simple,,,,,,,,,,,,91,91
+610,SWFA-102743,SWFA-102743,Pervious Pavement,E 40th,Asphalt,,Full,,,Basic,pervious_pavement_simple,,,,,,,,,,,,91,91
+611,SWFA-102744,SWFA-102744,Pervious Pavement,E 40th,Asphalt,,Full,,,Basic,pervious_pavement_simple,,,,,,,,,,,,91,91
+612,SWFA-102746,SWFA-102746,Pervious Pavement,E 40th,Asphalt,,Full,,,Basic,pervious_pavement_simple,,,,,,,,,,,,91,91
+613,SWFA-102748,SWFA-102748,Trench,METRO PARKS WRIGHT PARK,Infiltration,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+614,SWFA-102751,SWFA-102751,Bioretention,,,,,,Stream,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+615,SWFA-102757,SWFA-102757,Vault,,Detention,,,,,,no_treatment,,,,,,,,,,,,91,0
+616,SWFA-102758,SWFA-102758,Media Filter,Arlington Elem,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+617,SWFA-102759,SWFA-102759,Pond,,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+618,SWFA-102761,SWFA-102761,Swale,,Null,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+619,SWFA-102764,SWFA-102764,Trench,THA,Infiltration,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+620,SWFA-102765,SWFA-102765,Trench,THA,Infiltration,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+621,SWFA-102771,SWFA-102771,Pervious Pavement,,Asphalt,,Full,,,Basic,pervious_pavement_simple,,,,,,,,,,,,91,91
+622,SWFA-102772,SWFA-102772,Swale,,Null,,Partial,,Stream,Enhanced,vegetated_swale_simple,,,,,,,,,,,,91,20
+623,SWFA-102867,SWFA-102867,Trench,Manitou,Infiltration,,Full,,,Basic,infiltration_simple,,,,,,,,,,,,91,91
+624,SWFA-102868,SWFA-102868,Trench,Manitou,Infiltration,,Full,,,Basic,infiltration_simple,,,,,,,,,,,,91,91
+625,SWFA-102874,SWFA-102874,Swirl Separator,CUW PARKING AND SURVEY BUILDING,Stormceptor,,,,,Pretreatment,hydrodynamic_separator_simple,,,,,,,,,,,,91,0
+626,SWFA-102875,SWFA-102875,Media Filter,,FloGard Perk Filter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+627,SWFA-102876,SWFA-102876,Media Filter,,FloGard Perk Filter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+628,SWFA-102878,SWFA-102878,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+629,SWFA-102879,SWFA-102879,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+630,SWFA-102880,SWFA-102880,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+631,SWFA-102893,SWFA-102893,Pervious Pavement,S 48th,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+632,SWFA-102896,SWFA-102896,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+633,SWFA-102902,SWFA-102902,Pervious Pavement,Oakland,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+634,SWFA-102903,SWFA-102903,Pervious Pavement,Oakland,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+635,SWFA-102904,SWFA-102904,Pervious Pavement,Oakland,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+636,SWFA-102905,SWFA-102905,Pervious Pavement,Oakland,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+637,SWFA-102906,SWFA-102906,Pervious Pavement,Oakland,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+638,SWFA-102907,SWFA-102907,Pervious Pavement,Oakland,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+639,SWFA-102908,SWFA-102908,Pervious Pavement,Oakland,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+640,SWFA-102909,SWFA-102909,Pervious Pavement,Oakland,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+641,SWFA-102910,SWFA-102910,Pervious Pavement,Oakland,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+642,SWFA-102911,SWFA-102911,Pervious Pavement,Oakland,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+643,SWFA-102912,SWFA-102912,Pervious Pavement,Oakland,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+644,SWFA-102913,SWFA-102913,Pervious Pavement,Oakland,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+645,SWFA-102914,SWFA-102914,Pervious Pavement,Oakland,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+646,SWFA-102915,SWFA-102915,Pervious Pavement,Oakland,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+647,SWFA-102916,SWFA-102916,Pervious Pavement,Oakland,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+648,SWFA-102917,SWFA-102917,Pervious Pavement,Oakland,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+649,SWFA-102918,SWFA-102918,Pervious Pavement,Oakland,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+650,SWFA-102920,SWFA-102920,Pervious Pavement,Oakland,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+651,SWFA-102921,SWFA-102921,Pervious Pavement,Oakland,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+652,SWFA-102942,SWFA-102942,Media Filter,3301 E Alexander,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+653,SWFA-102944,SWFA-102944,Vegetated Box,Arlington Elementary,Null,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+654,SWFA-102951,SWFA-102951,Vault,,Conveyance,,,,,Basic,no_treatment,,,,,,,,,,,,91,0
+655,SWFA-102955,SWFA-102955,Pervious Pavement,Bennett,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+656,SWFA-102981,SWFA-102981,Swale,Norpoint Landing,Null,,,,,,vegetated_swale_simple,,,,,,,,,,,,91,20
+657,SWFA-102982,SWFA-102982,Media Filter,Norpoint Landing,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+658,SWFA-102983,SWFA-102983,Pump Station,,,,,,,,no_treatment,,,,,,,,,,,,91,0
+659,SWFA-102985,SWFA-102985,Pervious Pavement,Division,Asphalt,,,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+660,SWFA-103050,SWFA-103050,Pervious Pavement,Wapato Lake Dr,Asphalt,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+661,SWFA-103051,SWFA-103051,Pervious Pavement,Asotin Ct,Asphalt,,,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+662,SWFA-103070,SWFA-103070,Media Filter,TCC,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+663,SWFA-103071,SWFA-103071,Pond,TCC,Detention,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+664,SWFA-103072,SWFA-103072,Media Filter,Grant Elementary,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+665,SWFA-103073,SWFA-103073,Media Filter,Grant Elementary,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+666,SWFA-103074,SWFA-103074,Media Filter,Grant Elementary,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+667,SWFA-103075,SWFA-103075,Media Filter,Grant Elementary,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+668,SWFA-103082,SWFA-103082,Bioretention,,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+669,SWFA-103089,SWFA-103089,Vault,,Detention,,,,IP,,no_treatment,,,,,,,,,,,,91,0
+670,SWFA-103099,SWFA-103099,Pervious Pavement,E 40th,Concrete,,Full,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+671,SWFA-103102,SWFA-103102,Pond,Blix Pond,,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+672,SWFA-103103,SWFA-103103,Pond,Blix Pond,,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+673,SWFA-103108,SWFA-103108,Trench,,Infiltration,,Full,,,Basic,infiltration_simple,,,,,,,,,,,,91,91
+674,SWFA-103109,SWFA-103109,Pervious Pavement,,Concrete,,Partial,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+675,SWFA-103132,SWFA-103132,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+676,SWFA-103133,SWFA-103133,Vegetated Box,,Filterra,,,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+677,SWFA-103134,SWFA-103134,Bioretention,,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+678,SWFA-103183,SWFA-103183,Bioretention,,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+679,SWFA-103184,SWFA-103184,Bioretention,Wilson High School,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+680,SWFA-103186,SWFA-103186,Pond,Kaiser,Detention,,,,IP,,wet_pond_simple,,,,,,,,,,,,91,0
+681,SWFA-103190,SWFA-103190,Media Filter,,Bayfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+682,SWFA-103217,SWFA-103217,Vault,,Conveyance,,,,,,no_treatment,,,,,,,,,,,,91,0
+683,SWFA-103224,SWFA-103224,Pump Station,,,,,,,,no_treatment,,,,,,,,,,,,91,0
+684,SWFA-103225,SWFA-103225,Pump Station,,,,,,,,no_treatment,,,,,,,,,,,,91,0
+685,SWFA-103252,SWFA-103252,Media Filter,,FloGard Perk Filter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+686,SWFA-103264,SWFA-103264,Swirl Separator,,Null,,,,,Pretreatment,hydrodynamic_separator_simple,,,,,,,,,,,,91,0
+687,SWFA-103265,SWFA-103265,Pump Station,,,,,,,,no_treatment,,,,,,,,,,,,91,0
+688,SWFA-103266,SWFA-103266,Bioretention,,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+689,SWFA-103279,SWFA-103279,Vault,,Conveyance,,,,,,no_treatment,,,,,,,,,,,,91,0
+690,SWFA-103290,SWFA-103290,Vegetated Box,,Null,,,,,,vegetated_box_simple,,,,,,,,,,,,91,0
+691,SWFA-103291,SWFA-103291,Swale,,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+692,SWFA-103292,SWFA-103292,Bioretention,,,,Partial,,,Enhanced,bioretention_with_partial_infiltration_simple,,,,,,,,,,,,91,20
+693,SWFA-103293,SWFA-103293,Vegetated Box,,Null,,,,,,vegetated_box_simple,,,,,,,,,,,,91,0
+694,SWFA-103306,SWFA-103306,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+695,SWFA-103307,SWFA-103307,Oil Water Separator,,Null,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+696,SWFA-103308,SWFA-103308,Bioretention,,,,,,,Enhanced,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+697,SWFA-103311,SWFA-103311,Swale,,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+698,SWFA-103312,SWFA-103312,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+699,SWFA-103313,SWFA-103313,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+700,SWFA-103314,SWFA-103314,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+701,SWFA-103315,SWFA-103315,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+702,SWFA-103316,SWFA-103316,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+703,SWFA-103317,SWFA-103317,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+704,SWFA-103318,SWFA-103318,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+705,SWFA-103319,SWFA-103319,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+706,SWFA-103320,SWFA-103320,Pervious Pavement,SOUTH PUGET SOUND AVENUE GREENSCAPE,Asphalt,,Partial,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+707,SWFA-103321,SWFA-103321,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+708,SWFA-103322,SWFA-103322,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+709,SWFA-103326,SWFA-103326,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+710,SWFA-103327,SWFA-103327,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+711,SWFA-103328,SWFA-103328,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+712,SWFA-103330,SWFA-103330,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+713,SWFA-103331,SWFA-103331,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+714,SWFA-103332,SWFA-103332,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+715,SWFA-103333,SWFA-103333,Swale,,Biofiltration,,,,,Basic,vegetated_swale_simple,,,,,,,,,,,,91,20
+716,SWFA-103334,SWFA-103334,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+717,SWFA-103335,SWFA-103335,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+718,SWFA-103336,SWFA-103336,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+719,SWFA-103337,SWFA-103337,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+720,SWFA-103338,SWFA-103338,Swale,,Null,,Partial,,,,vegetated_swale_simple,,,,,,,,,,,,91,20
+721,SWFA-103339,SWFA-103339,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+722,SWFA-103340,SWFA-103340,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+723,SWFA-103341,SWFA-103341,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+724,SWFA-103342,SWFA-103342,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+725,SWFA-103343,SWFA-103343,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+726,SWFA-103345,SWFA-103345,Bioretention,,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+727,SWFA-103346,SWFA-103346,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+728,SWFA-103347,SWFA-103347,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+729,SWFA-103348,SWFA-103348,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+730,SWFA-103349,SWFA-103349,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+731,SWFA-103351,SWFA-103351,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+732,SWFA-103356,SWFA-103356,Vault,,Wet,,,,,Basic,no_treatment,,,,,,,,,,,,91,0
+733,SWFA-103357,SWFA-103357,Vault,,Conveyance,,,,,,no_treatment,,,,,,,,,,,,91,0
+734,SWFA-103358,SWFA-103358,Vault,,Conveyance,,,,,,no_treatment,,,,,,,,,,,,91,0
+735,SWFA-103374,SWFA-103374,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+736,SWFA-103375,SWFA-103375,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+737,SWFA-103383,SWFA-103383,Media Filter,E D St,Stormfilter,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+738,SWFA-103401,SWFA-103401,Trench,Cheney Stadium,Null,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+739,SWFA-103402,SWFA-103402,Vault,,Conveyance,,,,,,no_treatment,,,,,,,,,,,,91,0
+740,SWFA-103427,SWFA-103427,Media Filter,Emerald Bay Apts,FloGard Perk Filter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+741,SWFA-103428,SWFA-103428,Media Filter,Emerald Bay Apts,FloGard Perk Filter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+742,SWFA-103435,SWFA-103435,Trench,Ballast,Infiltration,,,,Stream,,infiltration_simple,,,,,,,,,,,,91,91
+743,SWFA-103436,SWFA-103436,Oil Water Separator,,Null,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+744,SWFA-103437,SWFA-103437,Vault,,,,,,,,no_treatment,,,,,,,,,,,,91,0
+745,SWFA-103438,SWFA-103438,Vault,,,,,,,,no_treatment,,,,,,,,,,,,91,0
+746,SWFA-103441,SWFA-103441,Vegetated Box,,MWS,,Partial,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+747,SWFA-103442,SWFA-103442,Vegetated Box,,MWS,,Partial,,,Basic,vegetated_box_simple,,,,,,,,,,,,91,0
+748,SWFA-103477,SWFA-103477,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+749,SWFA-103478,SWFA-103478,Bioretention,,,,,,,Basic,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+750,SWFA-103512,SWFA-103512,Media Filter,,Null,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+751,SWFA-103525,SWFA-103525,Pervious Pavement,S D St,Asphalt,,Partial,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+752,SWFA-103527,SWFA-103527,Vault,,Conveyance,,,,,,no_treatment,,,,,,,,,,,,91,0
+753,SWFA-103533,SWFA-103533,Trench,Spokane Ballast,Infiltration,,,,,,infiltration_simple,,,,,,,,,,,,91,91
+754,SWFA-103534,SWFA-103534,Trench,McKinley Ballast,Infiltration,,,,,,infiltration_simple,,,,,,,,,,,,91,91
+755,SWFA-103535,SWFA-103535,Trench,J St Ballast,Infiltration,,,,,,infiltration_simple,,,,,,,,,,,,91,91
+756,SWFA-103536,SWFA-103536,Trench,I St Ballast,Infiltration,,,,,,infiltration_simple,,,,,,,,,,,,91,91
+757,SWFA-103537,SWFA-103537,Trench,K St Ballast N,Infiltration,,,,,,infiltration_simple,,,,,,,,,,,,91,91
+758,SWFA-103538,SWFA-103538,Trench,K St Ballast,Infiltration,,,,,,infiltration_simple,,,,,,,,,,,,91,91
+759,SWFA-103539,SWFA-103539,Trench,Howe St Ballast N,Infiltration,,,,,,infiltration_simple,,,,,,,,,,,,91,91
+760,SWFA-103540,SWFA-103540,Trench,Portland Ballast N,Infiltration,,,,,,infiltration_simple,,,,,,,,,,,,91,91
+761,SWFA-103549,SWFA-103549,Pervious Pavement,E 40th,Concrete,,Full,,,Basic,pervious_pavement_simple,,,,,,,,,,,,91,91
+762,SWFA-103554,SWFA-103554,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+763,SWFA-103555,SWFA-103555,Bioretention,Mary Lyon Elementary,,,Partial,,,Basic,bioretention_with_partial_infiltration_simple,,,,,,,,,,,,91,20
+764,SWFA-103556,SWFA-103556,Bioretention,Wainwright Intermediary School,,,Full,,,Enhanced,bioretention_with_full_infiltration_simple,,,,,,,,,,,,91,91
+765,SWFA-103557,SWFA-103557,Bioretention,Wainwright Intermediary School,,,Full,,,Enhanced,bioretention_with_full_infiltration_simple,,,,,,,,,,,,91,91
+766,SWFA-103558,SWFA-103558,Bioretention,Blix Elementary School,,,Full,,,Basic,bioretention_with_full_infiltration_simple,,,,,,,,,,,,91,91
+767,SWFA-103559,SWFA-103559,Bioretention,First Creek Middle School,,,Full,,,Basic,bioretention_with_full_infiltration_simple,,,,,,,,,,,,91,91
+768,SWFA-103560,SWFA-103560,Bioretention,Sherman Elementary School,,,Full,,,Basic,bioretention_with_full_infiltration_simple,,,,,,,,,,,,91,91
+769,SWFA-103563,SWFA-103563,Oil Water Separator,Auto Warehousing,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+770,SWFA-103564,SWFA-103564,Oil Water Separator,Auto Warehousing,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+771,SWFA-103565,SWFA-103565,Oil Water Separator,Auto Warehousing,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+772,SWFA-103566,SWFA-103566,Oil Water Separator,Auto Warehousing,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+773,SWFA-103567,SWFA-103567,Oil Water Separator,Auto Warehousing,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+774,SWFA-103568,SWFA-103568,Oil Water Separator,Auto Warehousing,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+775,SWFA-103569,SWFA-103569,Oil Water Separator,Auto Warehousing,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+776,SWFA-103570,SWFA-103570,Oil Water Separator,Auto Warehousing,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+777,SWFA-103571,SWFA-103571,Oil Water Separator,Auto Warehousing,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+778,SWFA-103572,SWFA-103572,Oil Water Separator,Auto Warehousing,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+779,SWFA-103573,SWFA-103573,Oil Water Separator,Auto Warehousing,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+780,SWFA-103574,SWFA-103574,Oil Water Separator,Auto Warehousing,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+781,SWFA-103575,SWFA-103575,Oil Water Separator,Auto Warehousing,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+782,SWFA-103576,SWFA-103576,Oil Water Separator,Auto Warehousing,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+783,SWFA-103577,SWFA-103577,Oil Water Separator,Auto Warehousing,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+784,SWFA-103578,SWFA-103578,Oil Water Separator,Auto Warehousing,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+785,SWFA-103579,SWFA-103579,Oil Water Separator,Auto Warehousing,CP,,,,,Oil,oil_water_separator_simple,,,,,,,,,,,,91,0
+786,SWFA-103580,SWFA-103580,Pervious Pavement,Haley Short Plat Pervious,Asphalt,,Partial,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+787,SWFA-103581,SWFA-103581,Trench,Haley Short Plat,Infiltration,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+788,SWFA-103582,SWFA-103582,Media Filter,,Stormfilter,,,,,Basic,media_filter_simple,,,,,,,,,,,,91,0
+789,SWFA-103631,SWFA-103631,Holding Basin,Flett Pond 1,,,,,IP,,no_treatment,,,,,,,,,,,,91,0
+790,SWFA-103632,SWFA-103632,Holding Basin,Flett Pond 3,,,,,IP,,no_treatment,,,,,,,,,,,,91,0
+791,SWFA-103633,SWFA-103633,Holding Basin,Flett Pond 4,,,,,IP,,no_treatment,,,,,,,,,,,,91,0
+792,SWFA-103638,SWFA-103638,Vegetated Box,,MWS,,,,,,vegetated_box_simple,,,,,,,,,,,,91,0
+793,SWFA-103672,SWFA-103672,Vegetated Box,Landfill Filterra Trench Drain,Filterra,,,,,,vegetated_box_simple,,,,,,,,,,,,91,0
+794,SWFA-103682,SWFA-103682,Pond,,Detention,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+795,SWFA-103689,SWFA-103689,Trench,Drywell,Bottomless CB,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+796,SWFA-103690,SWFA-103690,Trench,Drywell,Bottomless CB,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+797,SWFA-103691,SWFA-103691,Trench,Drywell,Bottomless CB,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+798,SWFA-103692,SWFA-103692,Trench,Drywell,Bottomless CB,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+799,SWFA-103693,SWFA-103693,Trench,Drywell,Bottomless CB,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+800,SWFA-103694,SWFA-103694,Trench,Drywell,Bottomless CB,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+801,SWFA-103695,SWFA-103695,Trench,Drywell,Bottomless CB,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+802,SWFA-103696,SWFA-103696,Trench,Drywell,Bottomless CB,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+803,SWFA-103698,SWFA-103698,Trench,Drywell,Bottomless CB,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+804,SWFA-103699,SWFA-103699,Trench,Drywell,Bottomless CB,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+805,SWFA-103701,SWFA-103701,Trench,Drywell,Bottomless CB,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+806,SWFA-103702,SWFA-103702,Trench,Drywell,Bottomless CB,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+807,SWFA-103703,SWFA-103703,Trench,Drywell,Bottomless CB,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+808,SWFA-103704,SWFA-103704,Trench,Drywell,Bottomless CB,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+809,SWFA-103707,SWFA-103707,Trench,Drywell,Bottomless CB,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+810,SWFA-103708,SWFA-103708,Trench,Drywell,Bottomless CB,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+811,SWFA-103709,SWFA-103709,Trench,Drywell,Bottomless CB,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+812,SWFA-103710,SWFA-103710,Trench,Drywell,Bottomless CB,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+813,SWFA-103711,SWFA-103711,Trench,Drywell,Bottomless CB,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+814,SWFA-103715,SWFA-103715,Trench,Madison Meadow,Infiltration,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+815,SWFA-103716,SWFA-103716,Media Filter,Madison Meadow,Stormfilter,,,,,,media_filter_simple,,,,,,,,,,,,91,0
+816,SWFA-103717,SWFA-103717,Trench,Madison Meadow Ballast Sidewalk,Infiltration,,Full,,,,infiltration_simple,,,,,,,,,,,,91,91
+817,SWFA-103719,SWFA-103719,Pervious Pavement,Cheney Pervious,Asphalt,,,,,,pervious_pavement_simple,,,,,,,,,,,,91,91
+818,SWFA-103727,SWFA-103727,Vegetated Box,4001 Puget Sound,Filterra,,,,,,vegetated_box_simple,,,,,,,,,,,,91,0
+819,SWFA-103732,SWFA-103732,Vault,,,,,,,,no_treatment,,,,,,,,,,,,91,0
+820,SWFA-103736,SWFA-103736,Pond,,Combined,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+821,SWFA-103738,SWFA-103738,Bioretention,,,,,,,,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+822,SWFA-103739,SWFA-103739,Bioretention,,,,,,,,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+823,SWFA-103741,SWFA-103741,Bioretention,,,,,,,,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+824,SWFA-103742,SWFA-103742,Bioretention,,,,,,,,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+825,SWFA-103743,SWFA-103743,Bioretention,,,,,,,,bioretention_with_no_infiltration_simple,,,,,,,,,,,,91,0
+826,SWFA-103747,SWFA-103747,Pond,,,,,,,,wet_pond_simple,,,,,,,,,,,,91,0
+827,SWFA-103750,SWFA-103750,Oil Water Separator,,,,,,,,oil_water_separator_simple,,,,,,,,,,,,91,0
+828,SWFA-103748,SWFA-103748,Swale,,Biofiltration,,,,,,vegetated_swale_simple,,,,,,,,,,,,91,20
+829,SWFA-103753,SWFA-103753,Swale,,,,,,,,vegetated_swale_simple,,,,,,,,,,,,91,20
+830,SWFA-103751,SWFA-103751,Swale,,,,,,,,vegetated_swale_simple,,,,,,,,,,,,91,20
+831,SWFA-103752,SWFA-103752,Oil Water Separator,,,,,,,,oil_water_separator_simple,,,,,,,,,,,,91,0
