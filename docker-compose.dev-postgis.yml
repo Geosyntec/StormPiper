@@ -1,7 +1,6 @@
 version: '3.7'
 services:
   stormpiper-test:
-    command: bash /start-test-container.sh
     environment:
       RUN_PRESTART_MIGRATION: 1
       STP_EE_LOGIN_ON_STARTUP: false

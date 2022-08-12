@@ -30,7 +30,7 @@ COPY ./stormpiper/prestart.sh /stormpiper/prestart.sh
 COPY ./stormpiper/alembic /stormpiper/alembic
 COPY ./stormpiper/stormpiper /stormpiper/stormpiper
 COPY --from=build-frontend /app/build /stormpiper/stormpiper/spa/build
-RUN chmod +x /start.sh /start-pod.sh /start-reload.sh
+RUN chmod +x /start.sh /start-pod.sh /start-reload.sh /start-test-container.sh
 
 
 FROM python:3.9-buster as builder
@@ -73,6 +73,7 @@ CMD /start-pod.sh
 FROM stormpiper-pod as stormpiper-test
 COPY ./stormpiper/requirements_test.txt /requirements_test.txt
 COPY ./stormpiper/pytest.ini /stormpiper/pytest.ini
+COPY ./stormpiper/prestart-tests.sh /stormpiper/prestart-tests.sh
 RUN pip install -r /requirements_test.txt
 COPY .coveragerc /stormpiper/.coveragerc
 ## This will make the container wait, doing nothing, but alive

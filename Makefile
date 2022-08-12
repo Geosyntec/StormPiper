@@ -76,13 +76,14 @@ lint: clean
 	bash scripts/lint.sh
 
 test-ci: stack-ci ## run tests quickly with the default Python
-	docker compose -f docker-stack.yml up -d stormpiper-test postgis
-	docker compose -f docker-stack.yml exec stormpiper-test pytest -xv -m "not integration"
+	docker compose -f docker-stack.yml up stormpiper-test postgis -d
+	docker compose -f docker-stack.yml exec stormpiper-test bash prestart-tests.sh  
+	docker compose -f docker-stack.yml exec stormpiper-test pytest -xsv  -m "not integration"
 
 coverage-ci: stack-ci ## run tests on CI with the default Python
-	docker compose -f docker-stack.yml up -d stormpiper-test postgis
+	docker compose -f docker-stack.yml up stormpiper-test postgis -d
+	docker compose -f docker-stack.yml exec stormpiper-test bash prestart-tests.sh  
 	docker compose -f docker-stack.yml exec stormpiper-test coverage run -m pytest -xv -m "not integration"
-	docker compose -f docker-stack.yml exec stormpiper-test coverage report -mi
 
 coverage: clean restart ## check code coverage quickly with the default Python
 	docker compose -f docker-stack.yml up -d stormpiper-test postgis
