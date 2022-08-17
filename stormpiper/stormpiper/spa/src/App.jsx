@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { React,useState } from "react";
 import { useParams,useNavigate } from "react-router-dom";
 import { layerDict } from "./assets/geojson/coreLayers";
 import LayerSelector from "./components/layerSelector";
@@ -38,7 +38,13 @@ function App() {
     });
     return res;
   });
-  
+
+
+  if(focusFeature!=params?.id){
+    setFocusFeature(params.id)
+  }
+
+
   function _toggleLayer(layerName, updateFunction = setActiveLayers) {
     var currentActiveLayers = { ...activeLayers };
     currentActiveLayers[layerName] = !currentActiveLayers[layerName];
@@ -133,13 +139,11 @@ function App() {
       <div
         id={prjStatDisplayState ? "prj-stat-panel" : "prj-stat-panel-hidden"}
       >
-        <div>
           <BMPStatWindow
             displayStatus={prjStatDisplayState}
             displayController={_toggleprjStatDisplayState}
             feature={focusFeature}
           ></BMPStatWindow>
-        </div>
       </div>
     </div>
   );
