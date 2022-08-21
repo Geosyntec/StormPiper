@@ -14,9 +14,9 @@ from fastapi_users.db import SQLAlchemyUserDatabase
 
 from stormpiper.core.config import settings
 
+from . import email
 from .db import User, get_async_session, get_user_db
 from .models import Role, UserCreate, UserRead, UserUpdate
-from . import email
 
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
