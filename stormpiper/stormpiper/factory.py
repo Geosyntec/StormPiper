@@ -46,7 +46,7 @@ def create_app(
         # tiles from external tileservers.
         sessions = {
             "tileserver_session": aiohttp.ClientSession(),
-            "redirect_session": aiohttp.ClientSession(),
+            "user_email_session": aiohttp.ClientSession(),
         }
         setattr(app, "sessions", sessions)
 

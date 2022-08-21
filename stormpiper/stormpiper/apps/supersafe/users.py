@@ -16,6 +16,7 @@ from stormpiper.core.config import settings
 
 from .db import User, get_async_session, get_user_db
 from .models import Role, UserCreate, UserRead, UserUpdate
+from . import email
 
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
@@ -33,11 +34,21 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     async def on_after_forgot_password(
         self, user: User, token: str, request: Optional[Request] = None
     ) -> None:
+        client = request.app.sessions["user_email_session"]
+        await email.send_reset_password_token_to_user(
+            email=user.email, name=user.first_name, token=token, client=client
+        )
+
         logger.info(f"User {user.id} forgot their password. Reset token: {token}")
 
     async def on_after_request_verify(
         self, user: User, token: str, request: Optional[Request] = None
     ) -> None:
+        client = request.app.sessions["user_email_session"]
+        await email.send_verify_email_token_to_user(
+            email=user.email, name=user.first_name, token=token, client=client
+        )
+
         logger.info(
             f"Verification requested for user {user.id}. Verification token: {token}"
         )
