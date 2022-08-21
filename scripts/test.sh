@@ -4,4 +4,5 @@ set -e
 set -x
 
 docker compose -f docker-stack.yml up stormpiper-test postgis -d
+docker compose -f docker-stack.yml exec stormpiper-test bash prestart-tests.sh
 docker compose -f docker-stack.yml exec stormpiper-test pytest "$@"
