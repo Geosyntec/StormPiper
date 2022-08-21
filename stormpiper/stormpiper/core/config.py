@@ -65,6 +65,8 @@ class Settings(BaseSettings):
     ENABLE_BEAT_SCHEDULE: bool = False
 
     # Email via https://dev.mailjet.com/email/guides/send-api-v31/
+
+    EMAIL_SEND_URL: str = "http://example.com"
     EMAIL_API_KEY: str = ""
     EMAIL_API_SECRET: str = ""
 
