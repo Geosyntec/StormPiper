@@ -32,6 +32,7 @@ def login(**kwargs):
             email=email, key_file=key_file, key_data=key_data
         )
         ee.Initialize(credentials)
+        logger.info("Login to earth engine succeeded.")
         return True
     except Exception as e:
         logger.exception("Error logging in to earth engine", e, exc_info=True)
