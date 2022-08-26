@@ -365,11 +365,11 @@ def run_refresh_task():
     # calling 'get' risks deadlocks in the backend. But since Celery won't propagate
     # errors or pass signatures from chords, it appears to be impossible to work
     # around this for a series workflow chains of chords rather than chains of tasks.
-    _ = Workflows._group1().get(disable_sync_subtasks=False, timeout=120)
+    _ = Workflows._group1().get(disable_sync_subtasks=False, timeout=360)
 
-    _ = Workflows._group2().get(disable_sync_subtasks=False, timeout=300)
+    _ = Workflows._group2().get(disable_sync_subtasks=False, timeout=600)
 
-    _ = Workflows._group3().get(disable_sync_subtasks=False, timeout=120)
+    _ = Workflows._group3().get(disable_sync_subtasks=False, timeout=360)
 
     return True
 
