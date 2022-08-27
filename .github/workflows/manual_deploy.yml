@@ -9,7 +9,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-      - uses: actions-hub/kubectl@1.24.4
+      - uses: actions-hub/kubectl@v1.24.4
         env:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
 
