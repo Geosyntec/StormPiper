@@ -1,31 +1,52 @@
-# apiVersion: networking.gke.io/v1
-# kind: ManagedCertificate
-# metadata:
-#   name: managed-cert
-# spec:
-#   domains:
-#     - "tacomawatersheds.com"
-#     - "www.tacomawatersheds.com"
-#     - "dev.tacomawatersheds.com"
-#     - "www.dev.tacomawatersheds.com"
-# ---
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: managed-cert
+spec:
+  domains:
+    - "tacomawatersheds.com"
+    - "www.tacomawatersheds.com"
+    - "dev.tacomawatersheds.com"
+
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: basic-ingress
   annotations:
     kubernetes.io/ingress.global-static-ip-name: "traefik-ip"
-    # networking.gke.io/managed-certificates: managed-cert
-    # kubernetes.io/ingress.class: "gce"
+    networking.gke.io/managed-certificates: managed-cert
+    kubernetes.io/ingress.class: "gce"
 spec:
   rules:
-  - http:
+  - host: tacomawatersheds.com
+    http:
       paths:
-      - pathType: Prefix
-        path: "/"
+      - pathType: ImplementationSpecific
+        path: "/*"
         backend:
           service:
-            name: stormpiper
+            name: stormpiper-prod
+            port:
+              number: 80
+  - host: www.tacomawatersheds.com
+    http:
+      paths:
+      - pathType: ImplementationSpecific
+        path: "/*"
+        backend:
+          service:
+            name: stormpiper-prod
+            port:
+              number: 80
+  - host: dev.tacomawatersheds.com
+    http:
+      paths:
+      - pathType: ImplementationSpecific
+        path: "/*"
+        backend:
+          service:
+            name: stormpiper-dev
             port:
               number: 80
 

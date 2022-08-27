@@ -1,7 +1,8 @@
-bases:
+resources:
   - ../base
+nameSuffix: -prod
 commonLabels:
-  app: stormpiper
+  app: stormpiper-prod
 images:
   - name: gcr.io/tacoma-app/stormpiper-pod
     newName: gcr.io/tacoma-app/stormpiper-pod

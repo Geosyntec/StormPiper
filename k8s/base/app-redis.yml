@@ -36,5 +36,6 @@ spec:
       containers:
         - name: redis
           image: gcr.io/tacoma-app/redis
+          imagePullPolicy: Always
           ports:
             - containerPort: 6379

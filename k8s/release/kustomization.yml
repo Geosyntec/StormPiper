@@ -1,5 +1,5 @@
-bases:
+resources:
   # - ../crd
-  # - ../dev
   - ../prod
+  - ../dev
   - ../traefik
