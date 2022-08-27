@@ -21,7 +21,7 @@ spec:
           image: gcr.io/tacoma-app/bg_worker
           command:
             - /run-worker.sh
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           envFrom:
             - secretRef:
                 name: prod-secrets

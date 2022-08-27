@@ -1,4 +1,4 @@
-bases:
+resources:
   - ../base
 nameSuffix: -dev
 commonLabels:
@@ -6,13 +6,13 @@ commonLabels:
 images:
   - name: gcr.io/tacoma-app/stormpiper-pod
     newName: gcr.io/tacoma-app/stormpiper-pod
-    newTag: latest
+    newTag: edge
   - name: gcr.io/tacoma-app/bg_worker
     newName: gcr.io/tacoma-app/bg_worker
-    newTag: latest
+    newTag: edge
   - name: gcr.io/tacoma-app/redis
     newName: gcr.io/tacoma-app/redis
-    newTag: latest
+    newTag: edge
 patchesJSON6902:
   - target:
       group: apps

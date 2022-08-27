@@ -40,7 +40,7 @@ spec:
       containers:
         - name: stormpiper
           image: gcr.io/tacoma-app/stormpiper-pod
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - name: web
               containerPort: 80
