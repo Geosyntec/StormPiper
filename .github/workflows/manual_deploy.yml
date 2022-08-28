@@ -44,7 +44,10 @@ jobs:
           if [[ $PRODUCTION_TAG ]]
           then
             echo "Deploying to Production Application: $PRODUCTION_TAG"
-            echo kubectl set image deployment/stormpiper-prod stormpiper=gcr.io/tacoma-app/stormpiper-pod:$PRODUCTION_TAG
+            kubectl set image deployment/stormpiper-prod stormpiper=gcr.io/tacoma-app/stormpiper-pod:$PRODUCTION_TAG
+            kubectl set image deployment/stormpiper-prod beat=gcr.io/tacoma-app/bg_worker:$PRODUCTION_TAG
+            kubectl set image deployment/stormpiper-prod worker=gcr.io/tacoma-app/bg_worker:$PRODUCTION_TAG
+            kubectl set image deployment/stormpiper-prod redis=gcr.io/tacoma-app/redis:$PRODUCTION_TAG
           else
             echo "Deploying to development Application"
             kubectl rollout restart deploy --selector=app=stormpiper-dev
