@@ -33,13 +33,13 @@ jobs:
       # Setup gcloud CLI
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
+        with: 
+          install_components: 'gke-gcloud-auth-plugin'
         
       # Get the GKE credentials so we can deploy to the cluster
       - name: Set up GKE credentials
-        uses: 'google-github-actions/get-gke-credentials@v0'
-        with:
-          cluster_name: $GKE_CLUSTER
-          location: $GKE_REGION
+        run: |-
+          gcloud container clusters get-credentials "$GKE_CLUSTER" --region "$GKE_REGION"
                
       # Deploy the Docker image to the GKE cluster
       - name: Deploy
