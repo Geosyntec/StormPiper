@@ -52,6 +52,7 @@ jobs:
             kubectl set image deployment/beat-prod beat=gcr.io/tacoma-app/bg_worker:$PRODUCTION_TAG
             kubectl set image deployment/worker-prod worker=gcr.io/tacoma-app/bg_worker:$PRODUCTION_TAG
             kubectl set image deployment/redis-prod redis=gcr.io/tacoma-app/redis:$PRODUCTION_TAG
+            kubectl rollout restart deploy --selector=app=stormpiper-prod
           else
             echo "Deploying to development Application"
             kubectl rollout restart deploy --selector=app=stormpiper-dev
