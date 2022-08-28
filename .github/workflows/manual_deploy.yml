@@ -19,10 +19,10 @@ jobs:
       # Setup gcloud CLI
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
-        
+               
       # Deploy the Docker image to the GKE cluster
       - name: Deploy
-        run: |
+        run: |-
           # replacing the image name in the k8s template
-          kubectl get pods -o wide
+          kubectl get pods -o wide --kubeconfig "$KUBE_CONFIG"
         
