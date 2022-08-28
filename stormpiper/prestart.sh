@@ -1,4 +1,4 @@
-#! /usr/bin/env bash
+#! /usr/bin/env sh
 set -e
 
 prefix="Prestart script: "
@@ -9,7 +9,7 @@ python /stormpiper/stormpiper/pre-start.py
 
 
 # Run migrations
-if [[ -n $RUN_PRESTART_MIGRATION ]]; then 
+if [ $RUN_PRESTART_MIGRATION = 1 ] || [ $RUN_PRESTART_MIGRATION = "true" ]; then 
     echo "$prefix running migrations on db..."
     alembic upgrade head
 fi
