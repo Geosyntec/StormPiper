@@ -34,5 +34,5 @@ jobs:
       - name: Deploy
         run: |-
           # replacing the image name in the k8s template
-          kubectl get pods -o wide
+          kubectl rollout restart -k k8s/dev
         
