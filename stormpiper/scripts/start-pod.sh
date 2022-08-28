@@ -23,4 +23,4 @@ fi
 echo "starting application...."
 
 # Start Uvicorn 
-exec uvicorn --host $HOST --port $PORT --log-level $LOG_LEVEL "$APP_MODULE" --proxy-headers
+exec uvicorn --host $HOST --port $PORT --log-level $LOG_LEVEL "$APP_MODULE" --proxy-headers --forwarded-allow-ips=*
