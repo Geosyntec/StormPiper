@@ -15,6 +15,7 @@ env:
   GKE_CLUSTER: tacoma-cluster
   GKE_REGION: us-west1
   PRODUCTION_TAG: ${{ github.event.inputs.tag }}
+  USE_GKE_GCLOUD_AUTH_PLUGIN: True
   
 jobs:
   deploy:
