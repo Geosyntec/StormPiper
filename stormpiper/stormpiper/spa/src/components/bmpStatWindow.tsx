@@ -2,9 +2,10 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { Typography } from "@material-ui/core";
 import { BMPForm } from "./bmpForm";
+import { ListAltRounded, LocalDiningOutlined } from "@material-ui/icons";
 import "./bmpStatWindow.css";
 
-
+// TODO: Make Facility Type editable (for now, only allow user to toggle between simple and not simple). Look for endpoint that can retrieve all facility types, and their respective data models
 
 const statsDict={
   overview:{
@@ -39,6 +40,7 @@ const fieldLabelDict:{[key:string]:string} = {
 };
 
 
+
 type statWindowProps={
   displayStatus:boolean,
   displayController:()=>void,
@@ -50,7 +52,12 @@ type bmpPanelState={
   stats:string[],
   error:boolean,
   isLoaded:boolean,
-  items:any
+  items:any,
+}
+
+type specState={
+  context:any,
+  facilitySpec:any
 }
 
 
@@ -64,7 +71,6 @@ function BMPStatWindow(props:statWindowProps) {
   const revisedURL = baseURL.length > 1 ? baseURL.join("/") : "/";
 
 
-  console.log("Altered Base URL: ",revisedURL)
 
 
   const [state,setState] = useState<bmpPanelState>({
@@ -72,34 +78,65 @@ function BMPStatWindow(props:statWindowProps) {
     stats:[],
     error:false,
     isLoaded:false,
-    items:[]
+    items:[],
   })
 
+  const [facilityType,setFacilityType] = useState("")
+
+  const [specs,setSpecs] = useState<specState>({
+    context:{},
+    facilitySpec:{}
+  })
+
+  const [loadingState,setLoadingState] = useState<boolean>(false)
+
+  useEffect(()=>{
+    // OpenAPI spec holds the base facility types used by nereid
+    // Context endpoint holds mapping between project-specific names and base types
+    let resources = [revisedURL+"openapi.json",revisedURL+"api/rest/reference/context"]
+
+    Promise.all(resources.map(url=>fetch(url).then(res=>res.json())))
+      .then(resArray=>{
+        setSpecs({
+          facilitySpec:resArray[0].components.schemas,
+          context:resArray[1].api_recognize.treatment_facility.facility_type
+        })
+      })
+    
+    
+  },[])
+
+  useEffect(()=>{
+    console.log("New Loading State: ",loadingState)
+  },[loadingState])
+  useEffect(()=>{
+    console.log("New State: ",state)
+  },[state])
+
   useEffect(() => {
-    setState({
-      ...state,
-      isLoaded:false
-    })
-    fetch(revisedURL+"api/rest/tmnt_facility/"+props.feature)
-      .then(res=>res.json())
-      .then(result=>{
-        console.log("Fetch Results: ",result)
-        setState({
-          ...state,
-          isLoaded:true,
-          error:false,
-          header:"Overview",
-          items:{...result},
-          stats:statsDict.overview.fields
+    setLoadingState(false)
+    if(props.feature){
+      fetch(revisedURL+"api/rest/tmnt_facility/"+props.feature)
+        .then(res=>res.json())
+        .then(result=>{
+          setState({
+            ...state,
+            error:false,
+            header:"Overview",
+            items:{...result},
+            stats:statsDict.overview.fields
+          })
+          setFacilityType(result.facility_type)
+          setLoadingState(true)
         })
-      })
-      .catch(err=>{
-        console.log("TMNT fetch failed: ",err)
-        setState({
-          ...state,
-          error:true
+        .catch(err=>{
+          console.log("TMNT fetch failed: ",err)
+          setState({
+            ...state,
+            error:true
+          })
         })
-      })
+    }
   }, [props?.feature]);
 
   function ActiveHeader(props:{label:string,clickHandler:Function}){
@@ -129,9 +166,13 @@ function BMPStatWindow(props:statWindowProps) {
   }
   
   function _renderStats() {
+    if(!props.feature){
+      return <div>Select a BMP Feature</div>
+    }
     if(state.error){
       return <div>Something went wrong on our end.</div>
-    }else if(!state.isLoaded){
+    }else if(!loadingState){
+      console.log("Displaying Loading Screen, loadingState = ",loadingState)
       return <div>Loading...</div>
     }else{
       let statsList = Object.values(state.stats).map((stat:string)=>{
@@ -154,14 +195,30 @@ function BMPStatWindow(props:statWindowProps) {
     
   }
 
-  function _renderBMPForm() {
+  function _renderBMPForm(facilityType:string) {
     if(state.error){
       return <div>Something went wrong on our end.</div>
-    }else if(!state.isLoaded){
+    }else if(!loadingState){
       return <div>Loading...</div>
     }else{
+      let fType:string = facilityType
+      let fTypeRoot = fType.replace("_simple","")
+      
+      console.log("Attempting to render form for ",facilityType)
+
+      let simpleBaseType
+      if(fType==='no_treatment'){
+        simpleBaseType=specs.context[fTypeRoot].validator //no_treatment has no simple equivalent
+      }else{
+        simpleBaseType=specs.context[fTypeRoot+'_simple'].validator
+      }
+      let baseType=specs.context[fTypeRoot].validator
+
+      let facilityFields = specs.facilitySpec[baseType]
+      let simpleFacilityFields = specs.facilitySpec[simpleBaseType]
+      console.log('Fields found:',facilityFields)
       return (
-          <BMPForm fields={state.items}></BMPForm>
+          <BMPForm allFields={facilityFields} simpleFields={simpleFacilityFields} values={state.items} allFacilities={specs.context} currentFacility={facilityType} facilityChangeHandler={setFacilityType}></BMPForm>
       );
     }
 
@@ -182,7 +239,8 @@ function BMPStatWindow(props:statWindowProps) {
   }
 
   return (
-    <div>
+    props.displayStatus
+      ?<div>
       <div className="panel-header">
         <div className="title-container">
           <h4 id="panel-title">BMP Stat Table</h4>
@@ -201,9 +259,12 @@ function BMPStatWindow(props:statWindowProps) {
         {props
           ? state.header != "Design Parameters"
             ? _renderStats()
-            : _renderBMPForm()
+            : _renderBMPForm(facilityType)
           : null}
       </div>
+    </div>
+    :<div id="bmp-panel-icon">
+      <ListAltRounded onClick={props.displayController}/>
     </div>
   );
 }

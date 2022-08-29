@@ -60,6 +60,8 @@
   height: 75%;
   width: 25%;
   background: rgba(255, 255, 255, 1);
+  border-radius: 2px;
+
 }
 
 #control-panel-hidden{
@@ -72,6 +74,8 @@
   height:5%;
   width: 3%;
   background: rgba(255, 255, 255, 0.8);
+  border-radius: 2px;
+
 }
 
 #control-panel > div{
@@ -97,29 +101,33 @@
 }
 
 #prj-stat-panel {
-  transition-property: height,width,left;
-  transition-duration: 500ms;
+  /* transition-property: height,width,left;
+  transition-duration: 500ms; */
 	position: fixed;
 	z-index: 9;
-	top: 8%;
-  left: 60%;
+	top: 10%;
+  left: 58%;
   overflow-x: hidden;
   overflow-y: auto;
-  height: 50%;
+  height: auto;
   width: 40%;
   background: rgba(255, 255, 255, 1);
+  border-radius: 2px;
+
 }
 
 #prj-stat-panel-hidden{
-  transition-property: height,width,left;
-  transition-duration: 500ms;
+  /* transition-property: height,width,left;
+  transition-duration: 500ms; */
   position: fixed;
 	z-index: 9;
-	top: 8%;
-  left: 125%;
+	top: 10%;
+  left: 95%;
+  /* left: 125%; */
   overflow-x: hidden;
   overflow-y: hidden;
-  height:50%;
-  width: 25%;
-  background: rgba(255, 255, 255, 0.8);
+  height:5%;
+  width: 3%;
+  background: rgba(255, 255, 255, 1);
+  border-radius: 2px;
 }
