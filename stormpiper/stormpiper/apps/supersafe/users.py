@@ -13,6 +13,7 @@ from fastapi_users.authentication import (
 from fastapi_users.db import SQLAlchemyUserDatabase
 
 from stormpiper.core.config import settings
+from stormpiper.core import utils
 
 from . import email
 from .db import User, get_async_session, get_user_db
@@ -34,9 +35,17 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     async def on_after_forgot_password(
         self, user: User, token: str, request: Optional[Request] = None
     ) -> None:
-        client = request.app.sessions["user_email_session"]
+        client = utils.rgetattr(request, "app.sessions", None).get(
+            "user_email_session", None
+        )
+        reset_url = request.url_for("reset:get_reset_password") + f"?token={token}"
+
         await email.send_reset_password_token_to_user(
-            email=user.email, name=user.first_name, token=token, client=client
+            email=user.email,
+            name=user.first_name,
+            token=token,
+            client=client,
+            reset_url=reset_url,
         )
 
         logger.info(f"User {user.id} forgot their password. Reset token: {token}")
@@ -44,9 +53,17 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     async def on_after_request_verify(
         self, user: User, token: str, request: Optional[Request] = None
     ) -> None:
-        client = request.app.sessions["user_email_session"]
+        client = utils.rgetattr(request, "app.sessions", None).get(
+            "user_email_session", None
+        )
+        verify_url = request.url_for("verify:get_verify_token") + f"?token={token}"
+
         await email.send_verify_email_token_to_user(
-            email=user.email, name=user.first_name, token=token, client=client
+            email=user.email,
+            name=user.first_name,
+            token=token,
+            client=client,
+            verify_url=verify_url,
         )
 
         logger.info(
