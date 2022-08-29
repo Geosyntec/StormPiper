@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional
 
 from fastapi import APIRouter, Depends, Request, Response
 from fastapi.responses import RedirectResponse
@@ -41,6 +41,13 @@ async def post_register(request: Request):
     return RedirectResponse(request.scope["router"].url_path_for("register:register"))
 
 
+@router.get("/verify", name="verify:get_verify_token")
+async def get_verify(request: Request, token: Optional[str] = None):
+    return templates.TemplateResponse(
+        "verify.html", {"request": request, "token": token}
+    )
+
+
 @router.get("/login", name="login:get_login")
 async def get_login(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
@@ -50,4 +57,11 @@ async def get_login(request: Request):
 async def post_login(request: Request):
     return RedirectResponse(
         request.scope["router"].url_path_for("auth:jwt.cookie.login")
+    )
+
+
+@router.get("/reset_password", name="reset:get_reset_password")
+async def get_reset_password(request: Request, token: Optional[str] = None):
+    return templates.TemplateResponse(
+        "reset_password.html", {"request": request, "token": token}
     )
