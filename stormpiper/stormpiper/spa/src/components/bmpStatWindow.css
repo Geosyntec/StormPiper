@@ -21,7 +21,7 @@
     /* display:flex; */
     position:absolute;
     justify-content: end;
-    right:5%;
+    right:10%;
     /* min-width: 25%; */
 }
 
@@ -54,10 +54,20 @@
     flex-flow: row wrap;
     border-bottom: 1px solid black;
     justify-content: space-around;
+    margin-bottom:20px;
 }
 
 #cancel-icon{
     cursor: pointer;
     position:relative;
     left:75%;
+}
+
+#bmp-panel-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    box-sizing: border-box;
+    height:100%
 }

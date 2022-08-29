@@ -28,34 +28,14 @@ function DeckGLMap(props) {
   console.log("Rendering map; current path: ",loc)
   console.log("Current Feature: ",props.currentFeature)
 
+
+  
   function checkFeature(){
     if(props.currentFeature){
-      // let baseURL = import.meta.env.BASE_URL.toString().split("/");
-      // baseURL.pop();
-      // baseURL.pop();
-      // console.log("Base URL popped: ", baseURL);
-      // const revisedURL = baseURL.length > 1 ? baseURL.join("/") : "/";
-  
-      // fetch(
-      //   revisedURL + "api/rest/tmnt_facility/" + props.currentFeature + "?f='geojson'"
-      // )
-      //   .then((res) => res.json())
-      //   .then((result) => {
-      //     console.log("Geojson Fetch Results: ", result);
-      //     console.log("Layers: ", props.layers)
-      //   })
-      //   .catch((err) => {
-      //     console.log("TMNT fetch failed: ", err);
-      //   });
       setTimeout(()=>{
         let zoomFeature
         props.layers?.filter(layer=>{
           if(layer.id==="activeSWFacility" && layer.state){
-            // console.log("BMP Layer Found")
-            // Object.keys(layer).map(val=>{
-    
-            //   console.log("Field Found: ",val,"-",layer[val])
-            // })
             const feats = layer.state.layerProps.points.data
             zoomFeature=feats.filter(feat=>{
               const ID=feat.__source.object.properties.altid
@@ -64,7 +44,7 @@ function DeckGLMap(props) {
             console.log("Target Feature Found: ",zoomFeature)
           }
         })
-        if(zoomFeature){
+        if(zoomFeature.length>0){
           setViewState({
             ...viewState,
             longitude:zoomFeature[0].geometry.coordinates[0],
@@ -72,7 +52,7 @@ function DeckGLMap(props) {
             zoom:14
           })
         }
-      },500)
+      },1000)
     }
   }
 

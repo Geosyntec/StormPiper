@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactComponentElement } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -13,6 +13,11 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 
+type dialogProps={
+  workflowTitle:string
+  workflowComponent:React.FunctionComponent
+}
+
 const useStyles = makeStyles((theme) => ({
   appBar: {
     position: 'relative',
@@ -24,14 +29,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
+  return <Slide direction="up" ref={ref} />;
 });
 
-function _renderChildComponent(comp){
+function _renderChildComponent(comp:React.FunctionComponent){
     return comp
 }
 
-export default function FullScreenDialog(props) {
+export default function FullScreenDialog(props:dialogProps) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
@@ -48,7 +53,7 @@ export default function FullScreenDialog(props) {
       <Button color="inherit" onClick={handleClickOpen}>
         {props.workflowTitle}
       </Button>
-      <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+      <Dialog fullScreen open={open} onClose={handleClose}>
         <AppBar className={classes.appBar}>
           <Toolbar>
             <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
