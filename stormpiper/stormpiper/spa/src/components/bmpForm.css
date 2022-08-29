@@ -10,7 +10,8 @@
 }
 
 .required::after{
-    content:"*"
+    content:"*";
+    color: red;
 }
 
 .form-input{

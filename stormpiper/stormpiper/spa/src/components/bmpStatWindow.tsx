@@ -166,6 +166,9 @@ function BMPStatWindow(props:statWindowProps) {
   }
   
   function _renderStats() {
+    if(!props.feature){
+      return <div>Select a BMP Feature</div>
+    }
     if(state.error){
       return <div>Something went wrong on our end.</div>
     }else if(!loadingState){
