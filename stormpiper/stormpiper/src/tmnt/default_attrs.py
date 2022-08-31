@@ -103,15 +103,20 @@ def update_tmnt_attributes(engine, overwrite=False):
 
         if not df.empty:
             subs = geopandas.read_postgis("subbasin", con=engine)
-            df = df.sjoin(subs, how="left").reindex(
-                columns=[
-                    "altid",
-                    "basinname",
-                    "subbasin",
-                    "facility_type",
-                    "captured_pct",
-                    "retained_pct",
-                ]
+            df = (
+                df.sjoin(subs, how="left")
+                .reindex(
+                    columns=[
+                        "altid",
+                        "basinname",
+                        "subbasin",
+                        "facility_type",
+                        "captured_pct",
+                        "retained_pct",
+                    ]
+                )
+                .assign(subbasin=lambda df: df["subbasin"].fillna("None").astype(str))
+                .assign(basinname=lambda df: df["basinname"].fillna("None").astype(str))
             )
 
             df.to_sql(
