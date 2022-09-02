@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: [stormpiper, stormpiper-pod, bg_worker, redis]
+        image: [stormpiper-pod, bg_worker, redis]
     runs-on: ubuntu-latest
     env:
       DOCKER_BUILDKIT: 1
