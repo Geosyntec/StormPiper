@@ -16,6 +16,7 @@ jobs:
     env:
       DOCKER_BUILDKIT: 1
       COMPOSE_DOCKER_CLI_BUILD: 1
+      ARTIFACT_REGISTRY: gcr.io/tacoma-app
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -23,7 +24,7 @@ jobs:
       - name: Prepare tags
         id: prep
         run: |
-          DOCKER_IMAGE=gcr.io/tacoma-app/${{ matrix.image }}
+          DOCKER_IMAGE=${ARTIFACT_REGISTRY}/${{ matrix.image }}
           VERSION=edge
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             VERSION=${GITHUB_REF#refs/tags/}
@@ -64,8 +65,8 @@ jobs:
           target: ${{ matrix.image }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.prep.outputs.tags }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=registry,ref=${ARTIFACT_REGISTRY}/buildcache
+          cache-to: type=registry,ref=${ARTIFACT_REGISTRY}/buildcache,mode=max
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
