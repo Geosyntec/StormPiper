@@ -1,12 +1,13 @@
 from enum import Enum
-from typing import Any, Dict, Type
+from typing import Any, Dict
 
-from fastapi import APIRouter, Depends, HTTPException, Path, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import JSONResponse
 
 import stormpiper.bg_worker as bg
 from stormpiper.apps.supersafe.users import check_admin
 from stormpiper.core import utils
+from stormpiper.src import tasks
 
 router = APIRouter(dependencies=[Depends(check_admin)])
 rpc_router = APIRouter(dependencies=[Depends(check_admin)])
@@ -97,3 +98,10 @@ async def solve_watershed() -> Dict[str, Any]:
         response["data"] = task.result
 
     return response
+
+
+@rpc_router.get("/_test_upstream_loading", response_class=JSONResponse)
+async def us_loading() -> None:
+
+    tasks.delete_and_refresh_upstream_src_ctrl_tables()
+    tasks.delete_and_refresh_downstream_src_ctrl_tables()

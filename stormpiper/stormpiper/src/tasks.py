@@ -8,7 +8,7 @@ from stormpiper.database.utils import (
     delete_and_replace_table,
 )
 
-from . import graph, loading, met, solve_structural_wq
+from . import graph, loading, met, results, solve_structural_wq
 from .tmnt import default_attrs, spatial
 
 logging.basicConfig(level=settings.LOGLEVEL)
@@ -117,6 +117,7 @@ def delete_and_refresh_graph_edge_table(*, engine=engine):
 
 
 def delete_and_refresh_result_table(*, engine=engine):
+    """Solve volume and wq for STRUCTURAL BMPs"""
     logger.info("Solving Watershed...")
 
     df = solve_structural_wq.solve_wq_epochs_from_db(engine=engine)
@@ -128,3 +129,93 @@ def delete_and_refresh_result_table(*, engine=engine):
     logger.info("TASK COMPLETE: replaced results_blob table.")
 
     return df
+
+
+def _delete_and_refresh_source_controls_upstream_load_reduction(*, engine=engine):
+    """Solve wq for UPSTREAM Src Ctrls"""
+
+    df = results.source_controls_upstream_load_reduction_db(engine=engine)
+
+    logger.info(
+        "deleting and replacing tmnt_source_control_upstream_load_reduced table"
+    )
+    delete_and_replace_table(
+        df=df,
+        table_name="tmnt_source_control_upstream_load_reduced",
+        engine=engine,
+        index=False,
+    )
+    logger.info(
+        "TASK COMPLETE: replaced tmnt_source_control_upstream_load_reduced table."
+    )
+
+    return df
+
+
+def _delete_and_refresh_lgu_load_to_structural_table(*, engine=engine):
+    """Prepare loading table FROM Upstream Src Ctrl TO Structural BMPs"""
+
+    logger.info("Updating load to structural bmps table...")
+
+    df = loading.load_to_structural_bmps_from_db(engine=engine)
+
+    logger.info("deleting and replacing lgu_load_to_structural table")
+    delete_and_replace_table(
+        df=df, table_name="lgu_load_to_structural", engine=engine, index=False
+    )
+    logger.info("TASK COMPLETE: replaced lgu_load_to_structural table.")
+
+    return df
+
+
+def delete_and_refresh_upstream_src_ctrl_tables(*, engine=engine):
+    """First compute upstream load reduction, THEN compute load to
+    next dependant, i.e., structural BMPs
+    """
+    _delete_and_refresh_source_controls_upstream_load_reduction(engine=engine)
+    _delete_and_refresh_lgu_load_to_structural_table(engine=engine)
+
+
+def _delete_and_refresh_load_to_ds_src_ctrl_table(*, engine=engine):
+    """Prepare loading table FROM Structural BMPs TO Downstream Src Ctrls"""
+
+    logger.info("Updating load to downstream src ctrls table...")
+
+    df = loading.load_to_downstream_src_ctrls_from_db(engine=engine)
+
+    logger.info("deleting and replacing load_to_ds_src_ctrl table")
+    delete_and_replace_table(
+        df=df, table_name="load_to_ds_src_ctrl", engine=engine, index=False
+    )
+    logger.info("TASK COMPLETE: replaced load_to_ds_src_ctrl table.")
+
+    return df
+
+
+def _delete_and_refresh_source_controls_downstream_load_reduction(*, engine=engine):
+    """Solve wq for DOWNSTREAM Src Ctrls"""
+
+    df = results.source_controls_downstream_load_reduction_db(engine=engine)
+
+    logger.info(
+        "deleting and replacing tmnt_source_control_downstream_load_reduced table"
+    )
+    delete_and_replace_table(
+        df=df,
+        table_name="tmnt_source_control_downstream_load_reduced",
+        engine=engine,
+        index=False,
+    )
+    logger.info(
+        "TASK COMPLETE: replaced tmnt_source_control_downstream_load_reduced table."
+    )
+
+    return df
+
+
+def delete_and_refresh_downstream_src_ctrl_tables(*, engine=engine):
+    """First compute load delivered to the downstream src controls, THEN compute
+    the load reduced by them.
+    """
+    _delete_and_refresh_load_to_ds_src_ctrl_table(engine=engine)
+    _delete_and_refresh_source_controls_downstream_load_reduction(engine=engine)

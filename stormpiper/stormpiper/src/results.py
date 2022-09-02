@@ -1,13 +1,15 @@
-from typing import Any, Dict
+from typing import Any, Dict, List, Optional
 
+import pandas
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from stormpiper.database.connection import engine
 from stormpiper.database.schemas import changelog
 from stormpiper.database.utils import orm_to_dict, scalars_to_records
 
 
-async def is_dirty(db: AsyncSession) -> Dict[str, Any]:
+async def is_dirty_dep(db: AsyncSession) -> Dict[str, Any]:
     response = {"is_dirty": True, "last_updated": "0"}
     result = (
         (
@@ -42,3 +44,149 @@ async def is_dirty(db: AsyncSession) -> Dict[str, Any]:
     response["last_updated"] = res_updated
 
     return response
+
+
+async def is_dirty(
+    *, db: AsyncSession, tablename: str, dependents: Optional[List[str]] = None
+) -> Dict[str, Any]:
+    response = {"is_dirty": True, "last_updated": "0"}
+
+    changelog_results = (
+        (await db.execute(select(changelog.TableChangeLog))).scalars().all()
+    )
+    if not changelog_results:  # pragma: no cover
+        return response  # it's dirty if there are no results
+
+    records = scalars_to_records(changelog_results)
+
+    if dependents is None:
+        dependents = [x["tablename"] for x in records]
+
+    result_record = next(filter(lambda x: x["tablename"] == tablename, records))
+    res_updated = result_record["last_updated"]
+
+    if len(dependents) == 0:
+        response["is_dirty"] = False
+
+    else:
+        dependent_records = filter(
+            lambda x: x["tablename"] != tablename and x["tablename"] in dependents,
+            records,
+        )
+
+        response["is_dirty"] = any(
+            i["last_updated"] > res_updated for i in dependent_records
+        )
+
+    response["last_updated"] = res_updated
+
+    return response
+
+
+def calculate_src_ctrl_percent_reduction(
+    *,
+    load: pandas.DataFrame,
+    src_ctrls: pandas.DataFrame,
+    direction: Optional[str] = "upstream"
+):
+    """
+    load must have the subbasins and basinname attributes pre-joined in and runoff removed (pocs only)
+
+
+    """
+
+    src_ctrl_directional = (
+        src_ctrls.query("direction==@direction")
+        .loc[
+            :,
+            [
+                "subbasin",
+                "variable",
+                "order",
+                "activity",
+                "direction",
+                "percent_reduction",
+            ],
+        ]
+        .sort_values(["subbasin", "variable", "order"])
+    )
+
+    df1 = load.merge(src_ctrl_directional, on=["subbasin", "variable"]).sort_values(
+        ["node_id", "epoch", "variable", "order"]
+    )
+
+    assert not any(
+        df1.groupby(["node_id", "epoch", "variable", "order"]).count().max(axis=1) > 1
+    )
+
+    df2 = []
+    for order in df1["order"].unique():
+
+        _df = df1.query("order == @order")
+
+        col = "value"
+        if order > 0:
+
+            prev_order = order - 1
+            col = "value_remaining"
+            columns = ["node_id", "epoch", "variable"]
+
+            _df = _df.merge(
+                df2[prev_order].reindex(columns=columns + [col]), on=columns, how="left"
+            )
+
+        _df = _df.assign(value_remaining_prev=lambda df: df[col]).assign(
+            value_remaining=lambda df: df["value_remaining_prev"]
+            * (1 - (df["percent_reduction"] / 100))
+        )
+
+        df2.append(_df)
+
+    df = (
+        pandas.concat(df2)
+        .sort_values(["node_id", "epoch", "variable", "order"])
+        .assign(
+            load_reduced=lambda df: df["value_remaining_prev"] - df["value_remaining"]
+        )
+        .reset_index(drop=True)
+        .assign(id=lambda df: df.index.values)
+    )
+    return df
+
+
+def source_controls_upstream_load_reduction_db(*, engine=engine):
+    lgu_load = pandas.read_sql("lgu_load", con=engine)
+    lgu_boundary = pandas.read_sql("lgu_boundary", con=engine)
+    src_ctrl_upstream = pandas.read_sql(
+        "select * from tmnt_source_control where direction = 'upstream'",
+        con=engine,
+    )
+
+    lgu_to_us_src_ctrl = lgu_load.query('variable != "runoff"').merge(
+        lgu_boundary[["node_id", "subbasin", "basinname"]], on="node_id", how="left"
+    )
+
+    df = calculate_src_ctrl_percent_reduction(
+        load=lgu_to_us_src_ctrl, src_ctrls=src_ctrl_upstream, direction="upstream"
+    )
+
+    return df
+
+
+def source_controls_downstream_load_reduction_db(*, engine=engine):
+    lgu_load = pandas.read_sql("load_to_ds_src_ctrl", con=engine)
+    lgu_boundary = pandas.read_sql("lgu_boundary", con=engine)
+    src_ctrl_upstream = pandas.read_sql(
+        "select * from tmnt_source_control where direction = 'downstream'",
+        con=engine,
+    )
+
+    lgu_to_ds_src_ctrl = lgu_load.query('variable != "runoff"').merge(
+        lgu_boundary[["node_id", "subbasin", "basinname"]], on="node_id", how="left"
+    )
+
+    df = calculate_src_ctrl_percent_reduction(
+        load=lgu_to_ds_src_ctrl, src_ctrls=src_ctrl_upstream, direction="downstream"
+    )
+
+    return df

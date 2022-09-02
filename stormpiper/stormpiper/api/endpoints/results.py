@@ -29,7 +29,7 @@ async def get_all_results(
 @router.get("/is_dirty", name="results:get_result_is_dirty")
 async def get_result_is_dirty(db: AsyncSession = Depends(get_async_session)):
 
-    return await is_dirty(db=db)
+    return await is_dirty(db=db, tablename="result_blob", dependents=None)
 
 
 @router.get("/{node_id}", response_model=List[ResultView], name="results:get_result")

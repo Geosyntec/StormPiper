@@ -22,6 +22,21 @@ celery_app.conf.update(
 )
 
 
+def run_in_chain(func, *args, **kwargs):
+    logger.info(f"background {func.__name__} has started running.")
+    continue_chain = kwargs.pop("continue_chain", True)
+    if not continue_chain:
+        raise IncompleteChainError(f"A task failed and broke the chain.")
+    try:
+        func(*args, **kwargs)
+    except Exception as e:
+        logger.error(f"background {func.__name__} has failed.")
+        logger.exception(e)
+        return False
+    logger.info(f"background {func.__name__} has successfully completed.")
+    return True
+
+
 class IncompleteChainError(Exception):
     ...
 
@@ -64,213 +79,87 @@ def task_succeeds_or_continues_chain(continue_chain=True):
 
 @celery_app.task(acks_late=True, track_started=True)
 def delete_and_refresh_tmnt_facility_table(continue_chain=True):  # pragma: no cover
-    logger.info("background delete_and_refresh_tmnt_facility_table")
-    try:
-        if not continue_chain:
-            raise IncompleteChainError(f"A task failed and broke the chain.")
-        tasks.delete_and_refresh_tmnt_facility_table()
-    except Exception as e:
-        logger.exception(e)
-        raise e
-    return True
+    return run_in_chain(
+        tasks.delete_and_refresh_tmnt_facility_table, continue_chain=continue_chain
+    )
 
 
 @celery_app.task(acks_late=True, track_started=True)
 def update_tmnt_attributes(continue_chain=True, overwrite=False):  # pragma: no cover
-    logger.info("background update_tmnt_attributes")
-    try:
-        if not continue_chain:
-            raise IncompleteChainError(f"A task failed and broke the chain.")
-        tasks.update_tmnt_attributes(overwrite=overwrite)
-    except Exception as e:
-        logger.exception(e)
-        return False
-    return True
+    return run_in_chain(
+        tasks.update_tmnt_attributes, overwrite=overwrite, continue_chain=continue_chain
+    )
 
 
 @celery_app.task(acks_late=True, track_started=True)
 def delete_and_refresh_tmnt_facility_delineation_table(
     continue_chain=True,
 ):  # pragma: no cover
-    logger.info("background delete_and_refresh_tmnt_facility_delineation_table")
-    try:
-        if not continue_chain:
-            raise IncompleteChainError(f"A task failed and broke the chain.")
-        tasks.delete_and_refresh_tmnt_facility_delineation_table()
-    except Exception as e:
-        logger.exception(e)
-        return False
-    return True
+    return run_in_chain(
+        tasks.delete_and_refresh_tmnt_facility_delineation_table,
+        continue_chain=continue_chain,
+    )
 
 
 @celery_app.task(acks_late=True, track_started=True)
 def delete_and_refresh_subbasin_table(continue_chain=True):  # pragma: no cover
-    logger.info("background delete_and_refresh_subbasin_table")
-    try:
-        if not continue_chain:
-            raise IncompleteChainError(f"A task failed and broke the chain.")
-        tasks.delete_and_refresh_subbasin_table()
-    except Exception as e:
-        logger.exception(e)
-        return False
-    return True
+    return run_in_chain(
+        tasks.delete_and_refresh_subbasin_table, continue_chain=continue_chain
+    )
 
 
 @celery_app.task(acks_late=True, track_started=True)
 def delete_and_refresh_lgu_boundary_table(continue_chain=True):  # pragma: no cover
-    logger.info("background delete_and_refresh_lgu_boundary_table")
-    try:
-        if not continue_chain:
-            raise IncompleteChainError(f"A task failed and broke the chain.")
-        tasks.delete_and_refresh_lgu_boundary_table()
-    except Exception as e:
-        logger.exception(e)
-        return False
-    return True
+    return run_in_chain(
+        tasks.delete_and_refresh_lgu_boundary_table, continue_chain=continue_chain
+    )
 
 
 @celery_app.task(acks_late=True, track_started=True)
 def delete_and_refresh_lgu_load_table(continue_chain=True):  # pragma: no cover
-    logger.info("background delete_and_refresh_lgu_load_table")
-    try:
-        if not continue_chain:
-            raise IncompleteChainError(f"A task failed and broke the chain.")
-        tasks.delete_and_refresh_lgu_load_table()
-    except Exception as e:
-        logger.exception(e)
-        return False
-    return True
+    return run_in_chain(
+        tasks.delete_and_refresh_lgu_load_table, continue_chain=continue_chain
+    )
 
 
 @celery_app.task(acks_late=True, track_started=True)
 def delete_and_refresh_static_reference_tables(continue_chain=True):  # pragma: no cover
-    logger.info("background delete_and_refresh_static_reference_tables")
-    try:
-        if not continue_chain:
-            raise IncompleteChainError(f"A task failed and broke the chain.")
-        logger.info("background delete_and_refresh_met_table")
-        tasks.delete_and_refresh_met_table()
-    except Exception as e:
-        logger.exception(e)
-        return False
-    return True
+    return run_in_chain(
+        tasks.delete_and_refresh_met_table, continue_chain=continue_chain
+    )
 
 
 @celery_app.task(acks_late=True, track_started=True)
 def delete_and_refresh_graph_edge_table(continue_chain=True):  # pragma: no cover
-    try:
-        if not continue_chain:
-            raise IncompleteChainError(f"A task failed and broke the chain.")
-        logger.info("background delete_and_refresh_graph_edge_table")
-        tasks.delete_and_refresh_graph_edge_table()
-    except Exception as e:
-        logger.exception(e)
-        return False
-    return True
+    return run_in_chain(
+        tasks.delete_and_refresh_graph_edge_table, continue_chain=continue_chain
+    )
+
+
+@celery_app.task(acks_late=True, track_started=True)
+def delete_and_refresh_upstream_src_ctrl_tables(
+    continue_chain=True,
+):  # pragma: no cover
+    return run_in_chain(
+        tasks.delete_and_refresh_upstream_src_ctrl_tables, continue_chain=continue_chain
+    )
 
 
 @celery_app.task(acks_late=True, track_started=True)
 def delete_and_refresh_result_table(continue_chain=True):  # pragma: no cover
-    try:
-        if not continue_chain:
-            raise IncompleteChainError(f"A task failed and broke the chain.")
-        logger.info("background delete_and_refresh_result_table")
-        tasks.delete_and_refresh_result_table()
-    except Exception as e:
-        logger.exception(e)
-        return False
-    return True
+    return run_in_chain(
+        tasks.delete_and_refresh_result_table, continue_chain=continue_chain
+    )
 
 
-# @celery_app.task
-# def chord_1_refresh_base_tables(continue_chain=True):
-
-#     try:
-
-#         if not continue_chain:
-#             raise IncompleteChainError(f"A task failed and broke the chain.")
-#         gp = group(
-#             delete_and_refresh_static_reference_tables.s(),
-#             delete_and_refresh_tmnt_facility_table.s(),
-#             delete_and_refresh_tmnt_facility_delineation_table.s(),
-#             delete_and_refresh_subbasin_table.s(),
-#         ) | check_results.s(msg="pulled static gis resources")
-
-#         return gp
-
-#     except Exception as e:
-#         logger.exception(e)
-
-#     finally:
-#         return False
-
-
-# @celery_app.task
-# def chord_2_update_default_attrs_and_refresh_lgu_loading(continue_chain=True):
-
-#     try:
-
-#         if not continue_chain:
-#             raise IncompleteChainError(f"A task failed and broke the chain.")
-#         gp = group(
-#             update_tmnt_attributes.si(),
-#             chain(
-#                 # this rodeo requires updated delineations and subbasins
-#                 delete_and_refresh_lgu_boundary_table.s(),
-#                 task_raises.si(),
-#                 # this hits ee with the rodeo overlay result
-#                 delete_and_refresh_lgu_load_table.s(),
-#                 check_results.s(
-#                     msg="Refresh LGU Boundary then Recompute LGU Load with EE."
-#                 ),
-#             ),
-#         ) | check_results.s(msg="update tmnt and refresh LGU tables")
-
-#         return gp
-
-#     except Exception as e:
-#         logger.exception(e)
-
-#     finally:
-#         return False
-
-
-# @celery_app.task
-# def chord_3_update_graph_recalculate(continue_chain=True):
-
-#     try:
-
-#         if not continue_chain:
-#             raise IncompleteChainError(f"A task failed and broke the chain.")
-#         gp = group(
-#             chain(
-#                 delete_and_refresh_graph_edge_table.s(),
-#                 delete_and_refresh_result_table.s(),
-#                 check_results.s(msg="update graph and resolve results"),
-#             ),
-#         ) | check_results.s(msg="update results")
-
-#         return gp
-
-#     except Exception as e:
-#         logger.exception(e)
-
-#     finally:
-#         return False
-
-
-# @celery_app.task
-# def refresh_all():
-#     gp = group(
-#         chain(
-#             chord_1_refresh_base_tables.s(),
-#             chord_2_update_default_attrs_and_refresh_lgu_loading.s(),
-#             # chord_3_update_graph_recalculate.s(),
-#             check_results.s(msg="refresh all - check chain"),
-#         ),
-#     ) | check_results.s(msg="finalize refresh all results")
-
-#     return gp
+@celery_app.task(acks_late=True, track_started=True)
+def delete_and_refresh_downstream_src_ctrl_tables(
+    continue_chain=True,
+):  # pragma: no cover
+    return run_in_chain(
+        tasks.delete_and_refresh_downstream_src_ctrl_tables,
+        continue_chain=continue_chain,
+    )
 
 
 class Workflows:
@@ -318,8 +207,10 @@ class Workflows:
     )
 
     __chain_refresh_results = chain(
+        delete_and_refresh_upstream_src_ctrl_tables.s(),
         delete_and_refresh_graph_edge_table.s(),
         delete_and_refresh_result_table.s(),
+        delete_and_refresh_downstream_src_ctrl_tables.s(),
         check_results.s(msg="update graph and resolve results"),
     )
 
@@ -330,13 +221,13 @@ class Workflows:
     # refresh_all sequence:
     _group1 = delete_and_refresh_tacoma_gis_tables
 
-    ## group 2 is dependant on group 1 successfully finishing
+    ## group 2 is dependent on group 1 successfully finishing
     _group2 = group(
         update_tmnt_attributes.si(),
         __chain_lgu_tables,
     ) | check_results.s(can_raise=True, msg="update tmnt and refresh LGU tables")
 
-    ## group 3 are dependant on both group 1 & 2
+    ## group 3 are dependent on both group 1 & 2
     _group3 = group(refresh_results) | check_results.s(
         can_raise=True, msg="update results"
     )
