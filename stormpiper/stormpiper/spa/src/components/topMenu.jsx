@@ -23,7 +23,9 @@ import Help from "./help";
 import logo from "../assets/img/TacomaLogoSM256.jpeg";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
 import ChevronRightIcon from "@material-ui/icons/ChevronRight"
-import { useState } from "react";
+import React, { useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -139,9 +141,9 @@ const CustomDrawer = styled(Drawer, { shouldForwardProp: (prop) => prop !== 'ope
 export default function ProminentAppBar(props) {
   const classes = useStyles();
   const theme = useTheme()
+  const navigate=useNavigate()
 
   const [open,setOpen] = useState(false)
-
   const [buttonConfig,setButtonConfig] = useState({
     home:{
       label:"Home",
@@ -160,14 +162,43 @@ export default function ProminentAppBar(props) {
       icon:<InfoRoundedIcon/>
     }
   })
-
   const [selectedButton,setSelectedButton] = useState("Home")
+  const [userProfile,setUserProfile] = useState({
+    firstName:'User',
+    email:'email@tacoma.watersheds.com'
+  })
+
+  useEffect(()=>{
+    fetch("api/rest/users/me")
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        if (res.detail === "Unauthorized") {
+          //pass
+        } else {
+          console.log("Found user info:",res)
+          setUserProfile({
+            firstName:res.first_name,
+            userEmail: res.email
+          })
+        }
+      });
+  },[])
 
   function handleDrawerClose(){
     setOpen(false)
   }
   function handleDrawerOpen(){
     setOpen(true)
+  }
+
+  function _postLogout(){
+    fetch("auth/jwt-cookie/logout",{
+      method:'POST'
+    }).then(res=>{
+      navigate('/app/login')
+    })
   }
 
   return (
@@ -216,16 +247,19 @@ export default function ProminentAppBar(props) {
         <DrawerHeader sx={{ minHeight: 0 }}>
           <List>
             {open ? (
-              <ListItem>
-                <Typography variant="subtitle1">Hello User</Typography>
-              </ListItem>
-            ) : (
-              <p></p>
-            )}
-            {open ? (
-              <ListItem>
-                <Typography variant="subtitle2">user@stormpiper.com</Typography>
-              </ListItem>
+              <React.Fragment>
+                <ListItem>
+                  <Typography variant="subtitle1">Hello {userProfile.firstName}</Typography>
+                </ListItem>
+                <ListItem>
+                  <Typography variant="subtitle2">
+                    {userProfile.userEmail}
+                  </Typography>
+                </ListItem>
+                <ListItem>
+                  <a href="#" onClick={_postLogout}>Logout</a>
+                </ListItem>
+              </React.Fragment>
             ) : (
               <p></p>
             )}

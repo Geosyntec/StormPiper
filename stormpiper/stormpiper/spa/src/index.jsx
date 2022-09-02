@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 import App from "./App";
+import Landing from "./components/landing"
+import Login from "./components/login"
 // import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
@@ -10,6 +12,7 @@ ReactDOM.render(
     <BrowserRouter>
       <Routes>
         <Route path="/app/" element={<App/>}></Route>
+        <Route path="app/login/" element={<Login/>}></Route>
         <Route path="/app/map/" element={<App/>}>
           <Route path="tmnt" element={<App/>}>
             <Route path=":id" element = {<App/>}></Route>
@@ -17,7 +20,6 @@ ReactDOM.render(
         </Route>
       </Routes>
     </BrowserRouter>
-    {/* <App/> */}
   </React.StrictMode>,
   document.getElementById("root")
 );
