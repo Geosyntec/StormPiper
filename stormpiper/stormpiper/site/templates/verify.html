@@ -57,21 +57,8 @@
 {% endblock %} {% block content %}
 
 <div class="center">
-  <div class="title"><h2>Login</h2></div>
-  <form id="LoginForm" method="post">
-    <div class="form-group">
-      <label for="username">Username (email): </label>
-      <input type="text" name="username" required />
-    </div>
+  <div class="title"><h2>Verifying Login Email</h2></div>
 
-    <div class="form-group">
-      <label for="password">Password:</label>
-      <input type="password" name="password" required />
-    </div>
-
-    <input class="btn btn-submit" type="submit" value="Login" />
-    <!-- <input type="hidden" name="csrf_token" required value="{{ csrf_token }}" /> -->
-  </form>
   <div class="db-notes">
     <div id="error_msgs"></div>
   </div>
@@ -95,41 +82,46 @@
     }
     return "";
   }
-  const submitLoginUrl = "{{ request.url_for('login:post_login') }}";
-  const redirectRoute = "{{ request.url_for('home') }}";
-  const form = document.getElementById("LoginForm");
+  const submitUrl = "{{ request.url_for('verify:verify') }}";
+  const token = "{{ token }}";
   var err_div = document.getElementById("error_msgs");
 
-  form.addEventListener("submit", (evt) => {
-    evt.preventDefault();
-    const formData = new FormData(evt.target);
-    postLoginForm(submitLoginUrl, formData);
-  });
-  async function postLoginForm(url, data) {
-    const csrftoken = getCookie("csrftoken");
-    console.log("token:", csrftoken);
+  async function postData(url, data) {
     const response = await fetch(url, {
       credentials: "same-origin",
-      headers: {
-        "X-CSRFToken": csrftoken,
-      },
       method: "POST",
-      body: data,
-    }).then((resp) => {
-      if (resp.status == 200) {
-        console.log("redirect on success");
-        window.location.href = redirectRoute;
-      } else {
-        console.warn("login failure", resp);
-        err_div.innerHTML = `
-              <div class="alert alert-warning">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                Login Failed.
+      body: JSON.stringify(data),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.status == 200) {
+      console.log("redirect on success");
+      let rsp_data = await response.json();
+      err_div.innerHTML = `
+              <div>
+                Email Verification Succeeded. Welcome ${rsp_data.first_name}!
               </div>
               `;
-      }
-    });
+    } else {
+      let rsp_data = await response.json();
+      console.warn("login failure", response, rsp_data);
+      err_div.innerHTML = `
+              <div class="alert alert-warning">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                Login Failed. ${rsp_data?.detail}
+              </div>
+              `;
+    }
+
     return response;
   }
+  window.addEventListener("load", () => {
+    console.log(`submigting to ${submitUrl}`);
+
+    postData(submitUrl, { token });
+  });
 </script>
 {% endblock %}

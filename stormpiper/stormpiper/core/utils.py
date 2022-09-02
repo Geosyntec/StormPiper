@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+import functools
 from typing import List, Optional
 
 import pandas
@@ -57,3 +58,21 @@ async def wait_a_sec_and_see_if_we_can_return_some_data(
 
 def datetime_now():
     return datetime.datetime.now(pytz.timezone("US/Pacific"))
+
+
+def rsetattr(obj, attr, val):
+    """Allows assignment to nested attribute"""
+    pre, _, post = attr.rpartition(".")
+    return setattr(rgetattr(obj, pre) if pre else obj, post, val)
+
+
+# using wonder's beautiful simplification:
+# #https://stackoverflow.com/questions/31174295/getattr-and-setattr-on-nested-objects/31174427?noredirect=1#comment86638618_31174427
+
+
+def rgetattr(obj, attr, *args):
+    """Allows retrieval of nested attribute."""
+    def _getattr(obj, attr):
+        return getattr(obj, attr, *args)
+
+    return functools.reduce(_getattr, [obj] + attr.split("."))
