@@ -72,6 +72,7 @@ def rsetattr(obj, attr, val):
 
 def rgetattr(obj, attr, *args):
     """Allows retrieval of nested attribute."""
+
     def _getattr(obj, attr):
         return getattr(obj, attr, *args)
 

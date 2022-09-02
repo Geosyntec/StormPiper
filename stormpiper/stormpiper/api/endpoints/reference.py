@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import JSONResponse
 from sqlalchemy.engine.url import make_url
 
-from stormpiper.apps.supersafe.users import check_user, check_admin
+from stormpiper.apps.supersafe.users import check_admin, check_user
 from stormpiper.core.config import settings
 from stormpiper.core.context import get_context
 

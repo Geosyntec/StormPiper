@@ -12,6 +12,8 @@ from tenacity import stop_after_attempt  # type: ignore
 from tenacity import wait_fixed  # type: ignore
 from tenacity import retry
 
+from stormpiper.core.config import settings
+
 from ..core.utils import datetime_to_isoformat
 from .changelog import sync_log
 from .connection import get_session
@@ -54,6 +56,14 @@ def scalars_to_gdf(
 ) -> geopandas.GeoDataFrame:
     records = scalars_to_records(scalars)
     return scalar_records_to_gdf(records, crs=crs, geometry=geometry)
+
+
+def scalars_to_gdf_to_geojson(scalars):
+    gdf = scalars_to_gdf(scalars, crs=settings.TACOMA_EPSG, geometry="geom")
+    gdf.to_crs(epsg=4326, inplace=True)
+    content = gdf.to_json()
+
+    return content
 
 
 def delete_and_replace_postgis_table(
