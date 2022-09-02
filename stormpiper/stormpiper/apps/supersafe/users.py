@@ -12,8 +12,8 @@ from fastapi_users.authentication import (
 )
 from fastapi_users.db import SQLAlchemyUserDatabase
 
-from stormpiper.core.config import settings
 from stormpiper.core import utils
+from stormpiper.core.config import settings
 
 from . import email
 from .db import User, get_async_session, get_user_db
