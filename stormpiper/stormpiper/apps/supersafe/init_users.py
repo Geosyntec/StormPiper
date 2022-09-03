@@ -40,6 +40,7 @@ async def create_admin():  # pragma: no cover
         email="admin@geosyntec.com",  # type: ignore
         password=settings.ADMIN_ACCOUNT_PASSWORD,
         is_superuser=True,
+        is_verified=True,
     )
 
 

@@ -32,6 +32,10 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     ) -> None:
         logger.info(f"User {user.id} has registered.")
 
+        setattr(request, "_email_template", "welcome_verify")
+
+        await self.request_verify(user=user, request=request)
+
     async def on_after_forgot_password(
         self, user: User, token: str, request: Optional[Request] = None
     ) -> None:
@@ -40,11 +44,12 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         )
         reset_url = request.url_for("reset:get_reset_password") + f"?token={token}"
 
-        await email.send_reset_password_token_to_user(
+        await email.send_email_to_user(
+            template="reset_password",
+            client=client,
             email=user.email,
             name=user.first_name,
             token=token,
-            client=client,
             reset_url=reset_url,
         )
 
@@ -57,12 +62,14 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
             "user_email_session", None
         )
         verify_url = request.url_for("verify:get_verify_token") + f"?token={token}"
+        template = getattr(request, "_email_template", "request_verify")
 
-        await email.send_verify_email_token_to_user(
+        await email.send_email_to_user(
+            template=template,
+            client=client,
             email=user.email,
             name=user.first_name,
             token=token,
-            client=client,
             verify_url=verify_url,
         )
 
@@ -123,6 +130,7 @@ current_active_super_user = current_user_safe(active=True, superuser=True)
 
 def check_role(min_role: Role = Role.admin):
     async def current_active_user_role(user=Depends(current_active_user)):
+        print(f"user role: {user.role}; minimum role: {min_role}")
         if user.role >= min_role:
             return user
 
