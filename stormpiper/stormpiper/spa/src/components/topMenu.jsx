@@ -20,7 +20,7 @@ import UserAdminMenu from "./userAdminMenu";
 import Reports from "./reports";
 import About from "./about";
 import Help from "./help";
-import logo from "../assets/img/TacomaLogoSM.jpeg";
+import logo from "../assets/img/TacomaLogoSM256.jpeg";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
 import ChevronRightIcon from "@material-ui/icons/ChevronRight"
 import { useState } from "react";
