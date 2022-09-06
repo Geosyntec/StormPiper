@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Lint & Test
+name: Test
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the main branch
@@ -12,28 +12,13 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - run: sudo apt-get install libspatialindex-dev unixodbc libpq-dev
-      - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.9
-      - name: Install Linters
-        run: |
-          pip install -U pip
-          pip install -r stormpiper/requirements.txt -r stormpiper/requirements_test.txt
-      - name: Run Linters
-        run: make lint
   test:
     runs-on: ubuntu-latest
     env:
       COMPOSE_FILE: docker-stack.yml
       COMPOSE_DOCKER_CLI_BUILD: 1
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: run tests
         run: make coverage-ci
       - name: coverage
@@ -43,4 +28,4 @@ jobs:
           docker compose cp stormpiper-test:/stormpiper/coverage.xml coverage.xml
           docker compose cp stormpiper-test:/stormpiper/.coverage .coverage
       - name: upload coverage
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v2

@@ -1,4 +1,4 @@
-name: Manual Release
+name: Manual Build and Push Image to GCR
 
 on:
   workflow_dispatch:
@@ -12,19 +12,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: [stormpiper, stormpiper-pod, bg_worker, redis]
+        image: [stormpiper-pod, bg_worker, redis]
     runs-on: ubuntu-latest
     env:
       DOCKER_BUILDKIT: 1
       COMPOSE_DOCKER_CLI_BUILD: 1
+      ARTIFACT_REGISTRY: gcr.io/tacoma-app
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Prepare tags
         id: prep
         run: |
-          DOCKER_IMAGE=gcr.io/tacoma-app/${{ matrix.image }}
+          DOCKER_IMAGE=$ARTIFACT_REGISTRY/${{ matrix.image }}
           TAG=${{ github.event.inputs.tag }}
           IMAGES="${DOCKER_IMAGE}:${TAG}"
           echo "tags: ${IMAGES}"
@@ -59,8 +60,8 @@ jobs:
           target: ${{ matrix.image }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.prep.outputs.tags }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=registry,ref=${{ env.ARTIFACT_REGISTRY }}/buildcache
+          cache-to: type=registry,ref=${{ env.ARTIFACT_REGISTRY }}/buildcache,mode=max
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
