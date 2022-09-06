@@ -10,7 +10,7 @@ PyYAML
 requests
 brotli
 brotli-asgi
-   
+
 earthengine-api
 
 fastapi-users[sqlalchemy]>=10.0.7
@@ -38,7 +38,7 @@ alembic
 
 celery[redis]
 
-fastapi==0.79.0
+fastapi==0.82.0
 starlette
 pydantic
 orjson
