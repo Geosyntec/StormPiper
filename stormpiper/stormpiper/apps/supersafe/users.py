@@ -30,6 +30,9 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     async def on_after_register(
         self, user: User, request: Optional[Request] = None
     ) -> None:
+        if request is None:
+            return
+
         logger.info(f"User {user.id} has registered.")
 
         setattr(request, "_email_template", "welcome_verify")
@@ -39,6 +42,9 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     async def on_after_forgot_password(
         self, user: User, token: str, request: Optional[Request] = None
     ) -> None:
+        if request is None:
+            return
+
         client = utils.rgetattr(request, "app.sessions", None).get(
             "user_email_session", None
         )
@@ -58,6 +64,9 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     async def on_after_request_verify(
         self, user: User, token: str, request: Optional[Request] = None
     ) -> None:
+        if request is None:
+            return
+
         client = utils.rgetattr(request, "app.sessions", None).get(
             "user_email_session", None
         )
@@ -130,7 +139,6 @@ current_active_super_user = current_user_safe(active=True, superuser=True)
 
 def check_role(min_role: Role = Role.admin):
     async def current_active_user_role(user=Depends(current_active_user)):
-        print(f"user role: {user.role}; minimum role: {min_role}")
         if user.role >= min_role:
             return user
 
