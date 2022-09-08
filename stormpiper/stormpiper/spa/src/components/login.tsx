@@ -73,7 +73,7 @@ export default function Login(){
         <div className="login-form">
           <div className="login-form-body">
             <Typography className="login-header" variant="subtitle1"> Welcome to the Tacoma Watershed Insights Tool</Typography>
-            <Typography className="login-sub-header" variant="subtitle2"> Login or Register to get Started</Typography>
+            <Typography className="login-sub-header" variant="subtitle2"> Login or <a href="javascript:;" onClick={()=>navigate('/app/register')}>Register</a> to get Started</Typography>
             <form onSubmit={handleSubmit(_handleSubmit)}>
               {_renderFormFields()}
               <div className="button-bar">

@@ -257,7 +257,7 @@ export default function ProminentAppBar(props) {
                   </Typography>
                 </ListItem>
                 <ListItem>
-                  <a href="#" onClick={_postLogout}>Logout</a>
+                  <a href="javascript:;" onClick={_postLogout}>Logout</a>
                 </ListItem>
               </React.Fragment>
             ) : (
