@@ -36,17 +36,14 @@ def build_edge_list(lgu_boundary, tmnt_v):
 
     cols = ["source", "target", "ntype", "subbasin", "basinname"]
 
-    edge_list = (
-        pandas.concat(
-            [
-                da_to_tmnt,
-                tmnt_to_subbasin,
-                subbasin_to_wshed,
-                wshed_to_sound,
-            ]
-        )[cols]
-        .assign(target=lambda df: df["target"].fillna("PUGET_SOUND"))
-    )
+    edge_list = pandas.concat(
+        [
+            da_to_tmnt,
+            tmnt_to_subbasin,
+            subbasin_to_wshed,
+            wshed_to_sound,
+        ]
+    )[cols].assign(target=lambda df: df["target"].fillna("PUGET_SOUND"))
 
     return edge_list
 

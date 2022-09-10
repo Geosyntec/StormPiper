@@ -2,7 +2,8 @@ import pandas
 
 from stormpiper.connections import arcgis
 from stormpiper.src import loading
-from stormpiper.src.tmnt import spatial, default_tmnt_source_controls as src_ctrls
+from stormpiper.src.tmnt import default_tmnt_source_controls as src_ctrls
+from stormpiper.src.tmnt import spatial
 
 from ._base import datadir
 

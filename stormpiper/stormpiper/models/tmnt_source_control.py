@@ -1,7 +1,8 @@
 from typing import Optional
 
-from .base import BaseModel
 from stormpiper.database.schemas.tmnt import Direction
+
+from .base import BaseModel
 
 
 # Shared properties
