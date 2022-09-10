@@ -13,10 +13,6 @@ epoch	mean_annual_precip_depth_inches	design_storm_precip_depth_inches
 2080s	38.469	0.804
 """
 
-    df = (
-        pandas.read_table(StringIO(string))
-        .assign(id=lambda df: df.index + 1)
-        .set_index("id")
-    )
+    df = pandas.read_table(StringIO(string))
 
     return df
