@@ -139,7 +139,7 @@ class TMNT_View(Base):
     )
 
 
-class Direction(Enum):
+class Direction(str, Enum):
     upstream = "Upstream"
     downstream = "Downstream"
 

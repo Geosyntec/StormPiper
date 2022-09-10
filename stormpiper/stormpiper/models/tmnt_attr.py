@@ -29,7 +29,7 @@ class TMNTFacilityAttrBase(BaseModel):
 
 # Properties to receive on creation
 class TMNTFacilityAttrCreate(TMNTFacilityAttrBase):
-    altid: str
+    pass
 
 
 # Properties to receive on update
