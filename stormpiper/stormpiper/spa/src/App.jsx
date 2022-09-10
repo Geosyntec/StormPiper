@@ -1,11 +1,14 @@
-import { React,useState } from "react";
+import React, {Suspense, useState } from "react";
 import { useParams,useNavigate } from "react-router-dom";
 import { layerDict } from "./assets/geojson/coreLayers";
 import LayerSelector from "./components/layerSelector";
-import DeckGLMap from "./components/map";
+// import DeckGLMap from "./components/map";
 import ProminentAppBar from "./components/topMenu";
 import BMPStatWindow from "./components/bmpStatWindow";
+import AuthProvider from "./components/authProvider"
 import "./App.css";
+
+const DeckGLMap = React.lazy(()=>import("./components/map"))
 
 function App() {
   const [lyrSelectDisplayState, setlyrSelectDisplayState] = useState(false); // when true, control panel is displayed
@@ -113,39 +116,43 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <ProminentAppBar></ProminentAppBar>
-      <div>
-        <DeckGLMap
-          id="main-map"
-          layers={_renderLayers(layerDict, activeLayers)}
-          onClick={_lyrClickHandlers.bind(this)}
-          currentFeature={focusFeature}
-        ></DeckGLMap>
-      </div>
-      <div
-        id={lyrSelectDisplayState ? "control-panel" : "control-panel-hidden"}
-      >
-        <div style={{ textAlign: "left", padding: "5px 0 5px" }}>
-          <LayerSelector
-            layerDict={layerDict}
-            activeLayers={activeLayers}
-            _onToggleLayer={_toggleLayer}
-            displayStatus={lyrSelectDisplayState}
-            displayController={_togglelyrSelectDisplayState}
-          ></LayerSelector>
+    <AuthProvider>
+      <div className="App">
+        <ProminentAppBar></ProminentAppBar>
+        <div>
+          <Suspense fallback={<div>Loading Map...</div>}>
+            <DeckGLMap
+              id="main-map"
+              layers={_renderLayers(layerDict, activeLayers)}
+              onClick={_lyrClickHandlers.bind(this)}
+              currentFeature={focusFeature}
+            ></DeckGLMap>
+          </Suspense>
         </div>
-      </div>
-      <div
-        id={prjStatDisplayState ? "prj-stat-panel" : "prj-stat-panel-hidden"}
-      >
+        <div
+          id={lyrSelectDisplayState ? "control-panel" : "control-panel-hidden"}
+        >
+          <div style={{ textAlign: "left", padding: "5px 0 5px" }}>
+            <LayerSelector
+              layerDict={layerDict}
+              activeLayers={activeLayers}
+              _onToggleLayer={_toggleLayer}
+              displayStatus={lyrSelectDisplayState}
+              displayController={_togglelyrSelectDisplayState}
+            ></LayerSelector>
+          </div>
+        </div>
+        <div
+          id={prjStatDisplayState ? "prj-stat-panel" : "prj-stat-panel-hidden"}
+        >
           <BMPStatWindow
             displayStatus={prjStatDisplayState}
             displayController={_toggleprjStatDisplayState}
             feature={focusFeature}
           ></BMPStatWindow>
+        </div>
       </div>
-    </div>
+    </AuthProvider>
   );
 }
 
