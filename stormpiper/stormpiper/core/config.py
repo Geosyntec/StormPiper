@@ -55,7 +55,7 @@ class Settings(BaseSettings):
     # Users Auth
     COOKIE_SECURE: bool = True
     COOKIE_HTTPONLY: bool = True
-    COOKIE_SAMESITE: str = "lax"
+    COOKIE_SAMESITE: str = "strict"
     BEARER_TOKEN_URL: str = "auth/jwt-bearer/login"
     JWT_LIFETIME_SECONDS: int = 24 * 3600
 

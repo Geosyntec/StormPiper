@@ -93,7 +93,7 @@ def test_clean_dirty_clean(client):
     rsp_json = response.json()
     assert rsp_json["is_dirty"] == True, rsp_json
 
-    tasks.delete_and_refresh_result_table(engine=engine)
+    tasks.delete_and_refresh_all_results_tables(engine=engine)
 
     # check if dirty got cleaned
     response = client.get(

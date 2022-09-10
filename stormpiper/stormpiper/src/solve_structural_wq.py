@@ -9,7 +9,7 @@ from nereid.src.tasks import solve_watershed
 from stormpiper.core.context import get_context
 from stormpiper.database.connection import engine
 
-from .loading import land_surface_load_nereid_from_db
+from .loading import land_surface_load_to_structural_from_db
 
 
 def get_graph_edges_from_db(connectable):
@@ -43,7 +43,7 @@ def init_land_surface_loading_node_data_from_df(
     """pre filter for epoch"""
     ls_data = {
         str(dct.get("node_id", "")): {
-            k: v for k, v in dct.to_dict().items() if k != "node_id"
+            k: v for k, v in dct.to_dict().items() if k != "node_id" and pandas.notna(v)
         }
         for _, dct in df.iterrows()
     }
@@ -115,7 +115,9 @@ def solve_wq_epochs(
 
     for epoch in epochs:
         # TODO: loading should be _after_ applying upstream source controls
-        epoch_loading_df = loading.query("epoch==@epoch")
+        epoch_loading_df = loading.query("epoch==@epoch").assign(
+            node_type="land_surface"
+        )
 
         epoch_data = met.query("epoch==@epoch").iloc[0].to_dict()
         ref_data_key = epoch_data["epoch"]
@@ -180,7 +182,7 @@ def solve_wq_epochs_from_db(engine=engine):
         met = pandas.read_sql("met", con=conn)
 
         # get all loading data for all epochs. will query it down later.
-        loading = land_surface_load_nereid_from_db(epoch=None, connectable=conn)
+        loading = land_surface_load_to_structural_from_db(epoch=None, connectable=conn)
 
     epochs = met.epoch.unique()
     context = get_context()

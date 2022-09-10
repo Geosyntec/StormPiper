@@ -62,6 +62,7 @@ def seed_users(engine):
             email="existing_user@example.com",
             hashed_password=hasher("existing_user_password"),
             is_active=True,
+            is_verified=True,
             role="user",
         )
 
@@ -70,8 +71,22 @@ def seed_users(engine):
         session.add_all(batch)
 
 
-def seed_tacoma_gis_tables(engine):
+def seed_tacoma_base_tables(engine):
+    jsons = _base.datadir.glob("*.json")
 
+    for f in jsons:
+        df = pandas.read_json(f, orient="table")
+        table_name = f.stem
+
+        utils.delete_and_replace_table(
+            df=df,  # type: ignore
+            table_name=table_name,
+            engine=engine,
+            index=False,
+        )
+
+
+def seed_tacoma_gis_tables(engine):
     jsons = _base.datadir.glob("*.geojson")
 
     for f in jsons:
@@ -88,28 +103,15 @@ def seed_tacoma_gis_tables(engine):
 
 def seed_tacoma_derived_tables(engine):
 
-    jsons = _base.datadir.glob("*.json")
-
-    for f in jsons:
-        df = pandas.read_json(f, orient="table")
-        table_name = f.stem
-
-        utils.delete_and_replace_table(
-            df=df,  # type: ignore
-            table_name=table_name,
-            engine=engine,
-            index=False,
-        )
-
     tasks.delete_and_refresh_met_table(engine=engine)
-    tasks.delete_and_refresh_graph_edge_table(engine=engine)
-    tasks.delete_and_refresh_result_table(engine=engine)
+    tasks.update_tmnt_attributes(engine=engine)
+    tasks.delete_and_refresh_all_results_tables(engine=engine)
 
 
 def seed_db(engine):
 
     clear_db(engine)
     seed_users(engine)
+    seed_tacoma_base_tables(engine)
     seed_tacoma_gis_tables(engine)
-    tasks.update_tmnt_attributes(engine=engine)
     seed_tacoma_derived_tables(engine)

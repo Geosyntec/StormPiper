@@ -1,5 +1,8 @@
+import pandas
+
 from stormpiper.connections import arcgis
 from stormpiper.src import loading
+from stormpiper.src.tmnt import default_tmnt_source_controls as src_ctrls
 from stormpiper.src.tmnt import spatial
 
 from ._base import datadir
@@ -26,6 +29,9 @@ def fetch_tacoma_gis_data():  # pragma: no cover
 
     load = loading.compute_loading(lgu_boundary=lgus)
     load.to_json(datadir / "lgu_load.json", orient="table")
+
+    tmnt_src_ctrl = src_ctrls.dummy_tmnt_source_control(gdf_subbasin.subbasin.to_list())
+    tmnt_src_ctrl.to_json(datadir / "tmnt_source_control.json", orient="table")
 
 
 def main():  # pragma: no cover

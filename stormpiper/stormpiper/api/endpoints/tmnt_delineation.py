@@ -1,15 +1,15 @@
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, Query
+from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import Response
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.apps.supersafe.users import check_user
-from stormpiper.core.config import settings
 from stormpiper.database.connection import get_async_session
 from stormpiper.database.schemas import tmnt
-from stormpiper.database.utils import scalars_to_gdf
+from stormpiper.database.utils import scalars_to_gdf_to_geojson
 from stormpiper.models.tmnt_delineation import TMNTFacilityDelineation
 
 router = APIRouter(dependencies=[Depends(check_user)])
@@ -33,10 +33,11 @@ async def get_all_tmnt_delineations(
 
     if f == "geojson":
         # TODO: cache this server-side
-        gdf = scalars_to_gdf(scalars, crs=settings.TACOMA_EPSG, geometry="geom")
-        gdf.to_crs(epsg=4326, inplace=True)
+
+        content = await run_in_threadpool(scalars_to_gdf_to_geojson, scalars)
+
         return Response(
-            content=gdf.to_json(),
+            content=content,
             media_type="application/json",
             headers={"Cache-Control": "max-age=86400"},
         )

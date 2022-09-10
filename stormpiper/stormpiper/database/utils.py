@@ -12,6 +12,8 @@ from tenacity import stop_after_attempt  # type: ignore
 from tenacity import wait_fixed  # type: ignore
 from tenacity import retry
 
+from stormpiper.core.config import settings
+
 from ..core.utils import datetime_to_isoformat
 from .changelog import sync_log
 from .connection import get_session
@@ -56,6 +58,58 @@ def scalars_to_gdf(
     return scalar_records_to_gdf(records, crs=crs, geometry=geometry)
 
 
+def scalars_to_gdf_to_geojson(scalars):
+    gdf = scalars_to_gdf(scalars, crs=settings.TACOMA_EPSG, geometry="geom")
+    gdf.to_crs(epsg=4326, inplace=True)
+    content = gdf.to_json()
+
+    return content
+
+
+def reset_sequence(*, table_name, connectable):
+
+    try:
+        connectable.execute(
+            f"select setval(%s, max(id)) from {table_name}", (f"{table_name}_id_seq")
+        )
+    except Exception as e:
+        logger.exception(e)
+
+    return
+
+
+def _delete_and_replace_db(
+    *, method_name: str, df: pandas.DataFrame, table_name: str, engine, **kwargs
+):
+    """
+    Overwrites contents of `table_name` with contents of df.
+    df schema must match destination table if the table already exists.
+    """
+    if len(df) == 0:
+        raise ValueError(f"No data provided to replace table {table_name}. Aborting.")
+    method = getattr(df, method_name, df.to_sql)
+
+    index = kwargs.pop("index", False)
+
+    Session = get_session(engine=engine)
+    with engine.begin() as conn:
+        if engine.dialect.has_table(conn, table_name):
+            conn.execute(f'delete from "{table_name}";')
+        method(table_name, con=conn, if_exists="append", index=index, **kwargs)
+
+        # same transaction scope to update the change log
+        with Session.begin() as session:  # type: ignore
+            logger.info("recording table change...")
+            sync_log(tablename=table_name, db=session)
+
+    # separate transaction scope since this might fail. failure to reset is ok, not all
+    # tables have sequences of id's as their pk (e.g., result_blob)
+    with engine.begin() as conn:
+        reset_sequence(table_name=table_name, connectable=conn)
+
+    return None
+
+
 def delete_and_replace_postgis_table(
     *, gdf: geopandas.GeoDataFrame, table_name: str, engine, **kwargs
 ) -> None:
@@ -63,22 +117,14 @@ def delete_and_replace_postgis_table(
     Overwrites contents of `table_name` with contents of gdf.
     gdf schema must match destination table if the table already exists.
     """
-    if len(gdf) == 0:
-        raise ValueError(f"No data provided to replace table {table_name}. Aborting.")
-
     gdf = gdf.rename_geometry("geom")  # type: ignore
-    Session = get_session(engine=engine)
-
-    with engine.begin() as conn:
-        if engine.dialect.has_table(conn, table_name):
-            conn.execute(f'delete from "{table_name}";')
-        gdf.to_postgis(table_name, con=conn, if_exists="append", **kwargs)
-
-        with Session.begin() as session:
-            logger.info("recording table change...")
-            sync_log(tablename=table_name, db=session)
-
-    return None
+    return _delete_and_replace_db(
+        method_name="to_postgis",
+        df=gdf,
+        table_name=table_name,
+        engine=engine,
+        **kwargs,
+    )
 
 
 def delete_and_replace_table(
@@ -88,18 +134,13 @@ def delete_and_replace_table(
     Overwrites contents of `table_name` with contents of df.
     df schema must match destination table if the table already exists.
     """
-    if len(df) == 0:
-        raise ValueError(f"No data provided to replace table {table_name}. Aborting.")
-    Session = get_session(engine=engine)
-    with engine.begin() as conn:
-        if engine.dialect.has_table(conn, table_name):
-            conn.execute(f'delete from "{table_name}";')
-        df.to_sql(table_name, con=conn, if_exists="append", **kwargs)
-
-        with Session.begin() as session:
-            sync_log(tablename=table_name, db=session)
-
-    return None
+    return _delete_and_replace_db(
+        method_name="to_sql",
+        df=df,
+        table_name=table_name,
+        engine=engine,
+        **kwargs,
+    )
 
 
 @retry(

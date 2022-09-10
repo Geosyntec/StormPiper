@@ -1,0 +1,27 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Lint
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the main branch
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+      - name: Install Linters
+        run: |
+          pip install black isort -c stormpiper/requirements_test.txt
+      - name: Run Linters
+        run: make lint

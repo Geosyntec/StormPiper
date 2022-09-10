@@ -44,12 +44,22 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
     ) -> List[SchemaType]:
         return db.query(self.base).offset(skip).limit(limit).all()
 
-    def create(self, db: Session, *, obj_in: CreateModelType) -> SchemaType:
+    def create_sync(self, db: Session, *, obj_in: CreateModelType) -> SchemaType:
         obj_in_data = jsonable_encoder(obj_in)
         db_obj = self.base(**obj_in_data)  # type: ignore
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
+        return db_obj
+
+    async def create(self, db: AsyncSession, *, new_obj: CreateModelType) -> SchemaType:
+
+        db_obj = self.base(**new_obj.dict(exclude_unset=True))
+
+        db.add(db_obj)
+        await db.commit()
+        await db.refresh(db_obj)
+        _ = await self.log(db=db)
         return db_obj
 
     @staticmethod
@@ -138,10 +148,24 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
     #     [db.refresh(b) for b in batch]
     #     return batch
 
-    def remove(self, db: Session, *, id: int) -> Optional[SchemaType]:
+    def remove_sync(self, db: Session, *, id: Any) -> Optional[SchemaType]:
         obj = db.query(self.base).filter(getattr(self.base, self.id) == id).first()
         if not obj:
             return
         db.delete(obj)
         db.commit()
         return obj
+
+    async def remove(self, db: AsyncSession, *, id: Any) -> None:
+
+        q = sa.delete(self.base).where(getattr(self.base, self.id) == id)
+
+        await db.execute(q)
+        try:
+            await db.commit()
+        except Exception:
+            await db.rollback()
+            raise
+        _ = await self.log(db=db)
+
+        return None

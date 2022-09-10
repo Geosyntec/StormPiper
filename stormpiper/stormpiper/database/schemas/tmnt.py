@@ -10,7 +10,14 @@ from stormpiper.core.config import settings
 from ..hacks import view
 from .base_class import Base, MutableTrackedTable
 
-__all__ = ["TMNTFacilityDelineation", "TMNTFacility", "TMNTFacilityAttr", "TMNT_View"]
+__all__ = [
+    "TMNTFacilityDelineation",
+    "TMNTFacility",
+    "TMNTFacilityAttr",
+    "TMNT_View",
+    "TMNTSourceControlUpstreamLoadReduced",
+    "TMNTSourceControlDownstreamLoadReduced",
+]
 
 
 def delin_node_id(context):
@@ -132,7 +139,7 @@ class TMNT_View(Base):
     )
 
 
-class Direction(Enum):
+class Direction(str, Enum):
     upstream = "Upstream"
     downstream = "Downstream"
 
@@ -144,13 +151,11 @@ class TMNTSourceControl(Base, MutableTrackedTable):
 
     id = Column(Integer, primary_key=True)
     subbasin = Column(String, nullable=False)
-    pollutant = Column(String, nullable=False)
-    # if multiple for same subbasin and pollutant, will be applied in order least to greatest
+    variable = Column(String, nullable=False)
+    # if multiple for same subbasin and variable, will be applied in order least to greatest
     # default is last.
     order = Column(Integer, default=1e6)
-
     activity = Column(String, nullable=False)
-
     direction = Column(sa.Enum(Direction), nullable=False)
 
     # must be float between 0.0 and 100.0
@@ -158,8 +163,42 @@ class TMNTSourceControl(Base, MutableTrackedTable):
 
     __table_args__ = (
         # allow one order per pollutant & subbasin combo
-        sa.UniqueConstraint("direction", "subbasin", "pollutant", "order"),
+        sa.UniqueConstraint("direction", "subbasin", "variable", "order"),
         # allow one activity per subbasin
-        sa.UniqueConstraint("direction", "subbasin", "pollutant", "activity"),
+        sa.UniqueConstraint("direction", "subbasin", "variable", "activity"),
         sa.CheckConstraint("percent_reduction between 0.0 and 100.0"),
     )
+
+
+class TMNTSourceControlResultsBase:
+
+    id = Column(Integer, primary_key=True)
+    node_id = Column(String, nullable=False)
+    subbasin = Column(String, nullable=False)
+    basinname = Column(String)
+    variable = Column(String, nullable=False)
+    # if multiple for same subbasin and variable, will be applied in order least to greatest
+    # default is last.
+    order = Column(Integer)
+    activity = Column(String, nullable=False)
+    direction = Column(
+        sa.dialects.postgresql.ENUM(name="direction", create_type=False), nullable=False
+    )
+
+    epoch = Column(String)
+    value = Column(Float)
+    units = Column(String)
+
+    # must be float between 0.0 and 100.0
+    percent_reduction = Column(Float, default=0.0)
+    value_remaining_prev = Column(Float)
+    value_remaining = Column(Float)
+    load_reduced = Column(Float, default=0.0)
+
+
+class TMNTSourceControlUpstreamLoadReduced(Base, TMNTSourceControlResultsBase):
+    __tablename__ = "tmnt_source_control_upstream_load_reduced"
+
+
+class TMNTSourceControlDownstreamLoadReduced(Base, TMNTSourceControlResultsBase):
+    __tablename__ = "tmnt_source_control_downstream_load_reduced"

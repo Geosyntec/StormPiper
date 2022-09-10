@@ -1,12 +1,14 @@
 from enum import Enum
-from typing import Any, Dict, Type
+from inspect import getmembers, isfunction
+from typing import Any, Dict
 
-from fastapi import APIRouter, Depends, HTTPException, Path, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import JSONResponse
 
 import stormpiper.bg_worker as bg
 from stormpiper.apps.supersafe.users import check_admin
 from stormpiper.core import utils
+from stormpiper.src import tasks
 
 router = APIRouter(dependencies=[Depends(check_admin)])
 rpc_router = APIRouter(dependencies=[Depends(check_admin)])
@@ -91,9 +93,39 @@ async def ping_background() -> Dict[str, Any]:
 @rpc_router.get("/solve_watershed", response_class=JSONResponse)
 async def solve_watershed() -> Dict[str, Any]:
 
-    task = bg.delete_and_refresh_result_table.apply_async()
+    task = bg.delete_and_refresh_all_results_tables.apply_async()
     response = dict(task_id=task.task_id, status=task.status)
     if task.successful():
         response["data"] = task.result
 
     return response
+
+
+@rpc_router.get("/_test_upstream_loading", response_class=JSONResponse)
+async def us_loading() -> None:
+
+    tasks.delete_and_refresh_upstream_src_ctrl_tables()
+    tasks.delete_and_refresh_downstream_src_ctrl_tables()
+
+
+@rpc_router.get("/_test_solve_wq", response_class=JSONResponse)
+async def solve_wq() -> None:
+
+    tasks.delete_and_refresh_result_table()
+
+
+_tasks = sorted([k for k, _ in getmembers(tasks, isfunction)])
+ForegroundTasks = StrEnum("ForegroundTasks", {k: k for k in _tasks})
+
+
+@rpc_router.get("/run_foreground/{taskname}", response_class=JSONResponse)
+async def run_workflow(
+    taskname: ForegroundTasks,  # type: ignore
+) -> None:
+
+    t = getattr(tasks, taskname, None)
+
+    if t is None:
+        raise HTTPException(status_code=404, detail=f"not found: {taskname}")
+
+    _ = t()

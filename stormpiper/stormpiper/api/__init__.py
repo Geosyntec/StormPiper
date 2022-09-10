@@ -10,6 +10,7 @@ from stormpiper.api.endpoints import (
     tmnt_attr,
     tmnt_delineation,
     tmnt_facility,
+    tmnt_source_control,
     users,
 )
 
@@ -24,10 +25,17 @@ api_router.include_router(
     tmnt_delineation.router, prefix="/tmnt_delineation", tags=["tmnt_delineation"]
 )
 api_router.include_router(tmnt_attr.router, prefix="/tmnt_attr", tags=["tmnt_attr"])
+api_router.include_router(
+    tmnt_source_control.router,
+    prefix="/tmnt_source_control",
+    tags=["tmnt_source_control"],
+)
 api_router.include_router(users.router, prefix="/users", tags=["users"])
 api_router.include_router(reference.router, prefix="/reference", tags=["reference"])
 api_router.include_router(
-    results.router, prefix="/results", tags=["tmnt_facility", "results"]
+    results.router,
+    prefix="/results",
+    tags=["tmnt_facility", "results"],
 )
 
 api_router.include_router(bg_worker.router, prefix="/tasks", tags=["bg"])

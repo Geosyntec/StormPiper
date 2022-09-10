@@ -12,8 +12,8 @@ from fastapi_users.authentication import (
 )
 from fastapi_users.db import SQLAlchemyUserDatabase
 
-from stormpiper.core.config import settings
 from stormpiper.core import utils
+from stormpiper.core.config import settings
 
 from . import email
 from .db import User, get_async_session, get_user_db
@@ -30,21 +30,32 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     async def on_after_register(
         self, user: User, request: Optional[Request] = None
     ) -> None:
+        if request is None:
+            return
+
         logger.info(f"User {user.id} has registered.")
+
+        setattr(request, "_email_template", "welcome_verify")
+
+        await self.request_verify(user=user, request=request)
 
     async def on_after_forgot_password(
         self, user: User, token: str, request: Optional[Request] = None
     ) -> None:
+        if request is None:
+            return
+
         client = utils.rgetattr(request, "app.sessions", None).get(
             "user_email_session", None
         )
         reset_url = request.url_for("reset:get_reset_password") + f"?token={token}"
 
-        await email.send_reset_password_token_to_user(
+        await email.send_email_to_user(
+            template="reset_password",
+            client=client,
             email=user.email,
             name=user.first_name,
             token=token,
-            client=client,
             reset_url=reset_url,
         )
 
@@ -53,16 +64,21 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     async def on_after_request_verify(
         self, user: User, token: str, request: Optional[Request] = None
     ) -> None:
+        if request is None:
+            return
+
         client = utils.rgetattr(request, "app.sessions", None).get(
             "user_email_session", None
         )
         verify_url = request.url_for("verify:get_verify_token") + f"?token={token}"
+        template = getattr(request, "_email_template", "request_verify")
 
-        await email.send_verify_email_token_to_user(
+        await email.send_email_to_user(
+            template=template,
+            client=client,
             email=user.email,
             name=user.first_name,
             token=token,
-            client=client,
             verify_url=verify_url,
         )
 
