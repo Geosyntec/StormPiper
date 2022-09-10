@@ -75,6 +75,7 @@ def get_tmnt_facilities(*, bmp_url=None, codes_url=None, cols=None):
         .rename(columns=lambda c: c.lower())
         .assign(node_id=lambda df: df["altid"].apply(facility_node_id))
         .replace({"None": None, "NA": None})
+        .drop_duplicates()
         # ref: database.schemas.tmnt
     )
 
@@ -107,9 +108,11 @@ def get_tmnt_facility_delineations(*, url=None):
         .reindex(
             columns=["node_id", "altid", "relid", "geometry"]
         )  # ref: database.schemas.tmnt
+        .loc[lambda df: ~df.geometry.is_empty]
+        .drop_duplicates()
     )
 
-    return delineations.loc[~delineations.geometry.is_empty]
+    return delineations
 
 
 def get_subbasins(*, url=None, cols=None):
@@ -122,6 +125,8 @@ def get_subbasins(*, url=None, cols=None):
         geopandas.read_file(url)
         .reindex(columns=cols)
         .rename(columns=lambda c: c.lower())
+        .loc[lambda df: ~df.geometry.is_empty]
+        .drop_duplicates()
     )
 
-    return subbasins.loc[~subbasins.geometry.is_empty]
+    return subbasins
