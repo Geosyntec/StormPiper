@@ -92,7 +92,7 @@ async def ping_background() -> Dict[str, Any]:
 @rpc_router.get("/solve_watershed", response_class=JSONResponse)
 async def solve_watershed() -> Dict[str, Any]:
 
-    task = bg.delete_and_refresh_result_table.apply_async()
+    task = bg.delete_and_refresh_all_results_tables.apply_async()
     response = dict(task_id=task.task_id, status=task.status)
     if task.successful():
         response["data"] = task.result
@@ -105,3 +105,9 @@ async def us_loading() -> None:
 
     tasks.delete_and_refresh_upstream_src_ctrl_tables()
     tasks.delete_and_refresh_downstream_src_ctrl_tables()
+
+
+@rpc_router.get("/_test_solve_wq", response_class=JSONResponse)
+async def solve_wq() -> None:
+
+    tasks.delete_and_refresh_result_table()

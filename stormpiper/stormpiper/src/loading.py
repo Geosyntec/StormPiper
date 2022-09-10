@@ -82,15 +82,15 @@ def wide_load_to_tidy_load(wide_load: pandas.DataFrame, poc_remapper=POC_REMAPPE
     return df_tidy
 
 
-def compute_loading(*, lgu_boundary, runoff_path=None, coc_path=None):
+def compute_loading(
+    *, lgu_boundary, runoff_path=None, coc_path=None
+) -> pandas.DataFrame:
     try:
         wide_load = compute_loading_zonal_stats(
             lgu_boundary=lgu_boundary, runoff_path=runoff_path, coc_path=coc_path
         )
-        if len(wide_load) > 0:
-            tidy_load = wide_load_to_tidy_load(wide_load)
-            return tidy_load
-        return
+        tidy_load = wide_load_to_tidy_load(wide_load)
+        return tidy_load
     except Exception:
         logger.error("Could not create loading zonal stats from ee.")
         raise

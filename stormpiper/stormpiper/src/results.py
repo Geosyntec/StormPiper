@@ -120,14 +120,14 @@ def calculate_src_ctrl_percent_reduction(
     )
 
     df2 = []
-    for order in df1["order"].unique():
+    orders = sorted(df1["order"].unique())
+    for i, order in enumerate(orders):
 
         _df = df1.query("order == @order")
 
         col = "value"
-        if order > 0:
-
-            prev_order = order - 1
+        if i > 0:
+            prev_order = orders[i - 1]
             col = "value_remaining"
             columns = ["node_id", "epoch", "variable"]
 
@@ -135,7 +135,9 @@ def calculate_src_ctrl_percent_reduction(
                 df2[prev_order].reindex(columns=columns + [col]), on=columns, how="left"
             )
 
-        _df = _df.assign(value_remaining_prev=lambda df: df[col]).assign(
+        _df = _df.assign(
+            value_remaining_prev=lambda df: df[col].fillna(df["value"])
+        ).assign(
             value_remaining=lambda df: df["value_remaining_prev"]
             * (1 - (df["percent_reduction"] / 100))
         )

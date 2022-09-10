@@ -162,6 +162,15 @@ def delete_and_refresh_downstream_src_ctrl_tables(
     )
 
 
+@celery_app.task(acks_late=True, track_started=True)
+def delete_and_refresh_all_results_tables(
+    continue_chain=True,
+):  # pragma: no cover
+    return run_in_chain(
+        tasks.delete_and_refresh_all_results_tables, continue_chain=continue_chain
+    )
+
+
 class Workflows:
     """All workflows must be chords"""
 
@@ -206,18 +215,6 @@ class Workflows:
         | check_results.s(msg="Refresh LGU Boundary then Recompute LGU Load with EE."),
     )
 
-    __chain_refresh_results = chain(
-        delete_and_refresh_upstream_src_ctrl_tables.s(),
-        delete_and_refresh_graph_edge_table.s(),
-        delete_and_refresh_result_table.s(),
-        delete_and_refresh_downstream_src_ctrl_tables.s(),
-        check_results.s(msg="update graph and resolve results"),
-    )
-
-    refresh_results = group(
-        __chain_refresh_results,
-    ) | check_results.s(can_raise=True, msg="update results")
-
     # refresh_all sequence:
     _group1 = delete_and_refresh_tacoma_gis_tables
 
@@ -228,7 +225,7 @@ class Workflows:
     ) | check_results.s(can_raise=True, msg="update tmnt and refresh LGU tables")
 
     ## group 3 are dependent on both group 1 & 2
-    _group3 = group(refresh_results) | check_results.s(
+    _group3 = group(delete_and_refresh_all_results_tables.s()) | check_results.s(
         can_raise=True, msg="update results"
     )
 

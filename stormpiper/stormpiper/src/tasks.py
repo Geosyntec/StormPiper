@@ -83,10 +83,6 @@ def delete_and_refresh_lgu_load_table(*, engine=engine):
     logger.info("Recomputing LGU Loading with Earth Engine")
     df = loading.compute_loading_db(engine=engine)
 
-    if df is None:
-        logger.error("TASK FAILED: delete_and_refresh_lgu_load_table.")
-        return
-
     logger.info("deleting and replacing lgu_load table")
     delete_and_replace_table(df=df, table_name="lgu_load", engine=engine, index=False)
     logger.info("TASK COMPLETE: replaced lgu_load table.")
@@ -219,3 +215,10 @@ def delete_and_refresh_downstream_src_ctrl_tables(*, engine=engine):
     """
     _delete_and_refresh_load_to_ds_src_ctrl_table(engine=engine)
     _delete_and_refresh_source_controls_downstream_load_reduction(engine=engine)
+
+
+def delete_and_refresh_all_results_tables(*, engine=engine):
+    delete_and_refresh_upstream_src_ctrl_tables(engine=engine)
+    delete_and_refresh_graph_edge_table(engine=engine)
+    delete_and_refresh_result_table(engine=engine)
+    delete_and_refresh_downstream_src_ctrl_tables(engine=engine)
