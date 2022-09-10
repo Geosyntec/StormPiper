@@ -1,4 +1,5 @@
 from enum import Enum
+from inspect import getmembers, isfunction
 from typing import Any, Dict
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -111,3 +112,20 @@ async def us_loading() -> None:
 async def solve_wq() -> None:
 
     tasks.delete_and_refresh_result_table()
+
+
+_tasks = sorted([k for k, _ in getmembers(tasks, isfunction)])
+ForegroundTasks = StrEnum("ForegroundTasks", {k: k for k in _tasks})
+
+
+@rpc_router.get("/run_foreground/{taskname}", response_class=JSONResponse)
+async def run_workflow(
+    taskname: ForegroundTasks,  # type: ignore
+) -> None:
+
+    t = getattr(tasks, taskname, None)
+
+    if t is None:
+        raise HTTPException(status_code=404, detail=f"not found: {taskname}")
+
+    _ = t()
