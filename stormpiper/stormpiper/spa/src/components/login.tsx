@@ -48,7 +48,7 @@ export default function Login(){
     async function _handleSubmit(data:any,e:any){
       console.log("Event: ",e)
         const formData = new FormData(e.target);
-        const response = await fetch('/login', {
+        const response = await fetch('/auth/jwt-cookie/login', {
             credentials: "same-origin",
             method: "POST",
             body: formData,
@@ -76,6 +76,9 @@ export default function Login(){
             <Typography className="login-sub-header" variant="subtitle2"> Login or <a href="javascript:;" onClick={()=>navigate('/app/register')}>Register</a> to get Started</Typography>
             <form onSubmit={handleSubmit(_handleSubmit)}>
               {_renderFormFields()}
+              {/* <div className="reset-container">
+                <a className="form-label" href="javascript:;" onClick={()=>navigate('/app/reset')}>Forgot your password?</a>
+              </div> */}
               <div className="button-bar">
                 <input className="submit-btn" type="submit" />
               </div>

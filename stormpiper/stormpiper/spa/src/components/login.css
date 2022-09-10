@@ -61,11 +61,11 @@ input .login{
 }
 
 .button-bar{
-    padding: 0px 20px;
+    padding: 10px 20px;
 }
 
 .login-container{
-    background-image:url(../assets/img/TacomaLogoSM.jpeg);
+    /* background-image:url(../assets/img/TacomaLogoSM256.jpeg); */
     width:100%;
     height:100%;
 }

@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import Login from "./components/login"
+import Reset from "./components/reset"
 import Register from "./components/register"
 // import reportWebVitals from './reportWebVitals';
 
@@ -13,6 +14,7 @@ ReactDOM.render(
       <Routes>
         <Route path="/app/" element={<App/>}></Route>
         <Route path="app/login/" element={<Login/>}></Route>
+        <Route path="app/reset/" element={<Reset/>}></Route>
         <Route path="app/register/" element={<Register/>}></Route>
         <Route path="/app/map/" element={<App/>}>
           <Route path="tmnt" element={<App/>}>
