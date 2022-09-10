@@ -46,9 +46,6 @@ def build_edge_list(lgu_boundary, tmnt_v):
             ]
         )[cols]
         .assign(target=lambda df: df["target"].fillna("PUGET_SOUND"))
-        .reset_index(drop=True)
-        .assign(id=lambda df: df.index + 1)
-        .set_index("id")
     )
 
     return edge_list
