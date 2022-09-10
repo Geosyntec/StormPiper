@@ -1,5 +1,7 @@
 import logging
 
+import pandas
+
 from stormpiper.connections import arcgis
 from stormpiper.core.config import settings
 from stormpiper.database.connection import engine
@@ -9,7 +11,7 @@ from stormpiper.database.utils import (
 )
 
 from . import graph, loading, met, results, solve_structural_wq
-from .tmnt import default_attrs, spatial
+from .tmnt import default_attrs, default_tmnt_source_controls, spatial
 
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
@@ -260,3 +262,18 @@ def delete_and_refresh_all_results_tables(*, engine=engine):
     delete_and_refresh_graph_edge_table(engine=engine)
     delete_and_refresh_result_table(engine=engine)
     delete_and_refresh_downstream_src_ctrl_tables(engine=engine)
+
+
+def build_default_tmnt_source_controls(*, engine=engine):
+    subbasin = pandas.read_sql("subbasin", con=engine).subbasin.tolist()
+    df = (
+        default_tmnt_source_controls.dummy_tmnt_source_control(subbasin)
+        .reset_index(drop=True)
+        .assign(id=lambda df: df.index + 1)
+    )
+
+    logger.info("deleting and replacing tmnt_source_control table")
+    delete_and_replace_table(df=df, table_name="tmnt_source_control", engine=engine)
+    logger.info("TASK COMPLETE: replaced tmnt_source_control table.")
+
+    return df
