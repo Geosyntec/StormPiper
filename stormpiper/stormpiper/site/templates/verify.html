@@ -47,7 +47,8 @@
   .db-notes {
     /* grid-column: 2; */
     padding: 30px;
-    width: 100%;
+    width: 60%;
+    min-width: 400px;
   }
   .title {
     margin-bottom: 1rem;
@@ -61,6 +62,9 @@
 
   <div class="db-notes">
     <div id="error_msgs"></div>
+    <div class="center">
+      Return to <a href="{{ request.url_for('home') }}">Tacoma Watersheds</a>
+    </div>
   </div>
 </div>
 
@@ -101,7 +105,7 @@
       console.log("redirect on success");
       let rsp_data = await response.json();
       err_div.innerHTML = `
-              <div>
+              <div class="alert alert-success">
                 Email Verification Succeeded. Welcome ${rsp_data.first_name}!
               </div>
               `;
