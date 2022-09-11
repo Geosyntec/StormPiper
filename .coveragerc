@@ -2,14 +2,15 @@
 [run]
 source = stormpiper
 branch = True
-omit = 
+omit =
     **/_no_git*
 
 [report]
 include = stormpiper/*.py
 ignore_errors = True
 skip_empty = True
-omit = 
+omit =
     *pre-start*.py
     *bg_*
     **/_no_git*
+    **/test/data
