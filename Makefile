@@ -75,30 +75,29 @@ test: ## run tests quickly with the default Python
 lint: clean
 	bash scripts/lint.sh
 
-test-ci: stack-ci ## run tests quickly with the default Python
-	docker compose -f docker-stack.yml up stormpiper-test postgis -d
-	docker compose -f docker-stack.yml exec stormpiper-test bash prestart-tests.sh  
+init-test:
+	docker compose -f docker-stack.yml up -d stormpiper-test postgis
+	docker compose -f docker-stack.yml exec stormpiper-test bash prestart-tests.sh
+
+test-ci: stack-ci init-test ## run tests quickly with the default Python
 	docker compose -f docker-stack.yml exec stormpiper-test pytest -xsv  -m "not integration"
 
-coverage-ci: stack-ci ## run tests on CI with the default Python
-	docker compose -f docker-stack.yml up stormpiper-test postgis -d
-	docker compose -f docker-stack.yml exec stormpiper-test bash prestart-tests.sh  
+coverage-ci: stack-ci init-test ## run tests on CI with the default Python
 	docker compose -f docker-stack.yml exec stormpiper-test coverage run -m pytest -xv -m "not integration"
 
-coverage: clean restart ## check code coverage quickly with the default Python
-	docker compose -f docker-stack.yml up -d stormpiper-test postgis
+coverage: clean restart init-test ## check code coverage quickly with the default Python
 	docker compose -f docker-stack.yml exec stormpiper-test coverage run -m pytest -x
 	docker compose -f docker-stack.yml exec stormpiper-test coverage report -mi
 
 typecheck: clean ## run static type checker
 	mypy stormpiper/stormpiper
 
-develop: clean stack build ## build the development environment 
+develop: clean stack build ## build the development environment
 
 up: stack ## bring up the containers and run startup commands
-	docker compose -f docker-stack.yml up 
-	
-up-d: stack ## bring up the containers in '-d' mode 
+	docker compose -f docker-stack.yml up
+
+up-d: stack ## bring up the containers in '-d' mode
 	docker compose -f docker-stack.yml up -d
 
 down: ## bring down the containers
