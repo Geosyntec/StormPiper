@@ -6,6 +6,7 @@ import LayerSelector from "./components/layerSelector";
 import ProminentAppBar from "./components/topMenu";
 import BMPStatWindow from "./components/bmpStatWindow";
 import AuthProvider from "./components/authProvider"
+import { Card, CardContent } from "@material-ui/core";
 import "./App.css";
 
 const DeckGLMap = React.lazy(()=>import("./components/map"))
@@ -129,10 +130,10 @@ function App() {
             ></DeckGLMap>
           </Suspense>
         </div>
-        <div
+        <Card
           id={lyrSelectDisplayState ? "control-panel" : "control-panel-hidden"}
         >
-          <div style={{ textAlign: "left", padding: "5px 0 5px" }}>
+          <CardContent className={lyrSelectDisplayState ? "":"zero-padding"}>
             <LayerSelector
               layerDict={layerDict}
               activeLayers={activeLayers}
@@ -140,17 +141,19 @@ function App() {
               displayStatus={lyrSelectDisplayState}
               displayController={_togglelyrSelectDisplayState}
             ></LayerSelector>
-          </div>
-        </div>
-        <div
+          </CardContent>
+        </Card>
+        <Card
           id={prjStatDisplayState ? "prj-stat-panel" : "prj-stat-panel-hidden"}
         >
+          <CardContent className={prjStatDisplayState ? "" : "zero-padding"}>
           <BMPStatWindow
             displayStatus={prjStatDisplayState}
             displayController={_toggleprjStatDisplayState}
             feature={focusFeature}
           ></BMPStatWindow>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </AuthProvider>
   );

@@ -1,7 +1,8 @@
 .form-body{
     display:grid;
     grid-template-columns: repeat(2,1fr);
-    gap:1em;
+    gap:0em;
+    padding: 0px 10px;
 }
 
 .form-label{
@@ -22,6 +23,7 @@
 
 .form-row{
     text-align:start;
+    padding:5px;
 }
 
 .result-header, .err-list-header{
@@ -32,4 +34,8 @@
 ul {
     margin-top:none;
     padding-right:1em;
+}
+
+.simple-checkbox{
+    padding:10px;
 }

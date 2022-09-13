@@ -1,6 +1,6 @@
-.App {
+/* .App {
   text-align: center;
-}
+} */
 
 .App-logo {
   height: 40vmin;
@@ -59,8 +59,8 @@
   overflow-y: auto;
   height: 75%;
   width: 25%;
-  background: rgba(255, 255, 255, 1);
-  border-radius: 2px;
+  /* background: rgba(255, 255, 255, 1);
+  border-radius: 2px; */
 
 }
 
@@ -73,14 +73,14 @@
   overflow-y: hidden;
   height:5%;
   width: 3%;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 1);
   border-radius: 2px;
 
 }
 
-#control-panel > div{
+/* #control-panel > div{
 	padding: 0 20px 20px 20px;
-}
+} */
 
 .layer-controls {
 	border: groove 2px #fff;
@@ -101,8 +101,6 @@
 }
 
 #prj-stat-panel {
-  /* transition-property: height,width,left;
-  transition-duration: 500ms; */
 	position: fixed;
 	z-index: 9;
 	top: 10%;
@@ -111,8 +109,9 @@
   overflow-y: auto;
   height: auto;
   width: 40%;
-  background: rgba(255, 255, 255, 1);
-  border-radius: 2px;
+  text-align:center;
+  /* background: rgba(255, 255, 255, 1); */
+  /* border-radius: 2px; */
 
 }
 
@@ -130,4 +129,21 @@
   width: 3%;
   background: rgba(255, 255, 255, 1);
   border-radius: 2px;
+}
+
+.zero-padding{
+  padding:0px !important;
+}
+
+.flex-row{
+  display:flex;
+  justify-content: center;
+  flex-wrap:wrap;
+}
+.flex-column{
+  display:flex;
+  flex-direction:column;
+  align-content: center;
+  flex-wrap:wrap;
+  align-items:center;
 }

@@ -7,7 +7,7 @@
 
 .panel-header{
     display:flex;
-    
+
     justify-content: center;
     background:rgb(137, 189, 238);
     margin:0px;
@@ -21,12 +21,14 @@
     /* display:flex; */
     position:absolute;
     justify-content: end;
-    right:10%;
+    right:12%;
+    top:16px;
     /* min-width: 25%; */
 }
 
 .stats-table{
     /* display:flex; */
+    text-align:center;
     margin:5px;
     border:2px solid black;
 }

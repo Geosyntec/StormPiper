@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form";
 import "./register.css"
 import { Typography } from "@material-ui/core";
+import { TextField,Button } from '@material-ui/core'
+
 
 
 export default function Register(){
@@ -12,12 +14,12 @@ export default function Register(){
     const [success,setSuccess] = useState(false)
     const [displayVerify,setDisplayVerify] = useState(false)
 
-    const fields:{name:string,label:string,type:string,required?:string,defaultValue:string|number, minLength?:{value:number,message:string},maxLength?:{value:number,message:string},validate?:(val:any)=>boolean|string}[] = [
+    const fields:{name:string,label:string,type:string,required?:boolean,defaultValue:string|number, minLength?:{value:number,message:string},maxLength?:{value:number,message:string},validate?:(val:any)=>boolean|string}[] = [
       {
         name:'email',
         label:'Email',
         type:'email',
-        required:'Please enter an email for your account',
+        required:true,
         defaultValue:''
       },
       {
@@ -36,7 +38,7 @@ export default function Register(){
         name:'password',
         label:'Password',
         type:'password',
-        required:'Enter a password',
+        required:true,
         defaultValue:'',
         minLength:{
             value:8,
@@ -47,27 +49,26 @@ export default function Register(){
         name:'confirm_password',
         label:'Confirm Password',
         type:'password',
-        required:'Confirm your password',
+        required:true,
         defaultValue:'',
         validate:val=>val===getValues('password')||"Passwords don't match"
       },
     ]
 
     function _renderFormFields(){
-        let fieldDiv = Object.values(fields).map((formField:{name:string,label:string,type:string,required?:string,defaultValue:string|number})=>{
+        let fieldDiv = Object.values(fields).map((formField:{name:string,label:string,type:string,required?:boolean,defaultValue:string|number})=>{
           return (
-                <div className="login-form-row">
-                    {formField.required
-                      ?<label className="form-label required" htmlFor={formField.name}>{formField.label}</label>
-                      :<label className="form-label" htmlFor={formField.name}>{formField.label}</label>
+                <div className="login-form-row flex-column">
+                    {
+                        <TextField  {...register(formField.name,{...formField})} label = {formField.label} type = {formField.type} required={formField.required}/>
                     }
-                    <input className="form-input" {...register(formField.name,{...formField})} type={formField.type}/>
+                    {/* <input className="form-input" {...register(formField.name,{...formField})} type={formField.type}/> */}
                     {errors[formField.name] && <p className="form-label error-msg">{errors[formField.name]?.message}</p>}
                 </div>
             )
         })
         return fieldDiv;
-      
+
   }
 
     async function _handleSubmit(data:any,e:any){
@@ -98,16 +99,19 @@ export default function Register(){
 
 
 
-    
+
     return (
       <div className="login-container">
         <div className="login-form">
-          <div className="login-form-body">
+          <div className="login-form-body flex-column">
             <Typography className="login-header" variant="subtitle1"> Enter Your New Account Information</Typography>
-            <form onSubmit={handleSubmit(_handleSubmit)}>
+            <form className="flex-column" onSubmit={handleSubmit(_handleSubmit)}>
               {_renderFormFields()}
-              <div className="button-bar">
+              {/* <div className="button-bar">
                 <input className="submit-btn" type="submit" />
+              </div> */}
+              <div className="login-button-bar">
+                <Button variant="contained" type = "submit">Submit</Button>
               </div>
               {
                 error && <p className="err-msg">User already exists</p>

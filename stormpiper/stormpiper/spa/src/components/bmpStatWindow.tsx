@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { Typography } from "@material-ui/core";
+import { makeStyles } from '@material-ui/core/styles';
+import { Typography,Paper } from "@material-ui/core";
 import { BMPForm } from "./bmpForm";
 import { ListAltRounded, LocalDiningOutlined } from "@material-ui/icons";
 import "./bmpStatWindow.css";
@@ -60,6 +61,15 @@ type specState={
   facilitySpec:any
 }
 
+const useStyles = makeStyles((theme) => ({
+  formHeader:{
+    background:theme.palette.primary.light,
+    margin:"0px",
+    justifyContent:"center",
+    display:"flex"
+  }
+}));
+
 
 
 
@@ -69,6 +79,8 @@ function BMPStatWindow(props:statWindowProps) {
   baseURL.pop()
   console.log("Base URL popped: ",baseURL)
   const revisedURL = baseURL.length > 1 ? baseURL.join("/") : "/";
+
+  const classes = useStyles()
 
 
 
@@ -102,8 +114,8 @@ function BMPStatWindow(props:statWindowProps) {
           context:resArray[1].api_recognize.treatment_facility.facility_type
         })
       })
-    
-    
+
+
   },[])
 
   useEffect(()=>{
@@ -164,10 +176,10 @@ function BMPStatWindow(props:statWindowProps) {
       }
     })
   }
-  
+
   function _renderStats() {
     if(!props.feature){
-      return <div>Select a BMP Feature</div>
+      return <Paper>Select a BMP Feature</Paper>
     }
     if(state.error){
       return <div>Something went wrong on our end.</div>
@@ -192,7 +204,7 @@ function BMPStatWindow(props:statWindowProps) {
       );
     }
 
-    
+
   }
 
   function _renderBMPForm(facilityType:string) {
@@ -203,7 +215,7 @@ function BMPStatWindow(props:statWindowProps) {
     }else{
       let fType:string = facilityType
       let fTypeRoot = fType.replace("_simple","")
-      
+
       console.log("Attempting to render form for ",facilityType)
 
       let simpleBaseType
@@ -222,7 +234,7 @@ function BMPStatWindow(props:statWindowProps) {
       );
     }
 
-    
+
   }
 
   function _renderHeaderList(){
@@ -238,10 +250,9 @@ function BMPStatWindow(props:statWindowProps) {
     return headerList
   }
 
-  return (
-    props.displayStatus
-      ?<div>
-      <div className="panel-header">
+  return props.displayStatus ? (
+    <div>
+      <div className={classes.formHeader}>
         <div className="title-container">
           <h4 id="panel-title">BMP Stat Table</h4>
         </div>
@@ -263,8 +274,9 @@ function BMPStatWindow(props:statWindowProps) {
           : null}
       </div>
     </div>
-    :<div id="bmp-panel-icon">
-      <ListAltRounded onClick={props.displayController}/>
+  ) : (
+    <div id="bmp-panel-icon">
+      <ListAltRounded onClick={props.displayController} />
     </div>
   );
 }
