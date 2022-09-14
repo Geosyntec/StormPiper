@@ -30,7 +30,7 @@
     /* display:flex; */
     text-align:center;
     margin:5px;
-    border:2px solid black;
+    /* border:2px solid black; */
 }
 
 .stats-table p{
@@ -54,7 +54,7 @@
 .table-header{
     display:flex;
     flex-flow: row wrap;
-    border-bottom: 1px solid black;
+    /* border-bottom: 1px solid black; */
     justify-content: space-around;
     margin-bottom:20px;
 }

@@ -62,11 +62,22 @@ type specState={
 }
 
 const useStyles = makeStyles((theme) => ({
+  panelTitle:{
+    color:"white",
+  },
   formHeader:{
-    background:theme.palette.primary.light,
+    background:theme.palette.primary.main,
     margin:"0px",
     justifyContent:"center",
-    display:"flex"
+    display:"flex",
+    borderRadius:"5px"
+  },
+  activeHeader:{
+    fontWeight:"bold",
+    padding:"10px 5px",
+    margin:"0",
+    background:theme.palette.grey[400],
+    borderRadius:"5px"
   }
 }));
 
@@ -153,7 +164,7 @@ function BMPStatWindow(props:statWindowProps) {
 
   function ActiveHeader(props:{label:string,clickHandler:Function}){
     return(
-    <p key={props.label} onClick={()=>{props.clickHandler(props.label)}} className={props.label===state.header?"active":undefined}>{props.label}</p>
+    <p key={props.label} onClick={()=>{props.clickHandler(props.label)}} className={props.label===state.header?classes.activeHeader:undefined}>{props.label}</p>
     )
   }
 
@@ -254,16 +265,13 @@ function BMPStatWindow(props:statWindowProps) {
     <div>
       <div className={classes.formHeader}>
         <div className="title-container">
-          <h4 id="panel-title">BMP Stat Table</h4>
+          <h4 className={classes.panelTitle}>{props.feature} Facility Details</h4>
         </div>
         <div className="cancel-container">
           <h4 id="cancel-icon" onClick={props.displayController}>
             &#10005;
           </h4>
         </div>
-      </div>
-      <div>
-        <h5>{props.feature}</h5>
       </div>
       <div className="stats-table">
         <div className="table-header">{_renderHeaderList()}</div>
