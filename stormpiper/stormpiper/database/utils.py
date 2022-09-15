@@ -18,7 +18,7 @@ from ..core.utils import datetime_to_isoformat
 from .changelog import sync_log
 from .connection import get_session
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
 
 
@@ -66,12 +66,33 @@ def scalars_to_gdf_to_geojson(scalars):
     return content
 
 
+def sequence_exists(*, sequence_name: str, connectable, schema: str = "public") -> bool:
+    q = connectable.execute(
+        """
+SELECT COUNT(*)
+FROM information_schema.sequences
+WHERE sequence_schema=%s AND sequence_name=%s
+""",
+        (schema, sequence_name),
+    ).fetchone()
+
+    return q.count > 0
+
+
 def reset_sequence(*, table_name, connectable):
 
+    sequence_name = f"{table_name}_id_seq"
+
     try:
-        connectable.execute(
-            f"select setval(%s, max(id)) from {table_name}", (f"{table_name}_id_seq")
+        seq_exists = sequence_exists(
+            sequence_name=sequence_name,
+            connectable=connectable,
         )
+        if seq_exists:
+            logger.info(f"resetting sequence: {sequence_name}")
+            connectable.execute(
+                f"select setval(%s, max(id)) from {table_name}", (sequence_name)
+            )
     except Exception as e:
         logger.exception(e)
 
