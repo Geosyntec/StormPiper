@@ -1,8 +1,16 @@
+import logging
 from typing import Union
 
 import geopandas
 import numpy
 import pandas
+
+from stormpiper.core.config import settings
+from stormpiper.database.changelog import sync_log
+from stormpiper.database.connection import get_session
+
+logging.basicConfig(level=settings.LOGLEVEL)
+logger = logging.getLogger(__name__)
 
 
 def set_default_tmnt_attributes(
@@ -122,5 +130,11 @@ def update_tmnt_attributes(engine, overwrite=False):
             df.to_sql(
                 "tmnt_facility_attributes", con=conn, if_exists="append", index=False
             )
+
+            Session = get_session(engine=engine)
+            # same transaction scope to update the change log
+            with Session.begin() as session:  # type: ignore
+                logger.info("recording table change...")
+                sync_log(tablename="tmnt_facility_attributes", db=session)
 
         return df
