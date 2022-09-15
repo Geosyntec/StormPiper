@@ -8,7 +8,7 @@ from stormpiper.apps.supersafe.users import check_user
 from stormpiper.database.connection import get_async_session
 from stormpiper.database.schemas import results
 from stormpiper.models.result_view import ResultView
-from stormpiper.src.results import is_dirty
+from stormpiper.stormpiper.database.dependencies import async_is_dirty
 
 router = APIRouter(dependencies=[Depends(check_user)])
 
@@ -29,9 +29,16 @@ async def get_all_results(
 @router.get("/is_dirty", name="results:get_result_is_dirty")
 async def get_result_is_dirty(db: AsyncSession = Depends(get_async_session)):
 
-    return await is_dirty(
-        db=db, tablename="tmnt_source_control_downstream_load_reduced", dependents=None
+    response = {"is_dirty": True, "last_updated": "0"}
+
+    is_dirty, last_updated = await async_is_dirty(
+        tablename="tmnt_source_control_downstream_load_reduced", db=db
     )
+
+    response["is_dirty"] = is_dirty
+    response["last_updated"] = last_updated
+
+    return response
 
 
 @router.get("/{node_id}", response_model=List[ResultView], name="results:get_result")

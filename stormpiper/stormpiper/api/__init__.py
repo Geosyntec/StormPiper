@@ -6,6 +6,7 @@ from stormpiper.api.endpoints import (
     results,
     spatial,
     subbasin,
+    table,
     tileserver,
     tmnt_attr,
     tmnt_delineation,
@@ -17,6 +18,7 @@ from stormpiper.api.endpoints import (
 api_router = APIRouter(prefix="/api/rest")
 api_router.include_router(spatial.router, prefix="/spatial", tags=["spatial"])
 api_router.include_router(subbasin.router, prefix="/subbasin", tags=["subbasin"])
+api_router.include_router(table.router, prefix="/table", tags=["table"])
 api_router.include_router(tileserver.router, prefix="/tileserver", tags=["spatial"])
 api_router.include_router(
     tmnt_facility.router, prefix="/tmnt_facility", tags=["tmnt_facility"]
