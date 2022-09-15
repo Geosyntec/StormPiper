@@ -1,11 +1,15 @@
-from fastapi import APIRouter, Depends, status
+from typing import List, Optional
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.exceptions import HTTPException
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.apps import supersafe as ss
 from stormpiper.apps.supersafe.users import check_user
 from stormpiper.database import crud
 from stormpiper.database.connection import get_async_session
+from stormpiper.database.schemas import tmnt
 from stormpiper.models.tmnt_source_control import (
     TMNTSourceControl,
     TMNTSourceControlCreate,
@@ -113,3 +117,22 @@ async def delete_tmnt_source_control(
         )
 
     return attr
+
+
+@router.get(
+    "/",
+    response_model=List[TMNTSourceControl],
+    name="tmnt_source_control:get_all_tmnt_source_control",
+)
+async def get_all_tmnt_source_control(
+    limit: Optional[int] = Query(int(1e6)),
+    offset: int = Query(0),
+    db: AsyncSession = Depends(get_async_session),
+):
+
+    result = await db.execute(
+        select(tmnt.TMNTSourceControl).offset(offset).limit(limit)
+    )
+    scalars = result.scalars().all()
+
+    return scalars
