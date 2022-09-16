@@ -92,3 +92,23 @@ def welcome_verify(*, email, token, name=None, verify_url="", **kwargs):
     }
 
     return template
+
+
+def error_message(*, email_dict_list, content, attachments=None, **kwargs):
+
+    template = {
+        "Messages": [
+            {
+                "From": {
+                    "Email": "noreply@tacomawatersheds.com",
+                    "Name": "Tacoma Watersheds Administrators",
+                },
+                "To": email_dict_list,
+                "Subject": f"Error from Tacoma Watersheds",
+                "TextPart": content,
+                "Attachments": attachments or [],
+            }
+        ]
+    }
+
+    return template

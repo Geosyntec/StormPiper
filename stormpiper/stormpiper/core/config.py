@@ -69,6 +69,17 @@ class Settings(BaseSettings):
     EMAIL_SEND_URL: str = "http://example.com"
     EMAIL_API_KEY: str = ""
     EMAIL_API_SECRET: str = ""
+    MAINTAINER_EMAIL_LIST: Union[str, List[str]] = ""
+
+    @validator("MAINTAINER_EMAIL_LIST", pre=True)  # pragma: no cover
+    def assemble_maintainer_emails(
+        cls, v: Union[str, List[str]]
+    ) -> Union[List[str], str]:
+        if isinstance(v, str) and not v.startswith("["):
+            return [i.strip() for i in v.split(",")]
+        elif isinstance(v, (list, str)):
+            return v
+        raise ValueError(v)
 
     # logger
     LOGLEVEL: str = "INFO"

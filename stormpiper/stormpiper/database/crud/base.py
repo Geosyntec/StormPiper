@@ -36,7 +36,6 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
         return result.scalars().first()
 
     def sync_get(self, db: Session, id: Any) -> Optional[SchemaType]:
-        print(f"called getter for {id}")
         return db.query(self.base).filter(getattr(self.base, self.id) == id).first()
 
     def get_multi(

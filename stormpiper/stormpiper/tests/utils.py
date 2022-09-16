@@ -71,34 +71,48 @@ def seed_users(engine):
         session.add_all(batch)
 
 
-def seed_tacoma_base_tables(engine):
-    jsons = _base.datadir.glob("*.json")
+def load_json(filepath, engine):
+    df = pandas.read_json(filepath, orient="table")
+    table_name = filepath.stem
 
-    for f in jsons:
-        df = pandas.read_json(f, orient="table")
-        table_name = f.stem
-
-        utils.delete_and_replace_table(
-            df=df,  # type: ignore
-            table_name=table_name,
-            engine=engine,
-            index=False,
-        )
+    utils.delete_and_replace_table(
+        df=df,  # type: ignore
+        table_name=table_name,
+        engine=engine,
+        index=False,
+    )
 
 
-def seed_tacoma_gis_tables(engine):
-    jsons = _base.datadir.glob("*.geojson")
+def load_geojson(filepath, engine):
+    gdf = geopandas.read_file(filepath).to_crs(settings.TACOMA_EPSG)
+    table_name = filepath.stem
 
-    for f in jsons:
-        gdf = geopandas.read_file(f).to_crs(settings.TACOMA_EPSG)
-        table_name = f.stem
+    utils.delete_and_replace_postgis_table(
+        gdf=gdf,
+        table_name=table_name,
+        engine=engine,
+        index=False,
+    )
 
-        utils.delete_and_replace_postgis_table(
-            gdf=gdf,
-            table_name=table_name,
-            engine=engine,
-            index=False,
-        )
+
+def seed_tacoma_table_dependencies(engine):
+    jsons = list(_base.datadir.glob("*json"))
+    ordered = [
+        "tmnt_facility",
+        "tmnt_facility_delineation",
+        "subbasin",
+        "tmnt_source_control",
+        "lgu_boundary",
+        "lgu_load",
+    ]
+
+    ordered_jsons = [f for substr in ordered for f in jsons if substr == f.stem]
+
+    for f in ordered_jsons:
+        if "geojson" in str(f):
+            load_geojson(f, engine)
+        else:
+            load_json(f, engine)
 
 
 def seed_tacoma_derived_tables(engine):
@@ -112,6 +126,5 @@ def seed_db(engine):
 
     clear_db(engine)
     seed_users(engine)
-    seed_tacoma_base_tables(engine)
-    seed_tacoma_gis_tables(engine)
+    seed_tacoma_table_dependencies(engine)
     seed_tacoma_derived_tables(engine)

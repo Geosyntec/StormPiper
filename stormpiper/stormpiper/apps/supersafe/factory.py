@@ -13,12 +13,12 @@ def create_router(**kwargs):
     router = APIRouter(**kwargs)
 
     router.include_router(
-        fastapi_users.get_auth_router(bearer_backend, requires_verification=True),
+        fastapi_users.get_auth_router(bearer_backend),
         prefix="/auth/jwt-bearer",
         tags=["auth"],
     )
     router.include_router(
-        fastapi_users.get_auth_router(cookie_backend, requires_verification=True),
+        fastapi_users.get_auth_router(cookie_backend),
         prefix="/auth/jwt-cookie",
         tags=["auth"],
     )
