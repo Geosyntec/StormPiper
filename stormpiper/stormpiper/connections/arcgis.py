@@ -1,12 +1,12 @@
 import asyncio
 import base64
 import logging
+
 import geopandas
 import requests
 
 from stormpiper.core.config import external_resources, settings
 from stormpiper.email_helper.email import send_email_to_user
-
 
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
