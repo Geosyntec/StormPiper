@@ -5,6 +5,8 @@ import aiohttp
 from brotli_asgi import BrotliMiddleware
 from fastapi import Depends, FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.openapi.docs import get_swagger_ui_html
+
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -12,6 +14,7 @@ from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from stormpiper.api import api_router, rpc_router
 from stormpiper.apps import supersafe as ss
+from stormpiper.apps.supersafe.users import check_admin
 from stormpiper.core.config import settings
 from stormpiper.earth_engine import ee_continuous_login
 from stormpiper.site import site_router
@@ -36,6 +39,8 @@ def create_app(
     app = FastAPI(
         title="StormPiper",
         version=_settings.VERSION,
+        docs_url=None,
+        redoc_url=None,
         **kwargs,
     )
     setattr(app, "_settings", _settings)
@@ -115,6 +120,13 @@ def create_app(
     )
 
     templates = Jinja2Templates(directory="stormpiper/spa/build")
+
+    @app.get("/docs", include_in_schema=False, dependencies=[Depends(check_admin)])
+    async def custom_swagger_ui_html():
+        return get_swagger_ui_html(
+            openapi_url=str(app.openapi_url),
+            title=app.title + " - Swagger UI",
+        )
 
     @app.get("/app")
     @app.get("/app/{fullpath:path}")
