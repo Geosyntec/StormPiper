@@ -1,9 +1,12 @@
+import asyncio
+import base64
 import logging
-
 import geopandas
 import requests
 
-from stormpiper.core.config import external_resources, settings, stormpiper_path
+from stormpiper.core.config import external_resources, settings
+from stormpiper.email_helper.email import send_email_to_user
+
 
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
@@ -34,6 +37,37 @@ def _get_tmnt_facilities(*, url=None):
 
 def facility_node_id(altid):
     return altid
+
+
+def warn_maintainers_of_duplicates(*, df, bmp_url):
+
+    duplicate_altids = df
+    b64_content = base64.b64encode(duplicate_altids.to_json().encode()).decode()
+    content = (
+        "ERROR: Duplicate altids detected."
+        + f"Resource URL: {bmp_url}"
+        + "\n\n"
+        + "\n".join(duplicate_altids["altid"].tolist())
+    )
+    attachments = [
+        {
+            "ContentType": "text/plain",
+            "Filename": "duplicate_altids.geojson",
+            "Base64Content": b64_content,
+        }
+    ]
+
+    emails = settings.MAINTAINER_EMAIL_LIST[:1]
+    email_dict_list = [{"Email": email} for email in emails]
+
+    asyncio.ensure_future(
+        send_email_to_user(
+            template="error_message",
+            email_dict_list=email_dict_list,
+            content=content,
+            attachments=attachments,
+        )
+    )
 
 
 def get_tmnt_facilities(*, bmp_url=None, codes_url=None, cols=None):
@@ -75,11 +109,16 @@ def get_tmnt_facilities(*, bmp_url=None, codes_url=None, cols=None):
         .rename(columns=lambda c: c.lower())
         .assign(node_id=lambda df: df["altid"].apply(facility_node_id))
         .replace({"None": None, "NA": None})
-        .drop_duplicates()
         # ref: database.schemas.tmnt
     )
 
-    return gdf
+    duplicate_altids = gdf.loc[gdf["altid"].duplicated()]
+
+    if len(duplicate_altids) > 0:
+        # send email to maintainers
+        warn_maintainers_of_duplicates(df=duplicate_altids, bmp_url=bmp_url)
+
+    return gdf.drop_duplicates()
 
 
 def delineation_node_id(relid, altid):
