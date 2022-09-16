@@ -14,8 +14,8 @@ from fastapi_users.db import SQLAlchemyUserDatabase
 
 from stormpiper.core import utils
 from stormpiper.core.config import settings
+from stormpiper.email_helper import email
 
-from . import email
 from .db import User, get_async_session, get_user_db
 from .models import Role, UserCreate, UserRead, UserUpdate
 
