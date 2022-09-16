@@ -89,8 +89,8 @@ def check_if_deps_are_sorted(*, g: nx.DiGraph, tablename: str, changelog: list):
         preds=preds, tablename=tablename, changelog=changelog
     )
     if not table_is_sorted:
-        print(f"table {tablename} not sorted. predecessors: {preds}")
-        print(changelog)
+        logger.error(f"table {tablename} not sorted. predecessors: {preds}")
+        logger.info(f"changelog: {changelog}")
         return False
 
     # if sorted, check that the deps of each dep are sorted in time (recurse)
