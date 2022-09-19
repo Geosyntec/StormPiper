@@ -6,16 +6,22 @@ import LayerSelector from "./components/layerSelector";
 import ProminentAppBar from "./components/topMenu";
 import BMPStatWindow from "./components/bmpStatWindow";
 import AuthProvider from "./components/authProvider"
-import { Card, CardContent } from "@material-ui/core";
+import { Card, CardContent, Typography } from "@material-ui/core";
+import HomeRoundedIcon from "@material-ui/icons/HomeRounded"
+import InfoRoundedIcon from "@material-ui/icons/InfoRounded"
+import GridOnRoundedIcon from "@material-ui/icons/GridOnRounded"
+import ScatterPlotRoundedIcon from "@material-ui/icons/ScatterPlotRounded"
 import "./App.css";
 
 const DeckGLMap = React.lazy(()=>import("./components/map"))
+const ResultsTable = React.lazy(()=>import("./components/resultsTable"))
 
 function App() {
   const [lyrSelectDisplayState, setlyrSelectDisplayState] = useState(false); // when true, control panel is displayed
   let params = useParams();
   let navigate = useNavigate()
   const [prjStatDisplayState, setprjStatDisplayState] = useState(params?.id?true:false); // when true, project stats panel is displayed
+  const [resultsDisplayState,setResultsDisplayState] = useState(false) //when true, results table is displayed
   const [focusFeature, setFocusFeature] = useState(params?.id || null);
   const [activeLayers, setActiveLayers] = useState(() => {
     var res = {};
@@ -43,6 +49,29 @@ function App() {
     return res;
   });
 
+  const topMenuButtons={
+    home:{
+      label:"Home",
+      icon:<HomeRoundedIcon/>,
+      clickHandler:null
+    },
+    project:{
+      label:"Evaluate Project",
+      icon:<ScatterPlotRoundedIcon/>,
+      clickHandler:_toggleSetResultsDisplayState
+    },
+    watershed:{
+      label:"Evaluate Watershed",
+      icon:<GridOnRoundedIcon/>,
+      clickHandler:null
+    },
+    about:{
+      label:"About",
+      icon:<InfoRoundedIcon/>,
+      clickHandler:null
+    }
+  }
+
 
   if(focusFeature!=params?.id){
     setFocusFeature(params.id)
@@ -52,7 +81,7 @@ function App() {
   function _toggleLayer(layerName, updateFunction = setActiveLayers) {
     var currentActiveLayers = { ...activeLayers };
     currentActiveLayers[layerName] = !currentActiveLayers[layerName];
-    // console.log('Current Active Layers:',currentActiveLayers)
+    console.log('Current Active Layers:',currentActiveLayers)
     updateFunction(currentActiveLayers);
   }
 
@@ -84,6 +113,9 @@ function App() {
   function _togglelyrSelectDisplayState() {
     setlyrSelectDisplayState(!lyrSelectDisplayState);
   }
+  function _toggleSetResultsDisplayState() {
+    setResultsDisplayState(!resultsDisplayState);
+  }
   function _toggleprjStatDisplayState() {
     if(prjStatDisplayState){
       console.log('Clearing Focused Feature')
@@ -108,7 +140,7 @@ function App() {
   function _injectLayerAccessors(props){
       props.getFillColor = (d)=>{
         // console.log("checking feature: ",d)
-        return d.properties.altid===focusFeature? [52,222,235]:[160, 160, 180, 200]
+        return d.properties.altid===focusFeature? props.highlightColor||[52,222,235]:props.defaultFillColor||[160, 160, 180, 200]
       }
       props.updateTriggers = {
         getFillColor:[focusFeature||null]
@@ -119,7 +151,7 @@ function App() {
   return (
     <AuthProvider>
       <div className="App">
-        <ProminentAppBar></ProminentAppBar>
+        <ProminentAppBar buttons={topMenuButtons}></ProminentAppBar>
         <div>
           <Suspense fallback={<div>Loading Map...</div>}>
             <DeckGLMap
@@ -133,7 +165,7 @@ function App() {
         <Card
           id={lyrSelectDisplayState ? "control-panel" : "control-panel-hidden"}
         >
-          <CardContent className={lyrSelectDisplayState ? "":"zero-padding"}>
+          <CardContent className={lyrSelectDisplayState ? "" : "zero-padding"}>
             <LayerSelector
               layerDict={layerDict}
               activeLayers={activeLayers}
@@ -147,11 +179,23 @@ function App() {
           id={prjStatDisplayState ? "prj-stat-panel" : "prj-stat-panel-hidden"}
         >
           <CardContent className={prjStatDisplayState ? "" : "zero-padding"}>
-          <BMPStatWindow
-            displayStatus={prjStatDisplayState}
-            displayController={_toggleprjStatDisplayState}
-            feature={focusFeature}
-          ></BMPStatWindow>
+            <BMPStatWindow
+              displayStatus={prjStatDisplayState}
+              displayController={_toggleprjStatDisplayState}
+              feature={focusFeature}
+            ></BMPStatWindow>
+          </CardContent>
+        </Card>
+        <Card
+          id={resultsDisplayState ? "results-panel" : "results-panel-hidden"}
+        >
+          <CardContent className={resultsDisplayState ? "" : "zero-padding"}>
+            <Suspense fallback={<div>Loading Table...</div>}>
+              <ResultsTable
+                nodes="all"
+                displayController={_toggleSetResultsDisplayState}
+              ></ResultsTable>
+            </Suspense>
           </CardContent>
         </Card>
       </div>
