@@ -1,17 +1,17 @@
-.App {
+/* .App {
   text-align: center;
-}
+} */
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
+/* @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
-}
+} */
 
 .App-header {
   background-color: #282c34;
@@ -28,14 +28,14 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
+/* @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
   }
-}
+} */
 
 #header-panel{
   position: fixed;
@@ -59,8 +59,8 @@
   overflow-y: auto;
   height: 75%;
   width: 25%;
-  background: rgba(255, 255, 255, 1);
-  border-radius: 2px;
+  /* background: rgba(255, 255, 255, 1);
+  border-radius: 2px; */
 
 }
 
@@ -73,14 +73,14 @@
   overflow-y: hidden;
   height:5%;
   width: 3%;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 1);
   border-radius: 2px;
 
 }
 
-#control-panel > div{
+/* #control-panel > div{
 	padding: 0 20px 20px 20px;
-}
+} */
 
 .layer-controls {
 	border: groove 2px #fff;
@@ -101,8 +101,6 @@
 }
 
 #prj-stat-panel {
-  /* transition-property: height,width,left;
-  transition-duration: 500ms; */
 	position: fixed;
 	z-index: 9;
 	top: 10%;
@@ -111,8 +109,9 @@
   overflow-y: auto;
   height: auto;
   width: 40%;
-  background: rgba(255, 255, 255, 1);
-  border-radius: 2px;
+  text-align:center;
+  /* background: rgba(255, 255, 255, 1); */
+  /* border-radius: 2px; */
 
 }
 
@@ -130,4 +129,57 @@
   width: 3%;
   background: rgba(255, 255, 255, 1);
   border-radius: 2px;
+}
+#results-panel {
+  transition-property: top;
+  transition-timing-function: linear;
+  transition-duration: 500ms;
+	position: fixed;
+	z-index: 9;
+	top: 9%;
+  left: 6%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 91%;
+  width: 94%;
+  text-align:center;
+  /* background: rgba(255, 255, 255, 1); */
+  /* border-radius: 2px; */
+
+}
+
+#results-panel-hidden{
+  transition-property: top;
+  transition-timing-function: linear;
+  transition-duration: 500ms;
+	position: fixed;
+	z-index: 9;
+	top: 150%;
+  left: 6%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: auto;
+  width: 94%;
+  text-align:center;
+}
+
+.zero-padding{
+  padding:0px !important;
+}
+
+.lg-margin{
+  margin:5em;
+}
+
+.flex-row{
+  display:flex;
+  justify-content: center;
+  flex-wrap:wrap;
+}
+.flex-column{
+  display:flex;
+  flex-direction:column;
+  align-content: center;
+  flex-wrap:wrap;
+  align-items:center;
 }

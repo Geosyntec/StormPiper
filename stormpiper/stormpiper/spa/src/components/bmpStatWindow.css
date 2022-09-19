@@ -7,7 +7,7 @@
 
 .panel-header{
     display:flex;
-    
+
     justify-content: center;
     background:rgb(137, 189, 238);
     margin:0px;
@@ -21,14 +21,16 @@
     /* display:flex; */
     position:absolute;
     justify-content: end;
-    right:10%;
+    right:12%;
+    top:16px;
     /* min-width: 25%; */
 }
 
 .stats-table{
     /* display:flex; */
+    text-align:center;
     margin:5px;
-    border:2px solid black;
+    /* border:2px solid black; */
 }
 
 .stats-table p{
@@ -52,7 +54,7 @@
 .table-header{
     display:flex;
     flex-flow: row wrap;
-    border-bottom: 1px solid black;
+    /* border-bottom: 1px solid black; */
     justify-content: space-around;
     margin-bottom:20px;
 }
@@ -61,6 +63,7 @@
     cursor: pointer;
     position:relative;
     left:75%;
+    color:white;
 }
 
 #bmp-panel-icon {

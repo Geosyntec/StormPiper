@@ -189,20 +189,44 @@ const activeLocalSWFacility = {
     data:"/api/rest/tmnt_facility/?f=geojson",
     id: "activeSWFacility",
     label: "Active Surface Water Facilities",
-    getPointRadius: 20,
-    getFillColor: [160, 160, 180, 200],
-    getLineColor: [160, 160, 180, 200],
-    getDashArray: (f) => [20, 0],
+    getFillColor: [160, 160, 180, 0],
+    getLineColor: [160, 160, 180, 0],
     getLineWidth: (f) => 1,
     getElevation: (f) => 500,
-    lineWidthScale: 2,
-    lineWidthMinPixels: 1,
     pickable: true,
+    getPointRadius:6,
+    pointRadiusUnits:'pixels',
+    pointRadiusMaxPixels:20,
+    pointRadiusMaxPixels:12,
     // onClick:(info,event)=>console.log(info,event),
     highlightColor:[42,213,232],
     dashJustified: true,
     dashGapPickable: true,
     onByDefault:true,
+  },
+};
+
+const delineations = {
+  layer: GeoJsonLayer,
+  props: {
+    // data:"https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/21/query?where=1%3D1&outFields=*&returnGeometry=true&f=geojson&outSR=4326",
+    data:"/api/rest/tmnt_delineation/?f=geojson",
+    id: "tmnt_delineations",
+    label: "Active Treatment Facility Upstream Delineations",
+    getFillColor: [1, 1, 28, 1],
+    defaultFillColor:[1,1,28,1],
+    getLineColor: [150, 130, 248, 200],
+    getDashArray: (f) => [20, 0],
+    getLineWidth: (f) => 1,
+    getElevation: (f) => 500,
+    lineWidthScale: 2,
+    lineWidthMinPixels: 1,
+    pickable: false,
+    // onClick:(info,event)=>console.log(info,event),
+    highlightColor:[42,213,232],
+    dashJustified: true,
+    dashGapPickable: true,
+    onByDefault:false,
   },
 };
 
@@ -303,7 +327,11 @@ const clusteredPopRaster = {
 /* eslint-disable quote-props */
 export const layerDict = {
   "Surfacewater": {
-    "Active Network":[activeSWMain,activeLocalSWFacility],
+    "Active Network":[
+      delineations,
+      // activeSWMain,
+      activeLocalSWFacility
+    ],
     // "Proposed Network":[proposedSWFacility]
   },
   // "Wastewater": {

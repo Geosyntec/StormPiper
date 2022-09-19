@@ -144,24 +144,6 @@ export default function ProminentAppBar(props) {
   const navigate=useNavigate()
 
   const [open,setOpen] = useState(false)
-  const [buttonConfig,setButtonConfig] = useState({
-    home:{
-      label:"Home",
-      icon:<HomeRoundedIcon/>
-    },
-    project:{
-      label:"Evaluate Project",
-      icon:<ScatterPlotRoundedIcon/>
-    },
-    watershed:{
-      label:"Evaluate Watershed",
-      icon:<GridOnRoundedIcon/>
-    },
-    about:{
-      label:"About",
-      icon:<InfoRoundedIcon/>
-    }
-  })
   const [selectedButton,setSelectedButton] = useState("Home")
   const [userProfile,setUserProfile] = useState({
     firstName:'User',
@@ -266,8 +248,8 @@ export default function ProminentAppBar(props) {
           </List>
         </DrawerHeader>
         <List alignItems="flex-start">
-          {Object.keys(buttonConfig).map((b) => {
-            const button = buttonConfig[b];
+          {Object.keys(props.buttons).map((b) => {
+            const button = props.buttons[b];
             return (
               <ListItem>
                 <WorkflowModal
@@ -275,7 +257,11 @@ export default function ProminentAppBar(props) {
                   iconComponent={button.icon}
                   displayTitle={open}
                   clickHandler={() => {
+                    console.log("button clicked: ",button)
                     setSelectedButton(button.label);
+                    if(button.clickHandler){
+                      button.clickHandler()
+                    }
                   }}
                   selected={selectedButton}
                 ></WorkflowModal>
