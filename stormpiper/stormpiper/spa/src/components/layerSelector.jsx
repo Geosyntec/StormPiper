@@ -72,10 +72,10 @@ function LayerSelector(props) {
               </h4>
             </div>
            </div>
-          
+
           :<div id = "layer-toggler-title-hidden" ><LayersRoundedIcon onClick = {props.displayController}/></div>
       }
-      
+
       {_renderCategories(
         props.layerDict,
         props._onToggleLayer,

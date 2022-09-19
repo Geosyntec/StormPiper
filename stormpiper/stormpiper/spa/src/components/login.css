@@ -1,4 +1,4 @@
-.login-container,.login-form{
+.flex{
     display:flex;
     justify-content: center;
     flex-wrap:wrap;
@@ -60,8 +60,8 @@ input .login{
     width:50%
 }
 
-.button-bar{
-    padding: 10px 20px;
+.login-button-bar{
+    padding: 10px 0px;
 }
 
 .login-container{

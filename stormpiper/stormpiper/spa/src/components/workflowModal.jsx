@@ -49,7 +49,7 @@ export default function WorkflowModal(props) {
     shouldForwardProp: (prop) => prop !== "selected",
   })(({ theme, selected }) => ({
     ...(selected === props.workflowTitle && {
-      color: "blue",
+      color: theme.palette.primary.main,
     }),
     ...(selected != props.workflowTitle && {
       color: "inherit",
@@ -74,7 +74,7 @@ export default function WorkflowModal(props) {
         <DialogTitle id="max-width-dialog-title">{props.workflowTitle}</DialogTitle>
         <DialogContent>
           {props.workflowComponent}
-          
+
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">

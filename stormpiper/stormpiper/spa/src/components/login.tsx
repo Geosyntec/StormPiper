@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form";
 import "./login.css"
 import { Typography } from "@material-ui/core";
-
+import { TextField,Input,Button } from '@material-ui/core'
 
 export default function Login(){
     const navigate = useNavigate()
@@ -30,19 +30,19 @@ export default function Login(){
     function _renderFormFields(){
         let fieldDiv = Object.values(fields).map((formField:{fieldID:string,label:string,type:string,required:boolean,value:string|number})=>{
           return (
-                <div className="login-form-row">
-                    {formField.required
-                      ?<label className="form-label required" htmlFor={formField.fieldID}>{formField.label}</label>
-                      :<label className="form-label" htmlFor={formField.fieldID}>{formField.label}</label>
-                    }
+                <div className="flex login-form-row">
+                    {/* {formField.required
+                      ?<InputLabel className="form-label required" htmlFor={formField.fieldID}>{formField.label}</InputLabel>
+                      :<InputLabel className="form-label" htmlFor={formField.fieldID}>{formField.label}</InputLabel>
+                    } */}
                     {
-                        <input className="form-input" {...register(formField.fieldID)} type = {formField.type} defaultValue={formField.value} required={formField.required}/>
+                        <TextField  {...register(formField.fieldID)} label = {formField.label} type = {formField.type} defaultValue={formField.value} required={formField.required}/>
                     }
                 </div>
             )
         })
         return fieldDiv;
-      
+
   }
 
     async function _handleSubmit(data:any,e:any){
@@ -67,20 +67,22 @@ export default function Login(){
 
 
 
-    
+
     return (
       <div className="login-container">
-        <div className="login-form">
-          <div className="login-form-body">
+        <div className="login-form flex">
+          <div className="login-form-body flex">
+            <div className="flex">
             <Typography className="login-header" variant="subtitle1"> Welcome to the Tacoma Watershed Insights Tool</Typography>
             <Typography className="login-sub-header" variant="subtitle2"> Login or <a href="javascript:;" onClick={()=>navigate('/app/register')}>Register</a> to get Started</Typography>
-            <form onSubmit={handleSubmit(_handleSubmit)}>
+            </div>
+            <form className="flex" onSubmit={handleSubmit(_handleSubmit)}>
               {_renderFormFields()}
               {/* <div className="reset-container">
                 <a className="form-label" href="javascript:;" onClick={()=>navigate('/app/reset')}>Forgot your password?</a>
               </div> */}
-              <div className="button-bar">
-                <input className="submit-btn" type="submit" />
+              <div className="login-button-bar">
+                <Button variant="contained" type = "submit">Submit</Button>
               </div>
               {
                 error

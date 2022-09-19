@@ -1,4 +1,4 @@
-import { Button, Dialog } from "@material-ui/core";
+import { Button, Dialog,DialogActions,FormControlLabel,Switch,TextField } from "@material-ui/core";
 import React from "react";
 import { useState, useEffect,useRef } from "react";
 import { useForm } from "react-hook-form";
@@ -91,9 +91,9 @@ export function BMPForm(props:formProps){
                 required: fields.required.includes(k),
                 value: props.values[k] && (props.values.facility_type===props.currentFacility)
                   ? props.values[k]
-                  : v.default 
+                  : v.default
                     ? v.default
-                    // : undefined 
+                    // : undefined
                     : v.type==='string'
                       ?""
                       :0,
@@ -117,7 +117,7 @@ export function BMPForm(props:formProps){
         if (!hiddenFields.includes(k) && !['node_id','facility_type'].includes(k)) {
           defaultValues[k] = props.values[k]
                               ? props.values[k]
-                              : fieldSet.properties[k].default 
+                              : fieldSet.properties[k].default
                               ? fieldSet.properties[k].default
                               : fieldSet.properties[k].type==='string'
                                 ?""
@@ -181,6 +181,17 @@ export function BMPForm(props:formProps){
         return response
     }
 
+    function _handleRecalculate(){
+      fetch('/api/rpc/solve_watershed')
+        .then(resp=>{
+          setResultSuccess(false)
+          console.log("Recalculation started: ",resp)
+        })
+        .catch(err=>{
+          console.log("Recalculate Failed: ",err)
+        })
+    }
+
     function _renderErrorHeader(msg:string){
       let beginningText:RegExp = /[0-9]*\svalidation (error[s]*)/g
       let header= msg.match(beginningText)
@@ -216,7 +227,6 @@ export function BMPForm(props:formProps){
     }
 
     function _renderFormFields(){
-        // let formFields= _buildFields()
         let simpleCheckDiv
         if(formFields){
             console.log("Rendering Form for: ",props.currentFacility+(isSimple?'_simple':''))
@@ -224,23 +234,28 @@ export function BMPForm(props:formProps){
             let fieldDiv = Object.values(formFields).map((formField:{fieldID:string,label:string,type:string,required:boolean,value:string|number})=>{
                 return (
                     <div className="form-row">
-                        {formField.required
-                          ?<label className="form-label required" htmlFor={formField.fieldID}>{formField.label}</label>
-                          :<label className="form-label" htmlFor={formField.fieldID}>{formField.label}</label>
-                        }
                         {
                           formField.fieldID==='facility_type'
-                            ?<select className="form-input" defaultValue={props.currentFacility.replace("_simple","")} onChange={(e)=>{
-                              reset(_createDefaults(isSimple))
-                              props.facilityChangeHandler(e.target.value+(isSimple?'_simple':''))
-                              }}>
+                            ?<TextField
+                              id="simple-select"
+                              variant="outlined"
+                              margin="dense"
+                              label={formField.label}
+                              select
+                              defaultValue={props.currentFacility.replace("_simple","")}
+                              onChange={(e)=>{
+                                  reset(_createDefaults(isSimple))
+                                  props.facilityChangeHandler(e.target.value+(isSimple?'_simple':''))
+                                  }}
+
+                             >
                               {Object.keys(props.allFacilities).map((fType:string)=>{
                                 if(!fType.match('_simple')){
                                   return(<option value={fType}>{props.allFacilities[fType].label}</option>)
                                 }
                               })}
-                            </select>
-                            :<input className="form-input" {...register(formField.fieldID)} type = {formField.type} defaultValue={formField.value} required={formField.required}/>
+                            </TextField>
+                            :<TextField variant="outlined" margin="dense" {...register(formField.fieldID)} type = {formField.type} defaultValue={formField.value} required={formField.required} label={formField.label} disabled={formField.label==='Node Id'}/>
                         }
                     </div>
                 )
@@ -248,12 +263,7 @@ export function BMPForm(props:formProps){
             if (props.simpleFields) {
               simpleCheckDiv = (
                 <div className="simple-checkbox">
-                  <label>Simple Facility?</label>
-                  <input
-                    type="checkbox"
-                    checked={isSimple}
-                    onChange={() => setIsSimple(!isSimple)}
-                  ></input>
+                  <FormControlLabel control={<Switch defaultChecked onChange={() => setIsSimple(!isSimple)} color="primary"/>} label="Simple Facility?"/>
                 </div>
               );
             } else {
@@ -265,7 +275,7 @@ export function BMPForm(props:formProps){
                 {simpleCheckDiv}
                 <div className="form-body">{fieldDiv}</div>
                 <div className="button-bar">
-                  <input type="submit" />
+                  <Button variant="contained" type = "submit">Submit</Button>
                 </div>
               </div>
             );
@@ -279,7 +289,11 @@ export function BMPForm(props:formProps){
             {_renderFormFields()}
         </form>
         <Dialog open={resultSuccess} onClose={()=>setResultSuccess(false)}>
-          <h4 className="result-header">Submission Success</h4>
+          <h4 className="result-header">Facility Details Submitted</h4>
+          <DialogActions>
+            <Button onClick={_handleRecalculate}>Recalculate WQ Results</Button>
+            <Button onClick={()=>setResultSuccess(false)}>Continue</Button>
+          </DialogActions>
         </Dialog>
         <Dialog open={resultError} onClose={()=>setResultError(false)}>
           <h4 className="result-header">Submission Error</h4>
