@@ -1,4 +1,4 @@
-import { Button, Dialog,TextField } from "@material-ui/core";
+import { Button, Dialog,DialogActions,FormControlLabel,Switch,TextField } from "@material-ui/core";
 import React from "react";
 import { useState, useEffect,useRef } from "react";
 import { useForm } from "react-hook-form";
@@ -181,6 +181,17 @@ export function BMPForm(props:formProps){
         return response
     }
 
+    function _handleRecalculate(){
+      fetch('/api/rpc/solve_watershed')
+        .then(resp=>{
+          setResultSuccess(false)
+          console.log("Recalculation started: ",resp)
+        })
+        .catch(err=>{
+          console.log("Recalculate Failed: ",err)
+        })
+    }
+
     function _renderErrorHeader(msg:string){
       let beginningText:RegExp = /[0-9]*\svalidation (error[s]*)/g
       let header= msg.match(beginningText)
@@ -216,7 +227,6 @@ export function BMPForm(props:formProps){
     }
 
     function _renderFormFields(){
-        // let formFields= _buildFields()
         let simpleCheckDiv
         if(formFields){
             console.log("Rendering Form for: ",props.currentFacility+(isSimple?'_simple':''))
@@ -253,12 +263,7 @@ export function BMPForm(props:formProps){
             if (props.simpleFields) {
               simpleCheckDiv = (
                 <div className="simple-checkbox">
-                  <label>Simple Facility?</label>
-                  <input
-                    type="checkbox"
-                    checked={isSimple}
-                    onChange={() => setIsSimple(!isSimple)}
-                  ></input>
+                  <FormControlLabel control={<Switch defaultChecked onChange={() => setIsSimple(!isSimple)} color="primary"/>} label="Simple Facility?"/>
                 </div>
               );
             } else {
@@ -284,7 +289,11 @@ export function BMPForm(props:formProps){
             {_renderFormFields()}
         </form>
         <Dialog open={resultSuccess} onClose={()=>setResultSuccess(false)}>
-          <h4 className="result-header">Submission Success</h4>
+          <h4 className="result-header">Facility Details Submitted</h4>
+          <DialogActions>
+            <Button onClick={_handleRecalculate}>Recalculate WQ Results</Button>
+            <Button onClick={()=>setResultSuccess(false)}>Continue</Button>
+          </DialogActions>
         </Dialog>
         <Dialog open={resultError} onClose={()=>setResultError(false)}>
           <h4 className="result-header">Submission Error</h4>

@@ -63,6 +63,7 @@
     cursor: pointer;
     position:relative;
     left:75%;
+    color:white;
 }
 
 #bmp-panel-icon {
