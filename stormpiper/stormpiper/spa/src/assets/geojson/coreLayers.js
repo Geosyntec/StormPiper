@@ -342,6 +342,10 @@ export const layerDict = {
   //   "General Characteristics":[landUseDesignations,equalOpportunityIndex],
   // },
   "Base Imagery": {
-    "Raster":[tssRaster, landCoverRaster, clusteredPopRaster]
+    "Raster":[
+      tssRaster,
+      // landCoverRaster,
+      // clusteredPopRaster
+    ]
   }
 };
