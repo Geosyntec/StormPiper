@@ -1,4 +1,4 @@
-import React, {Suspense, useState } from "react";
+import React, {Suspense, useEffect, useState } from "react";
 import { useParams,useNavigate } from "react-router-dom";
 import { layerDict } from "./assets/geojson/coreLayers";
 import LayerSelector from "./components/layerSelector";
@@ -6,7 +6,7 @@ import LayerSelector from "./components/layerSelector";
 import ProminentAppBar from "./components/topMenu";
 import BMPStatWindow from "./components/bmpStatWindow";
 import AuthProvider from "./components/authProvider"
-import { Card, CardContent, Typography } from "@material-ui/core";
+import { Card, CardActions, CardContent, Typography, Button } from "@material-ui/core";
 import HomeRoundedIcon from "@material-ui/icons/HomeRounded"
 import InfoRoundedIcon from "@material-ui/icons/InfoRounded"
 import GridOnRoundedIcon from "@material-ui/icons/GridOnRounded"
@@ -20,8 +20,10 @@ function App() {
   const [lyrSelectDisplayState, setlyrSelectDisplayState] = useState(false); // when true, control panel is displayed
   let params = useParams();
   let navigate = useNavigate()
+  const [userEmail,setUserEmail] = useState(null)
   const [prjStatDisplayState, setprjStatDisplayState] = useState(params?.id?true:false); // when true, project stats panel is displayed
   const [resultsDisplayState,setResultsDisplayState] = useState(false) //when true, results table is displayed
+  const [verificationDisplayState,setVerificationDisplayState] = useState(false)//when true, tell the user that they need to verify their email
   const [focusFeature, setFocusFeature] = useState(params?.id || null);
   const [activeLayers, setActiveLayers] = useState(() => {
     var res = {};
@@ -48,6 +50,20 @@ function App() {
     });
     return res;
   });
+
+  useEffect(()=>{
+    fetch("/api/rest/users/me")
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        console.log("User Response?:",res['is_verified'])
+        setUserEmail(res.email)
+        if(!res['is_verified]']){
+          setVerificationDisplayState(true)
+        }
+      });
+  },[])
 
   const topMenuButtons={
     home:{
@@ -148,6 +164,24 @@ function App() {
     return props
   }
 
+  function _sendVerificationEmail(){
+    fetch("/auth/request-verify-token",{
+      method:"POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body:JSON.stringify({"email":userEmail})
+      })
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        console.log("Resend request result: ",res)
+        setVerificationDisplayState(false)
+      });
+  }
+
   return (
     <AuthProvider>
       <div className="App">
@@ -187,12 +221,31 @@ function App() {
           </CardContent>
         </Card>
         <Card
+          id={verificationDisplayState ? "verification-panel" : "verification-panel-hidden"}
+          >
+          <CardContent className={verificationDisplayState ? "" : "zero-padding"}>
+            <Typography variant="subtitle1">
+                Your email has not been verified
+            </Typography>
+            <Typography variant="subtitle2">
+                If you have recently registered, please check your email for your verification link
+            </Typography>
+            <Typography variant="subtitle2">
+                If not, click <a href="javascript:;" onClick={_sendVerificationEmail}>here </a> to resend the verification email
+            </Typography>
+            <CardActions>
+              <Button onClick={()=>setVerificationDisplayState(false)}>Close</Button>
+            </CardActions>
+          </CardContent>
+        </Card>
+        <Card
           id={resultsDisplayState ? "results-panel" : "results-panel-hidden"}
         >
           <CardContent className={resultsDisplayState ? "" : "zero-padding"}>
             <Suspense fallback={<div>Loading Table...</div>}>
               <ResultsTable
                 nodes="all"
+                currentNode={focusFeature}
                 displayController={_toggleSetResultsDisplayState}
               ></ResultsTable>
             </Suspense>
