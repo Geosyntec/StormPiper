@@ -6,6 +6,7 @@ import { DataGrid } from '@mui/x-data-grid';
 type TableHeader = {
     field:string,
     headerName:string,
+    valueGetter:(values:any)=>any,
     flex?:number
 }
 
@@ -70,9 +71,15 @@ function convertToCSV(objArray:{[k:string]:string|number|undefined}[]) {
     return str;
 }
 
-function exportCSVFile(items:any, fileTitle:string) {
+function exportCSVFile(items:any, fileTitle:string,headers:any) {
+    let headersFormatted:{[k:string]:string} = {}
+
+    Object.keys(headers).map(k=>{
+        headersFormatted[k] = headers[k].field
+    })
+
     // if (headers) {
-    //     items.unshift(headers);
+        items.unshift(headersFormatted);
     // }
 
     // Convert Object to JSON
@@ -108,6 +115,7 @@ export default function ResultsTable(props:ResultsTableProps){
 
 
     const pinnedFields = ["node_id","epoch_id"]
+    const [filterModel,setFilterModel] = useState({items:[{columnField:"node_id",operator:"contains",value:""}]})
     const fieldGroups:FieldGroup[]=[
         {
             groupName:"Overview",
@@ -132,17 +140,15 @@ export default function ResultsTable(props:ResultsTableProps){
         headers:[{field:"",headerName:""}],
         loaded:false
     })
-    const [currentFields,setCurrentFields] = useState([...pinnedFields,"facility_type","node_type"])
+    const [currentFields,setCurrentFields] = useState([...pinnedFields,"facility_type","node_type","captured_pct","treated_pct","retained_pct","bypassed_pct"])
     const [currentGroup,setCurrentGroup]= useState("Overview")
     // const [currentFields,setCurrentFields] = useState(props.nodes==='all'? [...pinnedFields,"facility_type","node_type"]:[...pinnedFields,"runoff_volume_cuft_inflow","runoff_volume_cuft_treated","runoff_volume_cuft_retained","runoff_volume_cuft_captured","runoff_volume_cuft_bypassed"])
     // const [currentGroup,setCurrentGroup]= useState(props.nodes==='all'? "Overview":"Runoff Stats")
 
-    console.log("FieldGroups: ",fieldGroups)
     useEffect(()=>{
         let resources = ["/openapi.json", "/api/rest/results"]
         Promise.all(resources.map(url=>fetch(url).then(res=>res.json())))
         .then(resArray=>{
-            console.log("Got Resources: ",resArray)
             resSpec = resArray[0].components.schemas.ResultView
             allResults = resArray[1]
             headers = _buildTableColumns(resSpec.properties)
@@ -177,10 +183,12 @@ export default function ResultsTable(props:ResultsTableProps){
         .catch(err=>console.warn("Couldn't get results", err))
     },[])
 
-    useEffect(()=>{
-        console.log("Current results table rows: ",resultState.results)
-    },[resultState.results])
+    // useEffect(()=>{
+    //     console.log("Current results table rows: ",resultState.results)
+    // },[resultState.results])
 
+
+    // _cleanNumericalValues(results:{[]})
 
     function _buildTableColumns(props:{[key:string]:{title:string,type:string}}):TableHeader[]{
         let colArr:TableHeader[] = []
@@ -188,7 +196,14 @@ export default function ResultsTable(props:ResultsTableProps){
             colArr.push({
                 field:k,
                 headerName:props[k].title,
-                flex:pinnedFields.includes(k)? 2:1
+                flex:pinnedFields.includes(k)? 2:1,
+                valueGetter:(params)=>{
+                    if(props[k].type==="number"){
+                        return new Intl.NumberFormat('en-US',{maximumSignificantDigits:3}).format(params.row[k])
+                    }else{
+                        return params.row[k]
+                    }
+                }
             })
         })
         return colArr
@@ -217,7 +232,8 @@ export default function ResultsTable(props:ResultsTableProps){
                             )
                         })}
                     </ul>
-                    <Button onClick={()=>exportCSVFile(resultState.results,'testResults')}>Download Results</Button>
+                    {/* <Button onClick={()=>setFilterModel({items:[{columnField:'node_id',operator:'contains',value:props.currentNode}]})}>Select Current Facility</Button> */}
+                    <Button onClick={()=>exportCSVFile(resultState.results,'testResults',resultState.headers)}>Download Results</Button>
                     <div className={classes.cancelContainer}>
                         <h4 className={classes.cancelIcon} onClick={props.displayController}>
                             &#10005;
@@ -231,6 +247,12 @@ export default function ResultsTable(props:ResultsTableProps){
                     disableSelectionOnClick
                     getRowId={(row) => row['node_id'] + row['epoch_id']}
                     density={"compact"}
+
+                    // initialState={{
+                    //     filter: {
+                    //       filterModel,
+                    //     },
+                    //   }}
                 />
             </div>
           </div>
