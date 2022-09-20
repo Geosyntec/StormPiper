@@ -23,6 +23,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Sleep for 1 min to let the dust settle
+        run: sleep 60s
+        shell: bash
+        
       - uses: actions/checkout@v3
 
       # Alternative option - authentication via credentials json
