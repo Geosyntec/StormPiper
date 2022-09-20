@@ -71,7 +71,7 @@ function convertToCSV(objArray:{[k:string]:string|number|undefined}[]) {
     return str;
 }
 
-function exportCSVFile(items:any, fileTitle:string,headers:any) {
+function exportCSVFile(items:any, fileTitle:string, headers:any) {
     let headersFormatted:{[k:string]:string} = {}
 
     Object.keys(headers).map(k=>{
