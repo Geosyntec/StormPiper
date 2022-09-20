@@ -67,10 +67,10 @@ function DeckGLMap(props) {
       controller={true}
       layers={props.layers}
       onClick={props.onClick}
-      onViewStateChange={(state)=>{
-        console.log("Viewstate:",state)
-        setCurrentZoom(state.viewState.zoom)
-      }}
+      // onViewStateChange={(state)=>{
+      //   console.log("Viewstate:",state)
+      //   setCurrentZoom(state.viewState.zoom)
+      // }}
       // onload={()=>checkFeature(props)}
       // getTooltip={(object) => {
       //   // if(object?.object){console.log('Selected Object',object)}

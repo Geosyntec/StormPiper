@@ -22,7 +22,7 @@
     position:absolute;
     justify-content: end;
     right:12%;
-    top:16px;
+    top:8px;
     /* min-width: 25%; */
 }
 
@@ -63,7 +63,7 @@
     cursor: pointer;
     position:relative;
     left:75%;
-    color:white;
+    color:black;
 }
 
 #bmp-panel-icon {
