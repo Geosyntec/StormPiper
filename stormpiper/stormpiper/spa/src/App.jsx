@@ -132,6 +132,7 @@ function App() {
   function _toggleSetResultsDisplayState() {
     setResultsDisplayState(!resultsDisplayState);
   }
+  function _getResultsDisplayState() {return resultsDisplayState};
   function _toggleprjStatDisplayState() {
     if(prjStatDisplayState){
       console.log('Clearing Focused Feature')
@@ -247,6 +248,7 @@ function App() {
                 nodes="all"
                 currentNode={focusFeature}
                 displayController={_toggleSetResultsDisplayState}
+                displayState={_getResultsDisplayState()}
               ></ResultsTable>
             </Suspense>
           </CardContent>

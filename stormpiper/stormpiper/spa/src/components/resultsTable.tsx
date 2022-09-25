@@ -18,6 +18,7 @@ type FieldGroup={
 type ResultsTableProps={
     displayController:VoidFunction,
     nodes?:"all" | string,
+    displayState:boolean,
 }
 
 const useStyles = makeStyles(theme=>({
@@ -146,6 +147,9 @@ export default function ResultsTable(props:ResultsTableProps){
     // const [currentGroup,setCurrentGroup]= useState(props.nodes==='all'? "Overview":"Runoff Stats")
 
     useEffect(()=>{
+
+        if (!props.displayState) return
+
         let resources = ["/openapi.json", "/api/rest/results"]
         Promise.all(resources.map(url=>fetch(url).then(res=>res.json())))
         .then(resArray=>{
@@ -181,7 +185,7 @@ export default function ResultsTable(props:ResultsTableProps){
             })
         })
         .catch(err=>console.warn("Couldn't get results", err))
-    },[])
+    },[props.displayState])
 
     // useEffect(()=>{
     //     console.log("Current results table rows: ",resultState.results)
@@ -259,7 +263,7 @@ export default function ResultsTable(props:ResultsTableProps){
         );
     }else{
         return(
-            <Typography variant="h3">Results Go Here</Typography>
+            <Typography variant="h3">Loading results...</Typography>
         )
     }
 
