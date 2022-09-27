@@ -57,7 +57,6 @@ function App() {
         return res.json();
       })
       .then((res) => {
-        console.log("User Response?:",res['is_verified'])
         setUserEmail(res.email)
         if(!res['is_verified]']){
           setVerificationDisplayState(true)
