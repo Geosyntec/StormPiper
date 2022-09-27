@@ -1,4 +1,6 @@
+import datetime
 import logging
+import urllib.parse
 import uuid
 from typing import Optional
 
@@ -26,6 +28,8 @@ logger = logging.getLogger(__name__)
 class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     reset_password_token_secret = settings.SECRET
     verification_token_secret = settings.SECRET
+    reset_password_token_lifetime_seconds = 3600
+    verification_token_lifetime_seconds = 3600
 
     async def on_after_register(
         self, user: User, request: Optional[Request] = None
@@ -48,7 +52,21 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         client = utils.rgetattr(request, "app.sessions", None).get(
             "user_email_session", None
         )
-        reset_url = request.url_for("reset:get_reset_password") + f"?token={token}"
+
+        expires_at = (
+            max(
+                datetime.datetime.utcnow(),
+                datetime.datetime.utcnow()
+                + datetime.timedelta(
+                    seconds=self.reset_password_token_lifetime_seconds
+                ),
+            )
+            .replace(tzinfo=datetime.timezone.utc)
+            .isoformat()
+        )
+
+        query = urllib.parse.urlencode({"token": token, "expires_at": expires_at})
+        reset_url = request.url_for("reset:get_reset_password") + f"?{query}"
 
         await email.send_email_to_user(
             template="reset_password",
@@ -70,7 +88,21 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         client = utils.rgetattr(request, "app.sessions", None).get(
             "user_email_session", None
         )
-        verify_url = request.url_for("verify:get_verify_token") + f"?token={token}"
+
+        expires_at = (
+            max(
+                datetime.datetime.utcnow(),
+                datetime.datetime.utcnow()
+                + datetime.timedelta(seconds=self.verification_token_lifetime_seconds),
+            )
+            .replace(tzinfo=datetime.timezone.utc)
+            .isoformat()
+        )
+
+        query = urllib.parse.urlencode({"token": token, "expires_at": expires_at})
+        verify_url = request.url_for("home") + f"/verify?{query}"
+
+        logger.info(f"verify url: {verify_url}")
         template = getattr(request, "_email_template", "request_verify")
 
         await email.send_email_to_user(

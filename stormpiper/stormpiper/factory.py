@@ -127,12 +127,12 @@ def create_app(
             title=app.title + " - Swagger UI",
         )
 
-    @app.get("/app")
+    @app.get("/app", name="home")
     @app.get("/app/{fullpath:path}")
     async def serve_spa(request: Request, fullpath: Optional[str] = None) -> Response:
         return templates.TemplateResponse("index.html", {"request": request})
 
-    @app.get("/", name="home")
+    @app.get("/")
     async def home(request: Request) -> Response:
         return RedirectResponse("/app")
 

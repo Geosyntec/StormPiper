@@ -106,7 +106,7 @@
       let rsp_data = await response.json();
       err_div.innerHTML = `
               <div class="alert alert-success">
-                Email Verification Succeeded. Welcome ${rsp_data.first_name}!
+                Verification Succeeded. Welcome ${rsp_data.first_name}!
               </div>
               `;
     } else {
@@ -115,7 +115,7 @@
       err_div.innerHTML = `
               <div class="alert alert-warning">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
-                Login Failed. ${rsp_data?.detail}
+                Verification Failed. ${rsp_data?.detail}
               </div>
               `;
     }
@@ -123,7 +123,7 @@
     return response;
   }
   window.addEventListener("load", () => {
-    console.log(`submigting to ${submitUrl}`);
+    console.log(`submitting to ${submitUrl}`);
 
     postData(submitUrl, { token });
   });

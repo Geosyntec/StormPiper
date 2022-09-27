@@ -137,6 +137,8 @@ function BMPStatWindow(props:statWindowProps) {
 
   useEffect(() => {
 
+    if (!props?.feature) return
+
     let tmnt_results = ["/api/rest/results/"+props.feature,"/api/rest/tmnt_facility/"+props.feature]
 
     setLoadingState(false)

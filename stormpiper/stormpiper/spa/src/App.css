@@ -130,6 +130,36 @@
   background: rgba(255, 255, 255, 1);
   border-radius: 2px;
 }
+#verification-panel {
+	position: fixed;
+	z-index: 9;
+	top: 30%;
+  left: 25%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: auto;
+  width: 50%;
+  text-align:center;
+  /* background: rgba(255, 255, 255, 1); */
+  /* border-radius: 2px; */
+
+}
+
+#verification-panel-hidden{
+  /* transition-property: height,width,left;
+  transition-duration: 500ms; */
+  position: fixed;
+	z-index: 9;
+	top: 30%;
+  left: -50%;
+  /* left: 125%; */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  height:5%;
+  width: 3%;
+  background: rgba(255, 255, 255, 1);
+  border-radius: 2px;
+}
 #results-panel {
   transition-property: top;
   transition-timing-function: linear;

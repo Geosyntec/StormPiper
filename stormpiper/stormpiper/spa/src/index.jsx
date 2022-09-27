@@ -5,6 +5,7 @@ import "./index.css";
 import App from "./App";
 import Login from "./components/login"
 import Register from "./components/register"
+import Verify from "./components/verify";
 // import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
@@ -12,8 +13,9 @@ ReactDOM.render(
     <BrowserRouter>
       <Routes>
         <Route path="/app/" element={<App/>}></Route>
-        <Route path="app/login/" element={<Login/>}></Route>
-        <Route path="app/register/" element={<Register/>}></Route>
+        <Route path="/app/login/" element={<Login/>}></Route>
+        <Route path="/app/register/" element={<Register/>}></Route>
+        <Route path="/app/verify/" element={<Verify/>}></Route>
         <Route path="/app/map/" element={<App/>}>
           <Route path="tmnt" element={<App/>}>
             <Route path=":id" element = {<App/>}></Route>
