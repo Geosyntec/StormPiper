@@ -1,36 +1,37 @@
 import React, { useState } from "react";
-import { useNavigate,useParams } from "react-router-dom"
+import { useNavigate,useSearchParams } from "react-router-dom"
 import { useForm } from "react-hook-form";
 // import "./reset.css"
-import { Typography } from "@material-ui/core";
+import { Typography,TextField } from "@material-ui/core";
 
 export default function Reset(){
     const navigate = useNavigate()
     const {register,handleSubmit,formState: { errors },getValues} = useForm()
     const [error,setError] = useState(false)
-    const params = useParams()
+    const [searchParams, setSearchParams] = useSearchParams()
 
     const fields: {
       name: string;
       label: string;
       type: string;
       required?: boolean;
-      defaultValue: string | number | undefined;
+      defaultValue: string | number | null;
       minLength?: { value: number; message: string };
       maxLength?: { value: number; message: string };
       validate?: (val: any) => boolean | string;
       display?: boolean;
     }[] = [
-      {
-        name: "username",
-        label: "username",
-        type: "email",
-        required: true,
-        defaultValue: "",
-      },
+      // {
+      //   name: "username",
+      //   label: "username",
+      //   type: "email",
+      //   required: true,
+      //   defaultValue: "",
+      //   display:true,
+      // },
       {
         name: "password",
-        label: "password",
+        label: "New Password",
         type: "password",
         defaultValue: "",
         minLength: {
@@ -38,6 +39,7 @@ export default function Reset(){
           message: "Password must be longer than 8 characters",
         },
         required: true,
+        display:true,
       },
       {
         name: "confirm_password",
@@ -47,44 +49,44 @@ export default function Reset(){
         defaultValue: "",
         validate: (val) =>
           val === getValues("password") || "Passwords don't match",
+          display:true,
       },
       {
         name: "token",
         label: "Reset token",
         type: "string",
         required: true,
-        defaultValue: params.token,
+        defaultValue: searchParams.get("token"),
         display:false,
       }
     ];
-  
-      function _renderFormFields(){
-        let fieldDiv = Object.values(fields).map((formField:{name:string,label:string,type:string,required?:boolean,defaultValue:string|number|undefined})=>{
-            return (
-                  <div className="login-form-row">
-                      {formField.required
-                        ?<label className="form-label required" htmlFor={formField.name}>{formField.label}</label>
-                        :<label className="form-label" htmlFor={formField.name}>{formField.label}</label>
-                      }
-                      <input className="form-input" {...register(formField.name,{...formField})} type={formField.type}/>
-                      {errors[formField.name] && <p className="form-label error-msg">{errors[formField.name]?.message}</p>}
-                  </div>
-              )
-          })
-          return fieldDiv;
-        
-    }
+
+    function _renderFormFields(){
+      let fieldDiv = Object.values(fields).map((formField)=>{
+        return (
+              <div className="flex auth-form-row">
+                  {
+                      <TextField  {...register(formField.name)} label = {formField.display?formField.label:null} type = {formField.display?formField.type:"hidden"} defaultValue={formField.defaultValue} required={formField.required}/>
+                  }
+              </div>
+          )
+      })
+      return fieldDiv;
+
+}
 
     async function _handleSubmit(data:any,e:any){
         console.log("Event: ",e)
           const formData = new FormData(e.target);
+          console.log("formData: ",formData)
           const response = await fetch('/auth/reset-password', {
               credentials: "same-origin",
               method: "POST",
               headers:{
+                Accept:"application/json",
                 "Content-Type":"application/json"
               },
-              body: formData,
+              body: JSON.stringify(Object.fromEntries(formData.entries())),
             }).then((resp) => {
               if (resp.status == 200) {
                 console.log("redirect on success");
@@ -97,16 +99,16 @@ export default function Reset(){
             });
           return response
       }
-  
-  
+
+
 
     return (
-        <div className="reset-container">
-          <div className="reset-form">
-            <div className="reset-form-body">
-              <Typography className="reset-header" variant="subtitle1"> Welcome to the Tacoma Watershed Insights Tool</Typography>
-              <Typography className="reset-sub-header" variant="subtitle2"> reset or <a href="javascript:;" onClick={()=>navigate('/app/register')}>Register</a> to get Started</Typography>
-              <form onSubmit={handleSubmit(_handleSubmit)}>
+        <div className="auth-container">
+          <div className="auth-form flex">
+            <div className="auth-form-body flex">
+              <Typography variant="subtitle1"> Welcome to the Tacoma Watershed Insights Tool</Typography>
+              <Typography variant="subtitle2"> reset or <a href="javascript:;" onClick={()=>navigate('/app/register')}>Register</a> to get Started</Typography>
+              <form className = "flex" onSubmit={handleSubmit(_handleSubmit)}>
                 {_renderFormFields()}
                 <div className="button-bar">
                   <input className="submit-btn" type="submit" />

@@ -10,7 +10,7 @@ export default function Verify(){
     let token:string|null = searchParams.get('token')
     let expiresAt:string|null = searchParams.get('expires_at')
     let now = new Date()
-    let expiryDateFormatted = new Date(expiresAt?.split(' ')[0])
+    let expiryDateFormatted = new Date(expiresAt)
     console.log("Token:",token)
     console.log("expires_at: ",expiryDateFormatted)
 
