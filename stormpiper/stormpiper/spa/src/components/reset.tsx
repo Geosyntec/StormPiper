@@ -1,14 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate,useSearchParams } from "react-router-dom"
 import { useForm } from "react-hook-form";
 // import "./reset.css"
-import { Typography,TextField } from "@material-ui/core";
+import { Typography,TextField,Card, CardContent,Button } from "@material-ui/core";
+import { textAlign } from "@mui/system";
 
 export default function Reset(){
     const navigate = useNavigate()
     const {register,handleSubmit,formState: { errors },getValues} = useForm()
     const [error,setError] = useState(false)
+    const [success,setSuccess] = useState(false)
+    const [resetContents,setResetContents] = useState((
+      <React.Fragment>
+          <Typography variant="subtitle1">
+            Checking your reset link...
+          </Typography>
+        </React.Fragment>
+    ))
     const [searchParams, setSearchParams] = useSearchParams()
+
+    let expiresAt:string|null = searchParams.get('expires_at')
+    let now = new Date()
+    let expiryDateFormatted = new Date(expiresAt)
+
+    console.log("Expiry date: ",expiryDateFormatted)
 
     const fields: {
       name: string;
@@ -21,14 +36,6 @@ export default function Reset(){
       validate?: (val: any) => boolean | string;
       display?: boolean;
     }[] = [
-      // {
-      //   name: "username",
-      //   label: "username",
-      //   type: "email",
-      //   required: true,
-      //   defaultValue: "",
-      //   display:true,
-      // },
       {
         name: "password",
         label: "New Password",
@@ -89,38 +96,64 @@ export default function Reset(){
               body: JSON.stringify(Object.fromEntries(formData.entries())),
             }).then((resp) => {
               if (resp.status == 200) {
-                console.log("redirect on success");
-                window.location.href = '/app/login';
                 setError(false)
+                setSuccess(true)
               } else {
                 console.warn("reset failure", resp);
                 setError(true)
+                setSuccess(false)
               }
             });
           return response
       }
 
 
+    useEffect(()=>{
+      if(now>expiryDateFormatted){
+        setResetContents(
+          <React.Fragment>
+            <Typography variant="subtitle1">
+                Sorry, your password reset link has expired
+              </Typography>
+              <Typography variant="subtitle2">
+                Please return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>login </a> to request another link
+              </Typography>
+          </React.Fragment>
+        )
+      }else{
+        setResetContents(
+          <React.Fragment>
+            <Typography align="center" variant="subtitle1"> Welcome to the Tacoma Watershed Insights Tool</Typography>
+            <Typography align = "center" variant="subtitle2"> Enter your new password below</Typography>
+            <form className = "flex" onSubmit={handleSubmit(_handleSubmit)}>
+              {_renderFormFields()}
+              <div className="button-bar">
+                <Button variant="contained" type = "submit">Submit</Button>
+              </div>
+              {
+                error
+                  ?<p className="err-msg">Something went wrong - please try again</p>
+                  :<p></p>
+              }
+                {
+              success && <p className="success-msg">Your password was reset successfully. Please return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>login</a></p>
+              }
+            </form>
+          </React.Fragment>
+        )
+      }
+    },[])
+
 
     return (
-        <div className="auth-container">
-          <div className="auth-form flex">
-            <div className="auth-form-body flex">
-              <Typography variant="subtitle1"> Welcome to the Tacoma Watershed Insights Tool</Typography>
-              <Typography variant="subtitle2"> reset or <a href="javascript:;" onClick={()=>navigate('/app/register')}>Register</a> to get Started</Typography>
-              <form className = "flex" onSubmit={handleSubmit(_handleSubmit)}>
-                {_renderFormFields()}
-                <div className="button-bar">
-                  <input className="submit-btn" type="submit" />
-                </div>
-                {
-                  error
-                    ?<p className="err-msg">Something went wrong - please try again</p>
-                    :<p></p>
-                }
-              </form>
-            </div>
-          </div>
+      <div className="flex-row">
+        <div className="flex lg-margin">
+          <Card>
+            <CardContent>
+              {resetContents}
+            </CardContent>
+          </Card>
         </div>
-      );
+      </div>
+  );
 }
