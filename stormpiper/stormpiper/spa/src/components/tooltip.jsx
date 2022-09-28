@@ -1,8 +1,9 @@
 // DeckGL react component
 const fieldDict = {
-    activeSWMain:['ALTID','DIAMETER','INSTALLDATE'],
-    activeSWFacility:['ALTID','SUBBASIN','FACILITYDETAIL','MEDIATYPE'],
-    default:['OBJECTID']
+    activeSWMain:['altid','diameter'],
+    activeSWFacility:['altid','subbasin','facilitytype'],
+    tmnt_delineations:['altid','relid'],
+    default:['altid']
 }
 
 
@@ -11,16 +12,15 @@ function getTooltipContents(object,layer,label) {
     const feat = object
     const fields = fieldDict[layer]?fieldDict[layer]:fieldDict.default
     if (feat){
-        return (
-            `<h4> Layer: ${label}</h4>
-            ${fields.map(field=>{
-                return(`<h5> ${field}: ${feat?.properties[field]}</h5>`)    
-            })}`
-        );
+        let content = `<h4> Layer: ${label}</h4>
+        ${fields.reduce((acc,field,i) => {
+          return acc + `<p>${field}: ${feat?.properties[field]}</p>`;
+        },"")}`;
+        return content;
     }
-   
+
   }
 
-  
-  
+
+
   export default getTooltipContents; //`<Tooltip feat={${object} layer={${object?.layer?.id}}}></Tooltip>`
