@@ -15,13 +15,22 @@ get_user_manager_context = contextlib.asynccontextmanager(get_user_manager)
 
 
 async def create_user(
-    email: EmailStr, password: str, is_superuser: bool = False, **kwargs
+    email: EmailStr,
+    password: str,
+    is_superuser: bool = False,
+    force_create: bool = False,
+    **kwargs,
 ):  # pragma: no cover
     try:
         print(f"trying to create user {email}")
         async with get_async_session_context() as session:
             async with get_user_db_context(session) as user_db:
                 async with get_user_manager_context(user_db) as user_manager:
+
+                    user = await user_manager.user_db.get_by_email(email)
+                    if user is not None and force_create:
+                        await user_manager.delete(user)
+
                     user = await user_manager.create(
                         UserCreate(
                             email=email,
@@ -41,6 +50,7 @@ async def create_admin():  # pragma: no cover
         password=settings.ADMIN_ACCOUNT_PASSWORD,
         is_superuser=True,
         is_verified=True,
+        force_create=True,
     )
 
 
