@@ -221,7 +221,7 @@ const delineations = {
     getElevation: (f) => 500,
     lineWidthScale: 2,
     lineWidthMinPixels: 1,
-    pickable: false,
+    pickable: true,
     // onClick:(info,event)=>console.log(info,event),
     highlightColor:[42,213,232],
     dashJustified: true,
@@ -265,6 +265,7 @@ const tssRaster = {
     minZoom: 10,
     maxZoom: 18,
     tileSize: 256,
+
     renderSubLayers: (props) => {
       const {
         bbox: { west, south, east, north },
@@ -326,26 +327,18 @@ const clusteredPopRaster = {
 
 /* eslint-disable quote-props */
 export const layerDict = {
-  "Surfacewater": {
-    "Active Network":[
-      delineations,
-      // activeSWMain,
-      activeLocalSWFacility
-    ],
-    // "Proposed Network":[proposedSWFacility]
-  },
-  // "Wastewater": {
-  //   "Active Network":[activeWWMain],
-  // },
-  // "Municipal Characteristics":{
-  //   "Infrastructure Characteristics":[capitalProjectStreets,row],
-  //   "General Characteristics":[landUseDesignations,equalOpportunityIndex],
-  // },
   "Base Imagery": {
     "Raster":[
       tssRaster,
       // landCoverRaster,
       // clusteredPopRaster
     ]
-  }
+  },
+  "Surfacewater": {
+    "Active Network":[
+      delineations,
+      // activeSWMain,
+      activeLocalSWFacility
+    ],
+  },
 };

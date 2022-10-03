@@ -1,7 +1,7 @@
 import DeckGL from "@deck.gl/react";
 import {FlyToInterpolator} from "deck.gl"
 import StaticMap from "react-map-gl";
-// import getTooltipContents from "./tooltip.jsx";
+import getTooltipContents from "./tooltip.jsx";
 import { useLocation } from "react-router-dom";
 import { useState,useEffect } from "react";
 
@@ -72,12 +72,15 @@ function DeckGLMap(props) {
       //   setCurrentZoom(state.viewState.zoom)
       // }}
       // onload={()=>checkFeature(props)}
-      // getTooltip={(object) => {
-      //   // if(object?.object){console.log('Selected Object',object)}
-      //   return object.object && {
-      //     html: getTooltipContents(object.object, object?.layer?.id,object?.layer?.props?.label),
-      //   };
-      // }}
+      getTooltip={(object) => {
+        if(object?.object){console.log('Selected Object',object)}
+        return object.object && {
+          html: getTooltipContents(object.object, object?.layer?.id,object?.layer?.props?.label),
+          style:{
+            borderRadius:'6px',
+          }
+        };
+      }}
     >
       <StaticMap mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN} />
     </DeckGL>
