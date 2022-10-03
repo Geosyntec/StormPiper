@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { useNavigate,useSearchParams } from "react-router-dom"
 import { useForm } from "react-hook-form";
 // import "./reset.css"
-import { Typography,TextField } from "@material-ui/core";
-import { FlashOnOutlined } from "@material-ui/icons";
+import { Typography,TextField,Button, CardContent, Card, Box } from "@material-ui/core";
 
 
 export default function Forgot(){
@@ -73,28 +72,34 @@ export default function Forgot(){
 
 
     return (
-        <div className="auth-container">
-            <div className="auth-form flex">
-            <div className="auth-form-body flex">
-                <Typography variant="subtitle1"> Welcome to the Tacoma Watershed Insights Tool</Typography>
-                <Typography variant="subtitle2"> Enter the email associated with your account below to reset your password</Typography>
-                <form onSubmit={handleSubmit(_handleSubmit)}>
-                {_renderFormFields()}
-                <div className="auth-button-bar">
-                    <input className="submit-btn" type="submit" />
-                </div>
-                {
-                    error
-                    ?<p className="err-msg">Something went wrong - please try again</p>
-                    :<p></p>
-                }
-                {
-                success && <p className="success-msg">A reset link was sent to the email associated with this account - Use the link to reset your email, and return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>Login</a></p>
-                }
-                </form>
-            </div>
+        // <div className="auth-container">
+        //     <div className="auth-form flex">
+        <div className="flex-row">
+            <div className="flex lg-margin">
+            {/* <div className="auth-form-body flex"> */}
+                <Card>
+                    <CardContent>
+                        <Typography variant="subtitle1" align="center"> Welcome to the Tacoma Watershed Insights Tool</Typography>
+                        <Typography variant="subtitle2" align="center"> Enter the email associated with your account below to reset your password</Typography>
+                        <Box sx={{margin:'1em'}}>
+                            <form onSubmit={handleSubmit(_handleSubmit)}>
+                            {_renderFormFields()}
+                            <div className="auth-button-bar flex">
+                                <Button variant="contained" type = "submit">Submit</Button>
+                            </div>
+                            {
+                                error && <p className="err-msg">Something went wrong - please try again</p>
+                            }
+                            {
+                                success && <p className="success-msg">A reset link was sent to the email associated with this account - Use the link to reset your email, and return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>Login</a></p>
+                            }
+                            </form>
+                        </Box>
+                    </CardContent>
+                </Card>
             </div>
         </div>
+        // </div>
         );
 }
 

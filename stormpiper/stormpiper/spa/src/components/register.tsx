@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form";
 import "./register.css"
-import { Typography } from "@material-ui/core";
+import { Box, Card, CardContent, Typography } from "@material-ui/core";
 import { TextField,Button } from '@material-ui/core'
 
 
@@ -62,7 +62,6 @@ export default function Register(){
                     {
                         <TextField  {...register(formField.name,{...formField})} label = {formField.label} type = {formField.type} required={formField.required}/>
                     }
-                    {/* <input className="form-input" {...register(formField.name,{...formField})} type={formField.type}/> */}
                     {errors[formField.name] && <p className="form-label error-msg">{errors[formField.name]?.message}</p>}
                 </div>
             )
@@ -101,26 +100,27 @@ export default function Register(){
 
 
     return (
-      <div className="login-container">
-        <div className="login-form">
-          <div className="login-form-body flex-column">
-            <Typography className="login-header" variant="subtitle1"> Enter Your New Account Information</Typography>
-            <form className="flex-column" onSubmit={handleSubmit(_handleSubmit)}>
-              {_renderFormFields()}
-              {/* <div className="button-bar">
-                <input className="submit-btn" type="submit" />
-              </div> */}
-              <div className="login-button-bar">
-                <Button variant="contained" type = "submit">Submit</Button>
-              </div>
-              {
-                error && <p className="err-msg">User already exists</p>
-              }
-              {
-                success && <p className="success-msg">Successfully registered - Check your email for a confirmation link, and return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>Login</a></p>
-              }
-            </form>
-          </div>
+      <div className="flex-row">
+        <div className="flex lg-margin">
+          <Card>
+            <CardContent>
+            <Typography align="center" variant="subtitle1"> Enter Your New Account Information</Typography>
+            <Box sx={{margin:'1em'}}>
+              <form className="flex-column" onSubmit={handleSubmit(_handleSubmit)}>
+                {_renderFormFields()}
+                <div className="auth-button-bar">
+                  <Button variant="contained" type = "submit">Submit</Button>
+                </div>
+                {
+                  error && <p className="err-msg">User already exists</p>
+                }
+                {
+                  success && <p className="success-msg">Successfully registered - Check your email for a confirmation link, and return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>Login</a></p>
+                }
+              </form>
+            </Box>
+            </CardContent>
+          </Card>
         </div>
       </div>
     );

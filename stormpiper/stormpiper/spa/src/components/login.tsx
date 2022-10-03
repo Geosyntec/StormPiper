@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form";
 // import "./login.css"
-import { Typography } from "@material-ui/core";
+import { Box, Card, CardContent, Typography } from "@material-ui/core";
 import { TextField,Input,Button } from '@material-ui/core'
 
 export default function Login(){
@@ -66,28 +66,30 @@ export default function Login(){
 
 
     return (
-      <div className="auth-container">
-        <div className="auth-form flex">
-          <div className="auth-form-body flex">
-            <div className="flex">
-            <Typography variant="subtitle1"> Welcome to the Tacoma Watershed Insights Tool</Typography>
-            <Typography variant="subtitle2"> Login or <a href="javascript:;" onClick={()=>navigate('/app/register')}>Register</a> to get Started</Typography>
-            </div>
-            <form className="flex" onSubmit={handleSubmit(_handleSubmit)}>
-              {_renderFormFields()}
-              <div className="flex auth-form-row">
-                <a className="form-label" href="javascript:;" onClick={()=>{navigate("/app/forgot-password")}}>Forgot your password?</a>
-              </div>
-              <div className="auth-button-bar">
-                <Button variant="contained" type = "submit">Submit</Button>
-              </div>
-              {
-                error
-                  ?<p className="err-msg">Incorrect username/password - please try again</p>
-                  :<p></p>
-              }
-            </form>
-          </div>
+      <div className="flex-row">
+        <div className="flex lg-margin">
+          <Card>
+            <CardContent>
+              <Typography variant="subtitle1" align="center"> Welcome to the Tacoma Watershed Insights Tool</Typography>
+              <Typography variant="subtitle2" align="center"> Login or <a href="javascript:;" onClick={()=>navigate('/app/register')}>Register</a> to get Started</Typography>
+              <Box sx={{margin:'1em'}}>
+                <form className="flex" onSubmit={handleSubmit(_handleSubmit)}>
+                  {_renderFormFields()}
+                  <div className="flex auth-form-row">
+                    <a className="form-label" href="javascript:;" onClick={()=>{navigate("/app/forgot-password")}}>Forgot your password?</a>
+                  </div>
+                  <div className="auth-button-bar">
+                    <Button variant="contained" type = "submit">Submit</Button>
+                  </div>
+                  {
+                    error
+                      ?<p className="err-msg">Incorrect username/password - please try again</p>
+                      :<p></p>
+                  }
+                </form>
+              </Box>
+            </CardContent>
+          </Card>
         </div>
       </div>
     );
