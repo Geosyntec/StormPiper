@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate,useSearchParams } from "react-router-dom"
 import { useForm } from "react-hook-form";
-// import "./reset.css"
-import { Typography,TextField,Card, CardContent,Button, Box } from "@material-ui/core";
-import { textAlign } from "@mui/system";
+import { Typography,TextField,Card, CardContent,Button, Box, makeStyles } from "@material-ui/core";
+
+const useStyles = makeStyles((theme)=>({
+  errorMsg:{
+    color:theme.palette.warning.main,
+    margin:'5px 20px'
+  }
+}))
 
 export default function Reset(){
     const navigate = useNavigate()
@@ -18,6 +23,8 @@ export default function Reset(){
         </React.Fragment>
     ))
     const [searchParams, setSearchParams] = useSearchParams()
+    const classes = useStyles()
+
 
     let expiresAt:string|null = searchParams.get('expires_at')
     let now = new Date()
@@ -76,7 +83,7 @@ export default function Reset(){
                   {
                       <TextField  {...register(formField.name,{...formField})} label = {formField.display?formField.label:null} type = {formField.display?formField.type:"hidden"} defaultValue={formField.defaultValue} required={formField.required}/>
                   }
-                  {errors[formField.name] && <p className="form-label error-msg">{errors[formField.name]?.message}</p>}
+                  {errors[formField.name] && <Typography variant='caption' className={classes.errorMsg} align='center'>{errors[formField.name]?.message}</Typography>}
 
               </div>
           )
@@ -134,14 +141,14 @@ export default function Reset(){
                           {_renderFormFields()}
                           <div className="auth-button-bar flex-column">
                             <Button variant="contained" type="submit">Submit</Button>
+                            {
+                              error &&
+                              <Typography variant='caption' className={classes.errorMsg} align='center'>Password reset failed. Please return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>login and request a new reset link</a></Typography>
+                            }
+                            {
+                              success && <Typography variant='caption' className={classes.errorMsg} align='center'>Your password was reset successfully. Please return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>login</a></Typography>
+                            }
                           </div>
-                          {
-                            error &&
-                            <p className="err-msg">Something went wrong - please try again</p>
-                          }
-                          {
-                            success && <p className="success-msg">Your password was reset successfully. Please return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>login</a></p>
-                          }
                         </form>
                       </Box>
                     </React.Fragment>

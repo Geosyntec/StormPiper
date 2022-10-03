@@ -2,14 +2,21 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form";
 // import "./login.css"
-import { Box, Card, CardContent, Typography } from "@material-ui/core";
+import { Box, Card, CardContent, makeStyles, Typography } from "@material-ui/core";
 import { TextField,Input,Button } from '@material-ui/core'
+
+const useStyles = makeStyles((theme)=>({
+  errorMsg:{
+    color:theme.palette.warning.main,
+    margin:'5px 20px'
+  }
+}))
 
 export default function Login(){
     const navigate = useNavigate()
     const {register,handleSubmit, getValues} = useForm()
     const [error,setError] = useState(false)
-
+    const classes = useStyles()
     const fields:{fieldID:string,label:string,type:string,required:boolean,value:string|number}[] = [
       {
         fieldID:'username',
@@ -82,9 +89,7 @@ export default function Login(){
                     <Button variant="contained" type = "submit">Submit</Button>
                   </div>
                   {
-                    error
-                      ?<p className="err-msg">Incorrect username/password - please try again</p>
-                      :<p></p>
+                    error && <Typography variant='caption' className={classes.errorMsg} align='center'>Incorrect username/password - please try again</Typography>
                   }
                 </form>
               </Box>

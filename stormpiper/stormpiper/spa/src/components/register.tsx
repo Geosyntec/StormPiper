@@ -2,10 +2,14 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form";
 import "./register.css"
-import { Box, Card, CardContent, Typography } from "@material-ui/core";
-import { TextField,Button } from '@material-ui/core'
+import { Box, Card, CardContent, Typography,makeStyles,TextField,Button} from "@material-ui/core";
 
-
+const useStyles = makeStyles((theme)=>({
+  errorMsg:{
+    color:theme.palette.warning.main,
+    margin:'5px 20px'
+  }
+}))
 
 export default function Register(){
     const navigate = useNavigate()
@@ -13,6 +17,7 @@ export default function Register(){
     const [error,setError] = useState(false)
     const [success,setSuccess] = useState(false)
     const [displayVerify,setDisplayVerify] = useState(false)
+    const classes = useStyles()
 
     const fields:{name:string,label:string,type:string,required?:boolean,defaultValue:string|number, minLength?:{value:number,message:string},maxLength?:{value:number,message:string},validate?:(val:any)=>boolean|string}[] = [
       {
@@ -112,10 +117,10 @@ export default function Register(){
                   <Button variant="contained" type = "submit">Submit</Button>
                 </div>
                 {
-                  error && <p className="err-msg">User already exists</p>
+                  error && <Typography variant='caption' className={classes.errorMsg} align='center'>User already exists</Typography>
                 }
                 {
-                  success && <p className="success-msg">Successfully registered - Check your email for a confirmation link, and return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>Login</a></p>
+                  success && <Typography variant='caption' className={classes.errorMsg} align='center'>Successfully registered - Check your email for a confirmation link, and return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>Login</a></Typography>
                 }
               </form>
             </Box>

@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate,useSearchParams } from "react-router-dom"
 import { useForm } from "react-hook-form";
-// import "./reset.css"
-import { Typography,TextField,Button, CardContent, Card, Box } from "@material-ui/core";
+import { Typography,TextField,Button, CardContent, Card, Box, makeStyles } from "@material-ui/core";
 
+const useStyles = makeStyles((theme)=>({
+    errorMsg:{
+      color:theme.palette.warning.main,
+      margin:'5px 20px'
+    }
+}))
 
 export default function Forgot(){
     const navigate = useNavigate()
@@ -11,6 +16,7 @@ export default function Forgot(){
     const [error,setError] = useState(false)
     const [success,setSuccess] = useState(false)
     const [searchParams, setSearchParams] = useSearchParams()
+    const classes = useStyles()
 
     const fields: {
       name: string;
@@ -38,7 +44,7 @@ export default function Forgot(){
                     {
                         <TextField  {...register(formField.name,{...formField})} label = {formField.label} type = {formField.type} required={formField.required}/>
                     }
-                    {errors[formField.name] && <p className="form-label error-msg">{errors[formField.name]?.message}</p>}
+                    {errors[formField.name] && <Typography variant='caption' className={classes.errorMsg} align='center'>{errors[formField.name]?.message}</Typography>}
                 </div>
 
             )
@@ -72,11 +78,8 @@ export default function Forgot(){
 
 
     return (
-        // <div className="auth-container">
-        //     <div className="auth-form flex">
         <div className="flex-row">
             <div className="flex lg-margin">
-            {/* <div className="auth-form-body flex"> */}
                 <Card>
                     <CardContent>
                         <Typography variant="subtitle1" align="center"> Welcome to the Tacoma Watershed Insights Tool</Typography>
@@ -86,20 +89,19 @@ export default function Forgot(){
                             {_renderFormFields()}
                             <div className="auth-button-bar flex">
                                 <Button variant="contained" type = "submit">Submit</Button>
+                                {
+                                    error && <Typography variant='caption' className={classes.errorMsg} align='center'>Reset request failed - please try again</Typography>
+                                }
+                                {
+                                    success && <Typography variant='caption' className={classes.errorMsg} align='center'>A reset link was sent to the email associated with this account - Use the link to reset your email, and return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>Login</a></Typography>
+                                }
                             </div>
-                            {
-                                error && <p className="err-msg">Something went wrong - please try again</p>
-                            }
-                            {
-                                success && <p className="success-msg">A reset link was sent to the email associated with this account - Use the link to reset your email, and return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>Login</a></p>
-                            }
                             </form>
                         </Box>
                     </CardContent>
                 </Card>
             </div>
         </div>
-        // </div>
         );
 }
 
