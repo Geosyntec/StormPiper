@@ -16,7 +16,7 @@ RUN npm run build
 
 FROM python:3.9-slim-buster as core-runtime
 RUN apt-get update -y \
-    && apt-get install -y --no-install-recommends graphviz libspatialindex-dev unixodbc libpq-dev \ 
+    && apt-get install -y --no-install-recommends graphviz libspatialindex-dev unixodbc libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /stormpiper
 ENV PYTHONPATH=/stormpiper
@@ -35,7 +35,7 @@ RUN chmod +x /start.sh /start-pod.sh /start-reload.sh /start-test-container.sh
 
 FROM python:3.9-buster as builder
 RUN apt-get update -y \
-    && apt-get install -y --no-install-recommends gcc g++ unixodbc-dev libpq-dev libspatialindex-dev libgdal-dev \ 
+    && apt-get install -y --no-install-recommends gcc g++ unixodbc-dev libpq-dev libspatialindex-dev libgdal-dev \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 COPY ./stormpiper/requirements.txt /requirements.txt
@@ -80,13 +80,12 @@ COPY .coveragerc /stormpiper/.coveragerc
 CMD ["bash", "-c", "while true; do sleep 1; done"]
 
 
-
 FROM core-runtime as bg_worker
 # Add a user with an explicit UID/GID and create necessary directories
 ENV IMG_USER=bg_worker
 RUN addgroup --gid 1000 ${IMG_USER} \
     && adduser --system --disabled-password --uid 1000 --gid 1000 ${IMG_USER} \
-    && chown -R ${IMG_USER}:${IMG_USER} /stormpiper 
+    && chown -R ${IMG_USER}:${IMG_USER} /stormpiper
 USER ${IMG_USER}
 COPY --from=core-env --chown=${IMG_USER} /opt/venv /opt/venv
 COPY --chown=${IMG_USER} ./stormpiper/prestart-worker.sh /stormpiper/prestart-worker.sh
@@ -111,3 +110,11 @@ FROM base-app as stormpiper
 COPY --from=server-env /opt/venv /opt/venv
 COPY ./stormpiper/gunicorn_conf.py /gunicorn_conf.py
 EXPOSE 80
+
+
+FROM python:3.9-buster as stormpiper-unpinned
+RUN apt-get update -y \
+    && apt-get install -y --no-install-recommends gcc g++ unixodbc-dev libpq-dev libspatialindex-dev libgdal-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+COPY ./stormpiper/requirements_unpinned.txt /requirements_unpinned.txt
