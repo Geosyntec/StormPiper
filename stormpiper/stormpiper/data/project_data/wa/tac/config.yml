@@ -224,6 +224,18 @@ api_recognize:
         tmnt_performance_facility_type: ¯\_(ツ)_/¯
         label: Drywell (simple)
 
+      vault:
+        validator: FlowFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: ¯\_(ツ)_/¯ # no data yet for performance curves
+        label: Vault
+
+      vault_simple:
+        validator: SimpleTmntFacility
+        validation_fallback: NTFacility
+        tmnt_performance_facility_type: ¯\_(ツ)_/¯ # no data yet for performance curves
+        label: Vault (simple)
+
 project_reference_data:
   # met_table:
   #   file: met_data_20210907_1349.json
