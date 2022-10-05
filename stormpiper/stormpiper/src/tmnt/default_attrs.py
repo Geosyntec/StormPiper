@@ -55,6 +55,7 @@ def set_default_tmnt_attributes(
     df.loc[hds, "facility_type"] = "hydrodynamic_separator"
     df.loc[(df["facilitytype"] == "Swale"), "facility_type"] = "vegetated_swale"
     df.loc[(df["facilitytype"] == "Pond"), "facility_type"] = "wet_pond"
+    df.loc[(df["facilitytype"] == "Vault"), "facility_type"] = "vault"
 
     retains_full = [
         "bioretention_with_full_infiltration",

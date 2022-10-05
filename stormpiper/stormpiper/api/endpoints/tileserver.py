@@ -4,10 +4,10 @@ from typing import Dict
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import RedirectResponse, StreamingResponse
 
+from stormpiper.apps.supersafe.users import check_is_valid_token
 from stormpiper.earth_engine import get_tile_registry
 
-# TODO: create a check user dependency that uses ttl rather than per request.
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(check_is_valid_token)])
 
 
 @router.get("/redirect/{tilename}/{z}/{x}/{y}/{s}")

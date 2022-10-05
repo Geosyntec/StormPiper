@@ -4,6 +4,7 @@ import urllib.parse
 import uuid
 from typing import Optional
 
+import jwt
 from fastapi import Depends, HTTPException, Request, status
 from fastapi_users import BaseUserManager, FastAPIUsers, UUIDIDMixin
 from fastapi_users.authentication import (
@@ -13,6 +14,7 @@ from fastapi_users.authentication import (
     JWTStrategy,
 )
 from fastapi_users.db import SQLAlchemyUserDatabase
+from fastapi_users.jwt import decode_jwt
 
 from stormpiper.core import utils
 from stormpiper.core.config import settings
@@ -66,7 +68,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         )
 
         query = urllib.parse.urlencode({"token": token, "expires_at": expires_at})
-        reset_url = request.url_for("reset:get_reset_password") + f"?{query}"
+        reset_url = request.url_for("home") + f"/reset?{query}"
 
         await email.send_email_to_user(
             template="reset_password",
@@ -123,8 +125,28 @@ async def get_user_manager(user_db: SQLAlchemyUserDatabase = Depends(get_user_db
     yield UserManager(user_db)
 
 
-bearer_transport = BearerTransport(tokenUrl=settings.BEARER_TOKEN_URL)
-cookie_transport = CookieTransport(
+class BetterBearerTransport(BearerTransport):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def get_token(self, request: Request):
+        token = request.headers.get("Authorization", "").split(" ")[-1]
+        if token:
+            return token
+
+
+class BetterCookieTransport(CookieTransport):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def get_token(self, request: Request):
+        token = request.cookies.get(self.cookie_name, "")
+        if token:
+            return token
+
+
+bearer_transport = BetterBearerTransport(tokenUrl=settings.BEARER_TOKEN_URL)
+cookie_transport = BetterCookieTransport(
     cookie_secure=settings.COOKIE_SECURE,
     cookie_httponly=settings.COOKIE_HTTPONLY,
     cookie_samesite=settings.COOKIE_SAMESITE,
@@ -211,3 +233,49 @@ def check_protected_field_role(field: str, min_role: Role = Role.admin):
 
 
 check_protect_role_field = check_protected_field_role(field="role", min_role=Role.admin)
+
+
+def get_token_from_backend(request: Request):
+
+    for be in fastapi_users.authenticator.backends:
+        token = be.transport.get_token(request)  # type: ignore
+        if token:
+            return token
+
+    return None
+
+
+def check_token(token: str):
+    logger.info(f"token: {token}")
+    strat = get_jwt_strategy()
+
+    try:
+        data = decode_jwt(
+            token,
+            secret=strat.secret,
+            audience=strat.token_audience,
+            algorithms=[strat.algorithm],
+        )
+
+        return data
+
+    except jwt.PyJWTError as e:
+        logger.exception(e)
+        return None
+
+
+def is_valid_token(request: Request) -> bool:
+    token = get_token_from_backend(request)
+    if token is None:
+        return False
+    data = check_token(token)
+    if data:
+        return True
+    return False
+
+
+async def check_is_valid_token(request: Request):
+    isvalid = is_valid_token(request)
+
+    if not isvalid:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)

@@ -32,6 +32,8 @@ async def get_users(db: AsyncSession = Depends(get_async_session)):
 for r in router.routes:
     n = getattr(r, "name", None)
     deps = getattr(r, "dependencies", [])
+
+    # routes requiring admin role (i.e., role==100)
     if n in [
         "users:patch_user",
         "users:delete_user",
@@ -40,11 +42,7 @@ for r in router.routes:
     ]:
         deps.append(Depends(check_admin))
 
-
-# Prevent non-admins from changing their role.
-for r in router.routes:
-    n = getattr(r, "name", None)
-    deps = getattr(r, "dependencies", [])
+    # Prevent non-admins from changing their role.
     if n in [
         "users:patch_current_user",
     ]:
