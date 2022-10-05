@@ -66,7 +66,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         )
 
         query = urllib.parse.urlencode({"token": token, "expires_at": expires_at})
-        reset_url = request.url_for("reset:get_reset_password") + f"?{query}"
+        reset_url = request.url_for("home") + f"/reset?{query}"
 
         await email.send_email_to_user(
             template="reset_password",
