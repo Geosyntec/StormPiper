@@ -57,35 +57,34 @@ function App() {
         return res.json();
       })
       .then((res) => {
-        console.log("User Response?:",res['is_verified'])
         setUserEmail(res.email)
-        if(!res['is_verified]']){
+        if(!res['is_verified']){
           setVerificationDisplayState(true)
         }
       });
   },[])
 
   const topMenuButtons={
-    home:{
-      label:"Home",
-      icon:<HomeRoundedIcon/>,
-      clickHandler:null
-    },
+    // home:{
+    //   label:"Home",
+    //   icon:<HomeRoundedIcon/>,
+    //   clickHandler:null
+    // },
     project:{
       label:"Evaluate Project",
       icon:<ScatterPlotRoundedIcon/>,
       clickHandler:_toggleSetResultsDisplayState
     },
-    watershed:{
-      label:"Evaluate Watershed",
-      icon:<GridOnRoundedIcon/>,
-      clickHandler:null
-    },
-    about:{
-      label:"About",
-      icon:<InfoRoundedIcon/>,
-      clickHandler:null
-    }
+    // watershed:{
+    //   label:"Evaluate Watershed",
+    //   icon:<GridOnRoundedIcon/>,
+    //   clickHandler:null
+    // },
+    // about:{
+    //   label:"About",
+    //   icon:<InfoRoundedIcon/>,
+    //   clickHandler:null
+    // }
   }
 
 

@@ -48,10 +48,10 @@ export default function Verify(){
           if(resp.status===200){
             setVerifyResults(
               <React.Fragment>
-                <Typography variant="subtitle1">
+                <Typography variant="subtitle1" align="center">
                   Thank you for verifying your email with Tacoma Watershed Insights
                 </Typography>
-                <Typography variant="subtitle2">
+                <Typography variant="subtitle2" align="center">
                   Please <a href="javascript:;" onClick={()=>navigate('/app/login')}>log in </a> with the credentials you created for your account
                 </Typography>
               </React.Fragment>
@@ -59,10 +59,10 @@ export default function Verify(){
           }else{
             setVerifyResults(
             <React.Fragment>
-            <Typography variant="subtitle1">
+            <Typography variant="subtitle1" align="center">
               Sorry, something went wrong with your verification
             </Typography>
-            <Typography variant="subtitle2">
+            <Typography variant="subtitle2" align="center">
               Please <a href="javascript:;" onClick={()=>navigate('/app/login')}>log in </a> again to request another link
             </Typography>
           </React.Fragment>

@@ -31,7 +31,6 @@
 }
 
 .form-input{
-    /* max-width: 50px; */
     margin: 5px 20px;
     width:80%;
 }
@@ -39,13 +38,6 @@
 .login-form-row{
     text-align:start;
     width:100%;
-}
-
-.login-header{
-    font-size:medium
-}
-.login-sub-header{
-    font-size:small
 }
 
 .result-header, .err-list-header{
@@ -56,9 +48,9 @@
     color:red
 }
 
-input .login{
+/* input .login{
     width:50%
-}
+} */
 
 .login-button-bar{
     padding: 10px 0px;

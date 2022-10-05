@@ -1,36 +1,51 @@
-import React, { useState } from "react";
-import { useNavigate,useParams } from "react-router-dom"
+import React, { useEffect, useState } from "react";
+import { useNavigate,useSearchParams } from "react-router-dom"
 import { useForm } from "react-hook-form";
-// import "./reset.css"
-import { Typography } from "@material-ui/core";
+import { Typography,TextField,Card, CardContent,Button, Box, makeStyles } from "@material-ui/core";
+
+const useStyles = makeStyles((theme)=>({
+  errorMsg:{
+    color:theme.palette.warning.main,
+    margin:'5px 20px'
+  }
+}))
 
 export default function Reset(){
     const navigate = useNavigate()
     const {register,handleSubmit,formState: { errors },getValues} = useForm()
     const [error,setError] = useState(false)
-    const params = useParams()
+    const [success,setSuccess] = useState(false)
+    const [resetContents,setResetContents] = useState((
+      <React.Fragment>
+          <Typography variant="subtitle1">
+            Checking your reset link...
+          </Typography>
+        </React.Fragment>
+    ))
+    const [searchParams, setSearchParams] = useSearchParams()
+    const classes = useStyles()
+
+
+    let expiresAt:string|null = searchParams.get('expires_at')
+    let now = new Date()
+    let expiryDateFormatted = new Date(expiresAt)
+
+    console.log("Expiry date: ",expiryDateFormatted)
 
     const fields: {
       name: string;
       label: string;
       type: string;
       required?: boolean;
-      defaultValue: string | number | undefined;
+      defaultValue: string | number | null;
       minLength?: { value: number; message: string };
       maxLength?: { value: number; message: string };
       validate?: (val: any) => boolean | string;
       display?: boolean;
     }[] = [
       {
-        name: "username",
-        label: "username",
-        type: "email",
-        required: true,
-        defaultValue: "",
-      },
-      {
         name: "password",
-        label: "password",
+        label: "New Password",
         type: "password",
         defaultValue: "",
         minLength: {
@@ -38,6 +53,7 @@ export default function Reset(){
           message: "Password must be longer than 8 characters",
         },
         required: true,
+        display:true,
       },
       {
         name: "confirm_password",
@@ -47,78 +63,100 @@ export default function Reset(){
         defaultValue: "",
         validate: (val) =>
           val === getValues("password") || "Passwords don't match",
+          display:true,
       },
       {
         name: "token",
         label: "Reset token",
         type: "string",
         required: true,
-        defaultValue: params.token,
+        defaultValue: searchParams.get("token"),
         display:false,
       }
     ];
-  
-      function _renderFormFields(){
-        let fieldDiv = Object.values(fields).map((formField:{name:string,label:string,type:string,required?:boolean,defaultValue:string|number|undefined})=>{
-            return (
-                  <div className="login-form-row">
-                      {formField.required
-                        ?<label className="form-label required" htmlFor={formField.name}>{formField.label}</label>
-                        :<label className="form-label" htmlFor={formField.name}>{formField.label}</label>
-                      }
-                      <input className="form-input" {...register(formField.name,{...formField})} type={formField.type}/>
-                      {errors[formField.name] && <p className="form-label error-msg">{errors[formField.name]?.message}</p>}
-                  </div>
-              )
-          })
-          return fieldDiv;
-        
-    }
+
+    function _renderFormFields(){
+      console.log("Rendering fields. Any errors?:",errors)
+      let fieldDiv = Object.values(fields).map((formField)=>{
+        return (
+              <div className="flex-column auth-form-row">
+                  {
+                      <TextField  {...register(formField.name,{...formField})} label = {formField.display?formField.label:null} type = {formField.display?formField.type:"hidden"} defaultValue={formField.defaultValue} required={formField.required}/>
+                  }
+                  {errors[formField.name] && <Typography variant='caption' className={classes.errorMsg} align='center'>{errors[formField.name]?.message}</Typography>}
+
+              </div>
+          )
+      })
+      return fieldDiv;
+
+}
 
     async function _handleSubmit(data:any,e:any){
         console.log("Event: ",e)
           const formData = new FormData(e.target);
+          console.log("formData: ",formData)
           const response = await fetch('/auth/reset-password', {
               credentials: "same-origin",
               method: "POST",
               headers:{
+                Accept:"application/json",
                 "Content-Type":"application/json"
               },
-              body: formData,
+              body: JSON.stringify(Object.fromEntries(formData.entries())),
             }).then((resp) => {
               if (resp.status == 200) {
-                console.log("redirect on success");
-                window.location.href = '/app/login';
                 setError(false)
+                setSuccess(true)
               } else {
                 console.warn("reset failure", resp);
                 setError(true)
+                setSuccess(false)
               }
             });
           return response
       }
-  
-  
 
     return (
-        <div className="reset-container">
-          <div className="reset-form">
-            <div className="reset-form-body">
-              <Typography className="reset-header" variant="subtitle1"> Welcome to the Tacoma Watershed Insights Tool</Typography>
-              <Typography className="reset-sub-header" variant="subtitle2"> reset or <a href="javascript:;" onClick={()=>navigate('/app/register')}>Register</a> to get Started</Typography>
-              <form onSubmit={handleSubmit(_handleSubmit)}>
-                {_renderFormFields()}
-                <div className="button-bar">
-                  <input className="submit-btn" type="submit" />
-                </div>
-                {
-                  error
-                    ?<p className="err-msg">Something went wrong - please try again</p>
-                    :<p></p>
-                }
-              </form>
-            </div>
-          </div>
+      <div className="flex-row">
+        <div className="flex lg-margin">
+          <Card>
+            <CardContent>
+              {
+                now>expiryDateFormatted
+                  ?(<React.Fragment>
+                    <Typography variant="subtitle1">
+                        Sorry, your password reset link has expired
+                      </Typography>
+                      <Typography variant="subtitle2">
+                        Please return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>login </a> to request another link
+                      </Typography>
+                    </React.Fragment>)
+                  :(
+                    <React.Fragment>
+                      <Typography align="center" variant="subtitle1"> Welcome to the Tacoma Watershed Insights Tool</Typography>
+                      <Typography align = "center" variant="subtitle2"> Enter your new password below</Typography>
+                      <Box sx={{margin:'1em'}}>
+                        <form className = "flex" onSubmit={handleSubmit(_handleSubmit)}>
+                          {_renderFormFields()}
+                          <div className="auth-button-bar flex-column">
+                            <Button variant="contained" type="submit">Submit</Button>
+                            {
+                              error &&
+                              <Typography variant='caption' className={classes.errorMsg} align='center'>Password reset failed. Please return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>login and request a new reset link</a></Typography>
+                            }
+                            {
+                              success && <Typography variant='caption' className={classes.errorMsg} align='center'>Your password was reset successfully. Please return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>login</a></Typography>
+                            }
+                          </div>
+                        </form>
+                      </Box>
+                    </React.Fragment>
+                  )
+              }
+            </CardContent>
+          </Card>
         </div>
-      );
+      </div>
+  );
 }
