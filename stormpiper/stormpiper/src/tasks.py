@@ -265,9 +265,12 @@ def delete_and_refresh_all_results_tables(*, engine=engine):
 
 
 def build_default_tmnt_source_controls(*, engine=engine):
-    subbasin = pandas.read_sql("subbasin", con=engine).subbasin.tolist()
+    subbasin = pandas.read_sql(
+        "select * from subbasin where basinname = 'FOSS WATERWAY' ", con=engine
+    ).subbasin.tolist()
+
     df = (
-        default_tmnt_source_controls.dummy_tmnt_source_control(subbasin)
+        default_tmnt_source_controls.foss_tmnt_source_control(subbasin)
         .reset_index(drop=True)
         .assign(id=lambda df: df.index + 1)
     )

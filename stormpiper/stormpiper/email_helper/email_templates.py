@@ -14,11 +14,9 @@ def reset_password(*, email, token, name=None, reset_url="", **kwargs):
                 },
                 "To": [{"Email": email, "Name": name}],
                 "Subject": f"Password Reset Requested for Tacoma Watersheds",
-                "TextPart": f"Hello {name}, Your reset token is:\n{token}\n\nYour reset link is:\n{reset_url}",
+                "TextPart": f"Hello {name},\nYour reset link is:\n{reset_url}",
                 "HTMLPart": f"""
                     <p>Hello {name},</p>
-                    <p>Your reset token is: </p>
-                    <p>{token}</p>
                     <p>Your reset link is: </p>
                     <p>{reset_url}</p>
                     """,
@@ -42,11 +40,9 @@ def request_verify(*, email, token, name=None, verify_url="", **kwargs):
                 },
                 "To": [{"Email": email, "Name": name}],
                 "Subject": f"Email Verification Code for Tacoma Watersheds",
-                "TextPart": f"Hello {name}, Your verification token is:\n{token}\n\nYour verification link is:\n{verify_url}",
+                "TextPart": f"Hello {name},\nYour verification link is:\n{verify_url}",
                 "HTMLPart": f"""
                     <p>Hello {name},</p>
-                    <p>Your verification token is: </p>
-                    <p>{token}</p>
                     <p>Your verification link is: </p>
                     <p>{verify_url}</p>
                     """,
