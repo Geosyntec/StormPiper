@@ -1,15 +1,22 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form";
-import "./login.css"
-import { Typography } from "@material-ui/core";
+// import "./login.css"
+import { Box, Card, CardContent, makeStyles, Typography } from "@material-ui/core";
 import { TextField,Input,Button } from '@material-ui/core'
+
+const useStyles = makeStyles((theme)=>({
+  errorMsg:{
+    color:theme.palette.warning.main,
+    margin:'5px 20px'
+  }
+}))
 
 export default function Login(){
     const navigate = useNavigate()
-    const {register,handleSubmit} = useForm()
+    const {register,handleSubmit, getValues} = useForm()
     const [error,setError] = useState(false)
-
+    const classes = useStyles()
     const fields:{fieldID:string,label:string,type:string,required:boolean,value:string|number}[] = [
       {
         fieldID:'username',
@@ -30,11 +37,7 @@ export default function Login(){
     function _renderFormFields(){
         let fieldDiv = Object.values(fields).map((formField:{fieldID:string,label:string,type:string,required:boolean,value:string|number})=>{
           return (
-                <div className="flex login-form-row">
-                    {/* {formField.required
-                      ?<InputLabel className="form-label required" htmlFor={formField.fieldID}>{formField.label}</InputLabel>
-                      :<InputLabel className="form-label" htmlFor={formField.fieldID}>{formField.label}</InputLabel>
-                    } */}
+                <div className="flex auth-form-row">
                     {
                         <TextField  {...register(formField.fieldID)} label = {formField.label} type = {formField.type} defaultValue={formField.value} required={formField.required}/>
                     }
@@ -68,29 +71,30 @@ export default function Login(){
 
 
 
+
     return (
-      <div className="login-container">
-        <div className="login-form flex">
-          <div className="login-form-body flex">
-            <div className="flex">
-            <Typography className="login-header" variant="subtitle1"> Welcome to the Tacoma Watershed Insights Tool</Typography>
-            <Typography className="login-sub-header" variant="subtitle2"> Login or <a href="javascript:;" onClick={()=>navigate('/app/register')}>Register</a> to get Started</Typography>
-            </div>
-            <form className="flex" onSubmit={handleSubmit(_handleSubmit)}>
-              {_renderFormFields()}
-              {/* <div className="reset-container">
-                <a className="form-label" href="javascript:;" onClick={()=>navigate('/app/reset')}>Forgot your password?</a>
-              </div> */}
-              <div className="login-button-bar">
-                <Button variant="contained" type = "submit">Submit</Button>
-              </div>
-              {
-                error
-                  ?<p className="err-msg">Incorrect username/password - please try again</p>
-                  :<p></p>
-              }
-            </form>
-          </div>
+      <div className="flex-row">
+        <div className="flex lg-margin">
+          <Card>
+            <CardContent>
+              <Typography variant="subtitle1" align="center"> Welcome to the Tacoma Watershed Insights Tool</Typography>
+              <Typography variant="subtitle2" align="center"> Login or <a href="javascript:;" onClick={()=>navigate('/app/register')}>Register</a> to get Started</Typography>
+              <Box sx={{margin:'1em'}}>
+                <form className="flex" onSubmit={handleSubmit(_handleSubmit)}>
+                  {_renderFormFields()}
+                  <div className="flex auth-form-row">
+                    <a className="form-label" href="javascript:;" onClick={()=>{navigate("/app/forgot-password")}}>Forgot your password?</a>
+                  </div>
+                  <div className="auth-button-bar">
+                    <Button variant="contained" type = "submit">Submit</Button>
+                  </div>
+                  {
+                    error && <Typography variant='caption' className={classes.errorMsg} align='center'>Incorrect username/password - please try again</Typography>
+                  }
+                </form>
+              </Box>
+            </CardContent>
+          </Card>
         </div>
       </div>
     );

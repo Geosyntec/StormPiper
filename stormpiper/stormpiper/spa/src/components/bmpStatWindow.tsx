@@ -17,14 +17,14 @@ const statsDict={
     label:"Design Parameters",
     fields:["design_storm_depth_inches","total_volume_cuft","retention_volume_cuft"],
   },
-  tributaryArea:{
-    label:"Tributary Area",
-    fields:["tributary_area_tc_min"],
-  },
-  lifeCycleCosts:{
-    label:"Life-Cycle Costs",
-    fields:[],
-  },
+  // tributaryArea:{
+  //   label:"Tributary Area",
+  //   fields:["tributary_area_tc_min"],
+  // },
+  // lifeCycleCosts:{
+  //   label:"Life-Cycle Costs",
+  //   fields:[],
+  // },
   performanceSummary:{
     label:"Performance Summary",
     fields:["runoff_volume_cuft_inflow","runoff_volume_cuft_treated","runoff_volume_cuft_retained","runoff_volume_cuft_captured","runoff_volume_cuft_bypassed"],
