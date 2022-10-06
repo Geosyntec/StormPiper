@@ -246,7 +246,6 @@ def get_token_from_backend(request: Request):
 
 
 def check_token(token: str):
-    logger.info(f"token: {token}")
     strat = get_jwt_strategy()
 
     try:
