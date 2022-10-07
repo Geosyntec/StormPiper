@@ -1,5 +1,5 @@
 import DeckGL from "@deck.gl/react";
-import {FlyToInterpolator} from "deck.gl"
+import {FlyToInterpolator} from "@deck.gl/core"
 import StaticMap from "react-map-gl";
 import getTooltipContents from "./tooltip.jsx";
 import { useLocation } from "react-router-dom";
