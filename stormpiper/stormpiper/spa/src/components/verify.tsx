@@ -1,12 +1,18 @@
 import { useSearchParams,useNavigate } from "react-router-dom"
 import React, {useEffect, useState} from "react";
-import { Card, CardContent, Typography } from "@material-ui/core";
+import { Card, CardContent, makeStyles, Typography } from "@material-ui/core";
+
+const useStyles = makeStyles((theme)=>({
+  mainCard:{
+    backgroundColor:theme.palette.grey[100],
+  },
+}))
 
 export default function Verify(){
 
     const [searchParams, setSearchParams] = useSearchParams()
     const navigate = useNavigate()
-
+    const classes = useStyles()
     let token:string|null = searchParams.get('token')
     let expiresAt:string|null = searchParams.get('expires_at')
     let now = new Date()
@@ -76,7 +82,7 @@ export default function Verify(){
    return (
             <div className="flex-row">
               <div className="lg-margin">
-                <Card>
+                <Card className={classes.mainCard}>
                   <CardContent>
                     {verifyResults}
                   </CardContent>

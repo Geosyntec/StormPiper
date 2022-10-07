@@ -9,6 +9,12 @@ const useStyles = makeStyles((theme)=>({
   errorMsg:{
     color:theme.palette.warning.main,
     margin:'5px 20px'
+  },
+  mainCard:{
+    backgroundColor:theme.palette.grey[100],
+  },
+  mainButton:{
+    backgroundColor:theme.palette.grey[400]
   }
 }))
 
@@ -75,7 +81,7 @@ export default function Login(){
     return (
       <div className="flex-row">
         <div className="flex lg-margin">
-          <Card>
+          <Card className={classes.mainCard}>
             <CardContent>
               <Typography variant="subtitle1" align="center"> Welcome to the Tacoma Watershed Insights Tool</Typography>
               <Typography variant="subtitle2" align="center"> Login or <a href="javascript:;" onClick={()=>navigate('/app/register')}>Register</a> to get Started</Typography>
@@ -86,10 +92,13 @@ export default function Login(){
                     <a className="form-label" href="javascript:;" onClick={()=>{navigate("/app/forgot-password")}}>Forgot your password?</a>
                   </div>
                   <div className="auth-button-bar">
-                    <Button variant="contained" type = "submit">Submit</Button>
+                    <Button className={classes.mainButton} variant="contained" type = "submit">Submit</Button>
                   </div>
                   {
-                    error && <Typography variant='caption' className={classes.errorMsg} align='center'>Incorrect username/password - please try again</Typography>
+                    error &&
+                      <div className="flex auth-form-row">
+                        <Typography variant='caption' className={classes.errorMsg} align='center'>Incorrect username/password - please try again</Typography>
+                      </div>
                   }
                 </form>
               </Box>

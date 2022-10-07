@@ -4,6 +4,10 @@ import { useForm } from "react-hook-form";
 import { Typography,TextField,Card, CardContent,Button, Box, makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles((theme)=>({
+  successMsg:{
+    color:theme.palette.primary.main,
+    margin:'5px 20px',
+  },
   errorMsg:{
     color:theme.palette.warning.main,
     margin:'5px 20px'
@@ -143,10 +147,15 @@ export default function Reset(){
                             <Button variant="contained" type="submit">Submit</Button>
                             {
                               error &&
-                              <Typography variant='caption' className={classes.errorMsg} align='center'>Password reset failed. Please return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>login and request a new reset link</a></Typography>
+                                <div className="flex auth-form-row">
+                                  <Typography variant='caption' className={classes.errorMsg} align='center'>Password reset failed. Please return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>login and request a new reset link</a></Typography>
+                                </div>
                             }
                             {
-                              success && <Typography variant='caption' className={classes.errorMsg} align='center'>Your password was reset successfully. Please return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>login</a></Typography>
+                              success &&
+                                <div className="flex auth-form-row">
+                                  <Typography variant='caption' className={classes.successMsg} align='center'>Your password was reset successfully. Please return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>login</a></Typography>
+                                </div>
                             }
                           </div>
                         </form>

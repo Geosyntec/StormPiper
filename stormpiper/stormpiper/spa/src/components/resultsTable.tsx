@@ -1,4 +1,4 @@
-import { Typography,makeStyles, Button } from "@material-ui/core";
+import { Typography,makeStyles, Button, CircularProgress, Box } from "@material-ui/core";
 import Chip from "@material-ui/core/Chip"
 import React, {useState,useEffect} from "react";
 import { DataGrid } from '@mui/x-data-grid';
@@ -263,7 +263,10 @@ export default function ResultsTable(props:ResultsTableProps){
         );
     }else{
         return(
-            <Typography variant="h3">Loading results...</Typography>
+            <Box sx={{display:'flex',flexDirection:'column',justifyContent:'center'}}>
+                <Typography variant="h5">Loading results...</Typography>
+                <CircularProgress style={{margin:'1em',alignSelf:'center'}}/>
+            </Box>
         )
     }
 
