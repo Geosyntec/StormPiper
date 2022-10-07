@@ -3,12 +3,22 @@ import { useNavigate,useSearchParams } from "react-router-dom"
 import { useForm } from "react-hook-form";
 import { Typography,TextField,Button, CardContent, Card, Box, makeStyles } from "@material-ui/core";
 
-const useStyles = makeStyles((theme)=>({
-    errorMsg:{
-      color:theme.palette.warning.main,
-      margin:'5px 20px'
-    }
-}))
+const useStyles = makeStyles((theme) => ({
+  errorMsg: {
+    color: theme.palette.warning.main,
+    margin: "5px 20px",
+  },
+  successMsg:{
+    color:theme.palette.primary.main,
+    margin:'5px 20px',
+  },
+  mainCard: {
+    backgroundColor: theme.palette.grey[100],
+  },
+  mainButton: {
+    backgroundColor: theme.palette.grey[400],
+  },
+}));
 
 export default function Forgot(){
     const navigate = useNavigate()
@@ -80,7 +90,7 @@ export default function Forgot(){
     return (
         <div className="flex-row">
             <div className="flex lg-margin">
-                <Card>
+                <Card className={classes.mainCard}>
                     <CardContent>
                         <Typography variant="subtitle1" align="center"> Welcome to the Tacoma Watershed Insights Tool</Typography>
                         <Typography variant="subtitle2" align="center"> Enter the email associated with your account below to reset your password</Typography>
@@ -88,12 +98,18 @@ export default function Forgot(){
                             <form onSubmit={handleSubmit(_handleSubmit)}>
                             {_renderFormFields()}
                             <div className="auth-button-bar flex">
-                                <Button variant="contained" type = "submit">Submit</Button>
+                                <Button className={classes.mainButton} variant="contained" type = "submit">Submit</Button>
                                 {
-                                    error && <Typography variant='caption' className={classes.errorMsg} align='center'>Reset request failed - please try again</Typography>
+                                    error &&
+                                        <div className="flex auth-form-row">
+                                            <Typography variant='caption' className={classes.errorMsg} align='center'>Reset request failed - please try again</Typography>
+                                        </div>
                                 }
                                 {
-                                    success && <Typography variant='caption' className={classes.errorMsg} align='center'>A reset link was sent to the email associated with this account - Use the link to reset your email, and return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>Login</a></Typography>
+                                    success &&
+                                        <div className="flex auth-form-row">
+                                            <Typography variant='caption' className={classes.successMsg} align='center'>A reset link was sent to the email associated with this account - Use the link to reset your email, and return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>Login</a></Typography>
+                                        </div>
                                 }
                             </div>
                             </form>

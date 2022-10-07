@@ -7,7 +7,17 @@ import { Box, Card, CardContent, Typography,makeStyles,TextField,Button} from "@
 const useStyles = makeStyles((theme)=>({
   errorMsg:{
     color:theme.palette.warning.main,
-    margin:'5px 20px'
+    margin:'5px 20px',
+  },
+  successMsg:{
+    color:theme.palette.primary.main,
+    margin:'5px 20px',
+  },
+  mainCard:{
+    backgroundColor:theme.palette.grey[100],
+  },
+  mainButton:{
+    backgroundColor:theme.palette.grey[400]
   }
 }))
 
@@ -31,12 +41,14 @@ export default function Register(){
         name:'first_name',
         label:'First Name',
         type:'text',
+        required:true,
         defaultValue:''
       },
       {
         name:'last_name',
         label:'Last Name',
         type:'text',
+        required:true,
         defaultValue:''
       },
       {
@@ -107,20 +119,20 @@ export default function Register(){
     return (
       <div className="flex-row">
         <div className="flex lg-margin">
-          <Card>
+          <Card className={classes.mainCard}>
             <CardContent>
             <Typography align="center" variant="subtitle1"> Enter Your New Account Information</Typography>
             <Box sx={{margin:'1em'}}>
               <form className="flex-column" onSubmit={handleSubmit(_handleSubmit)}>
                 {_renderFormFields()}
                 <div className="auth-button-bar">
-                  <Button variant="contained" type = "submit">Submit</Button>
+                  <Button className={classes.mainButton} variant="contained" type = "submit">Submit</Button>
                 </div>
                 {
                   error && <Typography variant='caption' className={classes.errorMsg} align='center'>User already exists</Typography>
                 }
                 {
-                  success && <Typography variant='caption' className={classes.errorMsg} align='center'>Successfully registered - Check your email for a confirmation link, and return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>Login</a></Typography>
+                  success && <Typography variant='caption' className={classes.successMsg} align='center'>Successfully registered - Check your email for a confirmation link, and return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>Login</a></Typography>
                 }
               </form>
             </Box>
