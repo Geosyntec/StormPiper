@@ -3,18 +3,22 @@ import { useNavigate,useSearchParams } from "react-router-dom"
 import { useForm } from "react-hook-form";
 import { Typography,TextField,Button, CardContent, Card, Box, makeStyles } from "@material-ui/core";
 
-const useStyles = makeStyles((theme)=>({
-    errorMsg:{
-      color:theme.palette.warning.main,
-      margin:'5px 20px'
-    },
-    mainCard:{
-        backgroundColor:theme.palette.grey[100],
-      },
-      mainButton:{
-        backgroundColor:theme.palette.grey[400]
-      }
-}))
+const useStyles = makeStyles((theme) => ({
+  errorMsg: {
+    color: theme.palette.warning.main,
+    margin: "5px 20px",
+  },
+  successMsg:{
+    color:theme.palette.primary.main,
+    margin:'5px 20px',
+  },
+  mainCard: {
+    backgroundColor: theme.palette.grey[100],
+  },
+  mainButton: {
+    backgroundColor: theme.palette.grey[400],
+  },
+}));
 
 export default function Forgot(){
     const navigate = useNavigate()
@@ -104,7 +108,7 @@ export default function Forgot(){
                                 {
                                     success &&
                                         <div className="flex auth-form-row">
-                                            <Typography variant='caption' className={classes.errorMsg} align='center'>A reset link was sent to the email associated with this account - Use the link to reset your email, and return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>Login</a></Typography>
+                                            <Typography variant='caption' className={classes.successMsg} align='center'>A reset link was sent to the email associated with this account - Use the link to reset your email, and return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>Login</a></Typography>
                                         </div>
                                 }
                             </div>

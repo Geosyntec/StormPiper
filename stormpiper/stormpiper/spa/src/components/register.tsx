@@ -9,6 +9,10 @@ const useStyles = makeStyles((theme)=>({
     color:theme.palette.warning.main,
     margin:'5px 20px',
   },
+  successMsg:{
+    color:theme.palette.primary.main,
+    margin:'5px 20px',
+  },
   mainCard:{
     backgroundColor:theme.palette.grey[100],
   },
@@ -128,7 +132,7 @@ export default function Register(){
                   error && <Typography variant='caption' className={classes.errorMsg} align='center'>User already exists</Typography>
                 }
                 {
-                  success && <Typography variant='caption' className={classes.errorMsg} align='center'>Successfully registered - Check your email for a confirmation link, and return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>Login</a></Typography>
+                  success && <Typography variant='caption' className={classes.successMsg} align='center'>Successfully registered - Check your email for a confirmation link, and return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>Login</a></Typography>
                 }
               </form>
             </Box>
