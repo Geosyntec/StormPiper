@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { makeStyles } from '@material-ui/core/styles';
-import { Typography,Paper } from "@material-ui/core";
+import { Typography,Paper, Chip } from "@material-ui/core";
 import { BMPForm } from "./bmpForm";
 import { ListAltRounded, LocalDiningOutlined } from "@material-ui/icons";
 import "./bmpStatWindow.css";
@@ -68,23 +68,44 @@ type specState={
 }
 
 const useStyles = makeStyles((theme) => ({
-  panelTitle:{
-    color:"white",
+  panelTitle: {
+    color: "white",
   },
-  formHeader:{
-    background:theme.palette.primary.main,
-    margin:"0px",
-    justifyContent:"center",
-    display:"flex",
-    borderRadius:"5px"
+  formHeader: {
+    background: theme.palette.primary.main,
+    margin: "0px",
+    justifyContent: "center",
+    display: "flex",
+    borderRadius: "5px",
   },
-  activeHeader:{
-    fontWeight:"bold",
-    padding:"10px 5px",
-    margin:"0",
-    background:theme.palette.grey[400],
-    borderRadius:"5px"
-  }
+  activeHeader: {
+    fontWeight: "bold",
+    padding: "10px 5px",
+    margin: "0",
+    background: theme.palette.grey[400],
+    borderRadius: "5px",
+  },
+  bold: {
+    fontWeight: "bold",
+  },
+  headerItem: { margin: theme.spacing(0.5) },
+  active: {
+    "&:focus": {
+      backgroundColor: theme.palette.warning.main,
+    },
+    "&:hover": {
+      backgroundColor: theme.palette.warning.main,
+    },
+    backgroundColor: theme.palette.warning.main,
+  },
+  listRoot: {
+    display: "flex",
+    justifyContent: "center",
+    flexWrap: "wrap",
+    listStyle: "none",
+    padding: theme.spacing(0.5),
+    margin: 0,
+  },
 }));
 
 
@@ -169,12 +190,6 @@ function BMPStatWindow(props:statWindowProps) {
     })
   }, [props?.feature]);
 
-  function ActiveHeader(props:{label:string,clickHandler:Function}){
-    return(
-    <p key={props.label} onClick={()=>{props.clickHandler(props.label)}} className={props.label===state.header?classes.activeHeader:undefined}>{props.label}</p>
-    )
-  }
-
   function switchStats(headerName:string){
     setState(()=>{
       let stats:any[] = []
@@ -192,12 +207,7 @@ function BMPStatWindow(props:statWindowProps) {
             return fields.includes(item)
           })
           stats.push(...results)
-          console.log("Displaying stats: ",stats)
         }
-      // }
-      // else{
-      //   stats = state.results[1] || {}
-      // }
       return {
         ...state,
         header:headerName,
@@ -213,7 +223,6 @@ function BMPStatWindow(props:statWindowProps) {
     if(state.error){
       return <div>Something went wrong on our end.</div>
     }else if(!loadingState){
-      console.log("Displaying Loading Screen, loadingState = ",loadingState)
       return <div>Loading...</div>
     }else{
       let statsList = Object.values(state.stats).map((stat:string)=>{
@@ -224,16 +233,15 @@ function BMPStatWindow(props:statWindowProps) {
           }
           return (
             <div className="stat">
-              <p><strong>{fieldLabelDict[stat]}:&#8195;</strong></p>
-              <p>{renderedStat}</p>
+              <body><strong>{fieldLabelDict[stat]}:&#8195;</strong></body>
+              <body>{renderedStat}</body>
             </div>
           );
         }
       })
-      console.log("Stats list: ",statsList)
       return (
           <div>
-            {statsList.length>0?statsList:(<p><strong>Data Unavailable</strong></p>)}
+            {statsList.length>0?statsList:(<Typography className={classes.bold} variant="h6">Data Unavailable</Typography>)}
           </div>
       );
     }
@@ -250,7 +258,6 @@ function BMPStatWindow(props:statWindowProps) {
       let fType:string = facilityType
       let fTypeRoot = fType.replace("_simple","")
 
-      console.log("Attempting to render form for ",facilityType)
 
       let simpleBaseType
       if(fType==='no_treatment'){
@@ -262,7 +269,6 @@ function BMPStatWindow(props:statWindowProps) {
 
       let facilityFields = specs.facilitySpec[baseType]
       let simpleFacilityFields = specs.facilitySpec[simpleBaseType]
-      console.log('Loading form with fetched values:',state.items)
       return (
           <BMPForm allFields={facilityFields} simpleFields={simpleFacilityFields} values={state.items} allFacilities={specs.context} currentFacility={facilityType} facilityChangeHandler={setFacilityType}></BMPForm>
       );
@@ -272,16 +278,25 @@ function BMPStatWindow(props:statWindowProps) {
   }
 
   function _renderHeaderList(){
-    let headerList = Object.values(statsDict).map((category,index) => {
-      return (
-        <ActiveHeader
-          key={index}
-          label={category.label}
-          clickHandler={() => switchStats(category.label)}
-        ></ActiveHeader>
-      );
-    });
-    return headerList
+    return (
+      <ul className={classes.listRoot}>
+        {Object.values(statsDict).map((category,index) => {
+          return (
+            <li>
+              <Chip
+                className={`${classes.headerItem} ${
+                  category.label === state.header && classes.active
+                }`}
+                label={category.label}
+                onClick={() => {
+                  switchStats(category.label)
+                }}
+              />
+            </li>
+          );
+        })}
+      </ul>
+    );
   }
 
   return props.displayStatus ? (

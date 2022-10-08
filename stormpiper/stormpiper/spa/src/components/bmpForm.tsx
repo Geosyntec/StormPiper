@@ -1,4 +1,4 @@
-import { Button, Dialog,DialogActions,FormControlLabel,Switch,TextField } from "@material-ui/core";
+import { Button, Dialog,DialogActions,FormControlLabel,MenuItem,Switch,TextField } from "@material-ui/core";
 import React from "react";
 import { useState, useEffect,useRef } from "react";
 import { useForm } from "react-hook-form";
@@ -242,7 +242,7 @@ export function BMPForm(props:formProps){
                               margin="dense"
                               label={formField.label}
                               select
-                              defaultValue={props.currentFacility.replace("_simple","")}
+                              value={props.currentFacility.replace("_simple","")}
                               onChange={(e)=>{
                                   reset(_createDefaults(isSimple))
                                   props.facilityChangeHandler(e.target.value+(isSimple?'_simple':''))
@@ -251,7 +251,7 @@ export function BMPForm(props:formProps){
                              >
                               {Object.keys(props.allFacilities).map((fType:string)=>{
                                 if(!fType.match('_simple')){
-                                  return(<option value={fType}>{props.allFacilities[fType].label}</option>)
+                                  return(<MenuItem value={fType}>{props.allFacilities[fType].label}</MenuItem>)
                                 }
                               })}
                             </TextField>
