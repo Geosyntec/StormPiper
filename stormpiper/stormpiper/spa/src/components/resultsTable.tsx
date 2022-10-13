@@ -6,8 +6,11 @@ import { DataGrid } from '@mui/x-data-grid';
 type TableHeader = {
     field:string,
     headerName:string,
-    valueGetter:(values:any)=>any,
-    flex?:number
+    valueFormatter:(values:any)=>any,
+    // flex?:number,
+    headerAlign:string,
+    align:string,
+    width?:number
 }
 
 type FieldGroup={
@@ -116,7 +119,6 @@ export default function ResultsTable(props:ResultsTableProps){
 
 
     const pinnedFields = ["node_id","epoch_id"]
-    const [filterModel,setFilterModel] = useState({items:[{columnField:"node_id",operator:"contains",value:""}]})
     const fieldGroups:FieldGroup[]=[
         {
             groupName:"Overview",
@@ -143,8 +145,6 @@ export default function ResultsTable(props:ResultsTableProps){
     })
     const [currentFields,setCurrentFields] = useState([...pinnedFields,"facility_type","node_type","captured_pct","treated_pct","retained_pct","bypassed_pct"])
     const [currentGroup,setCurrentGroup]= useState("Overview")
-    // const [currentFields,setCurrentFields] = useState(props.nodes==='all'? [...pinnedFields,"facility_type","node_type"]:[...pinnedFields,"runoff_volume_cuft_inflow","runoff_volume_cuft_treated","runoff_volume_cuft_retained","runoff_volume_cuft_captured","runoff_volume_cuft_bypassed"])
-    // const [currentGroup,setCurrentGroup]= useState(props.nodes==='all'? "Overview":"Runoff Stats")
 
     useEffect(()=>{
 
@@ -156,28 +156,6 @@ export default function ResultsTable(props:ResultsTableProps){
             resSpec = resArray[0].components.schemas.ResultView
             allResults = resArray[1]
             headers = _buildTableColumns(resSpec.properties)
-                // : [
-                //     {
-                //         field:"1980s",
-                //         headerName:"1980's",
-                //         flex:1
-                //     },
-                //     {
-                //         field:"2030s",
-                //         headerName:"2030's",
-                //         flex:1
-                //     },
-                //     {
-                //         field:"2050s",
-                //         headerName:"2050's",
-                //         flex:1
-                //     },
-                //     {
-                //         field:"2080s",
-                //         headerName:"2080's",
-                //         flex:1
-                //     },
-                // ]
             setResultState({
                 results:allResults,
                 headers,
@@ -187,25 +165,24 @@ export default function ResultsTable(props:ResultsTableProps){
         .catch(err=>console.warn("Couldn't get results", err))
     },[props.displayState])
 
-    // useEffect(()=>{
-    //     console.log("Current results table rows: ",resultState.results)
-    // },[resultState.results])
-
-
-    // _cleanNumericalValues(results:{[]})
-
     function _buildTableColumns(props:{[key:string]:{title:string,type:string}}):TableHeader[]{
         let colArr:TableHeader[] = []
         Object.keys(props).map(k=>{
             colArr.push({
                 field:k,
                 headerName:props[k].title,
-                flex:pinnedFields.includes(k)? 2:1,
-                valueGetter:(params)=>{
+                width:pinnedFields.includes(k)? 150:200+(props[k].title.length-20)*5,
+                headerAlign:'center',
+                align:'center',
+                valueFormatter:(params)=>{
+                    console.log("Formatting value: ",params)
+                    if(params.value && params.value==null){
+                        return ''
+                    }
                     if(props[k].type==="number"){
-                        return new Intl.NumberFormat('en-US',{maximumSignificantDigits:3}).format(params.row[k])
+                        return new Intl.NumberFormat('en-US',{maximumSignificantDigits:3}).format(params.value)
                     }else{
-                        return params.row[k]
+                        return params.value
                     }
                 }
             })
@@ -245,18 +222,20 @@ export default function ResultsTable(props:ResultsTableProps){
                     </div>
                 </div>
                 <DataGrid
+                    sx={{
+                        overflowX:'scroll',
+                        "& .MuiDataGrid-virtualScroller":{
+                            overflowX:'scroll'
+                        }
+                    }}
                     rows={resultState.results}
                     columns={resultState.headers.filter(h=>currentFields.includes(h.field))}
                     rowsPerPageOptions={[5,25,100]}
                     disableSelectionOnClick
                     getRowId={(row) => row['node_id'] + row['epoch_id']}
                     density={"compact"}
-
-                    // initialState={{
-                    //     filter: {
-                    //       filterModel,
-                    //     },
-                    //   }}
+                    // getRowHeight={() => 'auto'}
+                    // getEstimatedRowHeight={() => 200}
                 />
             </div>
           </div>
