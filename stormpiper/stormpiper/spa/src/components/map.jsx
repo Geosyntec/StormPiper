@@ -73,8 +73,15 @@ function DeckGLMap(props) {
       // }}
       // onload={()=>checkFeature(props)}
       getTooltip={(object) => {
+        let width = 0
+        let height = 0
+        if(object.viewport){
+          ({width, height} = object.viewport)
+        }
+        let closeToEdge = object.y > height *0.8 || object.x > width*0.85
         if(object?.object){console.log('Selected Object',object)}
-        return object.object && {
+
+        return object.object && !closeToEdge && {
           html: getTooltipContents(object.object, object?.layer?.id,object?.layer?.props?.label),
           style:{
             borderRadius:'6px',
