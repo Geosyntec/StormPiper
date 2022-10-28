@@ -49,3 +49,5 @@ email-validator
 watchgod
 
 nereid @ https://github.com/Geosyntec/nereid/archive/v0.6.0.zip
+
+pymcdm==1.1.0
