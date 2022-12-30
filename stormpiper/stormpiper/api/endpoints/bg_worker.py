@@ -119,7 +119,7 @@ ForegroundTasks = StrEnum("ForegroundTasks", {k: k for k in _tasks})
 
 
 @rpc_router.get("/run_foreground/{taskname}", response_class=JSONResponse)
-async def run_workflow(
+async def run_foreground_task(
     taskname: ForegroundTasks,  # type: ignore
 ) -> None:
 

@@ -9,7 +9,7 @@ def overlay_rodeo(
     if any(i is None for i in [delineations, subbasins]):
         return geopandas.GeoDataFrame([])
     out = (
-        geopandas.overlay(delineations, subbasins, how="union", keep_geom_type=True)
+        geopandas.overlay(delineations, subbasins, how="union", keep_geom_type=True)  # type: ignore
         .assign(subbasin=lambda df: df["subbasin"].fillna("None").astype(str))
         .assign(basinname=lambda df: df["basinname"].fillna("None").astype(str))
         .assign(

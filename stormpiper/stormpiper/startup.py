@@ -9,11 +9,7 @@ from tenacity import stop_after_attempt  # type: ignore
 from tenacity import wait_fixed  # type: ignore
 from tenacity import retry
 
-import stormpiper.bg_worker as bg
-from stormpiper.apps.supersafe.init_users import create_admin
 from stormpiper.core.config import settings
-from stormpiper.database.connection import engine
-from stormpiper.database.utils import reconnect_engine
 
 wait_seconds = 2
 try_for_minutes = 5
@@ -33,6 +29,8 @@ redis_conn = redis.Redis.from_url(settings.REDIS_BROKER_URL)
     after=after_log(logger, logging.WARN),
 )
 def get_background_worker_connection():  # pragma: no cover
+    import stormpiper.bg_worker as bg
+
     try:
         bg.ping.apply_async().get(timeout=0.2)
     except Exception as e:
@@ -55,10 +53,14 @@ def get_redis_connection():  # pragma: no cover
 
 
 def get_database_connection():
-    reconnect_engine(engine)
+    from stormpiper.database.connection import reconnect_engine
+
+    reconnect_engine()
 
 
 def create_admin_user() -> None:
+    from stormpiper.apps.supersafe.init_users import create_admin
+
     logger.info("Creating initial data")
 
     if platform.system() == "Windows":

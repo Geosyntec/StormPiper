@@ -49,10 +49,11 @@ def test_user_mods(client, route, method, blob, authorized):
     )
 
     methodf = getattr(client, method)
+    kwargs = {} if "get" in method.lower() else {"json": blob}
     response = methodf(
         route,
-        json=blob,
         headers={"Authorization": f"Bearer {user_token['access_token']}"},
+        **kwargs,
     )
 
     if not authorized:

@@ -293,6 +293,6 @@ celery_app.conf.beat_schedule = {
     "refresh_all_tables": {
         "task": "stormpiper.bg_worker.run_refresh_task",
         # daily at 6am
-        "schedule": crontab(0, "6"),
+        "schedule": crontab("0", "6"),
     },
 }

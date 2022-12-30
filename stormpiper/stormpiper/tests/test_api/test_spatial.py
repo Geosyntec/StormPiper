@@ -35,7 +35,7 @@ def test_redirect_tileserver_api_response(client_local, route):
     user_token = test_utils.user_token(client)
     response = client.get(
         route,
-        allow_redirects=False,
+        follow_redirects=False,
         headers={"Authorization": f"Bearer {user_token['access_token']}"},
     )
     assert response.status_code == 307, response.text

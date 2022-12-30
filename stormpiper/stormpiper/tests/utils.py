@@ -16,7 +16,10 @@ def clear_db(engine):
     tables = Base.metadata.tables.keys()
     with engine.begin() as conn:
         for table in tables:
-            conn.execute(f'delete from "{table}";')
+            if table.endswith("_v"):
+                continue
+            else:
+                conn.execute(f'delete from "{table}";')
 
 
 def get_token(app, username, password):

@@ -1,5 +1,5 @@
 import json
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Hashable, List, Optional
 
 import networkx as nx
 import pandas
@@ -8,8 +8,10 @@ from nereid.src.tasks import solve_watershed
 
 from stormpiper.core.context import get_context
 from stormpiper.database.connection import engine
+from stormpiper.database.schemas.results import COLS
 
 from .loading import land_surface_load_to_structural_from_db
+from .organics import add_virtual_pocs_to_wide_load_summary
 
 
 def get_graph_edges_from_db(connectable):
@@ -39,7 +41,7 @@ def init_graph_from_df(*, edge_list: pandas.DataFrame) -> nx.DiGraph:
 
 def init_land_surface_loading_node_data_from_df(
     *, df: pandas.DataFrame
-) -> Dict[str, Dict[str, Any]]:
+) -> Dict[str, Dict[Hashable, Any]]:
     """pre filter for epoch"""
     ls_data = {
         str(dct.get("node_id", "")): {
@@ -51,7 +53,9 @@ def init_land_surface_loading_node_data_from_df(
     return ls_data
 
 
-def init_treatment_facilities_from_df(*, df: pandas.DataFrame) -> List[Dict[str, Any]]:
+def init_treatment_facilities_from_df(
+    *, df: pandas.DataFrame
+) -> List[Dict[Hashable, Any]]:
     treatment_facilities_list = [row.dropna().to_dict() for _, row in df.iterrows()]
     return treatment_facilities_list
 
@@ -84,13 +88,19 @@ def solve_wq(
         context=context,
     )
 
-    result = response_dict["results"] + response_dict["leaf_results"]
+    _r = response_dict["results"] + response_dict["leaf_results"]
+    result = json.loads(
+        add_virtual_pocs_to_wide_load_summary(pandas.DataFrame(_r))
+        .replace({pandas.NA: None})
+        .to_json(orient="records")
+    )
 
     res_df = pandas.DataFrame(
         [
             {
                 "node_id": n.get("node_id"),
                 "blob": json.dumps(n, sort_keys=True),
+                **{c: n.get(c, None) for c in COLS},
             }
             for n in result
         ]
@@ -184,7 +194,7 @@ def solve_wq_epochs_from_db(engine=engine):
         # get all loading data for all epochs. will query it down later.
         loading = land_surface_load_to_structural_from_db(epoch=None, connectable=conn)
 
-    epochs = met.epoch.unique()
+    epochs = list(met.epoch.unique())
     context = get_context()
     results_blob = solve_wq_epochs(
         epochs=epochs,

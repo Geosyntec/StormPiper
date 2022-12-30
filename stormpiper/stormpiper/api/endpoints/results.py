@@ -8,7 +8,7 @@ from stormpiper.apps.supersafe.users import check_user
 from stormpiper.database.connection import get_async_session
 from stormpiper.database.dependencies import async_is_dirty
 from stormpiper.database.schemas import results
-from stormpiper.models.result_view import ResultView
+from stormpiper.models.result_view import Epoch, ResultView
 
 router = APIRouter(dependencies=[Depends(check_user)])
 
@@ -17,10 +17,14 @@ router = APIRouter(dependencies=[Depends(check_user)])
 async def get_all_results(
     limit: Optional[int] = Query(int(1e6)),
     offset: int = Query(0),
+    epoch: Epoch = Query(Epoch.all, example="1980s"),  # type: ignore
     db: AsyncSession = Depends(get_async_session),
 ):
+    q = select(results.ResultBlob).offset(offset).limit(limit)
+    if epoch != "all":
+        q = q.where(results.ResultBlob.epoch == epoch)
 
-    result = await db.execute(select(results.Result_View).offset(offset).limit(limit))
+    result = await db.execute(q)
     scalars = result.scalars().all()
 
     return scalars
@@ -31,9 +35,7 @@ async def get_result_is_dirty(db: AsyncSession = Depends(get_async_session)):
 
     response = {"is_dirty": True, "last_updated": "0"}
 
-    is_dirty, last_updated = await async_is_dirty(
-        tablename="tmnt_source_control_downstream_load_reduced", db=db
-    )
+    is_dirty, last_updated = await async_is_dirty(tablename="subbasin_result", db=db)
 
     response["is_dirty"] = is_dirty
     response["last_updated"] = last_updated
@@ -44,14 +46,14 @@ async def get_result_is_dirty(db: AsyncSession = Depends(get_async_session)):
 @router.get("/{node_id}", response_model=List[ResultView], name="results:get_result")
 async def get_result(
     node_id: str = Path(..., title="node id or altid", example="SWFA-100002"),
-    epoch: str = Query("", example="1980s"),
+    epoch: Epoch = Query(Epoch.all, example="1980s"),  # type: ignore
     db: AsyncSession = Depends(get_async_session),
 ):
 
-    q = select(results.Result_View).where(results.Result_View.id == node_id)
+    q = select(results.ResultBlob).where(results.ResultBlob.node_id == node_id)
 
-    if epoch:
-        q = q.where(results.Result_View.epoch_id == epoch)
+    if epoch != "all":
+        q = q.where(results.ResultBlob.epoch == epoch)
 
     result = await db.execute(q)
     scalar = result.scalars().all()
