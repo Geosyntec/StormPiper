@@ -32,9 +32,11 @@ async def async_login(**kwargs):
         credentials = ee.ServiceAccountCredentials(
             email=email, key_file=key_file, key_data=key_data
         )
-        await run_in_threadpool(ee.Initialize, credentials)
+        # the ee library has set incorrect type hints/constraints on the ee.Initialize function.
+        await run_in_threadpool(ee.Initialize, credentials)  # type: ignore
         logger.info("Login to earth engine succeeded.")
         return True
+
     except Exception as e:
         logger.exception("Error logging in to earth engine", e, exc_info=True)
         raise e
@@ -56,9 +58,11 @@ def login(**kwargs):
         credentials = ee.ServiceAccountCredentials(
             email=email, key_file=key_file, key_data=key_data
         )
-        ee.Initialize(credentials)
+        # the ee library has set incorrect type hints/constraints on the ee.Initialize function.
+        ee.Initialize(credentials)  # type: ignore
         logger.info("Login to earth engine succeeded.")
         return True
+
     except Exception as e:
         logger.exception("Error logging in to earth engine", e, exc_info=True)
         raise e
