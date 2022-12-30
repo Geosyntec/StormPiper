@@ -21,7 +21,7 @@ def fetch_tacoma_gis_data():  # pragma: no cover
     )
     gdf.to_file(datadir / "tmnt_facility.geojson", driver="GeoJSON")
 
-    gdf_subbasin = arcgis.get_subbasins(url=None, cols=None)
+    gdf_subbasin = arcgis.get_subbasins_with_equity_ix(url=None, cols=None)
     gdf_subbasin.to_file(datadir / "subbasin.geojson", driver="GeoJSON")
 
     lgus = spatial.overlay_rodeo(delineations=gdf_delin, subbasins=gdf_subbasin)

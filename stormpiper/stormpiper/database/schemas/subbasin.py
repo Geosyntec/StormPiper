@@ -1,5 +1,5 @@
 from geoalchemy2 import Geometry
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Float, Integer, String, Table
 
 from stormpiper.core.config import settings
 
@@ -17,5 +17,11 @@ class Subbasin(Base):
     id = Column(Integer, primary_key=True)
     basinname = Column(String)
     subbasin = Column(String)
+    area_acres = Column(Float)
+    access = Column(Float)
+    economic_value = Column(Float)
+    environmental_value = Column(Float)
+    livability_value = Column(Float)
+    opportunity_value = Column(Float)
 
     geom = Column(Geometry(srid=settings.TACOMA_EPSG))
