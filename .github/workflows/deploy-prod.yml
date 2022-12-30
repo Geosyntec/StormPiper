@@ -1,15 +1,12 @@
-name: Deployment
+name: Deploy to production
 
 on:
-  workflow_run:
-    workflows: ["Build and Push Image to GCR"]
-    types:
-      - completed
-
   workflow_dispatch:
     inputs:
       tag:
-        description: "Deploy Production with this version tag. If empty, restart development and pull 'latest' tag"
+        default: latest
+        required: true
+        description: "Deploy to production with this version tag."
 
 env:
   GKE_CLUSTER: tacoma-cluster
@@ -26,7 +23,7 @@ jobs:
       - name: Sleep for 1 min to let the dust settle
         run: sleep 60s
         shell: bash
-        
+
       - uses: actions/checkout@v3
 
       # Alternative option - authentication via credentials json
@@ -47,11 +44,6 @@ jobs:
           gcloud container clusters get-credentials "$GKE_CLUSTER" --region "$GKE_REGION"
 
       # Deploy the Docker image to the GKE cluster
-      - name: Deploy to Dev
-        if: ${{ (github.event.workflow_run.conclusion == 'success') || !(env.PRODUCTION_TAG) }}
-        run: |-
-          echo "Deploying to development Application"
-          kubectl rollout restart deploy --selector=app=stormpiper-dev
 
       - name: Deploy to Production
         if: ${{ env.PRODUCTION_TAG }}

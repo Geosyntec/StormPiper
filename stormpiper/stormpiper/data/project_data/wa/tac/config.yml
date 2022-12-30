@@ -6,6 +6,13 @@ pint_unit_registry:
 api_recognize:
   treatment_facility:
     preprocess:
+      - joins:
+          - other: met_table
+            how: left
+            left_on: ref_data_key
+            right_on: epoch
+            validate: many_to_one
+            indicator: True
       - remaps:
           - left: hsg
             right: inf_rate_inhr
@@ -237,31 +244,31 @@ api_recognize:
         label: Vault (simple)
 
 project_reference_data:
-  # met_table:
-  #   file: met_data_20210907_1349.json
-  #   volume_nomo:
-  #     x_col: size_fraction
-  #     t_col: ddt_hr
-  #     y_col: capture_fraction
-  #   flow_nomo:
-  #     x_col: intensity_inhr
-  #     t_col: tc_minutes
-  #     y_col: capture_fraction
+  met_table:
+    file: nomo_data.json
+    volume_nomo:
+      x_col: size_fraction
+      t_col: ddt_hr
+      y_col: capture_fraction
+    flow_nomo:
+      x_col: intensity_inhr
+      t_col: tc_minutes
+      y_col: capture_fraction
 
-  #   nomographs:
-  #     - file_key: volume_nomograph
-  #       type: volume_capture
-  #       constructor: VolumeNomograph
-  #       x_col: size_fraction
-  #       t_col: ddt_hr
-  #       y_col: capture_fraction
+    nomographs:
+      - file_key: volume_nomograph
+        type: volume_capture
+        constructor: VolumeNomograph
+        x_col: size_fraction
+        t_col: ddt_hr
+        y_col: capture_fraction
 
-  #     - file_key: flow_nomograph
-  #       type: volume_capture
-  #       constructor: FlowNomograph
-  #       x_col: intensity_inhr
-  #       t_col: tc_minutes
-  #       y_col: capture_fraction
+      - file_key: flow_nomograph
+        type: volume_capture
+        constructor: FlowNomograph
+        x_col: intensity_inhr
+        t_col: tc_minutes
+        y_col: capture_fraction
 
   tmnt_performance_table:
     file: bmp_params_20220103_1443.json
