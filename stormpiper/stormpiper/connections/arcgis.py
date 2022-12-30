@@ -76,7 +76,7 @@ def get_tmnt_facilities(*, bmp_url=None, codes_url=None, cols=None):
         cols = external_resources["tmnt_facilities"]["columns"]
 
     # FYI
-    [
+    _ = [
         # 'ACCESSISSUE', 'ACTIVEFLAG',
         "ALTID",
         # 'CANISTERS',
@@ -104,7 +104,8 @@ def get_tmnt_facilities(*, bmp_url=None, codes_url=None, cols=None):
     code_lu = _get_tmnt_facility_type_codes(url=codes_url)
 
     gdf = (
-        raw_gdf.replace({"FACILITYTYPE": code_lu})
+        raw_gdf.to_crs(settings.TACOMA_EPSG)
+        .replace({"FACILITYTYPE": code_lu})  # type: ignore
         .reindex(columns=cols)
         .rename(columns=lambda c: c.lower())
         .assign(node_id=lambda df: df["altid"].apply(facility_node_id))
