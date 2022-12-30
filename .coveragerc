@@ -7,9 +7,9 @@ branch = True
 ignore_errors = True
 skip_empty = True
 omit =
-    main.py
-    start*.py
-    pre-start*.py
-    *bg_*
+    **/main.py
+    **/start*.py
+    **/pre-start*.py
+    **/bg_*.py
     **/_no_git*/*
     **/tests/data/*
