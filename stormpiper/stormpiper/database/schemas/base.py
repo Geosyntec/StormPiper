@@ -7,6 +7,6 @@ from .changelog import TableChangeLog
 from .graph import GraphEdge
 from .loads import *
 from .met import Met
-from .results import Result_View, ResultBlob
-from .subbasin import Subbasin
+from .results import ResultBlob
+from .subbasin import Subbasin, SubbasinResult
 from .tmnt import *

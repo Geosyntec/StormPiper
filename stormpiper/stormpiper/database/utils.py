@@ -6,11 +6,6 @@ import pandas
 import sqlalchemy as sa
 from geoalchemy2.shape import to_shape
 from sqlalchemy.event import listen
-from tenacity import after_log  # type: ignore
-from tenacity import before_log  # type: ignore
-from tenacity import stop_after_attempt  # type: ignore
-from tenacity import wait_fixed  # type: ignore
-from tenacity import retry
 
 from stormpiper.core.config import settings
 
@@ -162,24 +157,6 @@ def delete_and_replace_table(
         engine=engine,
         **kwargs,
     )
-
-
-@retry(
-    stop=stop_after_attempt(60 * 5),  # 5 mins
-    wait=wait_fixed(2),  # 2 seconds
-    before=before_log(logger, logging.INFO),
-    after=after_log(logger, logging.WARN),
-)
-def reconnect_engine(engine):
-    try:
-        with engine.begin() as conn:
-            # this should connect/login and ensure that the database is available.
-            conn.execute("select 1").fetchall()
-
-    except Exception as e:
-        logger.error(e)
-        logger.info("Engine connection url:", engine.url)
-        raise e
 
 
 def load_spatialite_extension(conn, connection_record):

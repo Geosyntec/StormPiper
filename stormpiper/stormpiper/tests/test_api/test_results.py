@@ -19,14 +19,15 @@ def test_get_all_results(client, limit):
     assert all(
         i in dct.keys()
         for dct in rsp_json
-        for i in ["node_id", "epoch_id", "facility_type"]
+        for i in ["node_id", "epoch", "facility_type"]
     )
 
 
 @pytest.mark.parametrize(
     "node_id, epoch, exists",
     [
-        ("SWFA-100018", "", True),
+        ("SWFA-100018", None, True),
+        ("SWFA-100018", "all", True),
         ("SWFA-100018", "1980s", True),
         ("SWFA-1000dd", "1980s", False),  # bad node id
         ("SWFA-100018", "dd", False),  # bad epoch
@@ -34,8 +35,9 @@ def test_get_all_results(client, limit):
 )
 def test_get_result_by_node_id(client, node_id, epoch, exists):
     user_token = test_utils.user_token(client)
+    q = f"?epoch={epoch}" if epoch else ""
     response = client.get(
-        f"/api/rest/results/{node_id}?epoch={epoch}",
+        f"/api/rest/results/{node_id}{q}",
         headers={"Authorization": f"Bearer {user_token['access_token']}"},
     )
 
@@ -44,12 +46,12 @@ def test_get_result_by_node_id(client, node_id, epoch, exists):
     else:
         assert 200 <= response.status_code < 300, response.content
         rsp_json = response.json()
-        exp_len = 1 if epoch else 4
+        exp_len = 1 if epoch != "all" and epoch else 4
         assert len(rsp_json) == exp_len
         assert all(
             i in dct.keys()
             for dct in rsp_json
-            for i in ["node_id", "epoch_id", "facility_type"]
+            for i in ["node_id", "epoch", "facility_type"]
         )
 
 

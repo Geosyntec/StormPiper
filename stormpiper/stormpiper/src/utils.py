@@ -4,7 +4,7 @@ import pandas
 
 
 def unpack_results_blob(results_blob):
-    results_blob = results_blob.set_index(["node_id", "epoch"])
+    results_blob = results_blob.set_index(["node_id", "epoch"])[["blob"]]
     results_unpacked = results_blob["blob"].apply(
         lambda dct: pandas.Series(dct.values(), index=dct.keys())
     )

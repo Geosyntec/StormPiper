@@ -34,7 +34,8 @@ lgu_load_to_structural                          tmnt_source_control_upstream_loa
 result_blob                                     lgu_load_to_structural      graph_edge          tmnt_v   met
 result_v                                        result_blob
 load_to_ds_src_ctrl                             result_blob
-tmnt_source_control_downstream_load_reduced     load_to_ds_src_ctrl  tmnt_source_control        lgu_boundary
+tmnt_source_control_downstream_load_reduced     load_to_ds_src_ctrl     tmnt_source_control        lgu_boundary
+subbasin_result                                 load_to_ds_src_ctrl     tmnt_source_control_downstream_load_reduced
 """
 
 
@@ -66,7 +67,7 @@ def check_if_sorted(*, preds, tablename, changelog):
     if len(preds) == 0:
         return True
 
-    logger.debug(tablename, preds)
+    logger.debug(f"checking {tablename} with predecessors: {preds}")
 
     # discard tables on which we are not dependant
     changelog_slim = [t for t in changelog if t in preds]
