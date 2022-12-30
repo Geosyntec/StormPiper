@@ -23,9 +23,9 @@ jobs:
         run: make coverage-ci
       - name: coverage
         run: |
-          docker compose exec -T stormpiper-test coverage report -mi --omit **/tests/*
+          docker compose exec -T stormpiper-test coverage report -mi
           docker compose exec -T stormpiper-test coverage xml
           docker compose cp stormpiper-test:/stormpiper/coverage.xml coverage.xml
           docker compose cp stormpiper-test:/stormpiper/.coverage .coverage
       - name: upload coverage
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
