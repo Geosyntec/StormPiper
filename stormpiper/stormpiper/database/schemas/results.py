@@ -5,7 +5,6 @@ from stormpiper.src.organics import VIRTUAL_POCS
 
 from .base_class import Base
 
-
 POC_PARAMS = get_pocs(get_context())
 
 
