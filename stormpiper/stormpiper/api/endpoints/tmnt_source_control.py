@@ -104,9 +104,7 @@ async def create_tmnt_source_control(
 )
 async def delete_tmnt_source_control(
     id: int,
-    db: AsyncSession = Depends(
-        get_async_session,
-    ),
+    db: AsyncSession = Depends(get_async_session),
 ):
     try:
         attr = await crud.tmnt_source_control.remove(db=db, id=id)
