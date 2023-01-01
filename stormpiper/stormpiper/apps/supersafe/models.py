@@ -28,16 +28,15 @@ class UserExtras(BaseModel):
 
 class UserRead(UserExtras, schemas.BaseUser[uuid.UUID]):
     role: Role = Role.none
-    pass
+    access_token: Optional[uuid.UUID] = None
 
 
 class UserCreate(UserExtras, schemas.BaseUserCreate):
-    pass
+    ...
 
 
 class UserUpdate(UserExtras, schemas.BaseUserUpdate):
     role: Role = Role.none
-    pass
 
 
 # class UserDB(User, schemas.BaseUserDB):

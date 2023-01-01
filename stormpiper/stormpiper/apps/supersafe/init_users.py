@@ -1,4 +1,5 @@
 import contextlib
+import uuid
 
 from fastapi_users.exceptions import UserAlreadyExists
 from pydantic import EmailStr
@@ -53,6 +54,7 @@ async def create_admin():  # pragma: no cover
         is_superuser=True,
         is_verified=True,
         force_set_password=True,
+        access_token=uuid.uuid4(),
     )
 
 
