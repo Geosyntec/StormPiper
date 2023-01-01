@@ -70,7 +70,7 @@ def dummy_tmnt_source_control(subbasins: List[str]):
 
     src_ctrl = (
         pandas.concat([sweeping, linecleaning, dumping])
-        .merge(pandas.DataFrame({"subbasin": subbasins}), how="cross")
+        .merge(pandas.DataFrame({"subbasin": subbasins}), how="cross")  # type: ignore cross
         .reset_index(drop=True)
         .assign(id=lambda df: df.index.values + 1)
         .set_index("id")
@@ -125,7 +125,7 @@ def foss_tmnt_source_control(foss_subbasins: List[str]):
 
     src_ctrl = (
         pandas.concat([sweeping, linecleaning])
-        .merge(pandas.DataFrame({"subbasin": foss_subbasins}), how="cross")
+        .merge(pandas.DataFrame({"subbasin": foss_subbasins}), how="cross")  # type: ignore cross
         .reset_index(drop=True)
         .assign(id=lambda df: df.index.values + 1)
         .set_index("id")

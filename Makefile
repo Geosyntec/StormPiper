@@ -83,7 +83,7 @@ test-ci: stack-ci init-test ## run tests quickly with the default Python
 	docker compose -f docker-stack.yml exec stormpiper-test pytest -xsv  -m "not integration"
 
 coverage-ci: stack-ci init-test ## run tests on CI with the default Python
-	docker compose -f docker-stack.yml exec stormpiper-test coverage run -m pytest -xv -m "not integration"
+	docker compose -f docker-stack.yml exec stormpiper-test coverage run -m pytest -v -m "not integration"
 
 coverage: clean restart init-test ## check code coverage quickly with the default Python
 	docker compose -f docker-stack.yml exec stormpiper-test coverage run -m pytest -x

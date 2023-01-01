@@ -28,4 +28,4 @@ jobs:
           docker compose cp stormpiper-test:/stormpiper/coverage.xml coverage.xml
           docker compose cp stormpiper-test:/stormpiper/.coverage .coverage
       - name: upload coverage
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3

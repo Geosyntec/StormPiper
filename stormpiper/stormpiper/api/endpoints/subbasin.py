@@ -8,34 +8,29 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.apps.supersafe.users import check_user
 from stormpiper.database.connection import get_async_session
-from stormpiper.database.schemas import subbasin
+from stormpiper.database.schemas.subbasin_result import SubbasinResult_View
 from stormpiper.database.utils import scalars_to_gdf_to_geojson
-from stormpiper.models.base import BaseModel
+from stormpiper.models.result_view import Epoch, SubbasinResultView
 
 router = APIRouter(dependencies=[Depends(check_user)])
 
 
-class SubbasinResponse(BaseModel):
-    basinname: str
-    subbasin: str
-
-    class Config:
-        orm_mode = True
-
-
 @router.get(
     "/",
-    response_model=List[SubbasinResponse],
+    response_model=List[SubbasinResultView],
     name="subbasin:get_all_subbasins",
 )
 async def get_all_subbasins(
     f: str = Query("json"),
     limit: Optional[int] = Query(int(1e6)),
     offset: int = Query(0),
+    epoch: Epoch = Query(Epoch.all, example="1980s"),  # type: ignore
     db: AsyncSession = Depends(get_async_session),
 ):
 
-    q = select(subbasin.Subbasin).offset(offset).limit(limit)
+    q = select(SubbasinResult_View).offset(offset).limit(limit)
+    if epoch != "all":
+        q = q.where(SubbasinResult_View.epoch == epoch)
     result = await db.execute(q)
     scalars = result.scalars().all()
 
@@ -55,15 +50,18 @@ async def get_all_subbasins(
 
 @router.get(
     "/{subbasin_id}",
-    response_model=SubbasinResponse,
+    response_model=SubbasinResultView,
     name="subbasin:get_subbasin",
 )
 async def get_subbasin(
     subbasin_id: str,
+    epoch: Epoch = Query(Epoch.all, example="1980s"),  # type: ignore
     db: AsyncSession = Depends(get_async_session),
 ):
 
-    q = select(subbasin.Subbasin).where(subbasin.Subbasin.subbasin == subbasin_id)
+    q = select(SubbasinResult_View).where(SubbasinResult_View.subbasin == subbasin_id)
+    if epoch != "all":
+        q = q.where(SubbasinResult_View.epoch == epoch)
     result = await db.execute(q)
     scalar = result.scalars().first()
 

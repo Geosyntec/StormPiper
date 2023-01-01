@@ -68,11 +68,18 @@ def delete_and_refresh_tmnt_facility_delineation_table(*, engine=engine, url=Non
     return gdf
 
 
-def delete_and_refresh_subbasin_table(*, engine=engine, url=None, cols=None):
+def delete_and_refresh_subbasin_table(
+    *, engine=engine, url=None, cols=None, equity_ix_url=None, equity_ix_cols=None
+):
 
     logger.info("fetching subbasin info")
     gdf = (
-        arcgis.get_subbasins(url=url, cols=cols)
+        arcgis.get_subbasins_with_equity_ix(
+            url=url,
+            cols=cols,
+            equity_ix_url=equity_ix_url,
+            equity_ix_cols=equity_ix_cols,
+        )
         .reset_index(drop=True)
         .assign(id=lambda df: df.index.values + 1)
     )
@@ -93,7 +100,11 @@ def delete_and_refresh_lgu_boundary_table(*, engine=engine):
     )
 
     logger.info("deleting and replacing lgu_boundary table")
-    delete_and_replace_postgis_table(gdf=gdf, table_name="lgu_boundary", engine=engine)
+    delete_and_replace_postgis_table(
+        gdf=gdf,  # type: ignore
+        table_name="lgu_boundary",
+        engine=engine,
+    )
     logger.info("TASK COMPLETE: replaced lgu_boundary table.")
 
     return gdf
@@ -249,6 +260,25 @@ def _delete_and_refresh_source_controls_downstream_load_reduction(*, engine=engi
     return df
 
 
+def delete_and_refresh_subbasin_result_table(*, engine=engine):
+
+    df = (
+        loading.subbasin_loading_summary_result_from_db(engine=engine)
+        .reset_index(drop=True)
+        .assign(id=lambda df: df.index + 1)
+    )
+
+    logger.info("deleting and replacing subbasin_result table")
+    delete_and_replace_table(
+        df=df,
+        table_name="subbasin_result",
+        engine=engine,
+    )
+    logger.info("TASK COMPLETE: replaced subbasin_result table.")
+
+    return df
+
+
 def delete_and_refresh_downstream_src_ctrl_tables(*, engine=engine):
     """First compute load delivered to the downstream src controls, THEN compute
     the load reduced by them.
@@ -262,15 +292,18 @@ def delete_and_refresh_all_results_tables(*, engine=engine):
     delete_and_refresh_graph_edge_table(engine=engine)
     delete_and_refresh_result_table(engine=engine)
     delete_and_refresh_downstream_src_ctrl_tables(engine=engine)
+    delete_and_refresh_subbasin_result_table(engine=engine)
 
 
 def build_default_tmnt_source_controls(*, engine=engine):
     subbasin = pandas.read_sql(
         "select * from subbasin where basinname = 'FOSS WATERWAY' ", con=engine
-    ).subbasin.tolist()
+    ).subbasin
 
     df = (
-        default_tmnt_source_controls.foss_tmnt_source_control(subbasin)
+        default_tmnt_source_controls.foss_tmnt_source_control(
+            foss_subbasins=subbasin.tolist()
+        )
         .reset_index(drop=True)
         .assign(id=lambda df: df.index + 1)
     )

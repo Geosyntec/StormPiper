@@ -19,27 +19,29 @@ def add_virtual_pocs_to_tidy_load_summary(
     """
 
     tss = load_tidy.query('variable == "TSS"')
+    non_virtual_pocs = load_tidy.query("variable not in @VIRTUAL_POCS")
 
     if tss.empty:
         return pandas.DataFrame()
 
-    poc_dfs = []
+    virtual_pocs = []
     for poc in VIRTUAL_POCS:
         func = VIRTUAL_POLLUTANT_MAPPER[poc]
-        poc_df = tss.assign(variable=poc).assign(value=lambda df: func(df.value))
-        poc_dfs.append(poc_df)
+        virtual_poc = tss.assign(variable=poc).assign(value=lambda df: func(df.value))
+        virtual_pocs.append(virtual_poc)
 
-    df = pandas.concat([load_tidy] + poc_dfs)
+    df = pandas.concat([non_virtual_pocs] + virtual_pocs)
 
     return df
 
 
-def add_virtual_pocs_to_wide_load_summary(load_wide):
-    results = load_wide.copy()
+def add_virtual_pocs_to_wide_load_summary(results):
+
     tss_cols = [c for c in results.columns if "tss" in c.lower()]
 
     for poc in VIRTUAL_POCS:
-        new_cols = [poc + c.replace("TSS", "") for c in tss_cols]
+        new_cols = [c.replace("TSS", poc) for c in tss_cols]
+
         func = VIRTUAL_POLLUTANT_MAPPER[poc]
         results[new_cols] = results[tss_cols].apply(func, axis=1, result_type="expand")
 
