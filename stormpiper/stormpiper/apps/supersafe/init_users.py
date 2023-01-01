@@ -1,5 +1,4 @@
 import contextlib
-import uuid
 
 from fastapi_users.exceptions import UserAlreadyExists
 from pydantic import EmailStr
