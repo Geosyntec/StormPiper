@@ -3,11 +3,11 @@ import uuid
 from fastapi import Depends
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID, SQLAlchemyUserDatabase
 from sqlalchemy import Column, Enum, String
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.core.config import settings
 from stormpiper.database.connection import get_async_session
+from stormpiper.database.hacks import GUID
 from stormpiper.database.schemas.base_class import Base
 
 from .models import Role
@@ -21,7 +21,7 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
     first_name = Column(String)
     last_name = Column(String)
     role = Column(Enum(Role), server_default="none")
-    access_token = Column(UUID, default=uuid.uuid4)
+    access_token = Column(GUID, default=uuid.uuid4)
 
 
 async def create_db_and_tables(async_engine):
