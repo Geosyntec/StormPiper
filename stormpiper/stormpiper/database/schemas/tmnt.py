@@ -95,6 +95,13 @@ class TMNTFacilityAttr(Base, MutableTrackedTable):
     captured_pct = Column(Float)
     retained_pct = Column(Float)
 
+    # cost attrs
+    capital_cost = Column(Float)
+    om_cost_per_yr = Column(Float)
+    lifespan_yrs = Column(Float)
+    replacement_cost = Column(Float)
+    net_present_value = Column(Float)
+
 
 tmnt = sa.Table("tmnt_facility", Base.metadata)
 tmnt_attrs = sa.Table("tmnt_facility_attributes", Base.metadata)
@@ -134,6 +141,11 @@ class TMNT_View(Base):
             tmnt_attrs.c.depth_ft,
             tmnt_attrs.c.captured_pct,
             tmnt_attrs.c.retained_pct,
+            tmnt_attrs.c.capital_cost,
+            tmnt_attrs.c.om_cost_per_yr,
+            tmnt_attrs.c.lifespan_yrs,
+            tmnt_attrs.c.replacement_cost,
+            tmnt_attrs.c.net_present_value,
             tmnt.c.geom,
         ).select_from(tmnt.join(tmnt_attrs, tmnt.c.altid == tmnt_attrs.c.altid)),
     )

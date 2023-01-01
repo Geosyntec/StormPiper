@@ -29,6 +29,7 @@ networkx
 
 scipy
 numpy
+numpy-financial
 pandas
 matplotlib
 

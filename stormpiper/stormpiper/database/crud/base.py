@@ -35,6 +35,11 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
         )
         return result.scalars().first()
 
+    async def get_all(self, db: AsyncSession) -> Optional[SchemaType]:
+        q = sa.select(self.base)
+        result = await db.execute(q)
+        return result.scalars().all()
+
     def sync_get(self, db: Session, id: Any) -> Optional[SchemaType]:
         return db.query(self.base).filter(getattr(self.base, self.id) == id).first()
 

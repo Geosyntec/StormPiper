@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from stormpiper.api.endpoints import (
     bg_worker,
     globals,
+    npv,
     prom,
     reference,
     results,
@@ -51,3 +52,4 @@ api_router.include_router(
 rpc_router = APIRouter(prefix="/api/rpc")
 rpc_router.include_router(bg_worker.rpc_router, tags=["bg"])
 rpc_router.include_router(prom.rpc_router, tags=["subbasin", "promethee"])
+rpc_router.include_router(npv.rpc_router, tags=["costs", "npv"])

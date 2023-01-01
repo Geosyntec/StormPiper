@@ -32,5 +32,12 @@ class TMNTView(BaseModel):
     captured_pct: Optional[float]
     retained_pct: Optional[float]
 
+    # cost attrs
+    capital_cost: Optional[float]
+    om_cost_per_yr: Optional[float]
+    lifespan_yrs: Optional[float]
+    replacement_cost: Optional[float]
+    net_present_value: Optional[float]
+
     class Config:
         orm_mode = True
