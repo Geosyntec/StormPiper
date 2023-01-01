@@ -2,6 +2,7 @@ from fastapi import APIRouter
 
 from stormpiper.api.endpoints import (
     bg_worker,
+    globals,
     prom,
     reference,
     results,
@@ -42,6 +43,9 @@ api_router.include_router(
 )
 
 api_router.include_router(bg_worker.router, prefix="/tasks", tags=["bg"])
+api_router.include_router(
+    globals.router, prefix="/global_settings", tags=["global_settings"]
+)
 
 
 rpc_router = APIRouter(prefix="/api/rpc")
