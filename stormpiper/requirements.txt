@@ -64,6 +64,7 @@ munch==2.5.0
 nereid @ https://github.com/Geosyntec/nereid/archive/v0.7.0.zip
 networkx==2.8.8
 numpy==1.24.1
+numpy-financial==1.0.0
 orjson==3.8.3
 packaging==22.0
 pandas==1.5.2

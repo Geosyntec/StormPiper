@@ -26,6 +26,12 @@ class TMNTFacilityAttrBase(BaseModel):
     captured_pct: Optional[float] = None
     retained_pct: Optional[float] = None
 
+    # cost attrs
+    capital_cost: Optional[float] = None
+    om_cost_per_yr: Optional[float] = None
+    lifespan_yrs: Optional[float] = None
+    replacement_cost: Optional[float] = None
+
 
 # Properties to receive on creation
 class TMNTFacilityAttrCreate(TMNTFacilityAttrBase):
@@ -40,6 +46,7 @@ class TMNTFacilityAttrPatch(TMNTFacilityAttrBase):
 # Properties to send on update
 class TMNTFacilityAttrUpdate(TMNTFacilityAttrPatch):
     updated_by: Optional[str] = None
+    net_present_value: Optional[float] = None
 
 
 # Properties shared by models stored in DB
@@ -48,6 +55,7 @@ class TMNTFacilityAttrInDBBase(TMNTFacilityAttrBase):
 
     basinname: Optional[str] = None
     subbasin: Optional[str] = None
+    net_present_value: Optional[float] = None
 
     class Config:
         orm_mode = True
