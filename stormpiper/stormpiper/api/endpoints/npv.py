@@ -5,14 +5,12 @@ from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.apps.supersafe.users import check_user
-
-from stormpiper.src.npv import compute_bmp_npv
-from stormpiper.models.npv import NPVRequest
-from stormpiper.database.connection import get_async_session
 from stormpiper.database import crud
+from stormpiper.database.connection import get_async_session
 from stormpiper.database.utils import orm_to_dict, scalars_to_records
+from stormpiper.models.npv import NPVRequest
 from stormpiper.models.tmnt_attr import TMNTFacilityAttr
-
+from stormpiper.src.npv import compute_bmp_npv
 
 rpc_router = APIRouter(dependencies=[Depends(check_user)])
 

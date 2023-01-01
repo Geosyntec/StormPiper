@@ -2,7 +2,6 @@ from typing import Optional, Union
 
 from .base import BaseModel
 
-
 EXAMPLE_NPV = dict(
     planning_horizon_yrs=50,  # years
     discount_rate=0.05,  # avg interest rate 0.08 - 0.03 for inflation
