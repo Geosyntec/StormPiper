@@ -2,6 +2,9 @@ from sqlalchemy import Column, String, Table
 
 from stormpiper.database.connection import engine
 
+# import directly from base_class so that imports work when this table is not initialized.
+# This is because the ORM object is from a view rather than an actual table and I
+# didn't want to write a huge sa.selectable() to re-define it -- its already defined in sql.
 from .base_class import Base
 from .subbasin import Subbasin, SubbasinResult
 

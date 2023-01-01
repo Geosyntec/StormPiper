@@ -70,7 +70,7 @@ restart: ## restart the redis server and the background workers
 	docker compose -f docker-stack.yml restart redis bg_worker beat_worker
 
 test: ## run tests quickly with the default Python
-	bash scripts/test.sh -xsv -m "not integration"
+	bash scripts/test.sh -sv -m "not integration"
 
 lint: clean
 	bash scripts/lint.sh
@@ -86,7 +86,7 @@ coverage-ci: stack-ci init-test ## run tests on CI with the default Python
 	docker compose -f docker-stack.yml exec stormpiper-test coverage run -m pytest -v -m "not integration"
 
 coverage: clean restart init-test ## check code coverage quickly with the default Python
-	docker compose -f docker-stack.yml exec stormpiper-test coverage run -m pytest -x
+	docker compose -f docker-stack.yml exec stormpiper-test coverage run -m pytest -x -m "not integration"
 	docker compose -f docker-stack.yml exec stormpiper-test coverage report -mi
 
 typecheck: clean ## run static type checker
@@ -107,7 +107,7 @@ down-v: ## bring down the containers and detach volumes
 	docker compose -f docker-stack.yml down -v
 
 dev-server: stack ## start a development server
-	docker compose -f docker-stack.yml run -p 8080:80 -e LOG_LEVEL=debug stormpiper-pod bash /start-reload.sh
+	docker compose -f docker-stack.yml up stormpiper-pod
 
 release: ## push production images to registry
 	bash scripts/push_release.sh
