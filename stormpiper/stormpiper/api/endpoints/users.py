@@ -1,6 +1,7 @@
+import uuid
 from typing import List
 
-from fastapi import Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -9,16 +10,54 @@ from stormpiper.apps.supersafe.users import (
     User,
     check_admin,
     check_protect_role_field,
+    check_readonly_access_token,
+    check_user,
+    current_active_user,
     fastapi_users,
     get_async_session,
+    get_user_db,
 )
-
-router = fastapi_users.get_users_router(models.UserRead, models.UserUpdate)
 
 
 class UserResponse(models.UserRead):
     class Config:
         orm_mode = True
+
+
+router = APIRouter()
+
+from uuid import uuid4
+
+
+@router.get(
+    "/readonly_token",
+    name="users:get_readonly_token",
+    dependencies=[Depends(check_user)],
+    response_model=UserResponse,
+)
+async def get_readonly_token(
+    user: User = Depends(current_active_user),
+    user_db=Depends(get_user_db),
+):
+
+    u = await user_db.get(user.id)
+
+    if u.access_token:
+        return u
+
+    user = await user_db.update(u, {"access_token": str(uuid4())})
+
+    return user
+
+
+@router.get("/check_token/{token}", name="users:check_readonly_token")
+async def check_readonly_token(token: str = Depends(check_readonly_access_token)):
+    return token
+
+
+router.include_router(
+    fastapi_users.get_users_router(models.UserRead, models.UserUpdate)
+)
 
 
 @router.get("/", response_model=List[UserResponse], name="users:get_users")

@@ -15,6 +15,8 @@ from fastapi_users.authentication import (
 )
 from fastapi_users.db import SQLAlchemyUserDatabase
 from fastapi_users.jwt import decode_jwt
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.core import utils
 from stormpiper.core.config import settings
@@ -196,10 +198,7 @@ def check_role(min_role: Role = Role.admin):
         if user.role >= min_role:
             return user
 
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail={"reason": f"requires {min_role} permissions or higher."},
-        )
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
     return current_active_user_role
 
@@ -224,10 +223,7 @@ def check_protected_field_role(field: str, min_role: Role = Role.admin):
         if user.role >= min_role:
             return user_update
 
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail={"reason": f"requires {min_role} permissions or higher."},
-        )
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
     return current_active_user_role
 
@@ -278,3 +274,29 @@ async def check_is_valid_token(request: Request):
 
     if not isvalid:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+
+
+def validate_uuid4(token: str):
+    try:
+        uuid.UUID(token, version=4)
+        return token
+    except ValueError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+
+
+async def check_readonly_access_token(
+    token: str = Depends(validate_uuid4),
+    db: AsyncSession = Depends(get_async_session),
+    min_role: Role = Role.user,
+):
+    result = await db.execute(select(User).where(User.access_token == token))
+
+    user = result.scalars().first()
+
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+
+    if not user.role.value >= min_role:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+
+    return token

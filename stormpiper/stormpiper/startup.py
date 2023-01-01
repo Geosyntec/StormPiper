@@ -3,11 +3,11 @@ import logging
 import platform
 
 import redis
-from tenacity import after_log  # type: ignore
-from tenacity import before_log  # type: ignore
-from tenacity import stop_after_attempt  # type: ignore
-from tenacity import wait_fixed  # type: ignore
 from tenacity import retry
+from tenacity.after import after_log
+from tenacity.before import before_log
+from tenacity.stop import stop_after_attempt
+from tenacity.wait import wait_fixed
 
 from stormpiper.core.config import settings
 
