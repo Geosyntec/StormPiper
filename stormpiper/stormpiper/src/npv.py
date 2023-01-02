@@ -1,7 +1,12 @@
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import numpy
 import numpy_financial as nf
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from stormpiper.database import crud
+from stormpiper.database.utils import scalars_to_records
+from stormpiper.models.npv import NPVRequest
 
 
 def compute_bmp_npv(
@@ -36,3 +41,14 @@ def compute_bmp_npv(
     net_present_value = nf.npv(discount_rate, costs)
 
     return round(net_present_value, 2), list(costs.round(2))
+
+
+async def get_npv_settings(
+    db: AsyncSession,
+) -> Dict[str, float]:
+    _settings = await crud.global_setting.get_all(db=db)
+    settings = {dct["variable"]: dct["value"] for dct in scalars_to_records(_settings)}
+    npv_settings = {
+        k: float(v) for k, v in settings.items() if k in NPVRequest.get_fields()
+    }
+    return npv_settings
