@@ -44,9 +44,7 @@ api_router.include_router(
 )
 
 api_router.include_router(bg_worker.router, prefix="/tasks", tags=["bg"])
-api_router.include_router(
-    globals.router, prefix="/global_settings", tags=["global_settings"]
-)
+api_router.include_router(globals.router, prefix="/global_setting", tags=["globals"])
 
 
 rpc_router = APIRouter(prefix="/api/rpc")

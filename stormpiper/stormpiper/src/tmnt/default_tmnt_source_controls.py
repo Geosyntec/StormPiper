@@ -3,7 +3,7 @@ from typing import List
 import pandas
 
 
-def dummy_tmnt_source_control(subbasins: List[str]):
+def dummy_tmnt_source_control(subbasins: List[str]):  # pragma: no cover
 
     StormLineCleaning_Pct_Reduction = {
         "DEHP": 54,  # %
@@ -79,7 +79,7 @@ def dummy_tmnt_source_control(subbasins: List[str]):
     return src_ctrl
 
 
-def foss_tmnt_source_control(foss_subbasins: List[str]):
+def foss_tmnt_source_control(foss_subbasins: List[str]):  # pragma: no cover
 
     StormLineCleaning_Pct_Reduction = {
         "DEHP": 54,  # %

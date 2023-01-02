@@ -1,4 +1,5 @@
 from typing import Any, Dict, List, Optional
+import warnings
 
 import pandas
 from sqlalchemy import select
@@ -9,7 +10,9 @@ from stormpiper.database.schemas import changelog
 from stormpiper.database.utils import orm_to_dict, scalars_to_records
 
 
-async def is_dirty_dep(db: AsyncSession) -> Dict[str, Any]:
+async def is_dirty_dep(db: AsyncSession) -> Dict[str, Any]:  # pragma: no cover
+    warnings.warn("this is deprecated.", DeprecationWarning, stacklevel=2)
+
     response = {"is_dirty": True, "last_updated": "0"}
     result = (
         (
@@ -48,7 +51,8 @@ async def is_dirty_dep(db: AsyncSession) -> Dict[str, Any]:
 
 async def is_dirty(
     *, db: AsyncSession, tablename: str, dependents: Optional[List[str]] = None
-) -> Dict[str, Any]:
+) -> Dict[str, Any]:  # pragma: no cover
+    warnings.warn("this is deprecated.", DeprecationWarning, stacklevel=2)
     response = {"is_dirty": True, "last_updated": "0"}
 
     changelog_results = (

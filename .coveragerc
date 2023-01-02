@@ -10,6 +10,8 @@ omit =
     **/main.py
     **/start*.py
     **/pre-start*.py
+    **/initial_data.py
     **/bg_*.py
     **/_no_git*/*
+    **/_no_git*
     **/tests/data/*
