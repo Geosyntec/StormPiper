@@ -8,8 +8,8 @@ from stormpiper.src.decision_support.prom import run_subbasins_promethee_priorit
 rpc_router = APIRouter(dependencies=[Depends(check_user)])
 
 
-@rpc_router.post("/subbasin/promethee_prioritization")
-async def run_promethee_prioritization(prom: PromRequest):
+@rpc_router.post("/calculate_subbasin_promethee_prioritization", tags=["rpc"])
+async def calculate_subbasin_promethee_prioritization(prom: PromRequest):
 
     criteria, weights = zip(*((m.criteria, m.weight) for m in prom.criteria))
     wq_type = prom.wq_type
