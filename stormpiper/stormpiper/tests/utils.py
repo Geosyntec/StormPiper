@@ -7,6 +7,7 @@ from stormpiper.database import utils
 from stormpiper.database.connection import get_session
 from stormpiper.database.schemas.base import Base, User
 from stormpiper.src import tasks
+from stormpiper.startup import create_default_globals
 from stormpiper.tests.data import _base
 
 hasher = CryptContext(schemes=["bcrypt"], deprecated="auto").hash
@@ -75,7 +76,11 @@ def seed_users(engine):
 
 
 def load_json(filepath, engine):
-    df = pandas.read_json(filepath, orient="table")
+    df = (
+        pandas.read_json(filepath, orient="table")
+        .reset_index(drop=True)
+        .assign(id=lambda df: df.index.values + 1)
+    )
     table_name = filepath.stem
 
     utils.delete_and_replace_table(
@@ -87,7 +92,12 @@ def load_json(filepath, engine):
 
 
 def load_geojson(filepath, engine):
-    gdf = geopandas.read_file(filepath).to_crs(settings.TACOMA_EPSG)
+    gdf = (
+        geopandas.read_file(filepath)
+        .to_crs(settings.TACOMA_EPSG)
+        .reset_index(drop=True)
+        .assign(id=lambda df: df.index.values + 1)
+    )
     table_name = filepath.stem
 
     utils.delete_and_replace_postgis_table(
@@ -129,5 +139,6 @@ def seed_db(engine):
 
     clear_db(engine)
     seed_users(engine)
+    create_default_globals(engine)
     seed_tacoma_table_dependencies(engine)
     seed_tacoma_derived_tables(engine)

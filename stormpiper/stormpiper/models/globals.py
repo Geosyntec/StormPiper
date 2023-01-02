@@ -3,10 +3,12 @@ from typing import Optional
 from .base import BaseModel
 
 
+class GlobalSettingPatch(BaseModel):
+    value: str
+
 class GlobalSettingBase(BaseModel):
     variable: str
     value: str
-
 
 class GlobalSettingResponse(GlobalSettingBase):
     class Config:

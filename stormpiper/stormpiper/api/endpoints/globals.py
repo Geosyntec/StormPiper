@@ -11,6 +11,7 @@ from stormpiper.database.connection import get_async_session
 from stormpiper.database.schemas.globals import GlobalSetting
 from stormpiper.models.globals import (
     GlobalSettingCreate,
+    GlobalSettingPatch,
     GlobalSettingPost,
     GlobalSettingResponse,
     GlobalSettingUpdate,
@@ -20,28 +21,37 @@ router = APIRouter(dependencies=[Depends(check_admin)])
 
 
 @router.get(
-    "/", name="globals:get_all_globals", response_model=List[GlobalSettingResponse]
+    "/{variable}",
+    response_model=GlobalSettingResponse,
+    name="globals:get_global",
 )
-async def get_all_globals(db: AsyncSession = Depends(get_async_session)):
-    q = select(GlobalSetting)
-    result = await db.execute(q)
-    scalars = result.scalars().all()
+async def get_global(
+    *,
+    variable: str,
+    db: AsyncSession = Depends(get_async_session),
+):
+    attr = await crud.global_setting.get(db=db, id=variable)
 
-    return scalars
+    if not attr:
+        raise HTTPException(
+            status_code=404, detail=f"Record not found for variable={variable}"
+        )
+
+    return attr
 
 
 @router.patch(
-    "/",
+    "/{variable}",
     response_model=GlobalSettingResponse,
     name="globals:patch_global",
 )
 async def patch_global(
     *,
-    setting: GlobalSettingPost,
+    variable: str,
+    setting: GlobalSettingPatch,
     db: AsyncSession = Depends(get_async_session),
     user: ss.users.User = Depends(ss.users.current_active_user),
 ):
-    variable = setting.variable
     attr = await crud.global_setting.get(db=db, id=variable)
 
     if not attr:
@@ -103,3 +113,14 @@ async def delete_global_setting(
         )
 
     return attr
+
+
+@router.get(
+    "/", name="globals:get_all_globals", response_model=List[GlobalSettingResponse]
+)
+async def get_all_globals(db: AsyncSession = Depends(get_async_session)):
+    q = select(GlobalSetting)
+    result = await db.execute(q)
+    scalars = result.scalars().all()
+
+    return scalars
