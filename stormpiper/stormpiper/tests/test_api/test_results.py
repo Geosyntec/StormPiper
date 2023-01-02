@@ -58,6 +58,8 @@ def test_get_result_by_node_id(client, node_id, epoch, exists):
 def test_clean_dirty_clean(client):
     user_token = test_utils.user_token(client)
 
+    tasks.delete_and_refresh_all_results_tables(engine=engine)
+
     # check if db is clean
     response = client.get(
         f"/api/rest/results/is_dirty",
