@@ -90,7 +90,7 @@ async def ping_background() -> Dict[str, Any]:
     return response
 
 
-@rpc_router.get("/solve_watershed", response_class=JSONResponse, tags=['rpc'])
+@rpc_router.get("/solve_watershed", response_class=JSONResponse, tags=["rpc"])
 async def solve_watershed() -> Dict[str, Any]:
 
     task = bg.delete_and_refresh_all_results_tables.apply_async()

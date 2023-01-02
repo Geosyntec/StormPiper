@@ -71,10 +71,10 @@ def create_admin_user() -> None:
 
 
 def create_default_globals(engine):
-    from stormpiper.database.connection import get_session
-    from stormpiper.database import crud
-    from stormpiper.database.schemas.globals import GlobalSetting
     from stormpiper.core.config import default_global_settings
+    from stormpiper.database import crud
+    from stormpiper.database.connection import get_session
+    from stormpiper.database.schemas.globals import GlobalSetting
 
     Session = get_session(engine)
 

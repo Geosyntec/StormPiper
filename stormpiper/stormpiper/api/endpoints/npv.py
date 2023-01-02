@@ -24,10 +24,14 @@ async def calculate_npv(npv: NPVRequest):
 
 
 @rpc_router.get(
-    "/calculate_net_present_value/{altid}", response_model=Union[Any, TMNTFacilityAttr], tags=["rpc"]
+    "/calculate_net_present_value/{altid}",
+    response_model=Union[Any, TMNTFacilityAttr],
+    tags=["rpc"],
 )
 @rpc_router.post(
-    "/calculate_net_present_value/{altid}", response_model=Union[Any, TMNTFacilityAttr], tags=["rpc"]
+    "/calculate_net_present_value/{altid}",
+    response_model=Union[Any, TMNTFacilityAttr],
+    tags=["rpc"],
 )
 async def calculate_npv_for_existing_tmnt(
     altid: str,
