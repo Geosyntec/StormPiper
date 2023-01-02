@@ -17,7 +17,7 @@ logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
 
 
-def ping(): # pragma: no cover
+def ping():  # pragma: no cover
     return True
 
 
@@ -32,7 +32,7 @@ def update_tmnt_attributes(engine=engine, overwrite=None):
 
 def delete_and_refresh_tmnt_facility_table(
     *, engine=engine, bmp_url=None, codes_url=None, cols=None
-): # pragma: no cover
+):  # pragma: no cover
 
     logger.info("fetching tmnt facilities")
     gdf = (
@@ -48,7 +48,9 @@ def delete_and_refresh_tmnt_facility_table(
     return gdf
 
 
-def delete_and_refresh_tmnt_facility_delineation_table(*, engine=engine, url=None): # pragma: no cover
+def delete_and_refresh_tmnt_facility_delineation_table(
+    *, engine=engine, url=None
+):  # pragma: no cover
 
     logger.info("fetching tmnt facility delineations")
     gdf = (
@@ -70,7 +72,7 @@ def delete_and_refresh_tmnt_facility_delineation_table(*, engine=engine, url=Non
 
 def delete_and_refresh_subbasin_table(
     *, engine=engine, url=None, cols=None, equity_ix_url=None, equity_ix_cols=None
-): # pragma: no cover
+):  # pragma: no cover
 
     logger.info("fetching subbasin info")
     gdf = (
@@ -91,7 +93,7 @@ def delete_and_refresh_subbasin_table(
     return gdf
 
 
-def delete_and_refresh_lgu_boundary_table(*, engine=engine): # pragma: no cover
+def delete_and_refresh_lgu_boundary_table(*, engine=engine):  # pragma: no cover
     logger.info("Creating lgu_boundary with the overlay rodeo")
     gdf = (
         spatial.overlay_rodeo_from_database(engine)
@@ -110,7 +112,7 @@ def delete_and_refresh_lgu_boundary_table(*, engine=engine): # pragma: no cover
     return gdf
 
 
-def delete_and_refresh_lgu_load_table(*, engine=engine): # pragma: no cover
+def delete_and_refresh_lgu_load_table(*, engine=engine):  # pragma: no cover
     logger.info("Recomputing LGU Loading with Earth Engine")
     df = (
         loading.compute_loading_db(engine=engine)
