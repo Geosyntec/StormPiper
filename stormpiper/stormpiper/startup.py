@@ -68,3 +68,20 @@ def create_admin_user() -> None:
     asyncio.run(create_admin())
 
     logger.info("Initial data created")
+
+
+def create_default_globals(engine):
+    from stormpiper.database.connection import get_session
+    from stormpiper.database import crud
+    from stormpiper.database.schemas.globals import GlobalSetting
+    from stormpiper.core.config import default_global_settings
+
+    Session = get_session(engine)
+
+    with Session.begin() as session:  # type: ignore
+        batch = []
+        for dct in default_global_settings:
+            s = crud.global_setting.sync_get(db=session, id=dct["variable"])
+            if s is None:
+                batch.append(GlobalSetting(**dct))
+        session.add_all(batch)

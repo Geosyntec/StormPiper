@@ -105,3 +105,9 @@ settings = Settings()
 external_resources = json.loads(
     (Path(__file__).parent / "external_resources.json").read_text()
 )
+
+
+default_global_settings = [
+    {"variable": "discount_rate", "value": "0.05"},
+    {"variable": "planning_horizon_yrs", "value": "50"},
+]
