@@ -2,6 +2,9 @@
 [run]
 source = stormpiper
 branch = True
+concurrency =
+    thread
+    greenlet
 
 [report]
 ignore_errors = True
