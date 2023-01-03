@@ -22,7 +22,7 @@ def get_graph_edges_from_db(connectable):
 def get_tmnt_facilities_from_db(connectable):
     # need to populate epoch in ref_data_key and assign design storm depth
     facilities = pandas.read_sql("select * from tmnt_v", con=connectable).drop(
-        columns=["id", "geom"]
+        columns=["id", "geom"], errors="ignore"
     )
     return facilities
 
