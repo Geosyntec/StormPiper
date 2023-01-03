@@ -14,7 +14,6 @@ __all__ = [
     "TMNTFacilityDelineation",
     "TMNTFacility",
     "TMNTFacilityAttr",
-    "TMNT_View",
     "TMNTSourceControlUpstreamLoadReduced",
     "TMNTSourceControlDownstreamLoadReduced",
 ]
@@ -76,9 +75,7 @@ class TMNTFacilityAttr(Base, MutableTrackedTable):
     subbasin = Column(String)
 
     # modeling attrs
-    treatment_strategy = Column(String)
     facility_type = Column(String)
-    ref_data_key = Column(String)
     hsg = Column(String)
     design_storm_depth_inches = Column(Float)
     tributary_area_tc_min = Column(Float)
@@ -101,54 +98,6 @@ class TMNTFacilityAttr(Base, MutableTrackedTable):
     lifespan_yrs = Column(Float)
     replacement_cost = Column(Float)
     net_present_value = Column(Float)
-
-
-tmnt = sa.Table("tmnt_facility", Base.metadata)
-tmnt_attrs = sa.Table("tmnt_facility_attributes", Base.metadata)
-
-
-class TMNT_View(Base):
-    __table__ = view(
-        "tmnt_v",
-        Base.metadata,
-        sa.select(
-            tmnt.c.id,
-            tmnt.c.node_id,
-            tmnt.c.altid,
-            tmnt.c.facilitytype,
-            tmnt.c.commonname,
-            tmnt.c.facilitydetail,
-            tmnt.c.flowcontrol,
-            tmnt.c.infiltrated,
-            tmnt.c.waterquality,
-            tmnt.c.flowcontroltype,
-            tmnt.c.waterqualitytype,
-            tmnt_attrs.c.basinname,
-            tmnt_attrs.c.subbasin,
-            tmnt_attrs.c.treatment_strategy,
-            tmnt_attrs.c.facility_type,
-            tmnt_attrs.c.ref_data_key,  # type: ignore
-            tmnt_attrs.c.design_storm_depth_inches,
-            tmnt_attrs.c.tributary_area_tc_min,
-            tmnt_attrs.c.total_volume_cuft,
-            tmnt_attrs.c.area_sqft,
-            tmnt_attrs.c.inf_rate_inhr,
-            tmnt_attrs.c.retention_volume_cuft,
-            tmnt_attrs.c.media_filtration_rate_inhr,
-            tmnt_attrs.c.hsg,
-            tmnt_attrs.c.minimum_retention_pct_override,
-            tmnt_attrs.c.treatment_rate_cfs,
-            tmnt_attrs.c.depth_ft,
-            tmnt_attrs.c.captured_pct,
-            tmnt_attrs.c.retained_pct,
-            tmnt_attrs.c.capital_cost,
-            tmnt_attrs.c.om_cost_per_yr,
-            tmnt_attrs.c.lifespan_yrs,
-            tmnt_attrs.c.replacement_cost,
-            tmnt_attrs.c.net_present_value,
-            tmnt.c.geom,
-        ).select_from(tmnt.join(tmnt_attrs, tmnt.c.altid == tmnt_attrs.c.altid)),
-    )
 
 
 class Direction(str, Enum):

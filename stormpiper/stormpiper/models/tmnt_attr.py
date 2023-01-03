@@ -1,15 +1,13 @@
 from typing import Optional
 
-from .base import BaseModel
+from .base import BaseModel, BaseORM
 
 
 # Shared properties
 class TMNTFacilityAttrBase(BaseModel):
 
     # modeling attrs
-    treatment_strategy: Optional[str] = None
     facility_type: Optional[str] = None
-    # ref_data_key: Optional[str] = None
     hsg: Optional[str] = None
     design_storm_depth_inches: Optional[float] = None
     tributary_area_tc_min: Optional[float] = None
@@ -50,15 +48,12 @@ class TMNTFacilityAttrUpdate(TMNTFacilityAttrPatch):
 
 
 # Properties shared by models stored in DB
-class TMNTFacilityAttrInDBBase(TMNTFacilityAttrBase):
+class TMNTFacilityAttrInDBBase(BaseORM, TMNTFacilityAttrBase):
     altid: str
 
     basinname: Optional[str] = None
     subbasin: Optional[str] = None
     net_present_value: Optional[float] = None
-
-    class Config:
-        orm_mode = True
 
 
 # Properties to return to client

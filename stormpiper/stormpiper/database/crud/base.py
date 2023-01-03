@@ -40,15 +40,17 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
         result = await db.execute(q)
         return result.scalars().all()
 
-    def sync_get(self, db: Session, id: Any) -> Optional[SchemaType]:
+    def get_sync(self, db: Session, id: Any) -> Optional[SchemaType]:
         return db.query(self.base).filter(getattr(self.base, self.id) == id).first()
 
-    def get_multi(
+    def get_all_sync(
         self, db: Session, *, skip: int = 0, limit: int = 100
-    ) -> List[SchemaType]:
+    ) -> List[SchemaType]:  # pragma: no cover sync variants
         return db.query(self.base).offset(skip).limit(limit).all()
 
-    def create_sync(self, db: Session, *, obj_in: CreateModelType) -> SchemaType:
+    def create_sync(
+        self, db: Session, *, obj_in: CreateModelType
+    ) -> SchemaType:  # pragma: no cover sync variants
         obj_in_data = jsonable_encoder(obj_in)
         db_obj = self.base(**obj_in_data)  # type: ignore
         db.add(db_obj)
@@ -69,7 +71,7 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
     @staticmethod
     def _update_orm(
         *, db_obj: SchemaType, obj_in: Union[UpdateModelType, Dict[str, Any]]
-    ) -> SchemaType:
+    ) -> SchemaType:  # pragma: no cover sync variants
 
         obj_data = jsonable_encoder(db_obj)
         if isinstance(obj_in, dict):
@@ -88,7 +90,7 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
         *,
         db_obj: SchemaType,
         obj_in: Union[UpdateModelType, Dict[str, Any]],
-    ) -> SchemaType:
+    ) -> SchemaType:  # pragma: no cover sync variants
 
         updated_obj = self._update_orm(db_obj=db_obj, obj_in=obj_in)
 
@@ -124,7 +126,7 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
 
         obj = await self.get(db=db, id=id)
 
-        if obj is None:
+        if obj is None:  # pragma: no cover
             raise ValueError(
                 f"Attemped to update item which does not exist for {self.id}={id}"
             )
@@ -132,7 +134,7 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
 
         return obj
 
-    def sync_log(self, db: Session):
+    def sync_log(self, db: Session):  # pragma: no cover sync variants
         sync_log(tablename=self.tablename, db=db, changelog=self.changelog)
 
     async def log(self, db: AsyncSession):
@@ -152,7 +154,9 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
     #     [db.refresh(b) for b in batch]
     #     return batch
 
-    def remove_sync(self, db: Session, *, id: Any) -> Optional[SchemaType]:
+    def remove_sync(
+        self, db: Session, *, id: Any
+    ) -> Optional[SchemaType]:  # pragma: no cover sync variants
         obj = db.query(self.base).filter(getattr(self.base, self.id) == id).first()
         if not obj:
             return
@@ -167,7 +171,7 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
         await db.execute(q)
         try:
             await db.commit()
-        except Exception:
+        except Exception:  # pragma: no cover
             await db.rollback()
             raise
         _ = await self.log(db=db)

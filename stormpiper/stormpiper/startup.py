@@ -81,7 +81,7 @@ def create_default_globals(engine):
     with Session.begin() as session:  # type: ignore
         batch = []
         for dct in default_global_settings:
-            s = crud.global_setting.sync_get(db=session, id=dct["variable"])
+            s = crud.global_setting.get_sync(db=session, id=dct["variable"])
             if s is None:
                 batch.append(GlobalSetting(**dct))
         session.add_all(batch)
