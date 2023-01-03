@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.apps.supersafe.users import check_user
 from stormpiper.database.connection import get_async_session
-from stormpiper.database.schemas.subbasin_result import SubbasinResult_View
+from stormpiper.database.schemas.subbasin_result_view import SubbasinResult_View
 from stormpiper.database.utils import scalars_to_gdf_to_geojson
 from stormpiper.models.result_view import Epoch, SubbasinResultView
 
