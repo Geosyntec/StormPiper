@@ -2,12 +2,12 @@ import logging
 from typing import Literal, Sequence
 
 import geopandas
-import pandas
 from pymcdm.methods import PROMETHEE_II
 from pymcdm.normalizations import minmax_normalization
 
 from stormpiper.core.config import settings
 from stormpiper.database.connection import engine
+from stormpiper.models.result_view import SubbasinResultView
 
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
@@ -27,8 +27,9 @@ EQUITY_COLS = [
 ]
 
 POC_COLS = [
-    "TSS_conc_mg/l_effluent",
-    "TN_conc_mg/l_effluent",
+    c
+    for c in SubbasinResultView.get_fields()
+    if any((v in c.lower() for v in ["yield_lbs", "depth_inches"]))
 ]
 
 
@@ -38,13 +39,9 @@ CRITERIA = EQUITY_COLS + POC_COLS
 def run_promethee_ii(
     df,
     criteria: Sequence[str],
-    weights: Sequence[int],
-    wq_type: WQType,
-    # p_function: PFunction = "usual",
+    weights: Sequence[float],
+    types: Sequence[int],
 ):
-
-    direction = 1 if wq_type == "restoration" else -1
-    types = [direction if c in POC_COLS else -1 for c in criteria]
 
     promethee_ii = PROMETHEE_II("usual")
     matrix = df[criteria].to_numpy()
@@ -54,32 +51,26 @@ def run_promethee_ii(
     scores = promethee_ii(matrix, weights, types)
     scores = minmax_normalization(scores) * 100
 
-    df["score"] = scores
-
-    return df
+    return scores
 
 
 def run_subbasins_promethee_prioritization(
-    criteria: Sequence[str], weights: Sequence[int], wq_type: WQType
-):
-    res_cols = ", ".join(["id"] + [f'"{c}"' for c in POC_COLS])
+    criteria: Sequence[str],
+    weights: Sequence[float],
+    wq_type: WQType,
+    engine=engine,
+) -> geopandas.GeoDataFrame:
 
-    subbasins = geopandas.read_postgis("subbasin", con=engine)
+    direction = 1 if wq_type == "restoration" else -1
+    types = [direction if c in POC_COLS else -1 for c in criteria]
 
-    sub_results = pandas.read_sql(
-        f"select {res_cols} from result_v where epoch_id = '1980s' and id like 'SB_%%'",
+    sub_results = geopandas.read_postgis(
+        f"select * from subbasinresult_v where epoch = '1980s' order by subbasin ASC",
         con=engine,
-    ).assign(subbasin=lambda df: df.id.str.replace("SB_", ""))
-
-    df = subbasins.merge(  # type: ignore
-        sub_results[["subbasin", *POC_COLS]], on="subbasin", how="left"
-    ).sort_values("subbasin")
-
-    scored_df = run_promethee_ii(
-        df,
-        criteria=list(criteria),
-        weights=list(weights),
-        wq_type=wq_type,
+    ).assign(  # type: ignore
+        score=lambda df: run_promethee_ii(
+            df, criteria=list(criteria), weights=list(weights), types=list(types)
+        ).round(3)
     )
 
-    return scored_df
+    return sub_results  # type: ignore
