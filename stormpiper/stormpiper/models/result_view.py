@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import BaseConfig, create_model
 
-from stormpiper.database.schemas import results, subbasin_result
+from stormpiper.database.schemas import results, subbasin_result_view
 
 strings = [
     "node_id",
