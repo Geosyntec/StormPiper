@@ -2,7 +2,7 @@ from typing import Optional
 
 from stormpiper.database.schemas.tmnt import Direction
 
-from .base import BaseModel
+from .base import BaseModel, BaseORM
 
 
 # Shared properties
@@ -44,11 +44,8 @@ class TMNTSourceControlUpdate(TMNTSourceControlPatch):
 
 
 # Properties shared by models stored in DB
-class TMNTSourceControlInDBBase(TMNTSourceControlBase):
+class TMNTSourceControlInDBBase(BaseORM, TMNTSourceControlBase):
     id: int
-
-    class Config:
-        orm_mode = True
 
 
 # Properties to return to client

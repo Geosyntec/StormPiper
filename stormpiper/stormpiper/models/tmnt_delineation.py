@@ -1,9 +1,6 @@
-from .base import BaseModel
+from .base import BaseORM
 
 
-class TMNTFacilityDelineation(BaseModel):
+class TMNTFacilityDelineation(BaseORM):
     node_id: str
     altid: str
-
-    class Config:
-        orm_mode = True

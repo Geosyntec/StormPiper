@@ -1,9 +1,11 @@
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseConfig, create_model
+from pydantic import create_model
 
 from stormpiper.database.schemas import results, subbasin_result_view
+
+from .base import BaseORM
 
 strings = [
     "node_id",
@@ -15,14 +17,9 @@ strings = [
     "basinname",
 ]
 
-
-class Config(BaseConfig):
-    orm_mode = True
-
-
 ResultView = create_model(
     "ResultView",
-    __config__=Config,
+    __base__=BaseORM,
     **{
         str(c): (Optional[str] if c in strings else Optional[float], ...)
         for c in set(["node_id", "epoch"] + results.COLS)
@@ -32,11 +29,11 @@ ResultView = create_model(
 
 SubbasinResultView = create_model(
     "SubbasinResultView",
-    __config__=Config,
+    __base__=BaseORM,
     **{
         str(c): (Optional[str] if c in strings else Optional[float], ...)
         for c in set(
-            ["node_id", "epoch", "subbasin", "basinname"] + subbasin_result.COLS
+            ["node_id", "epoch", "subbasin", "basinname"] + subbasin_result_view.COLS
         )
         if not any([c.startswith("_"), c == "geom"])
     },

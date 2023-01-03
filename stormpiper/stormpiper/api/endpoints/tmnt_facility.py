@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.apps.supersafe.users import check_user
 from stormpiper.database.connection import get_async_session
-from stormpiper.database.schemas import tmnt
+from stormpiper.database.schemas import tmnt_view as tmnt
 from stormpiper.database.utils import scalars_to_gdf_to_geojson
 from stormpiper.models.tmnt_view import TMNTView
 

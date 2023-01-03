@@ -1,6 +1,6 @@
 from typing import Optional
 
-from .base import BaseModel
+from .base import BaseModel, BaseORM
 
 
 class GlobalSettingPatch(BaseModel):
@@ -12,9 +12,8 @@ class GlobalSettingBase(BaseModel):
     value: str
 
 
-class GlobalSettingResponse(GlobalSettingBase):
-    class Config:
-        orm_mode = True
+class GlobalSettingResponse(BaseORM, GlobalSettingBase):
+    ...
 
 
 class GlobalSettingPost(GlobalSettingBase):

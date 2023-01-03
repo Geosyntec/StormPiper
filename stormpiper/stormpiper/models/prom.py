@@ -8,7 +8,7 @@ from .base import BaseModel
 
 
 class PromRequestCriteria(BaseModel):
-    weight: int = Field(0, le=4, ge=0)
+    weight: float = Field(0, ge=0)
     criteria: Literal[tuple(prom.CRITERIA)]  # type: ignore
 
 
