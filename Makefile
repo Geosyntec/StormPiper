@@ -69,6 +69,10 @@ build: ## build the docker-stack.yml file
 restart: ## restart the redis server and the background workers
 	docker compose -f docker-stack.yml restart redis bg_worker beat_worker
 
+up-test: stack
+	docker compose -f docker-stack.yml up stormpiper-test postgis -d
+	docker compose -f docker-stack.yml exec stormpiper-test bash prestart-tests.sh
+
 test: ## run tests quickly with the default Python
 	bash scripts/test.sh -sv -m "not integration"
 
