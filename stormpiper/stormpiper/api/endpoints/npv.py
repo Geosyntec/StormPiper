@@ -55,6 +55,9 @@ async def calculate_npv_for_existing_tmnt(
         )
 
     except ValidationError as e:
+        attr = await crud.tmnt_attr.update(
+            db=db, id=altid, new_obj={"net_present_value": None}
+        )
         raise HTTPException(status_code=404, detail=f"{e}")
 
     result, _ = compute_bmp_npv(**npv_req.dict())
