@@ -9,7 +9,6 @@ from nereid.api.api_v1.models.treatment_facility_models import (
     TREATMENT_FACILITY_MODELS,
 )
 from pydantic import BaseModel, ValidationError
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.apps import supersafe as ss
@@ -17,7 +16,6 @@ from stormpiper.apps.supersafe.users import check_user
 from stormpiper.core.context import get_context
 from stormpiper.database import crud
 from stormpiper.database.connection import get_async_session
-from stormpiper.database.schemas import tmnt
 from stormpiper.models.base import BaseModel as Base
 from stormpiper.models.npv import NPVRequest
 from stormpiper.models.tmnt_attr import (
@@ -97,8 +95,24 @@ def validate_tmnt_modeling_params(unvalidated_data: dict, context: dict) -> None
 
 
 async def maybe_update_npv_params(
-    unvalidated_data: dict, npv_global_settings: dict, db: AsyncSession
+    unvalidated_data: dict, npv_global_settings: dict
 ) -> dict[str, Any]:
+
+    # check if the patch changes an npv field. If not, pass. if so, validate it,
+    # and if it doesn't validate then set npv calc to None so that it's not out of date.
+    npv_fields = NPVRequest.get_fields()
+    modifies_npv_fields = any((k in npv_fields for k in unvalidated_data.keys()))
+
+    if not modifies_npv_fields:
+        return unvalidated_data
+
+    unvalidated_data["net_present_value"] = None
+
+    sets_npv_field_to_value = any(
+        (unvalidated_data.get(k, None) is not None for k in npv_fields)
+    )
+    if not sets_npv_field_to_value:
+        return unvalidated_data
 
     try:
         npv_req = NPVRequest(
@@ -106,7 +120,7 @@ async def maybe_update_npv_params(
             **npv_global_settings,
         )
 
-    except ValidationError as e:
+    except ValidationError as _:
         return unvalidated_data
 
     result, _ = compute_bmp_npv(**npv_req.dict())
@@ -140,6 +154,7 @@ async def validate_facility_create_or_update(
     ),
     context: dict = Depends(get_context),
     db: AsyncSession = Depends(get_async_session),
+    user: ss.users.User = Depends(ss.users.current_active_user),
 ) -> TMNTFacilityAttrUpdate:
 
     unvalidated_data = deepcopy(tmnt_attr)
@@ -151,8 +166,10 @@ async def validate_facility_create_or_update(
 
     npv_global_settings: Dict[str, float] = await get_npv_settings(db)
     unvalidated_data = await maybe_update_npv_params(
-        unvalidated_data, npv_global_settings, db
+        unvalidated_data, npv_global_settings
     )
+
+    unvalidated_data["updated_by"] = user.email
 
     return TMNTFacilityAttrUpdate(**unvalidated_data)
 
@@ -167,7 +184,6 @@ async def patch_tmnt_attr(
     altid: str = Path(..., example="SWFA-100002"),
     tmnt_attr: TMNTFacilityAttrUpdate = Depends(validate_facility_create_or_update),
     db: AsyncSession = Depends(get_async_session),
-    user: ss.users.User = Depends(ss.users.current_active_user),
 ):
     attr = await crud.tmnt_attr.get(db=db, id=altid)
 
@@ -175,8 +191,6 @@ async def patch_tmnt_attr(
         raise HTTPException(
             status_code=404, detail=f"Record not found for altid={altid}"
         )
-
-    tmnt_attr.updated_by = user.email
 
     attr = await crud.tmnt_attr.update(db=db, id=altid, new_obj=tmnt_attr)
 
@@ -194,8 +208,6 @@ async def get_all_tmnt_attr(
     db: AsyncSession = Depends(get_async_session),
 ):
 
-    q = select(tmnt.TMNTFacilityAttr).offset(offset).limit(limit)
-    result = await db.execute(q)
-    scalars = result.scalars().all()
+    result = await crud.tmnt_attr.get_all(db=db, limit=limit, offset=offset)
 
-    return scalars
+    return result

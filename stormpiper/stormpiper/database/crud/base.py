@@ -1,13 +1,10 @@
-import datetime
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 
 import sqlalchemy as sa
-from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Session
 
-from ..changelog import async_log, sync_log
+from ..changelog import async_log
 from ..schemas.base import Base, TableChangeLog
 
 SchemaType = TypeVar("SchemaType", bound=Base)
@@ -35,28 +32,16 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
         )
         return result.scalars().first()
 
-    async def get_all(self, db: AsyncSession) -> Optional[SchemaType]:
-        q = sa.select(self.base)
+    async def get_all(
+        self,
+        db: AsyncSession,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
+    ) -> Optional[List[SchemaType]]:
+
+        q = sa.select(self.base).offset(offset).limit(limit)
         result = await db.execute(q)
         return result.scalars().all()
-
-    def get_sync(self, db: Session, id: Any) -> Optional[SchemaType]:
-        return db.query(self.base).filter(getattr(self.base, self.id) == id).first()
-
-    def get_all_sync(
-        self, db: Session, *, skip: int = 0, limit: int = 100
-    ) -> List[SchemaType]:  # pragma: no cover sync variants
-        return db.query(self.base).offset(skip).limit(limit).all()
-
-    def create_sync(
-        self, db: Session, *, obj_in: CreateModelType
-    ) -> SchemaType:  # pragma: no cover sync variants
-        obj_in_data = jsonable_encoder(obj_in)
-        db_obj = self.base(**obj_in_data)  # type: ignore
-        db.add(db_obj)
-        db.commit()
-        db.refresh(db_obj)
-        return db_obj
 
     async def create(self, db: AsyncSession, *, new_obj: CreateModelType) -> SchemaType:
 
@@ -67,37 +52,6 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
         await db.refresh(db_obj)
         _ = await self.log(db=db)
         return db_obj
-
-    @staticmethod
-    def _update_orm(
-        *, db_obj: SchemaType, obj_in: Union[UpdateModelType, Dict[str, Any]]
-    ) -> SchemaType:  # pragma: no cover sync variants
-
-        obj_data = jsonable_encoder(db_obj)
-        if isinstance(obj_in, dict):
-            update_data = obj_in
-        else:
-            update_data = obj_in.dict(exclude_unset=True)
-        for field in obj_data:
-            if field in update_data:
-                setattr(db_obj, field, update_data[field])
-
-        return db_obj
-
-    def sync_update(
-        self,
-        db: Session,
-        *,
-        db_obj: SchemaType,
-        obj_in: Union[UpdateModelType, Dict[str, Any]],
-    ) -> SchemaType:  # pragma: no cover sync variants
-
-        updated_obj = self._update_orm(db_obj=db_obj, obj_in=obj_in)
-
-        db.add(updated_obj)
-        db.commit()
-        db.refresh(updated_obj)
-        return updated_obj
 
     async def update(
         self,
@@ -134,35 +88,8 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
 
         return obj
 
-    def sync_log(self, db: Session):  # pragma: no cover sync variants
-        sync_log(tablename=self.tablename, db=db, changelog=self.changelog)
-
     async def log(self, db: AsyncSession):
         await async_log(tablename=self.tablename, db=db, changelog=self.changelog)
-
-    # def update_many(
-    #     self,
-    #     db: Session,
-    #     *,
-    #     db_obj: SchemaType,
-    #     obj_ins: List[Union[UpdateModelType, Dict[str, Any]]]
-    # ) -> List[SchemaType]:
-
-    #     batch = [self._update_orm(db_obj=db_obj, obj_in=obj_in) for obj_in in obj_ins]
-    #     db.add_all(batch)
-    #     db.commit()
-    #     [db.refresh(b) for b in batch]
-    #     return batch
-
-    def remove_sync(
-        self, db: Session, *, id: Any
-    ) -> Optional[SchemaType]:  # pragma: no cover sync variants
-        obj = db.query(self.base).filter(getattr(self.base, self.id) == id).first()
-        if not obj:
-            return
-        db.delete(obj)
-        db.commit()
-        return obj
 
     async def remove(self, db: AsyncSession, *, id: Any) -> None:
 
