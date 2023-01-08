@@ -23,7 +23,7 @@ def create_router(**kwargs):
         tags=["auth"],
     )
     router.include_router(
-        fastapi_users.get_register_router(models.UserRead, models.UserCreate),
+        fastapi_users.get_register_router(models.UserRead, models.UserRegister),
         prefix="/auth",
         tags=["auth"],
     )

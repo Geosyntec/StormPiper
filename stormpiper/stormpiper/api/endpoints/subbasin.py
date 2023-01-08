@@ -6,19 +6,50 @@ from fastapi.responses import Response
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from stormpiper.apps.supersafe.users import check_user
+from stormpiper.apps.supersafe.users import check_readonly_access_token, check_user
 from stormpiper.database.connection import get_async_session
 from stormpiper.database.schemas.subbasin_result_view import SubbasinResult_View
 from stormpiper.database.utils import scalars_to_gdf_to_geojson
 from stormpiper.models.result_view import Epoch, SubbasinResultView
 
-router = APIRouter(dependencies=[Depends(check_user)])
+router = APIRouter()
 
 
+@router.get(
+    "/{subbasin_id}",
+    response_model=SubbasinResultView,
+    name="subbasin:get_subbasin",
+    dependencies=[Depends(check_user)],
+)
+async def get_subbasin(
+    subbasin_id: str,
+    epoch: Epoch = Query(Epoch.all, example="1980s"),  # type: ignore
+    db: AsyncSession = Depends(get_async_session),
+):
+
+    q = select(SubbasinResult_View).where(SubbasinResult_View.subbasin == subbasin_id)
+    if epoch != "all":
+        q = q.where(SubbasinResult_View.epoch == epoch)
+    result = await db.execute(q)
+    scalar = result.scalars().first()
+
+    if scalar is None:
+        raise HTTPException(status_code=404, detail=f"not found: {subbasin_id}")
+
+    return scalar
+
+
+@router.get(
+    "/token/{token}",
+    response_model=List[SubbasinResultView],
+    name="subbasin:get_all_subbasins_via_token",
+    dependencies=[Depends(check_readonly_access_token)],
+)
 @router.get(
     "/",
     response_model=List[SubbasinResultView],
     name="subbasin:get_all_subbasins",
+    dependencies=[Depends(check_user)],
 )
 async def get_all_subbasins(
     f: str = Query("json"),
@@ -46,26 +77,3 @@ async def get_all_subbasins(
         )
 
     return scalars
-
-
-@router.get(
-    "/{subbasin_id}",
-    response_model=SubbasinResultView,
-    name="subbasin:get_subbasin",
-)
-async def get_subbasin(
-    subbasin_id: str,
-    epoch: Epoch = Query(Epoch.all, example="1980s"),  # type: ignore
-    db: AsyncSession = Depends(get_async_session),
-):
-
-    q = select(SubbasinResult_View).where(SubbasinResult_View.subbasin == subbasin_id)
-    if epoch != "all":
-        q = q.where(SubbasinResult_View.epoch == epoch)
-    result = await db.execute(q)
-    scalar = result.scalars().first()
-
-    if scalar is None:
-        raise HTTPException(status_code=404, detail=f"not found: {subbasin_id}")
-
-    return scalar
