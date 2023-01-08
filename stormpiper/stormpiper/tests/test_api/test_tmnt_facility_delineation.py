@@ -58,7 +58,7 @@ def test_get_tmnt_facility_delin_access_token(
 ):
     client = client_lookup.get(client_name)
     my_data = get_my_data(client)
-    token = my_data.get("access_token", None)
+    token = my_data.get("readonly_token", None)
     method = getattr(client, method)
     route += f"/{token}/?f={f}"
     response = method(route)

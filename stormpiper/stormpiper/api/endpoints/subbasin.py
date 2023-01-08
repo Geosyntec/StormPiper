@@ -6,7 +6,7 @@ from fastapi.responses import Response
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from stormpiper.apps.supersafe.users import check_readonly_access_token, check_user
+from stormpiper.apps.supersafe.users import check_readonly_token, check_user
 from stormpiper.database.connection import get_async_session
 from stormpiper.database.schemas.subbasin_result_view import SubbasinResult_View
 from stormpiper.database.utils import scalars_to_gdf_to_geojson
@@ -43,7 +43,7 @@ async def get_subbasin(
     "/token/{token}",
     response_model=List[SubbasinResultView],
     name="subbasin:get_all_subbasins_via_token",
-    dependencies=[Depends(check_readonly_access_token)],
+    dependencies=[Depends(check_readonly_token)],
 )
 @router.get(
     "/",

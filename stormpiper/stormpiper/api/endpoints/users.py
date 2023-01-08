@@ -43,7 +43,7 @@ async def get_readonly_token(
     if u.access_token:
         return u
 
-    user = await user_db.update(u, {"access_token": str(uuid4())})
+    user = await user_db.update(u, {"readonly_token": str(uuid4())})
 
     return user
 

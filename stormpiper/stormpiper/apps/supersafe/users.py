@@ -291,12 +291,12 @@ def validate_uuid4(token: str):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
 
-async def check_readonly_access_token(
+async def check_readonly_token(
     token: str = Depends(validate_uuid4),
     db: AsyncSession = Depends(get_async_session),
     min_role: Role = Role.reader,
 ):
-    result = await db.execute(select(User).where(User.access_token == token))
+    result = await db.execute(select(User).where(User.readonly_token == token))
 
     user = result.scalars().first()
 
