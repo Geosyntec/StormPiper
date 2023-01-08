@@ -58,21 +58,21 @@ def get_database_connection():
     reconnect_engine()
 
 
-def create_admin_user() -> None:
-    from stormpiper.apps.supersafe.init_users import create_admin
+def create_initial_users() -> None:
+    from stormpiper.apps.supersafe import init_users
 
-    logger.info("Creating initial data")
+    logger.info("Creating initial users")
 
     if platform.system() == "Windows":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-    asyncio.run(create_admin())
+    asyncio.run(init_users.create_admin())
+    asyncio.run(init_users.create_service_datastudio())
 
     logger.info("Initial data created")
 
 
 def create_default_globals(engine):
     from stormpiper.core.config import default_global_settings
-    from stormpiper.database import crud
     from stormpiper.database.connection import get_session
     from stormpiper.database.schemas.globals import GlobalSetting
 
@@ -81,7 +81,13 @@ def create_default_globals(engine):
     with Session.begin() as session:  # type: ignore
         batch = []
         for dct in default_global_settings:
-            s = crud.global_setting.get_sync(db=session, id=dct["variable"])
+            variable = dct["variable"]
+            s = (
+                session.query(GlobalSetting)
+                .filter(GlobalSetting.variable == variable)
+                .first()
+            )
             if s is None:
+                dct["updated_by"] = "system_default"
                 batch.append(GlobalSetting(**dct))
         session.add_all(batch)
