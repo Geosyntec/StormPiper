@@ -20,8 +20,8 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
     # Don't forget to add them to the models
     first_name = Column(String)
     last_name = Column(String)
-    role = Column(Enum(Role), server_default="none")
-    access_token = Column(GUID, default=uuid.uuid4)
+    role = Column(Enum(Role), server_default="public")
+    readonly_token = Column(GUID, default=uuid.uuid4)
 
 
 async def create_db_and_tables(async_engine):

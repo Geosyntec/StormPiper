@@ -30,7 +30,7 @@ class UserExtras(BaseModel):
 
 class UserRead(UserExtras, schemas.BaseUser[uuid.UUID]):
     role: Role = Role.public
-    access_token: Optional[uuid.UUID] = None
+    readonly_token: Optional[uuid.UUID] = None
 
 
 class UserRegister(UserExtras, schemas.BaseUserCreate):

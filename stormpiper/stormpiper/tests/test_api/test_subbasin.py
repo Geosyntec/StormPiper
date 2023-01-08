@@ -32,7 +32,7 @@ def test_get_all_subbasins(client, f, limit):
 @pytest.mark.parametrize("limit", [3, 5])
 def test_get_subbasin_with_token(readonly_client, f, limit):
     readonly_user_data = get_my_data(readonly_client)
-    token = readonly_user_data.get("access_token", None)
+    token = readonly_user_data.get("readonly_token", None)
     response = readonly_client.get(
         f"/api/rest/subbasin/token/{token}?f={f}&limit={limit}"
     )
@@ -69,7 +69,7 @@ def test_get_subbasin_access_with_token(
     client = client_lookup.get(client_name)
     if token:
         my_data = get_my_data(client)
-        token = my_data.get("access_token", None)
+        token = my_data.get("readonly_token", None)
         route += f"/{token}"
     method = getattr(client, method)
     route += f"/?f={f}"
