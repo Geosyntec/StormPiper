@@ -42,19 +42,11 @@ def test_create_user(client):
     ],
 )
 def test_user_mods(client, route, method, blob, authorized):
-    user_token = test_utils.user_token(client)
-    base_response = client.get(
-        "/api/rest/users/me",
-        headers={"Authorization": f"Bearer {user_token['access_token']}"},
-    )
+    base_response = client.get("/api/rest/users/me")
 
     methodf = getattr(client, method)
     kwargs = {} if "get" in method.lower() else {"json": blob}
-    response = methodf(
-        route,
-        headers={"Authorization": f"Bearer {user_token['access_token']}"},
-        **kwargs,
-    )
+    response = methodf(route, **kwargs)
 
     if not authorized:
         assert response.status_code >= 401, (response.status_code, response.content)

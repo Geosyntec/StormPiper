@@ -52,6 +52,9 @@ class Settings(BaseSettings):
     DATABASE_USERS_TABLE_NAME: str = "user"
     DATABASE_POOL_RECYCLE: int = 1800
 
+    # DataStudio
+    DATASTUDIO_ACCOUNT_PASSWORD: str = "change me with an env variable"
+
     # Users Auth
     COOKIE_SECURE: bool = True
     COOKIE_HTTPONLY: bool = True

@@ -6,7 +6,7 @@ from pydantic import EmailStr
 from stormpiper.core.config import settings
 
 from .db import get_async_session, get_user_db
-from .models import UserCreate, UserUpdate
+from .models import Role, UserCreate, UserUpdate
 from .users import get_user_manager
 
 get_async_session_context = contextlib.asynccontextmanager(get_async_session)
@@ -53,6 +53,15 @@ async def create_admin():  # pragma: no cover
         is_superuser=True,
         is_verified=True,
         force_set_password=True,
+    )
+
+
+async def create_service_datastudio():  # pragma: no cover
+    return await create_user(
+        email="datastudio@geosyntec.com",  # type: ignore
+        password=settings.DATASTUDIO_ACCOUNT_PASSWORD,
+        force_set_password=True,
+        role=Role.reader,
     )
 
 

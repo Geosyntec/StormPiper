@@ -35,6 +35,12 @@ def get_token(app, username, password):
     return response
 
 
+def get_my_data(app):
+    response = app.get("/api/rest/users/me")
+
+    return response.json()
+
+
 def admin_token(client):
     response = get_token(client, "admin@geosyntec.com", settings.ADMIN_ACCOUNT_PASSWORD)
 
@@ -43,6 +49,20 @@ def admin_token(client):
 
 def user_token(client):
     response = get_token(client, "existing_user@example.com", "existing_user_password")
+
+    return response.json()
+
+
+def reader_token(client):
+    response = get_token(
+        client, "existing_reader@example.com", "existing_reader_password"
+    )
+
+    return response.json()
+
+
+def public_token(client):
+    response = get_token(client, "joe_shmo@example.com", "existing_public_password")
 
     return response.json()
 
@@ -67,10 +87,25 @@ def seed_users(engine):
             hashed_password=hasher("existing_user_password"),
             is_active=True,
             is_verified=True,
-            role="user",
+            role="editor",
         )
 
-        batch = [admin, existing_user]
+        existing_reader = User(  # type: ignore
+            email="existing_reader@example.com",
+            hashed_password=hasher("existing_reader_password"),
+            is_active=True,
+            is_verified=True,
+            role="reader",
+        )
+
+        public_user = User(  # type: ignore
+            email="joe_shmo@example.com",
+            hashed_password=hasher("existing_public_password"),
+            is_active=True,
+            role="public",
+        )
+
+        batch = [admin, existing_user, existing_reader, public_user]
 
         session.add_all(batch)
 

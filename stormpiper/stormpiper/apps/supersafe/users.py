@@ -207,7 +207,10 @@ def check_role(min_role: Role = Role.admin):
 check_admin = check_role(min_role=Role.admin)
 
 # check if role >= 1, i.e., not public
-check_user = check_role(min_role=Role.user)
+check_user_readonly = check_role(min_role=Role.reader)
+
+# check user has edit rights
+check_user = check_role(min_role=Role.editor)
 
 
 def check_protected_field_role(field: str, min_role: Role = Role.admin):
@@ -216,11 +219,13 @@ def check_protected_field_role(field: str, min_role: Role = Role.admin):
     async def current_active_user_role(
         user_update: UserUpdate, user=Depends(current_active_user)
     ):
+        data = user_update.dict(exclude_unset=True)
 
-        if field not in user_update.dict(exclude_unset=True):
+        if field not in data:
             return user_update
 
-        if user.role >= min_role:
+        # prevent users from elevating permissions
+        if user.role >= min_role and user.role >= user_update.role:
             return user_update
 
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
@@ -228,7 +233,9 @@ def check_protected_field_role(field: str, min_role: Role = Role.admin):
     return current_active_user_role
 
 
-check_protect_role_field = check_protected_field_role(field="role", min_role=Role.admin)
+check_protect_role_field = check_protected_field_role(
+    field="role", min_role=Role.user_admin
+)
 
 
 def get_token_from_backend(request: Request):
@@ -287,7 +294,7 @@ def validate_uuid4(token: str):
 async def check_readonly_access_token(
     token: str = Depends(validate_uuid4),
     db: AsyncSession = Depends(get_async_session),
-    min_role: Role = Role.user,
+    min_role: Role = Role.reader,
 ):
     result = await db.execute(select(User).where(User.access_token == token))
 
@@ -296,7 +303,7 @@ async def check_readonly_access_token(
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
-    if not user.role.value >= min_role:
+    if not user.role >= min_role:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
     return token

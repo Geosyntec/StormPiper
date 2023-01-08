@@ -1,7 +1,6 @@
-import uuid
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -10,7 +9,6 @@ from stormpiper.apps.supersafe.users import (
     User,
     check_admin,
     check_protect_role_field,
-    check_readonly_access_token,
     check_user,
     current_active_user,
     fastapi_users,
@@ -48,11 +46,6 @@ async def get_readonly_token(
     user = await user_db.update(u, {"access_token": str(uuid4())})
 
     return user
-
-
-@router.get("/check_token/{token}", name="users:check_readonly_token")
-async def check_readonly_token(token: str = Depends(check_readonly_access_token)):
-    return token
 
 
 router.include_router(

@@ -8,11 +8,7 @@ from .. import utils as test_utils
 
 @pytest.mark.parametrize("limit", [3, 5])
 def test_get_all_results(client, limit):
-    user_token = test_utils.user_token(client)
-    response = client.get(
-        f"/api/rest/results?limit={limit}",
-        headers={"Authorization": f"Bearer {user_token['access_token']}"},
-    )
+    response = client.get(f"/api/rest/results?limit={limit}")
     assert 200 <= response.status_code < 300, response.content
     rsp_json = response.json()
     assert len(rsp_json) == limit
@@ -34,12 +30,8 @@ def test_get_all_results(client, limit):
     ],
 )
 def test_get_result_by_node_id(client, node_id, epoch, exists):
-    user_token = test_utils.user_token(client)
     q = f"?epoch={epoch}" if epoch else ""
-    response = client.get(
-        f"/api/rest/results/{node_id}{q}",
-        headers={"Authorization": f"Bearer {user_token['access_token']}"},
-    )
+    response = client.get(f"/api/rest/results/{node_id}{q}")
 
     if not exists:
         assert response.status_code >= 400, response.content
@@ -56,43 +48,29 @@ def test_get_result_by_node_id(client, node_id, epoch, exists):
 
 
 def test_clean_dirty_clean(client):
-    user_token = test_utils.user_token(client)
 
     tasks.delete_and_refresh_all_results_tables(engine=engine)
 
     # check if db is clean
-    response = client.get(
-        f"/api/rest/results/is_dirty",
-        headers={"Authorization": f"Bearer {user_token['access_token']}"},
-    )
+    response = client.get(f"/api/rest/results/is_dirty")
     assert 200 <= response.status_code < 300, response.content
     rsp_json = response.json()
     assert rsp_json["is_dirty"] == False, rsp_json
 
     # dirty the results by patching an attribute
-    response = client.get(
-        "/api/rest/tmnt_attr/SWFA-100018",
-        headers={"Authorization": f"Bearer {user_token['access_token']}"},
-    )
+    response = client.get("/api/rest/tmnt_attr/SWFA-100018")
     assert 200 <= response.status_code < 300, response.content
     rsp_json = response.json()
 
     blob = rsp_json
     blob["captured_pct"] = 55
 
-    response = client.patch(
-        "/api/rest/tmnt_attr/SWFA-100018",
-        json=blob,
-        headers={"Authorization": f"Bearer {user_token['access_token']}"},
-    )
+    response = client.patch("/api/rest/tmnt_attr/SWFA-100018", json=blob)
     assert 200 <= response.status_code < 300, response.content
     rsp_json = response.json()
 
     # check if dirty got set
-    response = client.get(
-        f"/api/rest/results/is_dirty",
-        headers={"Authorization": f"Bearer {user_token['access_token']}"},
-    )
+    response = client.get(f"/api/rest/results/is_dirty")
     assert 200 <= response.status_code < 300, response.content
     rsp_json = response.json()
     assert rsp_json["is_dirty"] == True, rsp_json
@@ -100,10 +78,7 @@ def test_clean_dirty_clean(client):
     tasks.delete_and_refresh_all_results_tables(engine=engine)
 
     # check if dirty got cleaned
-    response = client.get(
-        f"/api/rest/results/is_dirty",
-        headers={"Authorization": f"Bearer {user_token['access_token']}"},
-    )
+    response = client.get(f"/api/rest/results/is_dirty")
     assert 200 <= response.status_code < 300, response.content
     rsp_json = response.json()
     assert rsp_json["is_dirty"] == False, rsp_json
