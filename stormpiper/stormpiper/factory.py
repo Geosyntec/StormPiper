@@ -90,7 +90,10 @@ def create_app(
         RateLimitMiddleware,
         authenticate=ratelimiter.client_ip,
         backend=RedisBackend(StrictRedis.from_url(_settings.REDIS_BROKER_URL)),
-        config={r".+?/token/": [Rule(minute=120, second=5, block_time=60)]},
+        config={
+            r".+?/token/": [Rule(minute=120, second=5, block_time=60)],
+            r".+?/auth/": [Rule(minute=30, second=5, block_time=3600)],
+        },
     )
 
     app.include_router(api_router)
