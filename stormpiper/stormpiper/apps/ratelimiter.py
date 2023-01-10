@@ -1,6 +1,6 @@
 from ipaddress import ip_address
-from typing import Tuple
 from random import randint
+from typing import Tuple
 
 from ratelimit.auths import EmptyInformation
 from ratelimit.types import Scope

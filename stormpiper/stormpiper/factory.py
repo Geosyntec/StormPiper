@@ -15,7 +15,8 @@ from redis.asyncio import StrictRedis
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from stormpiper.api import api_router, rpc_router
-from stormpiper.apps import supersafe as ss, ratelimiter
+from stormpiper.apps import ratelimiter
+from stormpiper.apps import supersafe as ss
 from stormpiper.apps.supersafe.users import check_admin
 from stormpiper.core.config import settings
 from stormpiper.earth_engine import ee_continuous_login
