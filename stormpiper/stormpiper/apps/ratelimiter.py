@@ -15,7 +15,7 @@ async def client_ip(scope: Scope) -> Tuple[str, str]:
         if any((s in str(ip) for s in ["testclient", "localhost"])):
             return str(randint(1_000_000, 10_000_000 - 1)), "default"
 
-        if ip_address(ip).is_global:
+        if ip_address(ip).is_global:  # pragma: no cover
             return ip, "default"
 
     else:  # pragma: no cover
