@@ -37,6 +37,7 @@ def test_create_user(client):
         ("/api/rest/users/me", "patch", {"is_verified": True}, True),
         ("/api/rest/users/me", "patch", {"is_active": True}, True),
         ("/api/rest/users/me", "patch", {"first_name": str(uuid.uuid4())}, True),
+        ("/api/rest/users/me", "patch", {"readonly_token": 100}, True),
         ("/api/rest/users/me", "patch", {"role": 100}, False),
         ("/api/rest/users/0001", "get", {}, False),
     ],
@@ -55,7 +56,7 @@ def test_user_mods(client, route, method, blob, authorized):
         base_data = base_response.json()
         data = response.json()
 
-        for noop in ["is_superuser", "is_verified", "is_active"]:
+        for noop in ["is_superuser", "is_verified", "is_active", "readonly_token"]:
             assert data[noop] == base_data[noop], (data, base_data)
 
         for mutable in ["first_name"]:
@@ -65,3 +66,37 @@ def test_user_mods(client, route, method, blob, authorized):
                     data,
                     base_data,
                 )
+
+
+@pytest.mark.parametrize(
+    "route,method,blob,authorized",
+    [
+        ("/api/rest/users/readonly_token", "get", {}, True),
+        ("/api/rest/users/rotate_readonly_token", "post", {}, True),
+    ],
+)
+def test_user_mods_readonly_token(client, route, method, blob, authorized):
+    base_response = client.get("/api/rest/users/me")
+
+    methodf = getattr(client, method)
+    kwargs = {} if "get" in method.lower() else {"json": blob}
+    response = methodf(route, **kwargs)
+
+    if not authorized:
+        assert response.status_code >= 401, (response.status_code, response.content)
+    else:
+        assert response.status_code == 200, (response.status_code, response.content)
+        base_data = base_response.json()
+        data = response.json()
+
+        if "rotate" in route:
+            assert data["readonly_token"] != base_data["readonly_token"], (
+                data,
+                base_data,
+            )
+
+        else:
+            assert data["readonly_token"] == base_data["readonly_token"], (
+                data,
+                base_data,
+            )

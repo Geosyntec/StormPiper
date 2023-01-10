@@ -9,7 +9,7 @@ from stormpiper.apps.supersafe.users import (
     User,
     check_admin,
     check_protect_role_field,
-    check_user,
+    check_user_readonly,
     current_active_user,
     fastapi_users,
     get_async_session,
@@ -30,7 +30,7 @@ from uuid import uuid4
 @router.get(
     "/readonly_token",
     name="users:get_readonly_token",
-    dependencies=[Depends(check_user)],
+    dependencies=[Depends(check_user_readonly)],
     response_model=UserResponse,
 )
 async def get_readonly_token(
@@ -40,9 +40,26 @@ async def get_readonly_token(
 
     u = await user_db.get(user.id)
 
-    if u.access_token:
+    if u.readonly_token:
         return u
 
+    user = await user_db.update(u, {"readonly_token": str(uuid4())})
+
+    return user
+
+
+@router.post(
+    "/rotate_readonly_token",
+    name="users:rotate_readonly_token",
+    dependencies=[Depends(check_user_readonly)],
+    response_model=UserResponse,
+)
+async def rotate_readonly_token(
+    user: User = Depends(current_active_user),
+    user_db=Depends(get_user_db),
+):
+
+    u = await user_db.get(user.id)
     user = await user_db.update(u, {"readonly_token": str(uuid4())})
 
     return user
