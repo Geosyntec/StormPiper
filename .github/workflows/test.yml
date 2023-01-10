@@ -14,18 +14,68 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image: [stormpiper-test, redis, postgis]
     env:
       COMPOSE_FILE: docker-stack.yml
       COMPOSE_DOCKER_CLI_BUILD: 1
+      DOCKER_BUILDKIT: 1
+      ARTIFACT_REGISTRY: gcr.io/tacoma-app
     steps:
       - uses: actions/checkout@v3
+
+      - name: Prepare tags
+        id: prep
+        run: |
+          DOCKER_IMAGE=$ARTIFACT_REGISTRY/${{ matrix.image }}
+          VERSION=ci-test
+          TAGS="${DOCKER_IMAGE}:${VERSION}"
+          echo "tags: ${TAGS}"
+          echo "tags=${TAGS}" >> $GITHUB_OUTPUT
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Inspect builder
+        run: |
+          echo "Name:      ${{ steps.buildx.outputs.name }}"
+          echo "Endpoint:  ${{ steps.buildx.outputs.endpoint }}"
+          echo "Status:    ${{ steps.buildx.outputs.status }}"
+          echo "Flags:     ${{ steps.buildx.outputs.flags }}"
+          echo "Platforms: ${{ steps.buildx.outputs.platforms }}"
+
+      - name: Login to GCR
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: gcr.io
+          username: _json_key
+          password: ${{ secrets.GCR_JSON_KEY }}
+
+      - name: Build and Push
+        id: docker_build
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          loat: true
+          push: false
+          context: .
+          target: ${{ matrix.image }}
+          tags: ${{ steps.prep.outputs.tags }}
+          cache-from: type=registry,ref=${{ env.ARTIFACT_REGISTRY }}/buildcache
+          cache-to: type=registry,ref=${{ env.ARTIFACT_REGISTRY }}/buildcache,mode=max
+
       - name: run tests
         run: make coverage-ci
+
       - name: coverage
         run: |
           docker compose exec -T stormpiper-test coverage report -mi
           docker compose exec -T stormpiper-test coverage xml
           docker compose cp stormpiper-test:/stormpiper/coverage.xml coverage.xml
           docker compose cp stormpiper-test:/stormpiper/.coverage .coverage
+
       - name: upload coverage
         uses: codecov/codecov-action@v3
