@@ -59,7 +59,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           builder: ${{ steps.buildx.outputs.name }}
-          loat: true
+          load: true
           push: false
           context: .
           target: ${{ matrix.image }}
