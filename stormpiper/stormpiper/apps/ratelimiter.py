@@ -12,7 +12,9 @@ async def client_ip(scope: Scope) -> Tuple[str, str]:
     """
     if scope["client"]:
         ip, _ = tuple(scope["client"])
-        if any((s in str(ip) for s in ["testclient", "localhost"])):
+        if any(
+            (s in str(ip) for s in ["testclient", "localhost"])
+        ):  # pragma: no branch
             return str(randint(1_000_000, 10_000_000 - 1)), "default"
 
         if ip_address(ip).is_global:  # pragma: no cover
