@@ -17,11 +17,11 @@ async def client_ip(scope: Scope) -> Tuple[str, str]:
 
         if ip_address(ip).is_global:
             return ip, "default"
-    else:
 
+    else:  # pragma: no cover
         for name, value in scope["headers"]:
             if name == b"x-real-ip":
                 ip = value.decode("utf8")
                 return ip, "default"
 
-    raise EmptyInformation(scope)
+    raise EmptyInformation(scope)  # pragma: no cover
