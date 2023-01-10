@@ -1,25 +1,16 @@
 services:
   stormpiper-test:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: stormpiper-test
     image: gcr.io/tacoma-app/stormpiper-test:ci-test
     volumes:
       - ./stormpiper/stormpiper:/stormpiper/stormpiper
       - ./stormpiper/alembic:/stormpiper/alembic
 
   postgis:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: postgis
     image: gcr.io/tacoma-app/postgis:ci-test
 
   redis:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: redis
     image: gcr.io/tacoma-app/redis:ci-test
+    ports:
+      - target: 6379
+        published: 6379
 
