@@ -10,6 +10,12 @@ on:
       - main
   pull_request:
 
+env:
+  COMPOSE_FILE: docker-stack.yml
+  COMPOSE_DOCKER_CLI_BUILD: 1
+  DOCKER_BUILDKIT: 1
+  ARTIFACT_REGISTRY: gcr.io/tacoma-app
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build:
@@ -17,11 +23,6 @@ jobs:
     strategy:
       matrix:
         image: [stormpiper-test, redis, postgis]
-    env:
-      COMPOSE_FILE: docker-stack.yml
-      COMPOSE_DOCKER_CLI_BUILD: 1
-      DOCKER_BUILDKIT: 1
-      ARTIFACT_REGISTRY: gcr.io/tacoma-app
     steps:
       - uses: actions/checkout@v3
 
@@ -67,9 +68,17 @@ jobs:
   test:
     needs: build
     runs-on: ubuntu-latest
-      - name: Sleep for 1 min to let the dust settle
+    steps:
+      - name: Sleep for to let the dust settle
         run: sleep 10s
         shell: bash
+
+      - name: Login to GCR
+        uses: docker/login-action@v2
+        with:
+          registry: gcr.io
+          username: _json_key
+          password: ${{ secrets.GCR_JSON_KEY }}
 
       - name: run tests
         run: make coverage-ci
