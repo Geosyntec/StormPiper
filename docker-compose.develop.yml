@@ -28,7 +28,7 @@ services:
       dockerfile: Dockerfile
       target: bg_worker
     command: bash /run-beat.sh
-  
+
   redis:
     build:
       context: .
