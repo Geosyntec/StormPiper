@@ -26,12 +26,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Set sha_short
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
       - name: Prepare tags
         id: prep
         run: |
           DOCKER_IMAGE=$ARTIFACT_REGISTRY/${{ matrix.image }}
-          VERSION=ci-test
-          TAGS="${DOCKER_IMAGE}:${VERSION}"
+          VERSION=ci-test-${{ steps.vars.outputs.sha_short }}
+          TAGS=${DOCKER_IMAGE}:${VERSION}
           echo "tags: ${TAGS}"
           echo "tags=${TAGS}" >> $GITHUB_OUTPUT
 
@@ -65,9 +69,15 @@ jobs:
           tags: ${{ steps.prep.outputs.tags }}
           cache-from: type=registry,ref=${{ env.ARTIFACT_REGISTRY }}/buildcache
           cache-to: type=registry,ref=${{ env.ARTIFACT_REGISTRY }}/buildcache,mode=max
+
+    outputs:
+      sha_short: ${{ steps.vars.outputs.sha_short }}
+
   test:
     needs: build
     runs-on: ubuntu-latest
+    env:
+      VERSION: ci-test-${{ needs.build.outputs.sha_short }}
     steps:
       - uses: actions/checkout@v3
 
