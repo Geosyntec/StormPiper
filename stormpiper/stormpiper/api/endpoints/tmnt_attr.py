@@ -134,7 +134,7 @@ async def validate_facility_create_or_update(
         Dict[str, Any], TMNTFacilityAttrPatch, STRUCTURAL_FACILITY_TYPE
     ] = Body(
         ...,
-        example={
+        example={  # example required since default example is empty dict
             "treatment_strategy": "string",
             "facility_type": "string",
             "hsg": "string",
@@ -150,6 +150,10 @@ async def validate_facility_create_or_update(
             "depth_ft": 0,
             "captured_pct": 0,
             "retained_pct": 0,
+            "capital_cost": 0,
+            "om_cost_per_yr": 0,
+            "lifespan_yrs": 0,
+            "replacement_cost": 0,
         },
     ),
     context: dict = Depends(get_context),
