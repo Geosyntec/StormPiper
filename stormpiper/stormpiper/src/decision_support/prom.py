@@ -29,7 +29,7 @@ EQUITY_COLS = [
 POC_COLS = [
     c
     for c in SubbasinResultView.get_fields()
-    if any((v in c.lower() for v in ["yield_lbs", "depth_inches"]))
+    if any((v in c.lower() for v in ["yield_lbs", "depth_inches", "conc_mg/l"]))
 ]
 
 
