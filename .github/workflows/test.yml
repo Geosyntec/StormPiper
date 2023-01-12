@@ -67,8 +67,8 @@ jobs:
           context: .
           target: ${{ matrix.image }}
           tags: ${{ steps.prep.outputs.tags }}
-          cache-from: type=registry,ref=${{ env.ARTIFACT_REGISTRY }}/buildcache
-          cache-to: type=registry,ref=${{ env.ARTIFACT_REGISTRY }}/buildcache,mode=max
+          cache-from: type=registry,ref=${{ env.ARTIFACT_REGISTRY }}/${{ matrix.image }}:buildcache
+          cache-to: type=registry,ref=${{ env.ARTIFACT_REGISTRY }}/${{ matrix.image }}:buildcache,mode=max
 
     outputs:
       sha_short: ${{ steps.vars.outputs.sha_short }}
