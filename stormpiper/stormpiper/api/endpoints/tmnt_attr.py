@@ -14,6 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from stormpiper.apps import supersafe as ss
 from stormpiper.apps.supersafe.users import check_user
 from stormpiper.core.context import get_context
+from stormpiper.core.exceptions import RecordNotFound
 from stormpiper.database import crud
 from stormpiper.database.connection import get_async_session
 from stormpiper.models.base import BaseModel as Base
@@ -94,7 +95,7 @@ def validate_tmnt_modeling_params(unvalidated_data: dict, context: dict) -> None
     return
 
 
-async def maybe_update_npv_params(
+def maybe_update_npv_params(
     unvalidated_data: dict, npv_global_settings: dict
 ) -> dict[str, Any]:
 
@@ -115,10 +116,7 @@ async def maybe_update_npv_params(
         return unvalidated_data
 
     try:
-        npv_req = NPVRequest(
-            **unvalidated_data,
-            **npv_global_settings,
-        )
+        npv_req = NPVRequest(**unvalidated_data, **npv_global_settings)
 
     except ValidationError as _:
         return unvalidated_data
@@ -169,9 +167,7 @@ async def validate_facility_create_or_update(
     validate_tmnt_modeling_params(unvalidated_data, context)
 
     npv_global_settings: Dict[str, float] = await get_npv_settings(db)
-    unvalidated_data = await maybe_update_npv_params(
-        unvalidated_data, npv_global_settings
-    )
+    unvalidated_data = maybe_update_npv_params(unvalidated_data, npv_global_settings)
 
     unvalidated_data["updated_by"] = user.email
 
@@ -189,16 +185,14 @@ async def patch_tmnt_attr(
     tmnt_attr: TMNTFacilityAttrUpdate = Depends(validate_facility_create_or_update),
     db: AsyncSession = Depends(get_async_session),
 ):
-    attr = await crud.tmnt_attr.get(db=db, id=altid)
 
-    if not attr:
+    try:
+        return await crud.tmnt_attr.update(db=db, id=altid, new_obj=tmnt_attr)
+
+    except RecordNotFound as e:
         raise HTTPException(
             status_code=404, detail=f"Record not found for altid={altid}"
         )
-
-    attr = await crud.tmnt_attr.update(db=db, id=altid, new_obj=tmnt_attr)
-
-    return attr
 
 
 @router.get(
