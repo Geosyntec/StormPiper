@@ -5,18 +5,39 @@ import pytest
 from .. import utils as test_utils
 
 
-def test_create_user(client):
+@pytest.mark.parametrize(
+    "new_user_blob, exp",
+    [
+        (
+            {"email": "new_user@example.com", "password": "supersafepassword"},
+            {"email": "new_user@example.com", "role": "public"},
+        ),
+        (
+            {
+                "email": "new_other_user@example.com",
+                "password": "supersafepassword",
+                "role": "admin",
+            },
+            {"email": "new_other_user@example.com", "role": "public"},
+        ),
+    ],
+)
+def test_create_user(public_client, new_user_blob, exp):
+    client = public_client
     admin_token = test_utils.admin_token(client)
     # create it
     response = client.post(
         "/auth/register",
-        json={"email": "new_user@example.com", "password": "supersafepassword"},
+        json=new_user_blob,
     )
     assert 200 <= response.status_code <= 400, response.text
     data = response.json()
-    assert data["email"] == "new_user@example.com"
+    # assert data["email"] == "new_user@example.com"
     assert "id" in data
     user_id = data["id"]
+
+    for k, v in exp.items():
+        assert data[k] == v, (data[k], v)
 
     # check it
     response = client.get(
@@ -25,8 +46,10 @@ def test_create_user(client):
     )
     assert response.status_code == 200, response.text
     data = response.json()
-    assert data["email"] == "new_user@example.com"
     assert data["id"] == user_id
+
+    for k, v in exp.items():
+        assert data[k] == v, (data[k], v)
 
 
 @pytest.mark.parametrize(
