@@ -4,6 +4,7 @@ import sqlalchemy as sa
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ...core.exceptions import RecordNotFound
 from ..changelog import async_log
 from ..schemas.base import Base, TableChangeLog
 
@@ -61,6 +62,11 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
         new_obj: Union[UpdateModelType, Dict[str, Any]],
     ) -> SchemaType:
 
+        obj = await self.get(db=db, id=id)
+
+        if obj is None:  # pragma: no cover
+            raise RecordNotFound(f"Update Failed. Record not found for {self.id}={id}")
+
         if isinstance(new_obj, dict):
             update_data = new_obj
         else:
@@ -78,12 +84,6 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
         await db.execute(q)
         await db.commit()
 
-        obj = await self.get(db=db, id=id)
-
-        if obj is None:  # pragma: no cover
-            raise ValueError(
-                f"Attemped to update item which does not exist for {self.id}={id}"
-            )
         _ = await self.log(db=db)
 
         return obj

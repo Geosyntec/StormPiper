@@ -2,10 +2,12 @@ from typing import Dict, List, Optional, Tuple
 
 import numpy
 import numpy_financial as nf
+from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from stormpiper.core.exceptions import RecordNotFound
 from stormpiper.database import crud
-from stormpiper.database.utils import scalars_to_records
+from stormpiper.database.utils import orm_to_dict, scalars_to_records
 from stormpiper.models.npv import NPVRequest
 
 
@@ -32,8 +34,8 @@ def compute_bmp_npv(
     # this overwrites the om cost for year zero as well.
     costs[0] = -capital_cost
 
-    # replacement costs are optional, but if they exist we encoumber them
-    # repeatedly after each lifespan.
+    # replacement costs are optional, but if they exist we encumber them
+    # after each lifespan.
     if replacement_cost:
         ix = [i for i, _ in enumerate(costs) if i % int(lifespan_yrs) == 0 and i > 0]
         costs[ix] = -replacement_cost  # assume no OM these years, so we overwrite
@@ -52,3 +54,37 @@ async def get_npv_settings(
         k: float(v) for k, v in settings.items() if k in NPVRequest.get_fields()
     }
     return npv_settings
+
+
+async def calculate_npv_for_existing_tmnt_in_db(
+    altid: str,
+    db: AsyncSession,
+):
+    """Calculates the net present value of a structural bmp facility"""
+
+    attr = await crud.tmnt_attr.get(db=db, id=altid)
+
+    if not attr:
+        raise RecordNotFound(f"Record not found for altid={altid}")
+
+    npv_global_settings: Dict[str, float] = await get_npv_settings(db)
+
+    try:
+        npv_req = NPVRequest(
+            **orm_to_dict(attr),
+            **npv_global_settings,
+        )
+
+    except ValidationError:
+        attr = await crud.tmnt_attr.update(
+            db=db, id=altid, new_obj={"net_present_value": None}
+        )
+        raise
+
+    result, _ = compute_bmp_npv(**npv_req.dict())
+
+    attr = await crud.tmnt_attr.update(
+        db=db, id=altid, new_obj={"net_present_value": result}
+    )
+
+    return attr
