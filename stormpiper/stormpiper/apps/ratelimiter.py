@@ -13,7 +13,8 @@ async def client_ip(scope: Scope) -> Tuple[str, str]:
     if scope["client"]:
         ip, _ = tuple(scope["client"])
         if any(
-            (s in str(ip) for s in ["testclient", "localhost"])
+            [s in str(ip) for s in ["testclient", "localhost"]]
+            + [str(ip).startswith("172.") and str(ip).endswith(".1")]
         ):  # pragma: no branch
             return str(randint(1_000_000, 10_000_000 - 1)), "default"
 
