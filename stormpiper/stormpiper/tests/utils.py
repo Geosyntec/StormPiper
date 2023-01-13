@@ -53,6 +53,14 @@ def user_token(client):
     return response.json()
 
 
+def user_admin_token(client):
+    response = get_token(
+        client, "existing_user_admin@example.com", "existing_user_admin_password"
+    )
+
+    return response.json()
+
+
 def reader_token(client):
     response = get_token(
         client, "existing_reader@example.com", "existing_reader_password"
@@ -90,6 +98,15 @@ def seed_users(engine):
             role="editor",
         )
 
+        existing_user_admin = User(  # type: ignore
+            email="existing_user_admin@example.com",
+            hashed_password=hasher("existing_user_admin_password"),
+            is_active=True,
+            is_superuser=True,
+            is_verified=True,
+            role="user_admin",
+        )
+
         existing_reader = User(  # type: ignore
             email="existing_reader@example.com",
             hashed_password=hasher("existing_reader_password"),
@@ -105,7 +122,13 @@ def seed_users(engine):
             role="public",
         )
 
-        batch = [admin, existing_user, existing_reader, public_user]
+        batch = [
+            admin,
+            existing_user,
+            existing_user_admin,
+            existing_reader,
+            public_user,
+        ]
 
         session.add_all(batch)
 
