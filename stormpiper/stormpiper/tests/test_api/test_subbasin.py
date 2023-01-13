@@ -79,3 +79,57 @@ def test_get_subbasin_access_with_token(
         assert response.status_code >= 400, (response.content, route)
     else:
         assert 200 <= response.status_code < 300, (response.content, route)
+
+
+def _good_token(client):
+    my_data = get_my_data(client)
+    token = my_data.get("readonly_token", None)
+    return token, True
+
+
+def _random_uuid_token(*_, **__):
+    token = "1dc37681-440b-403e-9c72-d9d32318a347"
+    return token, False
+
+
+def _invalid_uuid_token(*_, **__):
+    token = "1dc37681-440b-403e-9c72-d9d323*8a347"
+    return token, False
+
+
+def _not_uuid_token(*_, **__):
+    token = "not a uuid"
+    return token, False
+
+
+@pytest.mark.parametrize(
+    "route",
+    [
+        "/api/rest/subbasin/token",
+    ],
+)
+@pytest.mark.parametrize(
+    "token_getter",
+    [
+        _good_token,
+        _random_uuid_token,
+        _invalid_uuid_token,
+        _not_uuid_token,
+    ],
+)
+def test_good_bad_token(
+    client_local,
+    readonly_client,
+    route,
+    token_getter,
+):
+    client = client_local
+    token, authorized = token_getter(readonly_client)
+
+    route += f"/{token}"
+    response = client.get(route)
+
+    if not authorized:
+        assert response.status_code >= 400, (response.content, route)
+    else:
+        assert 200 <= response.status_code < 300, (response.content, route)
