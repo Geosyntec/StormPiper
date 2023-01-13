@@ -6,42 +6,7 @@ from fastapi_users import schemas
 from pydantic import BaseModel
 
 
-class StrEnumMixin(str, Enum):
-    def _q(self):
-        return self.value
-
-    def __hash__(self) -> int:
-        return str(self.value).__hash__()
-
-    def __eq__(self, other):
-        if self.__class__ is other.__class__:
-            return self._q() == other._q()
-        return NotImplemented
-
-    def __ne__(self, other):
-        if self.__class__ is other.__class__:
-            return self._q() != other._q()
-        return NotImplemented
-
-    def __le__(self, other):
-        if self.__class__ is other.__class__:
-            return self._q() <= other._q()
-        return NotImplemented
-
-    def __lt__(self, other):
-        if self.__class__ is other.__class__:
-            return self._q() < other._q()
-
-    def __ge__(self, other):
-        if self.__class__ is other.__class__:
-            return self._q() >= other._q()
-
-    def __gt__(self, other):
-        if self.__class__ is other.__class__:
-            return self._q() > other._q()
-
-
-class Role(StrEnumMixin):
+class Role(str, Enum):
     public = "public"  # alias for none;
     none = "none"
     reader = "reader"  # auth user; read only

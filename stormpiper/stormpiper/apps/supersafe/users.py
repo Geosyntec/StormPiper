@@ -195,7 +195,7 @@ current_active_super_user = current_user_safe(active=True, superuser=True)
 
 def check_role(min_role: Role = Role.admin):
     async def current_active_user_role(user=Depends(current_active_user)):
-        if user.role >= min_role:
+        if user.role._q() >= min_role._q():
             return user
 
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
@@ -213,19 +213,40 @@ check_user_readonly = check_role(min_role=Role.reader)
 check_user = check_role(min_role=Role.editor)
 
 
-def check_protected_field_role(field: str, min_role: Role = Role.admin):
+def check_protected_user_patch(field: str, min_role: Role = Role.admin):
     """Check if user is attempting to edit the user role."""
 
     async def current_active_user_role(
-        user_update: UserUpdate, user=Depends(current_active_user)
-    ):
+        user_update: UserUpdate,
+        current_user=Depends(current_active_user),
+        user_db=Depends(get_user_db),
+        id: Any = None,
+    ) -> UserUpdate:
         data = user_update.dict(exclude_unset=True)
 
         if field not in data:
             return user_update
 
+        changing_self = True  # assume update is for current user
+
+        other_user_current_role = Role.none
+        if id:
+            other_user = await user_db.get(id)
+            other_user_current_role = getattr(other_user, "role", Role.none)
+            changing_self = str(id) == str(current_user.id)
+
+        new_role = user_update.role
+
+        checks = (
+            current_user.role._q() >= min_role._q(),
+            current_user.role._q() >= new_role._q(),
+            current_user.role._q() >= other_user_current_role._q(),
+            # if you're changing yourself and you're changing the role attribute, break the check
+            not (changing_self and (current_user.role._q() != new_role._q())),
+        )
+
         # prevent users from elevating permissions
-        if user.role >= min_role and user.role >= user_update.role:
+        if all(checks):
             return user_update
 
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
@@ -233,7 +254,7 @@ def check_protected_field_role(field: str, min_role: Role = Role.admin):
     return current_active_user_role
 
 
-check_protect_role_field = check_protected_field_role(
+check_protect_role_field = check_protected_user_patch(
     field="role", min_role=Role.user_admin
 )
 
@@ -303,7 +324,7 @@ async def check_readonly_token(
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
-    if not user.role >= min_role:
+    if not user.role._q() >= min_role._q():
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
     return token

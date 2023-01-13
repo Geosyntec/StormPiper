@@ -19,4 +19,4 @@ from stormpiper.apps.supersafe.models import Role
     ],
 )
 def test_role_ordering(first, comparison, other):
-    assert comparison(first, other)
+    assert comparison(first._q(), other._q())
