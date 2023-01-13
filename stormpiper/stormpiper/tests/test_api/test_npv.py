@@ -1,7 +1,5 @@
 import pytest
 
-from .. import utils as test_utils
-
 
 @pytest.mark.parametrize(
     "blob",

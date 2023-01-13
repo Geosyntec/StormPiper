@@ -3,8 +3,6 @@ import pytest
 from stormpiper.database.connection import engine
 from stormpiper.src import tasks
 
-from .. import utils as test_utils
-
 
 @pytest.mark.parametrize("limit", [3, 5])
 def test_get_all_results(client, limit):
