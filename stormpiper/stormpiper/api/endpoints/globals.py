@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.apps import supersafe as ss
-from stormpiper.apps.supersafe.users import check_admin
+from stormpiper.apps.supersafe.users import check_user_admin
 from stormpiper.database import crud
 from stormpiper.database.connection import get_async_session
 from stormpiper.database.schemas.globals import GlobalSetting
@@ -17,7 +17,7 @@ from stormpiper.models.globals import (
     GlobalSettingUpdate,
 )
 
-router = APIRouter(dependencies=[Depends(check_admin)])
+router = APIRouter(dependencies=[Depends(check_user_admin)])
 
 
 @router.get(

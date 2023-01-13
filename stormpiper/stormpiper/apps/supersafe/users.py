@@ -2,7 +2,7 @@ import datetime
 import logging
 import urllib.parse
 import uuid
-from typing import Optional
+from typing import Any, Optional
 
 import jwt
 from fastapi import Depends, HTTPException, Request, status
@@ -38,7 +38,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     async def on_after_register(
         self, user: User, request: Optional[Request] = None
     ) -> None:
-        if request is None:
+        if request is None:  # pragma: no cover
             return
 
         logger.info(f"User {user.id} has registered.")
@@ -50,7 +50,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     async def on_after_forgot_password(
         self, user: User, token: str, request: Optional[Request] = None
     ) -> None:
-        if request is None:
+        if request is None:  # pragma: no cover
             return
 
         client = utils.rgetattr(request, "app.sessions", None).get(
@@ -86,7 +86,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     async def on_after_request_verify(
         self, user: User, token: str, request: Optional[Request] = None
     ) -> None:
-        if request is None:
+        if request is None:  # pragma: no cover
             return
 
         client = utils.rgetattr(request, "app.sessions", None).get(
@@ -131,9 +131,9 @@ class BetterBearerTransport(BearerTransport):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def get_token(self, request: Request):
+    def get_token(self, request: Request) -> str | None:
         token = request.headers.get("Authorization", "").split(" ")[-1]
-        if token:
+        if token:  # pragma: no branch
             return token
 
 
@@ -141,7 +141,7 @@ class BetterCookieTransport(CookieTransport):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def get_token(self, request: Request):
+    def get_token(self, request: Request) -> str | None:  # pragma: no cover; use Bearer
         token = request.cookies.get(self.cookie_name, "")
         if token:
             return token
@@ -183,14 +183,15 @@ def current_user_safe(**kwargs):
     async def _get_current_user(
         user: User = Depends(fastapi_users.current_user(**kwargs)),
     ) -> Optional[UserRead]:
-        if user:
-            return UserRead.from_orm(user)
+        return UserRead.from_orm(user)
 
     return _get_current_user
 
 
-current_active_user = current_user_safe(active=True)
-current_active_super_user = current_user_safe(active=True, superuser=True)
+current_active_user = current_user_safe(active=True, optional=False)
+current_active_super_user = current_user_safe(
+    active=True, superuser=True, optional=False
+)
 
 
 def check_role(min_role: Role = Role.admin):
@@ -206,8 +207,11 @@ def check_role(min_role: Role = Role.admin):
 # check if role >= 100
 check_admin = check_role(min_role=Role.admin)
 
+# check user has edit rights
+check_user_admin = check_role(min_role=Role.user_admin)
+
 # check if role >= 1, i.e., not public
-check_user_readonly = check_role(min_role=Role.reader)
+check_reader = check_role(min_role=Role.reader)
 
 # check user has edit rights
 check_user = check_role(min_role=Role.editor)
@@ -259,14 +263,14 @@ check_protect_role_field = check_protected_user_patch(
 )
 
 
-def get_token_from_backend(request: Request):
+def get_token_from_backend(request: Request) -> str | None:
 
     for be in fastapi_users.authenticator.backends:
         token = be.transport.get_token(request)  # type: ignore
-        if token:
+        if token:  # pragma: no branch
             return token
 
-    return None
+    return None  # pragma: no cover
 
 
 def check_token(token: str):
@@ -282,25 +286,23 @@ def check_token(token: str):
 
         return data
 
-    except jwt.PyJWTError as e:
+    except jwt.PyJWTError as e:  # pragma: no cover
         logger.exception(e)
         return None
 
 
 def is_valid_token(request: Request) -> bool:
     token = get_token_from_backend(request)
-    if token is None:
+    if token is None:  # pragma: no cover
         return False
     data = check_token(token)
-    if data:
-        return True
-    return False
+    return bool(data)
 
 
 async def check_is_valid_token(request: Request):
     isvalid = is_valid_token(request)
 
-    if not isvalid:
+    if not isvalid:  # pragma: no cover
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
 
