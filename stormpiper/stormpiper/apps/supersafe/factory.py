@@ -45,7 +45,7 @@ def create_app(
     *,
     settings_override: Optional[Dict[str, Any]] = None,
     app_kwargs: Optional[Dict[str, Any]] = None,
-) -> FastAPI:
+) -> FastAPI:  # pragma: no cover
 
     _settings = settings.copy(deep=True)
     if settings_override is not None:  # pragma: no branch
