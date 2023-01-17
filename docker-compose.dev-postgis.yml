@@ -6,6 +6,10 @@ services:
       STP_EE_LOGIN_ON_STARTUP: false
       STP_DATABASE_URL_SYNC: "postgresql+psycopg2://docker:docker@postgis:5432/docker"
       STP_DATABASE_URL_ASYNC: "postgresql+asyncpg://docker:docker@postgis:5432/docker"
+      STP_EMAIL_API_KEY: ${STP_EMAIL_API_KEY:-""}
+      STP_EMAIL_API_SECRET: ${STP_EMAIL_API_SECRET:-""}
+      STP_EMAIL_SEND_URL: ${STP_EMAIL_SEND_URL:-""}
+      STP_MAINTAINER_EMAIL_LIST: ${STP_MAINTAINER_EMAIL_LIST:-""}
   postgis:
     build:
       context: .
