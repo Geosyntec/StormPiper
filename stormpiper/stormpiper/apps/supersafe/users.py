@@ -183,7 +183,8 @@ def current_user_safe(**kwargs):
     async def _get_current_user(
         user: User = Depends(fastapi_users.current_user(**kwargs)),
     ) -> Optional[UserRead]:
-        return UserRead.from_orm(user)
+        if user:
+            return UserRead.from_orm(user)
 
     return _get_current_user
 
