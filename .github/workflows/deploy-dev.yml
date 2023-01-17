@@ -46,3 +46,10 @@ jobs:
         run: |-
           echo "Deploying to development Application"
           kubectl rollout restart deploy --selector=app=stormpiper-dev
+
+      - name: Check Deployment
+        shell: bash
+        run: |-
+          echo "Checking Deployment to development Application"
+          run: sleep 15m
+          scripts/health_check.sh

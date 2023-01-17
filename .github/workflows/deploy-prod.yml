@@ -54,3 +54,10 @@ jobs:
           kubectl set image deployment/worker-prod worker=gcr.io/tacoma-app/bg_worker:$PRODUCTION_TAG
           kubectl set image deployment/redis-prod redis=gcr.io/tacoma-app/redis:$PRODUCTION_TAG
           kubectl rollout restart deploy --selector=app=stormpiper-prod
+
+      - name: Check Deployment
+        shell: bash
+        run: |-
+          echo "Checking Deployment to production Application"
+          run: sleep 15m
+          scripts/health_check.sh
