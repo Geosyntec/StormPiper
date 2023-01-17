@@ -85,6 +85,12 @@ test-ci: stack-ci init-test ## run tests quickly with the default Python
 coverage-ci: stack-ci init-test ## run tests on CI with the default Python
 	docker compose -f docker-stack.yml exec stormpiper-test coverage run -m pytest -v -m "not integration"
 
+alert-dev-unreachable:
+	docker compose -f docker-stack.yml exec stormpiper-test python -m stormpiper.if_error "ERROR: Dev Site is not reachable."
+
+alert-prod-unreachable:
+	docker compose -f docker-stack.yml exec stormpiper-test python -m stormpiper.if_error "ERROR: Prod Site is not reachable."
+
 coverage: clean restart init-test ## check code coverage quickly with the default Python
 	docker compose -f docker-stack.yml exec stormpiper-test coverage run -m pytest -x -m "not integration"
 	docker compose -f docker-stack.yml exec stormpiper-test coverage report -mi
