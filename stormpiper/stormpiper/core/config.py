@@ -84,6 +84,12 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
+    @validator("EMAIL_SEND_URL", pre=True)  # pragma: no cover
+    def assure_valid_url(cls, v: str) -> str:
+        if not v or v.strip() == "":
+            return "http://example.com"
+        return v
+
     # logger
     LOGLEVEL: str = "INFO"
 
