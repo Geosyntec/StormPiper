@@ -7,7 +7,6 @@ import { useState,useEffect } from "react";
 import { useCallback } from "react";
 import debounce from "lodash.debounce"
 
-
 // Viewport settings
 const INITIAL_VIEW_STATE = {
   longitude: -122.4,
@@ -90,11 +89,15 @@ function DeckGLMap(props) {
           html: getTooltipContents(object.object, object?.layer?.id,object?.layer?.props?.label),
           style:{
             borderRadius:'6px',
+            maxWidth:'175px'
           }
         };
       }}
     >
-      <StaticMap mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN} />
+      <StaticMap mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}>
+      </StaticMap>
+      {/* <StaticMap mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN} mapStyle="mapbox://styles/mapbox/satellite-v9">
+      </StaticMap> */}
     </DeckGL>
   );
 }

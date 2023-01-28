@@ -1,4 +1,4 @@
-import React, {Suspense, useEffect, useState } from "react";
+import React, {Suspense, useEffect, useRef, useState } from "react";
 import { useParams,useNavigate } from "react-router-dom";
 import { layerDict } from "./assets/geojson/coreLayers";
 import LayerSelector from "./components/layerSelector";
@@ -12,11 +12,13 @@ import InfoRoundedIcon from "@material-ui/icons/InfoRounded"
 import GridOnRoundedIcon from "@material-ui/icons/GridOnRounded"
 import ScatterPlotRoundedIcon from "@material-ui/icons/ScatterPlotRounded"
 import "./App.css";
+import {EditableGeoJsonLayer, DrawPolygonMode} from 'nebula.gl';
 
 const DeckGLMap = React.lazy(()=>import("./components/map"))
 const ResultsTable = React.lazy(()=>import("./components/resultsTable"))
 
 function App() {
+  let firstRender = useRef(true)
   const [lyrSelectDisplayState, setlyrSelectDisplayState] = useState(false); // when true, control panel is displayed
   let params = useParams();
   let navigate = useNavigate()
@@ -25,6 +27,17 @@ function App() {
   const [resultsDisplayState,setResultsDisplayState] = useState(false) //when true, results table is displayed
   const [verificationDisplayState,setVerificationDisplayState] = useState(false)//when true, tell the user that they need to verify their email
   const [focusFeature, setFocusFeature] = useState(params?.id || null);
+  const [isDirty,setIsDirty] = useState({is_dirty:false,last_updated:Date.now()})
+  const [localLastUpdated,setLocalLastUpdated] = useState(null) //holds the last time that results were fetched from DB
+  const [dbLastUpdated,setDBLastUpdated] = useState(null) //holds the last time that the DB results were updated
+  const [userPolygons,setUserPolygons]= useState(
+    {
+      type: 'FeatureCollection',
+      features: [
+        /* insert features here */
+      ]
+    }
+  )
   const [activeLayers, setActiveLayers] = useState(() => {
     var res = {};
     Object.keys(layerDict).map((category) => {
@@ -51,7 +64,39 @@ function App() {
     return res;
   });
 
+  // const selectedFeatureIndexes = [];
+  // const userDelineations = {
+  //   layer:EditableGeoJsonLayer,
+  //   props:{
+  //     id:"userDelineations",
+  //     label:"User Polygons",
+  //     data:userPolygons,
+  //     selectedFeatureIndexes,
+  //     mode:DrawPolygonMode,
+  //     onEdit: ({ updatedData }) => {
+  //       setUserPolygons(updatedData)
+  //     }
+  //   },
+
+  // }
+
+
+  function _fetchIsDirty(){
+    // console.log("Checking isDirty")
+    fetch("/api/rest/results/is_dirty")
+    .then((res) => {
+      return res.json();
+    })
+    .then((res) => {
+      console.log("Parsed is_dirty results: ",res)
+      setIsDirty(res||null)
+      setDBLastUpdated(res.last_updated||null)
+    })
+  };
+
   useEffect(()=>{
+    //Only perform these operations on initial render
+    //Notify user if they haven't verified email
     fetch("/api/rest/users/me")
       .then((res) => {
         return res.json();
@@ -62,6 +107,9 @@ function App() {
           setVerificationDisplayState(true)
         }
       });
+    //Set up is_dirty polling request to check when new results need to be calculated
+    _fetchIsDirty()
+    setInterval(_fetchIsDirty,3000)
   },[])
 
   const topMenuButtons={
@@ -88,9 +136,9 @@ function App() {
   }
 
 
-  if(focusFeature!=params?.id){
-    setFocusFeature(params.id)
-  }
+  // if(focusFeature!=params?.id){
+  //   setFocusFeature(params.id)
+  // }
 
 
   function _toggleLayer(layerName, updateFunction = setActiveLayers) {
@@ -100,7 +148,7 @@ function App() {
     updateFunction(currentActiveLayers);
   }
 
-  function _renderLayers(layerDict, visState, layersToRender = []) {
+  function _renderLayers(layerDict, visState, isFirstRender,layersToRender = []) {
     Object.keys(layerDict).map((category) => {
       const layerGroup = layerDict[category];
       if (layerGroup.length) {
@@ -110,18 +158,20 @@ function App() {
             props.data = getData();
           }
 
-          if (visState[props.id]||props.onByDefault) {
+          if (visState[props.id]||(firstRender.current && props.onByDefault)) {
             props = _injectLayerAccessors(props)
             layersToRender.push(new Layer(props));
           }
           return false;
         });
       } else {
-        layersToRender = _renderLayers(layerGroup, visState, layersToRender);
+        layersToRender = _renderLayers(layerGroup, visState, isFirstRender,layersToRender);
       }
       return false;
     });
-    // console.log('Layers to Render:',layersToRender)
+    // layersToRender.push(new EditableGeoJsonLayer(userDelineations.props))
+
+    firstRender.current = false
     return layersToRender;
   }
 
@@ -155,12 +205,18 @@ function App() {
 
   function _injectLayerAccessors(props){
       props.getFillColor = (d)=>{
-        // console.log("checking feature: ",d)
         return d.properties.altid===focusFeature? props.highlightColor||[52,222,235]:props.defaultFillColor||[160, 160, 180, 200]
       }
       props.updateTriggers = {
         getFillColor:[focusFeature||null]
       }
+      // if(props.id==='userDelineations'){
+      //   props.data = userPolygons
+      //   props.onEdit = ({ updatedData }) => {
+      //                   console.log("Editing User Polygon: ",updatedData)
+      //                   setUserPolygons(updatedData)
+      //                   }
+      // }
     return props
   }
 
@@ -181,7 +237,6 @@ function App() {
         setVerificationDisplayState(false)
       });
   }
-
   return (
     <AuthProvider>
       <div className="App">
@@ -190,7 +245,7 @@ function App() {
           <Suspense fallback={<div>Loading Map...</div>}>
             <DeckGLMap
               id="main-map"
-              layers={_renderLayers(layerDict, activeLayers)}
+              layers={_renderLayers(layerDict,activeLayers,firstRender)}
               onClick={_lyrClickHandlers.bind(this)}
               currentFeature={focusFeature}
             ></DeckGLMap>
@@ -217,6 +272,7 @@ function App() {
               displayStatus={prjStatDisplayState}
               displayController={_toggleprjStatDisplayState}
               feature={focusFeature}
+              isDirty = {isDirty}
             ></BMPStatWindow>
           </CardContent>
         </Card>

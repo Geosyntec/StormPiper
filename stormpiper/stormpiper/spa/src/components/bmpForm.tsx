@@ -255,7 +255,7 @@ export function BMPForm(props:formProps){
                                 }
                               })}
                             </TextField>
-                            :<TextField variant="outlined" margin="dense" {...register(formField.fieldID)} type = {formField.type} defaultValue={formField.value} required={formField.required} label={formField.label} disabled={formField.label==='Node Id'}/>
+                            :<TextField variant="outlined" margin="dense" {...register(formField.fieldID)} type = {formField.type} defaultValue={formField.value} required={formField.required} label={formField.label} inputProps={{step:formField.type==='number'?0.01:null}} disabled={formField.label==='Node Id'}/>
                         }
                     </div>
                 )
@@ -263,7 +263,7 @@ export function BMPForm(props:formProps){
             if (props.simpleFields) {
               simpleCheckDiv = (
                 <div className="simple-checkbox">
-                  <FormControlLabel control={<Switch defaultChecked onChange={() => setIsSimple(!isSimple)} color="primary"/>} label="Simple Facility?"/>
+                  <FormControlLabel control={<Switch checked={isSimple} onChange={() => setIsSimple(!isSimple)} color="primary"/>} label="Simple Facility?"/>
                 </div>
               );
             } else {
