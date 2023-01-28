@@ -109,7 +109,7 @@ function App() {
       });
     //Set up is_dirty polling request to check when new results need to be calculated
     _fetchIsDirty()
-    setInterval(_fetchIsDirty,3000)
+    setInterval(_fetchIsDirty,10000)
   },[])
 
   const topMenuButtons={
