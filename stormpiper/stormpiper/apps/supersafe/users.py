@@ -2,7 +2,7 @@ import datetime
 import logging
 import urllib.parse
 import uuid
-from typing import Optional
+from typing import Any, Optional
 
 import jwt
 from fastapi import Depends, HTTPException, Request, status
@@ -15,6 +15,8 @@ from fastapi_users.authentication import (
 )
 from fastapi_users.db import SQLAlchemyUserDatabase
 from fastapi_users.jwt import decode_jwt
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.core import utils
 from stormpiper.core.config import settings
@@ -36,7 +38,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     async def on_after_register(
         self, user: User, request: Optional[Request] = None
     ) -> None:
-        if request is None:
+        if request is None:  # pragma: no cover
             return
 
         logger.info(f"User {user.id} has registered.")
@@ -48,7 +50,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     async def on_after_forgot_password(
         self, user: User, token: str, request: Optional[Request] = None
     ) -> None:
-        if request is None:
+        if request is None:  # pragma: no cover
             return
 
         client = utils.rgetattr(request, "app.sessions", None).get(
@@ -84,7 +86,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     async def on_after_request_verify(
         self, user: User, token: str, request: Optional[Request] = None
     ) -> None:
-        if request is None:
+        if request is None:  # pragma: no cover
             return
 
         client = utils.rgetattr(request, "app.sessions", None).get(
@@ -129,9 +131,9 @@ class BetterBearerTransport(BearerTransport):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def get_token(self, request: Request):
+    def get_token(self, request: Request) -> str | None:
         token = request.headers.get("Authorization", "").split(" ")[-1]
-        if token:
+        if token:  # pragma: no branch
             return token
 
 
@@ -139,7 +141,7 @@ class BetterCookieTransport(CookieTransport):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def get_token(self, request: Request):
+    def get_token(self, request: Request) -> str | None:  # pragma: no cover; use Bearer
         token = request.cookies.get(self.cookie_name, "")
         if token:
             return token
@@ -187,19 +189,18 @@ def current_user_safe(**kwargs):
     return _get_current_user
 
 
-current_active_user = current_user_safe(active=True)
-current_active_super_user = current_user_safe(active=True, superuser=True)
+current_active_user = current_user_safe(active=True, optional=False)
+current_active_super_user = current_user_safe(
+    active=True, superuser=True, optional=False
+)
 
 
 def check_role(min_role: Role = Role.admin):
     async def current_active_user_role(user=Depends(current_active_user)):
-        if user.role >= min_role:
+        if user.role._q() >= min_role._q():
             return user
 
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail={"reason": f"requires {min_role} permissions or higher."},
-        )
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
     return current_active_user_role
 
@@ -207,42 +208,70 @@ def check_role(min_role: Role = Role.admin):
 # check if role >= 100
 check_admin = check_role(min_role=Role.admin)
 
+# check user has edit rights
+check_user_admin = check_role(min_role=Role.user_admin)
+
 # check if role >= 1, i.e., not public
-check_user = check_role(min_role=Role.user)
+check_reader = check_role(min_role=Role.reader)
+
+# check user has edit rights
+check_user = check_role(min_role=Role.editor)
 
 
-def check_protected_field_role(field: str, min_role: Role = Role.admin):
+def check_protected_user_patch(field: str, min_role: Role = Role.admin):
     """Check if user is attempting to edit the user role."""
 
     async def current_active_user_role(
-        user_update: UserUpdate, user=Depends(current_active_user)
-    ):
+        user_update: UserUpdate,
+        current_user=Depends(current_active_user),
+        user_db=Depends(get_user_db),
+        id: Any = None,
+    ) -> UserUpdate:
+        data = user_update.dict(exclude_unset=True)
 
-        if field not in user_update.dict(exclude_unset=True):
+        if field not in data:
             return user_update
 
-        if user.role >= min_role:
-            return user_update
+        changing_self = True  # assume update is for current user
 
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail={"reason": f"requires {min_role} permissions or higher."},
+        other_user_current_role = Role.none
+        if id:
+            other_user = await user_db.get(id)
+            other_user_current_role = getattr(other_user, "role", Role.none)
+            changing_self = str(id) == str(current_user.id)
+
+        new_role = user_update.role
+
+        checks = (
+            current_user.role._q() >= min_role._q(),
+            current_user.role._q() >= new_role._q(),
+            current_user.role._q() >= other_user_current_role._q(),
+            # if you're changing yourself and you're changing the role attribute, break the check
+            not (changing_self and (current_user.role._q() != new_role._q())),
         )
+
+        # prevent users from elevating permissions
+        if all(checks):
+            return user_update
+
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
     return current_active_user_role
 
 
-check_protect_role_field = check_protected_field_role(field="role", min_role=Role.admin)
+check_protect_role_field = check_protected_user_patch(
+    field="role", min_role=Role.user_admin
+)
 
 
-def get_token_from_backend(request: Request):
+def get_token_from_backend(request: Request) -> str | None:
 
     for be in fastapi_users.authenticator.backends:
         token = be.transport.get_token(request)  # type: ignore
-        if token:
+        if token:  # pragma: no branch
             return token
 
-    return None
+    return None  # pragma: no cover
 
 
 def check_token(token: str):
@@ -258,23 +287,47 @@ def check_token(token: str):
 
         return data
 
-    except jwt.PyJWTError as e:
+    except jwt.PyJWTError as e:  # pragma: no cover
         logger.exception(e)
         return None
 
 
 def is_valid_token(request: Request) -> bool:
     token = get_token_from_backend(request)
-    if token is None:
+    if token is None:  # pragma: no cover
         return False
     data = check_token(token)
-    if data:
-        return True
-    return False
+    return bool(data)
 
 
 async def check_is_valid_token(request: Request):
     isvalid = is_valid_token(request)
 
-    if not isvalid:
+    if not isvalid:  # pragma: no cover
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+
+
+def validate_uuid4(token: str):
+    try:
+        uuid.UUID(token, version=4)
+        return token
+    except ValueError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+
+
+async def check_readonly_token(
+    token: str = Depends(validate_uuid4),
+    db: AsyncSession = Depends(get_async_session),
+    min_role: Role = Role.reader,
+):
+    result = await db.execute(select(User).where(User.readonly_token == token))
+
+    user = result.scalars().first()
+
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+
+    if not user.role._q() >= min_role._q():
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+
+    return token

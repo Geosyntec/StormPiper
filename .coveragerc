@@ -2,15 +2,19 @@
 [run]
 source = stormpiper
 branch = True
-omit =
-    **/_no_git*
+concurrency =
+    thread
+    greenlet
 
 [report]
-include = stormpiper/*.py
 ignore_errors = True
 skip_empty = True
 omit =
-    *pre-start*.py
-    *bg_*
+    **/main.py
+    **/start*.py
+    **/pre-start*.py
+    **/initial_data.py
+    **/bg_*.py
+    **/_no_git*/*
     **/_no_git*
-    **/test/data
+    **/tests/data/*

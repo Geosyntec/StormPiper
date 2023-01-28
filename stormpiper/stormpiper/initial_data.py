@@ -1,13 +1,16 @@
 import logging
 
-from stormpiper.startup import create_admin_user
+import startup
+
+from stormpiper.database.connection import engine
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 def main() -> None:
-    create_admin_user()
+    startup.create_initial_users()
+    startup.create_default_globals(engine)
 
 
 if __name__ == "__main__":

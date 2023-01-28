@@ -1,0 +1,13 @@
+services:
+  stormpiper-test:
+    image: gcr.io/tacoma-app/stormpiper-test:${VERSION:-latest}
+
+  postgis:
+    image: gcr.io/tacoma-app/postgis:${VERSION:-latest}
+
+  redis:
+    image: gcr.io/tacoma-app/redis:${VERSION:-latest}
+    ports:
+      - target: 6379
+        published: 6379
+

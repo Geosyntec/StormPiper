@@ -6,16 +6,27 @@ from fastapi.responses import Response
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from stormpiper.apps.supersafe.users import check_user
+from stormpiper.apps.supersafe.users import check_readonly_token, check_user
 from stormpiper.database.connection import get_async_session
-from stormpiper.database.schemas import tmnt
+from stormpiper.database.schemas import tmnt_view as tmnt
 from stormpiper.database.utils import scalars_to_gdf_to_geojson
 from stormpiper.models.tmnt_view import TMNTView
 
-router = APIRouter(dependencies=[Depends(check_user)])
+router = APIRouter()
 
 
-@router.get("/", response_model=List[TMNTView], name="tmnt_facility:get_all_tmnt")
+@router.get(
+    "/token/{token}",
+    response_model=List[TMNTView],
+    name="tmnt_facility:get_all_tmnt_via_token",
+    dependencies=[Depends(check_readonly_token)],
+)
+@router.get(
+    "/",
+    response_model=List[TMNTView],
+    name="tmnt_facility:get_all_tmnt",
+    dependencies=[Depends(check_user)],
+)
 async def get_all_tmnt(
     f: str = Query("json"),
     limit: Optional[int] = Query(int(1e6)),
@@ -39,7 +50,18 @@ async def get_all_tmnt(
     return scalars
 
 
-@router.get("/{altid}", response_model=TMNTView, name="tmnt_facility:get_tmnt")
+@router.get(
+    "/{altid}/token/{token}",
+    response_model=TMNTView,
+    name="tmnt_facility:get_tmnt_via_token",
+    dependencies=[Depends(check_readonly_token)],
+)
+@router.get(
+    "/{altid}",
+    response_model=TMNTView,
+    name="tmnt_facility:get_tmnt",
+    dependencies=[Depends(check_user)],
+)
 async def get_tmnt(
     altid: str,
     db: AsyncSession = Depends(get_async_session),

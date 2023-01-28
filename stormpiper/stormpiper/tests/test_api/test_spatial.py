@@ -12,10 +12,7 @@ from .. import utils as test_utils
     ],
 )
 def test_tileserver_api_response(client, route):
-    user_token = test_utils.user_token(client)
-    response = client.get(
-        route, headers={"Authorization": f"Bearer {user_token['access_token']}"}
-    )
+    response = client.get(route)
     assert response.status_code == 200, (
         response,
         response.content,
@@ -35,7 +32,7 @@ def test_redirect_tileserver_api_response(client_local, route):
     user_token = test_utils.user_token(client)
     response = client.get(
         route,
-        allow_redirects=False,
+        follow_redirects=False,
         headers={"Authorization": f"Bearer {user_token['access_token']}"},
     )
     assert response.status_code == 307, response.text
@@ -50,12 +47,7 @@ def test_redirect_tileserver_api_response(client_local, route):
     ],
 )
 def test_tileserver_api_response_404(client, route):
-    user_token = test_utils.user_token(client)
-    response = client.get(
-        route,
-        allow_redirects=False,
-        headers={"Authorization": f"Bearer {user_token['access_token']}"},
-    )
+    response = client.get(route, allow_redirects=False)
     assert response.status_code == 404, (
         response,
         response.content,
@@ -71,11 +63,7 @@ def test_tileserver_api_response_404(client, route):
     ],
 )
 def test_elevation(client, long, lat):
-    user_token = test_utils.user_token(client)
-    response = client.get(
-        f"/api/rest/spatial/ee/elevation?long={long}&lat={lat}",
-        headers={"Authorization": f"Bearer {user_token['access_token']}"},
-    )
+    response = client.get(f"/api/rest/spatial/ee/elevation?long={long}&lat={lat}")
     assert response.status_code == 200, (
         response,
         response.content,
@@ -85,11 +73,7 @@ def test_elevation(client, long, lat):
 
 @pytest.mark.integration
 def test_assets(client):
-    user_token = test_utils.user_token(client)
-    response = client.get(
-        "/api/rest/spatial/ee/assets",
-        headers={"Authorization": f"Bearer {user_token['access_token']}"},
-    )
+    response = client.get("/api/rest/spatial/ee/assets")
     assert response.status_code == 200, (
         response,
         response.content,

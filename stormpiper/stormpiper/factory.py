@@ -9,9 +9,13 @@ from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from ratelimit import RateLimitMiddleware, Rule
+from ratelimit.backends.redis import RedisBackend
+from redis.asyncio import StrictRedis
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from stormpiper.api import api_router, rpc_router
+from stormpiper.apps import ratelimiter
 from stormpiper.apps import supersafe as ss
 from stormpiper.apps.supersafe.users import check_admin
 from stormpiper.core.config import settings
@@ -82,6 +86,16 @@ def create_app(
             ProxyHeadersMiddleware, trusted_hosts=_settings.TRUSTED_HOSTS
         )
         # app.add_middleware(HTTPSRedirectMiddleware)
+
+    app.add_middleware(
+        RateLimitMiddleware,
+        authenticate=ratelimiter.client_ip,
+        backend=RedisBackend(StrictRedis.from_url(_settings.REDIS_BROKER_URL)),
+        config={
+            r".+?/token/": [Rule(minute=120, second=5, block_time=60)],
+            r".+?/auth/": [Rule(minute=30, second=5, block_time=3600)],
+        },
+    )
 
     app.include_router(api_router)
     app.include_router(rpc_router)

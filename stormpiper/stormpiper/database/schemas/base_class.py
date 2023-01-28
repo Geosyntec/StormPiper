@@ -5,11 +5,11 @@ Base = declarative_base()
 
 
 class TrackedTable:
-    id = sa.Column(sa.Integer)
     time_created = sa.Column(sa.DateTime(timezone=True), server_default=sa.func.now())
 
     def __repr__(self):
-        rep = f"{self.__class__.__name__}(id={self.id})"
+        id = getattr(self, "id", "not_implemented")
+        rep = f"{self.__class__.__name__}(id={id})"
         return rep
 
 

@@ -1,12 +1,12 @@
-FROM redis:6.2-alpine as redis
+FROM redis:6.2.8-alpine3.17 as redis
 COPY ./stormpiper/redis.conf /redis.conf
 CMD ["redis-server", "/redis.conf"]
 
 
-FROM postgis/postgis:14-3.2 as postgis
+FROM postgis/postgis:14-3.3 as postgis
 
 
-FROM node:16-buster as build-frontend
+FROM node:18.13.0-bullseye as build-frontend
 WORKDIR /app
 COPY ./stormpiper/stormpiper/spa/package*.json /app/
 RUN npm install
@@ -14,9 +14,8 @@ COPY ./stormpiper/stormpiper/spa /app/
 RUN npm run build
 
 
-FROM python:3.9-slim-buster as core-runtime
+FROM python:3.11.1-slim-bullseye as core-runtime
 RUN apt-get update -y \
-    && apt-get install -y --no-install-recommends graphviz libspatialindex-dev unixodbc libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /stormpiper
 ENV PYTHONPATH=/stormpiper
@@ -33,9 +32,8 @@ COPY --from=build-frontend /app/build /stormpiper/stormpiper/spa/build
 RUN chmod +x /start.sh /start-pod.sh /start-reload.sh /start-test-container.sh
 
 
-FROM python:3.9-buster as builder
+FROM python:3.11.1-bullseye as builder
 RUN apt-get update -y \
-    && apt-get install -y --no-install-recommends gcc g++ unixodbc-dev libpq-dev libspatialindex-dev libgdal-dev \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 COPY ./stormpiper/requirements.txt /requirements.txt
@@ -49,7 +47,7 @@ RUN mkdir /gunicorn \
     gunicorn==20.1.0
 
 
-FROM python:3.9-slim-buster as core-env
+FROM python:3.11.1-slim-bullseye as core-env
 COPY --from=builder /core /core
 COPY ./stormpiper/requirements.txt /requirements.txt
 RUN python -m venv /opt/venv
@@ -112,9 +110,8 @@ COPY ./stormpiper/gunicorn_conf.py /gunicorn_conf.py
 EXPOSE 80
 
 
-FROM python:3.9-buster as stormpiper-unpinned
+FROM python:3.11.1-bullseye as stormpiper-unpinned
 RUN apt-get update -y \
-    && apt-get install -y --no-install-recommends gcc g++ unixodbc-dev libpq-dev libspatialindex-dev libgdal-dev \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 COPY ./stormpiper/requirements_unpinned.txt /requirements_unpinned.txt

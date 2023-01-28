@@ -1,0 +1,68 @@
+name: Deploy to production
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        default: latest
+        required: true
+        description: "Deploy to production with this version tag."
+
+env:
+  GKE_CLUSTER: tacoma-cluster
+  GKE_REGION: us-west1
+  PRODUCTION_TAG: ${{ github.event.inputs.tag }}
+  USE_GKE_GCLOUD_AUTH_PLUGIN: True
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Sleep for 1 min to let the dust settle
+        run: sleep 60s
+        shell: bash
+
+      - uses: actions/checkout@v3
+
+      # Alternative option - authentication via credentials json
+      - id: "auth"
+        uses: "google-github-actions/auth@v0"
+        with:
+          credentials_json: "${{ secrets.GKE_JSON_KEY }}"
+
+      # Setup gcloud CLI
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          install_components: "gke-gcloud-auth-plugin"
+
+      # Get the GKE credentials so we can deploy to the cluster
+      - name: Set up GKE credentials
+        run: |-
+          gcloud container clusters get-credentials "$GKE_CLUSTER" --region "$GKE_REGION"
+
+      # Deploy the Docker image to the GKE cluster
+
+      - name: Deploy to Production
+        if: ${{ env.PRODUCTION_TAG }}
+        run: |-
+          echo "Deploying to Production Application: $PRODUCTION_TAG"
+          kubectl set image deployment/stormpiper-prod stormpiper=gcr.io/tacoma-app/stormpiper-pod:$PRODUCTION_TAG
+          kubectl set image deployment/beat-prod beat=gcr.io/tacoma-app/bg_worker:$PRODUCTION_TAG
+          kubectl set image deployment/worker-prod worker=gcr.io/tacoma-app/bg_worker:$PRODUCTION_TAG
+          kubectl set image deployment/redis-prod redis=gcr.io/tacoma-app/redis:$PRODUCTION_TAG
+          kubectl rollout restart deploy --selector=app=stormpiper-prod
+
+      - name: Check Deployment
+        env:
+          STP_EMAIL_API_KEY: ${{ secrets.STP_EMAIL_API_KEY }}
+          STP_EMAIL_API_SECRET: ${{ secrets.STP_EMAIL_API_SECRET }}
+          STP_EMAIL_SEND_URL: ${{ secrets.STP_EMAIL_SEND_URL }}
+          STP_MAINTAINER_EMAIL_LIST: ${{ secrets.STP_MAINTAINER_EMAIL_LIST }}
+        shell: bash
+        run: |-
+          echo "Checking Deployment to production Application"
+          run: sleep 15m
+          scripts/health_check.sh

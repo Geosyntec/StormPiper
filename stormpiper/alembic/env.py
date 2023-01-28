@@ -42,6 +42,14 @@ def include_name(name, type_, parent_names):
         return True
 
 
+def include_object(object, name, type_, reflected, compare_to):
+    """
+    Exclude views from Alembic's consideration.
+    """
+
+    return not object.info.get("is_view", False)
+
+
 def process_revision_directives(context, revision, directives):
     if config.cmd_opts.autogenerate:  # type: ignore
         script = directives[0]
@@ -68,9 +76,10 @@ def run_migrations_offline():
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
         include_name=include_name,
+        include_object=include_object,
         include_schemas=True,
         process_revision_directives=process_revision_directives,
-        render_item=alembic_helpers.render_item,
+        render_item=alembic_helpers.render_item,  # type: ignore
     )
 
     with context.begin_transaction():
@@ -100,9 +109,10 @@ def run_migrations_online():
             connection=connection,
             target_metadata=target_metadata,
             include_name=include_name,
+            include_object=include_object,
             include_schemas=True,
             process_revision_directives=process_revision_directives,
-            render_item=alembic_helpers.render_item,
+            render_item=alembic_helpers.render_item,  # type: ignore
         )
 
         with context.begin_transaction():

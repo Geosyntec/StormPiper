@@ -10,22 +10,97 @@ on:
       - main
   pull_request:
 
+env:
+  COMPOSE_FILE: docker-stack.yml
+  COMPOSE_DOCKER_CLI_BUILD: 1
+  DOCKER_BUILDKIT: 1
+  ARTIFACT_REGISTRY: gcr.io/tacoma-app
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
-    env:
-      COMPOSE_FILE: docker-stack.yml
-      COMPOSE_DOCKER_CLI_BUILD: 1
+    strategy:
+      matrix:
+        image: [stormpiper-test, redis, postgis]
     steps:
       - uses: actions/checkout@v3
+
+      - name: Set sha_short
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Prepare tags
+        id: prep
+        run: |
+          DOCKER_IMAGE=$ARTIFACT_REGISTRY/${{ matrix.image }}
+          VERSION=ci-test-${{ steps.vars.outputs.sha_short }}
+          TAGS=${DOCKER_IMAGE}:${VERSION}
+          echo "tags: ${TAGS}"
+          echo "tags=${TAGS}" >> $GITHUB_OUTPUT
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Inspect builder
+        run: |
+          echo "Name:      ${{ steps.buildx.outputs.name }}"
+          echo "Endpoint:  ${{ steps.buildx.outputs.endpoint }}"
+          echo "Status:    ${{ steps.buildx.outputs.status }}"
+          echo "Flags:     ${{ steps.buildx.outputs.flags }}"
+          echo "Platforms: ${{ steps.buildx.outputs.platforms }}"
+
+      - name: Login to GCR
+        uses: docker/login-action@v2
+        with:
+          registry: gcr.io
+          username: _json_key
+          password: ${{ secrets.GCR_JSON_KEY }}
+
+      - name: Build and Push
+        id: docker_build
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          push: true
+          context: .
+          target: ${{ matrix.image }}
+          tags: ${{ steps.prep.outputs.tags }}
+          cache-from: type=registry,ref=${{ env.ARTIFACT_REGISTRY }}/${{ matrix.image }}:buildcache
+          cache-to: type=registry,ref=${{ env.ARTIFACT_REGISTRY }}/${{ matrix.image }}:buildcache,mode=max
+
+    outputs:
+      sha_short: ${{ steps.vars.outputs.sha_short }}
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ci-test-${{ needs.build.outputs.sha_short }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Sleep for to let the dust settle
+        run: sleep 10s
+        shell: bash
+
+      - name: Login to GCR
+        uses: docker/login-action@v2
+        with:
+          registry: gcr.io
+          username: _json_key
+          password: ${{ secrets.GCR_JSON_KEY }}
+
       - name: run tests
         run: make coverage-ci
+
       - name: coverage
         run: |
           docker compose exec -T stormpiper-test coverage report -mi
           docker compose exec -T stormpiper-test coverage xml
           docker compose cp stormpiper-test:/stormpiper/coverage.xml coverage.xml
           docker compose cp stormpiper-test:/stormpiper/.coverage .coverage
+
       - name: upload coverage
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3

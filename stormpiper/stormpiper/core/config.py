@@ -52,6 +52,9 @@ class Settings(BaseSettings):
     DATABASE_USERS_TABLE_NAME: str = "user"
     DATABASE_POOL_RECYCLE: int = 1800
 
+    # DataStudio
+    DATASTUDIO_ACCOUNT_PASSWORD: str = "change me with an env variable"
+
     # Users Auth
     COOKIE_SECURE: bool = True
     COOKIE_HTTPONLY: bool = True
@@ -81,6 +84,12 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
+    @validator("EMAIL_SEND_URL", pre=True)  # pragma: no cover
+    def assure_valid_url(cls, v: str) -> str:
+        if not v or v.strip() == "":
+            return "http://example.com"
+        return v
+
     # logger
     LOGLEVEL: str = "INFO"
 
@@ -105,3 +114,9 @@ settings = Settings()
 external_resources = json.loads(
     (Path(__file__).parent / "external_resources.json").read_text()
 )
+
+
+default_global_settings = [
+    {"variable": "discount_rate", "value": "0.05"},
+    {"variable": "planning_horizon_yrs", "value": "50"},
+]

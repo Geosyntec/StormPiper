@@ -1,3 +1,4 @@
+import warnings
 from typing import Any, Dict, List, Optional
 
 import pandas
@@ -9,7 +10,9 @@ from stormpiper.database.schemas import changelog
 from stormpiper.database.utils import orm_to_dict, scalars_to_records
 
 
-async def is_dirty_dep(db: AsyncSession) -> Dict[str, Any]:
+async def is_dirty_dep(db: AsyncSession) -> Dict[str, Any]:  # pragma: no cover
+    warnings.warn("this is deprecated.", DeprecationWarning, stacklevel=2)
+
     response = {"is_dirty": True, "last_updated": "0"}
     result = (
         (
@@ -48,7 +51,8 @@ async def is_dirty_dep(db: AsyncSession) -> Dict[str, Any]:
 
 async def is_dirty(
     *, db: AsyncSession, tablename: str, dependents: Optional[List[str]] = None
-) -> Dict[str, Any]:
+) -> Dict[str, Any]:  # pragma: no cover
+    warnings.warn("this is deprecated.", DeprecationWarning, stacklevel=2)
     response = {"is_dirty": True, "last_updated": "0"}
 
     changelog_results = (
@@ -115,9 +119,11 @@ def calculate_src_ctrl_percent_reduction(
         ["node_id", "epoch", "variable", "order"]
     )
 
-    assert not any(
-        df1.groupby(["node_id", "epoch", "variable", "order"]).count().max(axis=1) > 1
-    )
+    df1_ck = df1.groupby(["node_id", "epoch", "variable", "order"]).count()
+
+    assert all(df1_ck.max(axis=1) <= 1), df1.sort_values(
+        ["node_id", "epoch", "variable", "order"]
+    ).to_json(orient="records", indent=2)
 
     df2 = []
     orders = sorted(df1["order"].unique())
@@ -159,7 +165,7 @@ def calculate_src_ctrl_percent_reduction(
 def source_controls_upstream_load_reduction_db(*, engine=engine):
     lgu_load = pandas.read_sql("lgu_load", con=engine)
     lgu_boundary = pandas.read_sql("lgu_boundary", con=engine)
-    src_ctrl_upstream = pandas.read_sql(
+    src_ctrls = pandas.read_sql(
         "select * from tmnt_source_control where direction = 'upstream'",
         con=engine,
     )
@@ -169,7 +175,7 @@ def source_controls_upstream_load_reduction_db(*, engine=engine):
     )
 
     df = calculate_src_ctrl_percent_reduction(
-        load=lgu_to_us_src_ctrl, src_ctrls=src_ctrl_upstream, direction="upstream"
+        load=lgu_to_us_src_ctrl, src_ctrls=src_ctrls, direction="upstream"
     )
 
     return df
@@ -178,7 +184,7 @@ def source_controls_upstream_load_reduction_db(*, engine=engine):
 def source_controls_downstream_load_reduction_db(*, engine=engine):
     lgu_load = pandas.read_sql("load_to_ds_src_ctrl", con=engine)
     lgu_boundary = pandas.read_sql("lgu_boundary", con=engine)
-    src_ctrl_upstream = pandas.read_sql(
+    src_ctrls = pandas.read_sql(
         "select * from tmnt_source_control where direction = 'downstream'",
         con=engine,
     )
@@ -188,7 +194,7 @@ def source_controls_downstream_load_reduction_db(*, engine=engine):
     )
 
     df = calculate_src_ctrl_percent_reduction(
-        load=lgu_to_ds_src_ctrl, src_ctrls=src_ctrl_upstream, direction="downstream"
+        load=lgu_to_ds_src_ctrl, src_ctrls=src_ctrls, direction="downstream"
     )
 
     return df

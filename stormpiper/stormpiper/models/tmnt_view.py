@@ -1,10 +1,9 @@
 from typing import Optional
 
-from stormpiper.models.base import BaseModel
+from stormpiper.models.base import BaseORM
 
 
-class TMNTView(BaseModel):
-    # id:str
+class TMNTView(BaseORM):
     node_id: str
     altid: str
     facilitytype: Optional[str]
@@ -15,9 +14,7 @@ class TMNTView(BaseModel):
     waterquality: Optional[str]
     flowcontroltype: Optional[str]
     waterqualitytype: Optional[str]
-    # treatment_strategy: Optional[str]
     facility_type: Optional[str]
-    # ref_data_key:Optional[str]
     design_storm_depth_inches: Optional[float]
     tributary_area_tc_min: Optional[float]
     total_volume_cuft: Optional[float]
@@ -31,6 +28,13 @@ class TMNTView(BaseModel):
     depth_ft: Optional[float]
     captured_pct: Optional[float]
     retained_pct: Optional[float]
+
+    # cost attrs
+    capital_cost: Optional[float]
+    om_cost_per_yr: Optional[float]
+    lifespan_yrs: Optional[float]
+    replacement_cost: Optional[float]
+    net_present_value: Optional[float]
 
     class Config:
         orm_mode = True

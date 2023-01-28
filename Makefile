@@ -48,6 +48,7 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr .mypy_cache
 
 export COMPOSE_DOCKER_CLI_BUILD=1
+export COMPOSE_FILE=docker-stack.yml
 
 stack: ## write the docker-stack.yml file
 	docker compose \
@@ -59,35 +60,43 @@ stack: ## write the docker-stack.yml file
 
 stack-ci: ## write the docker-stack.yml file for ci
 	docker compose \
-		-f docker-compose.develop.yml \
+		-f docker-compose.gar-image-ci.yml \
 		-f docker-compose.dev-postgis.yml \
 		config > docker-stack.yml
 
 build: ## build the docker-stack.yml file
-	docker compose -f docker-stack.yml build
+	docker compose build
 
 restart: ## restart the redis server and the background workers
-	docker compose -f docker-stack.yml restart redis bg_worker beat_worker
+	docker compose restart redis bg_worker beat_worker
 
 test: ## run tests quickly with the default Python
-	bash scripts/test.sh -xsv -m "not integration"
+	bash scripts/test.sh -sv -m "not integration"
 
 lint: clean
 	bash scripts/lint.sh
 
 init-test:
-	docker compose -f docker-stack.yml up -d stormpiper-test postgis
-	docker compose -f docker-stack.yml exec stormpiper-test bash prestart-tests.sh
+	docker compose up -d stormpiper-test postgis redis
+	docker compose exec stormpiper-test bash prestart-tests.sh
 
 test-ci: stack-ci init-test ## run tests quickly with the default Python
-	docker compose -f docker-stack.yml exec stormpiper-test pytest -xsv  -m "not integration"
+	docker compose exec stormpiper-test pytest -xsv  -m "not integration"
 
 coverage-ci: stack-ci init-test ## run tests on CI with the default Python
-	docker compose -f docker-stack.yml exec stormpiper-test coverage run -m pytest -xv -m "not integration"
+	docker compose exec stormpiper-test coverage run -m pytest -v -m "not integration"
+
+alert-dev-unreachable: stack-ci
+	docker compose up -d stormpiper-test
+	docker compose exec stormpiper-test python -m stormpiper.if_error "ERROR: Dev Site is not reachable."
+
+alert-prod-unreachable: stack-ci
+	docker compose up -d stormpiper-test
+	docker compose exec stormpiper-test python -m stormpiper.if_error "ERROR: Prod Site is not reachable."
 
 coverage: clean restart init-test ## check code coverage quickly with the default Python
-	docker compose -f docker-stack.yml exec stormpiper-test coverage run -m pytest -x
-	docker compose -f docker-stack.yml exec stormpiper-test coverage report -mi
+	docker compose exec stormpiper-test coverage run -m pytest -x -m "not integration"
+	docker compose exec stormpiper-test coverage report -mi
 
 typecheck: clean ## run static type checker
 	mypy stormpiper/stormpiper
@@ -95,19 +104,21 @@ typecheck: clean ## run static type checker
 develop: clean stack build ## build the development environment
 
 up: stack ## bring up the containers and run startup commands
-	docker compose -f docker-stack.yml up
+	docker compose up
 
 up-d: stack ## bring up the containers in '-d' mode
-	docker compose -f docker-stack.yml up -d
+	docker compose up -d
+
+up-test: stack init-test
 
 down: ## bring down the containers
-	docker compose -f docker-stack.yml down
+	docker compose down
 
 down-v: ## bring down the containers and detach volumes
-	docker compose -f docker-stack.yml down -v
+	docker compose down -v
 
 dev-server: stack ## start a development server
-	docker compose -f docker-stack.yml run -p 8080:80 -e LOG_LEVEL=debug stormpiper-pod bash /start-reload.sh
+	docker compose up stormpiper-pod
 
 release: ## push production images to registry
 	bash scripts/push_release.sh

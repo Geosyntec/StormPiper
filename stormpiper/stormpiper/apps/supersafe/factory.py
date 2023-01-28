@@ -23,7 +23,7 @@ def create_router(**kwargs):
         tags=["auth"],
     )
     router.include_router(
-        fastapi_users.get_register_router(models.UserRead, models.UserCreate),
+        fastapi_users.get_register_router(models.UserRead, models.UserRegister),
         prefix="/auth",
         tags=["auth"],
     )
@@ -45,7 +45,7 @@ def create_app(
     *,
     settings_override: Optional[Dict[str, Any]] = None,
     app_kwargs: Optional[Dict[str, Any]] = None,
-) -> FastAPI:
+) -> FastAPI:  # pragma: no cover
 
     _settings = settings.copy(deep=True)
     if settings_override is not None:  # pragma: no branch

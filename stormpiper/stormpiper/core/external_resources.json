@@ -25,5 +25,16 @@
   "subbasins": {
     "url": "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/41/query?where=1%3D1&outFields=*&returnGeometry=true&f=pjson",
     "columns": ["BASINNAME", "SUBBASIN", "geometry"]
+  },
+  "equity_index": {
+    "url": "https://gis.cityoftacoma.org/arcgis/rest/services/General/Equity2020/MapServer/1/query?where=1%3D1&outFields=*&f=pjson&returnGeometry=true",
+    "columns": [
+      "Access",
+      "Economic_Value",
+      "Environmental_Value",
+      "Livability_Value",
+      "Opportunity_Value",
+      "geometry"
+    ]
   }
 }

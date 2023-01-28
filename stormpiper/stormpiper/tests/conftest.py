@@ -25,6 +25,44 @@ def db():
 def client(db):
     app = create_app()
     with TestClient(app) as client:
+        user_token = utils.user_token(client)
+        client.headers = {"Authorization": f"Bearer {user_token['access_token']}"}
+        yield client
+
+
+@pytest.fixture(scope="module")
+def admin_client(db):
+    app = create_app()
+    with TestClient(app) as client:
+        user_token = utils.admin_token(client)
+        client.headers = {"Authorization": f"Bearer {user_token['access_token']}"}
+        yield client
+
+
+@pytest.fixture(scope="module")
+def user_admin_client(db):
+    app = create_app()
+    with TestClient(app) as client:
+        user_token = utils.user_admin_token(client)
+        client.headers = {"Authorization": f"Bearer {user_token['access_token']}"}
+        yield client
+
+
+@pytest.fixture(scope="module")
+def readonly_client(db):
+    app = create_app()
+    with TestClient(app) as client:
+        token = utils.reader_token(client)
+        client.headers = {"Authorization": f"Bearer {token['access_token']}"}
+        yield client
+
+
+@pytest.fixture(scope="module")
+def public_client(db):
+    app = create_app()
+    with TestClient(app) as client:
+        token = utils.public_token(client)
+        client.headers = {"Authorization": f"Bearer {token['access_token']}"}
         yield client
 
 
@@ -51,3 +89,25 @@ def client_local(db):
 
     with TestClient(app) as client:
         yield client
+
+
+@pytest.fixture(scope="module")
+def client_lookup(
+    db,
+    client,
+    admin_client,
+    user_admin_client,
+    readonly_client,
+    client_local,
+    public_client,
+):
+
+    return {
+        "client": client,
+        "admin_client": admin_client,
+        "user_admin_client": user_admin_client,
+        "editor_client": client,
+        "readonly_client": readonly_client,
+        "public_client": public_client,
+        "client_local": client_local,
+    }

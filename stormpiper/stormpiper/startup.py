@@ -3,17 +3,13 @@ import logging
 import platform
 
 import redis
-from tenacity import after_log  # type: ignore
-from tenacity import before_log  # type: ignore
-from tenacity import stop_after_attempt  # type: ignore
-from tenacity import wait_fixed  # type: ignore
 from tenacity import retry
+from tenacity.after import after_log
+from tenacity.before import before_log
+from tenacity.stop import stop_after_attempt
+from tenacity.wait import wait_fixed
 
-import stormpiper.bg_worker as bg
-from stormpiper.apps.supersafe.init_users import create_admin
 from stormpiper.core.config import settings
-from stormpiper.database.connection import engine
-from stormpiper.database.utils import reconnect_engine
 
 wait_seconds = 2
 try_for_minutes = 5
@@ -33,6 +29,8 @@ redis_conn = redis.Redis.from_url(settings.REDIS_BROKER_URL)
     after=after_log(logger, logging.WARN),
 )
 def get_background_worker_connection():  # pragma: no cover
+    import stormpiper.bg_worker as bg
+
     try:
         bg.ping.apply_async().get(timeout=0.2)
     except Exception as e:
@@ -55,14 +53,41 @@ def get_redis_connection():  # pragma: no cover
 
 
 def get_database_connection():
-    reconnect_engine(engine)
+    from stormpiper.database.connection import reconnect_engine
+
+    reconnect_engine()
 
 
-def create_admin_user() -> None:
-    logger.info("Creating initial data")
+def create_initial_users() -> None:
+    from stormpiper.apps.supersafe import init_users
+
+    logger.info("Creating initial users")
 
     if platform.system() == "Windows":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-    asyncio.run(create_admin())
+    asyncio.run(init_users.create_admin())
+    asyncio.run(init_users.create_service_datastudio())
 
     logger.info("Initial data created")
+
+
+def create_default_globals(engine):
+    from stormpiper.core.config import default_global_settings
+    from stormpiper.database.connection import get_session
+    from stormpiper.database.schemas.globals import GlobalSetting
+
+    Session = get_session(engine)
+
+    with Session.begin() as session:  # type: ignore
+        batch = []
+        for dct in default_global_settings:
+            variable = dct["variable"]
+            s = (
+                session.query(GlobalSetting)
+                .filter(GlobalSetting.variable == variable)
+                .first()
+            )
+            if s is None:
+                dct["updated_by"] = "system_default"
+                batch.append(GlobalSetting(**dct))
+        session.add_all(batch)

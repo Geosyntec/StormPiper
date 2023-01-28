@@ -2,7 +2,7 @@ from typing import Optional
 
 from stormpiper.database.schemas.tmnt import Direction
 
-from .base import BaseModel
+from .base import BaseModel, BaseORM
 
 
 # Shared properties
@@ -23,39 +23,31 @@ class TMNTSourceControlBase(BaseModel):
     percent_reduction: Optional[float] = None
 
 
-# Properties to recieve on creation
+# Properties to recieve at the /post route handler
 class TMNTSourceControlPost(TMNTSourceControlBase):
     pass
 
 
-# Properties to send on creation
+# Properties to store in DB during creation
 class TMNTSourceControlCreate(TMNTSourceControlPost):
     updated_by: Optional[str] = None
 
 
-# Properties to receive on update
+# Properties to receive at the /patch route handler
 class TMNTSourceControlPatch(TMNTSourceControlBase):
     pass
 
 
-# Properties to send on update
+# Properties to store in DB during update
 class TMNTSourceControlUpdate(TMNTSourceControlPatch):
     updated_by: Optional[str] = None
 
 
 # Properties shared by models stored in DB
-class TMNTSourceControlInDBBase(TMNTSourceControlBase):
+class TMNTSourceControlInDBBase(BaseORM, TMNTSourceControlBase):
     id: int
-
-    class Config:
-        orm_mode = True
 
 
 # Properties to return to client
 class TMNTSourceControl(TMNTSourceControlInDBBase):
     pass
-
-
-# properties stored in DB
-# class TMNTFacilityAttrInDB(TMNTFacilityAttrInDBBase):
-#     pass

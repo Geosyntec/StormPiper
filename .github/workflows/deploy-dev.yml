@@ -1,0 +1,60 @@
+name: Deploy to dev
+
+on:
+  workflow_run:
+    workflows: ["Build and Push Image to GCR"]
+    types:
+      - completed
+
+env:
+  GKE_CLUSTER: tacoma-cluster
+  GKE_REGION: us-west1
+  USE_GKE_GCLOUD_AUTH_PLUGIN: True
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Sleep for 1 min to let the dust settle
+        run: sleep 60s
+        shell: bash
+
+      - uses: actions/checkout@v3
+
+      # Alternative option - authentication via credentials json
+      - id: "auth"
+        uses: "google-github-actions/auth@v0"
+        with:
+          credentials_json: "${{ secrets.GKE_JSON_KEY }}"
+
+      # Setup gcloud CLI
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          install_components: "gke-gcloud-auth-plugin"
+
+      # Get the GKE credentials so we can deploy to the cluster
+      - name: Set up GKE credentials
+        run: |-
+          gcloud container clusters get-credentials "$GKE_CLUSTER" --region "$GKE_REGION"
+
+      # Deploy the Docker image to the GKE cluster
+      - name: Auto Deploy to Dev
+        run: |-
+          echo "Deploying to development Application"
+          kubectl rollout restart deploy --selector=app=stormpiper-dev
+
+      - name: Check Deployment
+        env:
+          STP_EMAIL_API_KEY: ${{ secrets.STP_EMAIL_API_KEY }}
+          STP_EMAIL_API_SECRET: ${{ secrets.STP_EMAIL_API_SECRET }}
+          STP_EMAIL_SEND_URL: ${{ secrets.STP_EMAIL_SEND_URL }}
+          STP_MAINTAINER_EMAIL_LIST: ${{ secrets.STP_MAINTAINER_EMAIL_LIST }}
+        shell: bash
+        run: |-
+          echo "Checking Deployment to development Application"
+          run: sleep 15m
+          scripts/health_check.sh

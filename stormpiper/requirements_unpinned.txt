@@ -13,12 +13,12 @@ brotli-asgi
 
 earthengine-api
 
-fastapi-users[sqlalchemy]>=10.0.7
+fastapi-users[sqlalchemy]
 
 fiona
-GeoAlchemy2>=0.12.0
-geopandas>=0.10.2,<0.12.0
-shapely>=1.8.1,<2.0.0
+GeoAlchemy2
+geopandas
+shapely
 geojson-pydantic
 pyproj
 rtree
@@ -29,6 +29,7 @@ networkx
 
 scipy
 numpy
+numpy-financial
 pandas
 matplotlib
 
@@ -39,13 +40,17 @@ alembic
 
 celery[redis]
 
-fastapi==0.85.0
+fastapi==0.88.0
 starlette
 pydantic
 orjson
 uvicorn
 Jinja2
 email-validator
-watchgod
+watchfiles
+asgi-ratelimit
 
-nereid @ https://github.com/Geosyntec/nereid/archive/v0.6.0.zip
+Pint==0.19.2
+nereid @ https://github.com/Geosyntec/nereid/archive/v0.7.0.zip
+
+pymcdm==1.1.0
