@@ -64,5 +64,5 @@ jobs:
         shell: bash
         run: |-
           echo "Checking Deployment to production Application"
-          run: sleep 15m
+          sleep 15m
           scripts/health_check.sh
