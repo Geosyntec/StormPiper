@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useEffect, useState } from "react";
 import { makeStyles } from '@material-ui/core/styles';
-import { Typography,Paper, Chip } from "@material-ui/core";
+import { Typography,Paper, Chip, Button,CircularProgress,Box } from "@material-ui/core";
 import { BMPForm } from "./bmpForm";
-import { ListAltRounded, LocalDiningOutlined } from "@material-ui/icons";
+import { ListAltRounded} from "@material-ui/icons";
 import "./bmpStatWindow.css";
 
 // TODO: Make Facility Type editable (for now, only allow user to toggle between simple and not simple). Look for endpoint that can retrieve all facility types, and their respective data models
@@ -50,11 +50,13 @@ const fieldLabelDict:{[key:string]:string} = {
 type statWindowProps={
   displayStatus:boolean,
   displayController:()=>void,
-  feature:string
+  feature:string,
+  isDirty:{is_dirty:boolean,last_updated:Date},
+  lastUpdated: boolean
 }
 
 type bmpPanelState={
-  header:string,
+  header:string|null,
   stats:string[],
   error:boolean,
   isLoaded:boolean,
@@ -112,11 +114,11 @@ const useStyles = makeStyles((theme) => ({
 
 
 function BMPStatWindow(props:statWindowProps) {
-
+  let firstRender = useRef(true)
   const classes = useStyles()
 
   const [state,setState] = useState<bmpPanelState>({
-    header:"Overview",
+    header:null,
     stats:[],
     error:false,
     isLoaded:false,
@@ -132,6 +134,7 @@ function BMPStatWindow(props:statWindowProps) {
   })
 
   const [loadingState,setLoadingState] = useState<boolean>(false)
+  const [recalculationState,setRecalculationState] = useState<boolean>(false)
 
   useEffect(()=>{
     // OpenAPI spec holds the base facility types used by nereid
@@ -149,12 +152,11 @@ function BMPStatWindow(props:statWindowProps) {
 
   },[])
 
-  // useEffect(()=>{
-  //   console.log("New Loading State: ",loadingState)
-  // },[loadingState])
-  // useEffect(()=>{
-  //   console.log("New State: ",state)
-  // },[state])
+  useEffect(()=>{
+    if(!props?.isDirty?.is_dirty){
+      setRecalculationState(false)
+    }
+  },[props?.isDirty])
 
   useEffect(() => {
 
@@ -166,20 +168,22 @@ function BMPStatWindow(props:statWindowProps) {
     Promise.all(tmnt_results.map(url=>fetch(url).then(res=>res.json())))
     .then(resArray=>{
       console.log("Fetched all resources; ",resArray)
+      //TODO: Can we set the header based on RecalculationState? If true, then set to Performance Summary, else Overview
       setState({
         ...state,
         error:false,
-        header:"Overview",
+        header:firstRender.current?"Overview":state.header,
         items:{
           ...resArray[1] //response from api/rest/tmnt_facility
         },
         results:{
           ...resArray[0][1]//response from api/rest/results
         },
-        stats:statsDict.overview.fields,
+        stats:firstRender.current?statsDict.overview.fields:state.stats,
       })
       setFacilityType(resArray[1].facility_type)
       setLoadingState(true)
+      firstRender.current = false
     })
     .catch(err=>{
       console.log("TMNT fetch failed: ",err)
@@ -188,7 +192,7 @@ function BMPStatWindow(props:statWindowProps) {
         error:true
       })
     })
-  }, [props?.feature]);
+  }, [props?.feature,recalculationState]);
 
   function switchStats(headerName:string){
     setState(()=>{
@@ -215,6 +219,38 @@ function BMPStatWindow(props:statWindowProps) {
       }
     })
   }
+  function _recalculate(){
+    setRecalculationState(true)
+    fetch('/api/rpc/solve_watershed')
+      .then(resp=>{
+        return resp.json()
+      })
+      .then(resp=>{
+        console.log("Recalculation started: ",resp)
+      })
+      .catch(err=>{
+        console.log("Recalculate Failed: ",err)
+      })
+  }
+
+  function _renderUpdateBox(){
+    let lastUpdated:Date = new Date(props.isDirty?.last_updated)
+    let lastUpdatedStr:string
+    if(lastUpdated && lastUpdated!=undefined){
+      lastUpdatedStr = lastUpdated.toLocaleString("en-US",{dateStyle:"short",timeStyle:"short"})
+    }
+    return(
+      <Box>
+        {props?.isDirty
+          ?<Box sx={{display:"flex",alignItems:"center",justifyContent:"center"}}>
+            <Typography variant="body1">Results Last Updated: {lastUpdatedStr} {props?.isDirty?.is_dirty && <a href={props?.isDirty?.is_dirty?"#":undefined} onClick={_recalculate}>Refresh</a>}</Typography>
+            {recalculationState && <CircularProgress style={{margin:'1em',alignSelf:'center'}} size="1em"/>}
+            </Box>
+          :<div></div>
+        }
+      </Box>
+    )
+  }
 
   function _renderStats() {
     if(!props.feature){
@@ -222,9 +258,11 @@ function BMPStatWindow(props:statWindowProps) {
     }
     if(state.error){
       return <div>Something went wrong on our end.</div>
-    }else if(!loadingState){
+    }
+    else if(!loadingState){
       return <div>Loading...</div>
-    }else{
+    }
+    else{
       let statsList = Object.values(state.stats).map((stat:string)=>{
         if(stat){
           let renderedStat = state.items[stat] || state.results[stat]
@@ -240,9 +278,12 @@ function BMPStatWindow(props:statWindowProps) {
         }
       })
       return (
+        <React.Fragment>
+          {_renderUpdateBox()}
           <div>
             {statsList.length>0?statsList:(<Typography className={classes.bold} variant="h6">Data Unavailable</Typography>)}
           </div>
+        </React.Fragment>
       );
     }
 
@@ -252,9 +293,11 @@ function BMPStatWindow(props:statWindowProps) {
   function _renderBMPForm(facilityType:string) {
     if(state.error){
       return <div>Something went wrong on our end.</div>
-    }else if(!loadingState){
+    }
+    else if(!loadingState){
       return <div>Loading...</div>
-    }else{
+    }
+    else{
       let fType:string = facilityType
       let fTypeRoot = fType.replace("_simple","")
 
@@ -270,8 +313,11 @@ function BMPStatWindow(props:statWindowProps) {
       let facilityFields = specs.facilitySpec[baseType]
       let simpleFacilityFields = specs.facilitySpec[simpleBaseType]
       return (
-          <BMPForm allFields={facilityFields} simpleFields={simpleFacilityFields} values={state.items} allFacilities={specs.context} currentFacility={facilityType} facilityChangeHandler={setFacilityType}></BMPForm>
-      );
+          <React.Fragment>
+            {_renderUpdateBox()}
+            <BMPForm allFields={facilityFields} simpleFields={simpleFacilityFields} values={state.items} allFacilities={specs.context} currentFacility={facilityType} facilityChangeHandler={setFacilityType}></BMPForm>
+          </React.Fragment>
+          );
     }
 
 
@@ -285,7 +331,7 @@ function BMPStatWindow(props:statWindowProps) {
             <li>
               <Chip
                 className={`${classes.headerItem} ${
-                  category.label === state.header && classes.active
+                  category.label === (state.header) && classes.active
                 }`}
                 label={category.label}
                 onClick={() => {
@@ -303,20 +349,26 @@ function BMPStatWindow(props:statWindowProps) {
     <div>
       <div className={classes.formHeader}>
         <div className="title-container">
-          <h4 className={classes.panelTitle}>{props.feature} Facility Details</h4>
+          <h4 className={classes.panelTitle}>
+            {props.feature} Facility Details
+          </h4>
         </div>
         <div className="cancel-container">
-          <h4 id="cancel-icon" onClick={props.displayController}>
-            &#10005;
+          <h4 id="cancel-icon" onClick={()=>{
+              props.displayController()
+              firstRender.current = true
+          }}>
+          &#10005;
           </h4>
         </div>
       </div>
       <div className="stats-table">
         <div className="table-header">{_renderHeaderList()}</div>
-        {props
-          ? state.header != "Design Parameters"
-            ? _renderStats()
-            : _renderBMPForm(facilityType)
+        {
+          props
+            ? state.header != "Design Parameters"
+              ? _renderStats()
+              : _renderBMPForm(facilityType)
           : null}
       </div>
     </div>
