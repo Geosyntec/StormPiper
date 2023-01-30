@@ -6,6 +6,7 @@ from stormpiper.core.config import settings
 from stormpiper.database import utils
 from stormpiper.database.connection import get_session
 from stormpiper.database.schemas.base import Base, User
+from stormpiper.database.schemas.views import initialize_views
 from stormpiper.src import tasks
 from stormpiper.startup import create_default_globals
 from stormpiper.tests.data import _base
@@ -14,6 +15,7 @@ hasher = CryptContext(schemes=["bcrypt"], deprecated="auto").hash
 
 
 def clear_db(engine):
+    # only delete ORM mapped tables, leave alembic and postgis tables alone.
     tables = Base.metadata.tables.keys()
     with engine.begin() as conn:
         for table in tables:
@@ -196,6 +198,7 @@ def seed_tacoma_derived_tables(engine):
 def seed_db(engine):
 
     clear_db(engine)
+    initialize_views(engine)
     seed_users(engine)
     create_default_globals(engine)
     seed_tacoma_table_dependencies(engine)

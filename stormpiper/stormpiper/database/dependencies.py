@@ -24,14 +24,15 @@ tmnt_facility
 tmnt_facility_delineation
 subbasin
 tmnt_source_control
-tmnt_facility_attributes
-tmnt_v                                          tmnt_facility_attributes    tmnt_facility
+tmnt_facility_attribute
+tmnt_facility_cost                              global_setting
+tmnt_v                                          tmnt_facility_attribute    tmnt_facility    tmnt_facility_cost
 lgu_boundary                                    subbasin        tmnt_facility_delineation
-graph_edge                                      lgu_boundary    tmnt_v
+graph_edge                                      lgu_boundary    tmnt_facility_attribute     tmnt_facility
 lgu_load                                        lgu_boundary
 tmnt_source_control_upstream_load_reduced       lgu_load        tmnt_source_control             lgu_boundary
 lgu_load_to_structural                          tmnt_source_control_upstream_load_reduced       lgu_load
-result_blob                                     lgu_load_to_structural      graph_edge          tmnt_v   met
+result_blob                                     lgu_load_to_structural      graph_edge          tmnt_facility_attribute   met   tmnt_facility
 result_v                                        result_blob
 load_to_ds_src_ctrl                             result_blob
 tmnt_source_control_downstream_load_reduced     load_to_ds_src_ctrl     tmnt_source_control        lgu_boundary

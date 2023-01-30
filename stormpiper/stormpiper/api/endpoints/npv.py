@@ -5,8 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from stormpiper.apps.supersafe.users import check_user
 from stormpiper.core.exceptions import RecordNotFound
 from stormpiper.database.connection import get_async_session
-from stormpiper.models.npv import NPVRequest
-from stormpiper.models.tmnt_attr import TMNTFacilityAttr
+from stormpiper.models.tmnt_cost import NPVRequest, TMNTFacilityCost
 from stormpiper.src.npv import calculate_npv_for_existing_tmnt_in_db, compute_bmp_npv
 
 rpc_router = APIRouter(dependencies=[Depends(check_user)])
@@ -22,12 +21,12 @@ async def calculate_npv(npv: NPVRequest):
 
 @rpc_router.get(
     "/calculate_net_present_value/{altid}",
-    response_model=TMNTFacilityAttr,
+    response_model=TMNTFacilityCost,
     tags=["rpc"],
 )
 @rpc_router.post(
     "/calculate_net_present_value/{altid}",
-    response_model=TMNTFacilityAttr,
+    response_model=TMNTFacilityCost,
     tags=["rpc"],
 )
 async def calculate_npv_for_existing_tmnt(

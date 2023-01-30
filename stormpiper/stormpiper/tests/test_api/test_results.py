@@ -45,7 +45,27 @@ def test_get_result_by_node_id(client, node_id, epoch, exists):
         )
 
 
-def test_clean_dirty_clean(client):
+@pytest.mark.parametrize(
+    "altid, blob, after_change_is_dirty",
+    [
+        # dirty the results
+        (
+            "SWFA-100018",
+            {
+                "facility_type": "bioretention_with_no_infiltration_simple",
+                "captured_pct": 55,
+            },
+            True,
+        ),
+        # dont dirty the wq results
+        (
+            "SWFA-100018",
+            {"capital_cost": 550000},
+            False,
+        ),
+    ],
+)
+def test_clean_dirty_clean(client, altid, blob, after_change_is_dirty):
 
     tasks.delete_and_refresh_all_results_tables(engine=engine)
 
@@ -55,15 +75,12 @@ def test_clean_dirty_clean(client):
     rsp_json = response.json()
     assert rsp_json["is_dirty"] == False, rsp_json
 
-    # dirty the results by patching an attribute
-    response = client.get("/api/rest/tmnt_attr/SWFA-100018")
+    # try to dirty the results by patching an attribute
+    response = client.get(f"/api/rest/tmnt_attr/{altid}")
     assert 200 <= response.status_code < 300, response.content
     rsp_json = response.json()
 
-    blob = rsp_json
-    blob["captured_pct"] = 55
-
-    response = client.patch("/api/rest/tmnt_attr/SWFA-100018", json=blob)
+    response = client.patch(f"/api/rest/tmnt_attr/{altid}", json=blob)
     assert 200 <= response.status_code < 300, response.content
     rsp_json = response.json()
 
@@ -71,7 +88,7 @@ def test_clean_dirty_clean(client):
     response = client.get(f"/api/rest/results/is_dirty")
     assert 200 <= response.status_code < 300, response.content
     rsp_json = response.json()
-    assert rsp_json["is_dirty"] == True, rsp_json
+    assert rsp_json["is_dirty"] == after_change_is_dirty, rsp_json
 
     tasks.delete_and_refresh_all_results_tables(engine=engine)
 

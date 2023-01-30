@@ -46,8 +46,8 @@ def test_npv_api_response_altid_no_server_error(client, altid, method):
         (
             "SWFA-100018",
             {
-                "capital_cost": 450000,
-                "om_cost_per_yr": 6000,
+                "capital_cost": 450001,
+                "om_cost_per_yr": 6001,
             },
             None,
         ),
@@ -55,9 +55,9 @@ def test_npv_api_response_altid_no_server_error(client, altid, method):
         (
             "SWFA-100018",
             {
-                "capital_cost": 450000,
-                "om_cost_per_yr": 6000,
-                "replacement_cost": 225000,
+                "capital_cost": 450002,
+                "om_cost_per_yr": 6002,
+                "replacement_cost": 225002,
                 "lifespan_yrs": None,
             },
             None,

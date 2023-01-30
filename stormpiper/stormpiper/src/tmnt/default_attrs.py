@@ -100,13 +100,13 @@ def update_tmnt_attributes(engine, overwrite=False):
     )
 
     existing_altids = pandas.read_sql(
-        "select altid from tmnt_facility_attributes", con=engine
+        "select altid from tmnt_facility_attribute", con=engine
     )["altid"].unique()
 
     with engine.begin() as conn:
         if overwrite:
             existing_altids = []
-            conn.execute(f"delete from tmnt_facility_attributes")
+            conn.execute(f"delete from tmnt_facility_attribute")
 
         df = df.query("altid not in @existing_altids")
 
@@ -117,6 +117,7 @@ def update_tmnt_attributes(engine, overwrite=False):
                 .reindex(
                     columns=[
                         "altid",
+                        "node_id",
                         "basinname",
                         "subbasin",
                         "facility_type",
@@ -129,13 +130,13 @@ def update_tmnt_attributes(engine, overwrite=False):
             )
 
             df.to_sql(
-                "tmnt_facility_attributes", con=conn, if_exists="append", index=False
+                "tmnt_facility_attribute", con=conn, if_exists="append", index=False
             )
 
             Session = get_session(engine=engine)
             # same transaction scope to update the change log
             with Session.begin() as session:  # type: ignore
                 logger.info("recording table change...")
-                sync_log(tablename="tmnt_facility_attributes", db=session)
+                sync_log(tablename="tmnt_facility_attribute", db=session)
 
         return df
