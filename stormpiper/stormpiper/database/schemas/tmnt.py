@@ -7,7 +7,6 @@ from sqlalchemy import Column, Float, Integer, String
 from stormpiper.connections import arcgis
 from stormpiper.core.config import settings
 
-from ..hacks import view
 from .base_class import Base, MutableTrackedTable
 
 __all__ = [
@@ -32,6 +31,7 @@ class TMNTFacilityDelineation(Base):
     altid = Column(String)
     relid = Column(String)
     node_id = Column(String, default=delin_node_id, onupdate=delin_node_id)
+    ds_node_id = Column(String)
     geom = Column(Geometry(srid=settings.TACOMA_EPSG))
 
 
@@ -50,7 +50,9 @@ class TMNTFacility(Base):
 
     id = Column(Integer, primary_key=True)
     altid = Column(String, unique=True)
-    node_id = Column(String, default=facility_node_id, onupdate=facility_node_id)
+    node_id = Column(
+        String, unique=True, default=facility_node_id, onupdate=facility_node_id
+    )
     commonname = Column(String)
     facilitytype = Column(String)
     facilitydetail = Column(String)
@@ -64,10 +66,13 @@ class TMNTFacility(Base):
 
 
 class TMNTFacilityAttr(Base, MutableTrackedTable):
-    __tablename__ = "tmnt_facility_attributes"
+    __tablename__ = "tmnt_facility_attribute"
 
     id = Column(Integer, primary_key=True)
     altid = Column(String, unique=True)
+    node_id = Column(
+        String, unique=True, default=facility_node_id, onupdate=facility_node_id
+    )
 
     basinname = Column(String)
     subbasin = Column(String)
@@ -89,13 +94,6 @@ class TMNTFacilityAttr(Base, MutableTrackedTable):
     # simplified attrs
     captured_pct = Column(Float)
     retained_pct = Column(Float)
-
-    # cost attrs
-    capital_cost = Column(Float)
-    om_cost_per_yr = Column(Float)
-    lifespan_yrs = Column(Float)
-    replacement_cost = Column(Float)
-    net_present_value = Column(Float)
 
 
 class Direction(str, Enum):

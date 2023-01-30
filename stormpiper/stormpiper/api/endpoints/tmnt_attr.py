@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List
 
 from fastapi import APIRouter, Body, Depends, Path, Query, status
 from fastapi.exceptions import HTTPException
@@ -9,21 +9,23 @@ from nereid.api.api_v1.models.treatment_facility_models import (
     TREATMENT_FACILITY_MODELS,
 )
 from pydantic import BaseModel, ValidationError
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.apps import supersafe as ss
 from stormpiper.apps.supersafe.users import check_user
 from stormpiper.core.context import get_context
-from stormpiper.core.exceptions import RecordNotFound
 from stormpiper.database import crud
 from stormpiper.database.connection import get_async_session
+from stormpiper.database.schemas import tmnt_view as tmnt
 from stormpiper.models.base import BaseModel as Base
-from stormpiper.models.npv import NPVRequest
-from stormpiper.models.tmnt_attr import (
-    TMNTFacilityAttr,
-    TMNTFacilityAttrPatch,
-    TMNTFacilityAttrUpdate,
+from stormpiper.models.tmnt_attr import TMNTFacilityAttrPatch, TMNTFacilityAttrUpdate
+from stormpiper.models.tmnt_cost import (
+    NPVRequest,
+    TMNTFacilityCostPatch,
+    TMNTFacilityCostUpdate,
 )
+from stormpiper.models.tmnt_view import TMNTView
 from stormpiper.src.npv import compute_bmp_npv, get_npv_settings
 
 router = APIRouter(dependencies=[Depends(check_user)])
@@ -31,24 +33,28 @@ router = APIRouter(dependencies=[Depends(check_user)])
 
 @router.get(
     "/{altid}",
-    response_model=TMNTFacilityAttr,
+    response_model=TMNTView,
     name="tmnt_facility_attr:get_tmnt_attr",
 )
 async def get_tmnt_attr(
     altid: str,
     db: AsyncSession = Depends(get_async_session),
 ):
-    attr = await crud.tmnt_attr.get(db=db, id=altid)
+    result = await db.execute(
+        select(tmnt.TMNT_View).where(tmnt.TMNT_View.altid == altid)
+    )
 
-    if not attr:
+    if not result:
         raise HTTPException(
             status_code=404, detail=f"Record not found for altid={altid}"
         )
 
-    return attr
+    return result.scalars().first()
 
 
-def validate_tmnt_modeling_params(unvalidated_data: dict, context: dict) -> None:
+def validate_tmnt_modeling_params(
+    unvalidated_data: dict, context: dict
+) -> None | TMNTFacilityAttrUpdate:
     modeling_fields = {
         f
         for c in TREATMENT_FACILITY_MODELS
@@ -60,7 +66,7 @@ def validate_tmnt_modeling_params(unvalidated_data: dict, context: dict) -> None
     )
 
     if not modifies_modeling_data:
-        return
+        return None
 
     facility_type = unvalidated_data.get("facility_type", None)
 
@@ -92,47 +98,49 @@ def validate_tmnt_modeling_params(unvalidated_data: dict, context: dict) -> None
             detail=str(e).replace("\n", " "),
         )
 
-    return
+    return TMNTFacilityAttrUpdate(**unvalidated_data)
 
 
 def maybe_update_npv_params(
     unvalidated_data: dict, npv_global_settings: dict
-) -> dict[str, Any]:
+) -> None | TMNTFacilityCostUpdate:
     # check if the patch changes an npv field. If not, pass. if so, validate it,
     # and if it doesn't validate then set npv calc to None so that it's not out of date.
     npv_fields = NPVRequest.get_fields()
     modifies_npv_fields = any((k in npv_fields for k in unvalidated_data.keys()))
 
     if not modifies_npv_fields:
-        return unvalidated_data
+        return None
 
     unvalidated_data["net_present_value"] = None
-
-    sets_npv_field_to_value = any(
-        (unvalidated_data.get(k, None) is not None for k in npv_fields)
-    )
-    if not sets_npv_field_to_value:
-        return unvalidated_data
 
     try:
         npv_req = NPVRequest(**unvalidated_data, **npv_global_settings)
 
     except ValidationError as _:
-        return unvalidated_data
+        return TMNTFacilityCostUpdate(**unvalidated_data)
 
     result, _ = compute_bmp_npv(**npv_req.dict())
     unvalidated_data["net_present_value"] = result
 
-    return unvalidated_data
+    return TMNTFacilityCostUpdate(**unvalidated_data)
 
 
-async def validate_facility_create_or_update(
-    tmnt_attr: Union[
-        Dict[str, Any], TMNTFacilityAttrPatch, STRUCTURAL_FACILITY_TYPE
-    ] = Body(
+class TMNTUpdate(BaseModel):
+    tmnt_attr: None | TMNTFacilityAttrUpdate = None
+    tmnt_cost: None | TMNTFacilityCostUpdate = None
+
+
+class TMNTFacilityPatch(TMNTFacilityCostPatch, TMNTFacilityAttrPatch):
+    ...
+
+
+async def validate_tmnt_update(
+    tmnt_patch: Dict[str, Any]
+    | TMNTFacilityPatch
+    | STRUCTURAL_FACILITY_TYPE = Body(
         ...,
         example={  # example required since default example is empty dict
-            "treatment_strategy": "string",
             "facility_type": "string",
             "hsg": "string",
             "design_storm_depth_inches": 0,
@@ -156,52 +164,65 @@ async def validate_facility_create_or_update(
     context: dict = Depends(get_context),
     db: AsyncSession = Depends(get_async_session),
     user: ss.users.User = Depends(ss.users.current_active_user),
-) -> TMNTFacilityAttrUpdate:
-    unvalidated_data = deepcopy(tmnt_attr)
+) -> TMNTUpdate:
+    unvalidated_data = deepcopy(tmnt_patch)
 
     if isinstance(unvalidated_data, BaseModel):
         unvalidated_data = unvalidated_data.dict()
 
-    validate_tmnt_modeling_params(unvalidated_data, context)
-
-    npv_global_settings: Dict[str, float] = await get_npv_settings(db)
-    unvalidated_data = maybe_update_npv_params(unvalidated_data, npv_global_settings)
-
     unvalidated_data["updated_by"] = user.email
 
-    return TMNTFacilityAttrUpdate(**unvalidated_data)
+    tmnt_attr = validate_tmnt_modeling_params(unvalidated_data, context)
+
+    npv_global_settings: Dict[str, float] = await get_npv_settings(db)
+    tmnt_cost = maybe_update_npv_params(unvalidated_data, npv_global_settings)
+
+    return TMNTUpdate(tmnt_attr=tmnt_attr, tmnt_cost=tmnt_cost)
 
 
 @router.patch(
     "/{altid}",
-    response_model=TMNTFacilityAttr,
+    response_model=TMNTView,
     name="tmnt_facility_attr:patch_tmnt_attr",
 )
 async def patch_tmnt_attr(
     *,
     altid: str = Path(..., example="SWFA-100002"),
-    tmnt_attr: TMNTFacilityAttrUpdate = Depends(validate_facility_create_or_update),
+    tmnt_update: TMNTUpdate = Depends(validate_tmnt_update),
     db: AsyncSession = Depends(get_async_session),
 ):
-    try:
-        return await crud.tmnt_attr.update(db=db, id=altid, new_obj=tmnt_attr)
+    ex_obj = await crud.tmnt_attr.get(db=db, id=altid)
 
-    except RecordNotFound as e:
+    if not ex_obj:
         raise HTTPException(
             status_code=404, detail=f"Record not found for altid={altid}"
         )
 
+    if tmnt_update.tmnt_attr is not None:
+        _ = await crud.tmnt_attr.update(
+            db=db, id=altid, new_obj=tmnt_update.tmnt_attr  # .dict(exclude_unset=True)
+        )
+
+    if tmnt_update.tmnt_cost is not None:
+        _ = await crud.tmnt_cost.upsert(
+            db=db, id=altid, new_obj=tmnt_update.tmnt_cost  # .dict(exclude_unset=True)
+        )
+
+    result = await db.execute(
+        select(tmnt.TMNT_View).where(tmnt.TMNT_View.altid == altid)
+    )
+    return result.scalars().first()
+
 
 @router.get(
     "/",
-    response_model=List[TMNTFacilityAttr],
+    response_model=List[TMNTView],
     name="tmnt_facility_attr:get_all_tmnt_attr",
 )
 async def get_all_tmnt_attr(
-    limit: Optional[int] = Query(int(1e6)),
+    limit: int = Query(int(1e6)),
     offset: int = Query(0),
     db: AsyncSession = Depends(get_async_session),
 ):
-    result = await crud.tmnt_attr.get_all(db=db, limit=limit, offset=offset)
-
-    return result
+    result = await db.execute(select(tmnt.TMNT_View).offset(offset).limit(limit))
+    return result.scalars().all()

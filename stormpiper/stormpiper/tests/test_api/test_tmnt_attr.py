@@ -18,7 +18,18 @@ from .. import utils as test_utils
             -739400.67,
         ),
         # incomplete patch
-        ("SWFA-100018", {"capital_cost": 450000}, None),
+        ("SWFA-100018", {"capital_cost": 450001}, None),
+        # new cost attr
+        (
+            "SWFA-100030",
+            {
+                "capital_cost": 450000,
+                "om_cost_per_yr": 6000,
+                "replacement_cost": 225000,
+                "lifespan_yrs": 15,
+            },
+            -739400.67,
+        ),
     ],
 )
 def test_npv_api_response_altid(client, altid, blob, exp_npv):
