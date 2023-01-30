@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import Response
@@ -40,19 +38,19 @@ async def get_subbasin(
 
 @router.get(
     "/token/{token}",
-    response_model=List[SubbasinResultView],
+    response_model=list[SubbasinResultView],
     name="subbasin:get_all_subbasins_via_token",
     dependencies=[Depends(check_readonly_token)],
 )
 @router.get(
     "/",
-    response_model=List[SubbasinResultView],
+    response_model=list[SubbasinResultView],
     name="subbasin:get_all_subbasins",
     dependencies=[Depends(check_user)],
 )
 async def get_all_subbasins(
     f: str = Query("json"),
-    limit: Optional[int] = Query(int(1e6)),
+    limit: None | int = Query(int(1e6)),
     offset: int = Query(0),
     epoch: Epoch = Query(Epoch.all, example="1980s"),  # type: ignore
     db: AsyncSession = Depends(get_async_session),

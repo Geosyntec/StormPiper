@@ -32,21 +32,21 @@ router = APIRouter(dependencies=[Depends(check_user)])
 
 
 @router.get(
-    "/{altid}",
+    "/{node_id}",
     response_model=TMNTView,
     name="tmnt_facility_attr:get_tmnt_attr",
 )
 async def get_tmnt_attr(
-    altid: str,
+    node_id: str,
     db: AsyncSession = Depends(get_async_session),
 ):
     result = await db.execute(
-        select(tmnt.TMNT_View).where(tmnt.TMNT_View.altid == altid)
+        select(tmnt.TMNT_View).where(tmnt.TMNT_View.node_id == node_id)
     )
 
     if not result:
         raise HTTPException(
-            status_code=404, detail=f"Record not found for altid={altid}"
+            status_code=404, detail=f"Record not found for node_id={node_id}"
         )
 
     return result.scalars().first()
@@ -118,6 +118,7 @@ def maybe_update_npv_params(
         npv_req = NPVRequest(**unvalidated_data, **npv_global_settings)
 
     except ValidationError as _:
+        print("Validation Error", _)
         return TMNTFacilityCostUpdate(**unvalidated_data)
 
     result, _ = compute_bmp_npv(**npv_req.dict())
@@ -181,35 +182,35 @@ async def validate_tmnt_update(
 
 
 @router.patch(
-    "/{altid}",
+    "/{node_id}",
     response_model=TMNTView,
     name="tmnt_facility_attr:patch_tmnt_attr",
 )
 async def patch_tmnt_attr(
     *,
-    altid: str = Path(..., example="SWFA-100002"),
+    node_id: str = Path(..., example="SWFA-100002"),
     tmnt_update: TMNTUpdate = Depends(validate_tmnt_update),
     db: AsyncSession = Depends(get_async_session),
 ):
-    ex_obj = await crud.tmnt_attr.get(db=db, id=altid)
+    ex_obj = await crud.tmnt_attr.get(db=db, id=node_id)
 
     if not ex_obj:
         raise HTTPException(
-            status_code=404, detail=f"Record not found for altid={altid}"
+            status_code=404, detail=f"Record not found for node_id={node_id}"
         )
 
     if tmnt_update.tmnt_attr is not None:
         _ = await crud.tmnt_attr.update(
-            db=db, id=altid, new_obj=tmnt_update.tmnt_attr  # .dict(exclude_unset=True)
+            db=db, id=node_id, new_obj=tmnt_update.tmnt_attr
         )
 
     if tmnt_update.tmnt_cost is not None:
         _ = await crud.tmnt_cost.upsert(
-            db=db, id=altid, new_obj=tmnt_update.tmnt_cost  # .dict(exclude_unset=True)
+            db=db, id=node_id, new_obj=tmnt_update.tmnt_cost
         )
 
     result = await db.execute(
-        select(tmnt.TMNT_View).where(tmnt.TMNT_View.altid == altid)
+        select(tmnt.TMNT_View).where(tmnt.TMNT_View.node_id == node_id)
     )
     return result.scalars().first()
 

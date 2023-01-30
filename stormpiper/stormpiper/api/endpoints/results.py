@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -13,9 +11,9 @@ from stormpiper.models.result_view import Epoch, ResultView
 router = APIRouter(dependencies=[Depends(check_user)])
 
 
-@router.get("/", response_model=List[ResultView], name="results:get_all_results")
+@router.get("/", response_model=list[ResultView], name="results:get_all_results")
 async def get_all_results(
-    limit: Optional[int] = Query(int(1e6)),
+    limit: None | int = Query(int(1e6)),
     offset: int = Query(0),
     epoch: Epoch = Query(Epoch.all, example="1980s"),  # type: ignore
     db: AsyncSession = Depends(get_async_session),
@@ -42,7 +40,7 @@ async def get_result_is_dirty(db: AsyncSession = Depends(get_async_session)):
     return response
 
 
-@router.get("/{node_id}", response_model=List[ResultView], name="results:get_result")
+@router.get("/{node_id}", response_model=list[ResultView], name="results:get_result")
 async def get_result(
     node_id: str = Path(..., title="node id or altid", example="SWFA-100002"),
     epoch: Epoch = Query(Epoch.all, example="1980s"),  # type: ignore

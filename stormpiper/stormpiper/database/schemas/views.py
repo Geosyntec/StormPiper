@@ -92,8 +92,8 @@ CREATE OR REPLACE VIEW tmnt_v AS
 select
 {block}
 from tmnt_facility as t
-    JOIN tmnt_facility_attribute as ta on t.altid = ta.altid
-    FULL OUTER JOIN tmnt_facility_cost as tc on t.altid = tc.node_id
+    JOIN tmnt_facility_attribute as ta on t.node_id = ta.node_id
+    FULL OUTER JOIN tmnt_facility_cost as tc on t.node_id = tc.node_id
 """
     return view_template
 
@@ -108,17 +108,11 @@ def initialize_views(engine, views=VIEW_REGISTRY):
     existing_v = [_v for _v in inspect(engine).get_view_names() if _v.endswith("_v")]
 
     with engine.begin() as db:
+
+        # stp views have a _v suffix so begin by removing all stp views.
         for _v in existing_v:
             db.execute(f"drop view {_v}")
+
+        # add back only the views in the current registry.
         for stmnt in views:
             db.execute(stmnt)
-
-
-if __name__ == "__main__":
-
-    from stormpiper.database.connection import engine
-
-    existing_views = inspect(engine).get_view_names()
-    existing_tables = inspect(engine).get_table_names()
-
-    print(existing_views, existing_tables)

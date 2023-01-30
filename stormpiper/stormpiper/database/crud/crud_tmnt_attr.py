@@ -42,6 +42,6 @@ class CRUDTMNTFacilityCost(
         return await self.update(db=db, id=id, new_obj=new_obj)
 
 
-tmnt_attr = CRUDTMNTFacilityAttr(TMNTFacilityAttr, id="altid")
+tmnt_attr = CRUDTMNTFacilityAttr(TMNTFacilityAttr, id="node_id")
 
 tmnt_cost = CRUDTMNTFacilityCost(TMNTFacilityCost, id="node_id")

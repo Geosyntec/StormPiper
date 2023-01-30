@@ -32,11 +32,6 @@ class TMNTFacilityCostBase(BaseModel):
     replacement_cost: None | float = None
 
 
-# Properties to receive on creation
-class TMNTFacilityCostCreate(TMNTFacilityCostBase):
-    node_id: str
-
-
 # Properties to receive on update
 class TMNTFacilityCostPatch(TMNTFacilityCostBase):
     ...
@@ -46,6 +41,11 @@ class TMNTFacilityCostPatch(TMNTFacilityCostBase):
 class TMNTFacilityCostUpdate(TMNTFacilityCostPatch):
     updated_by: None | str = None
     net_present_value: None | float = None
+
+
+# Properties to receive on creation
+class TMNTFacilityCostCreate(TMNTFacilityCostUpdate):
+    node_id: str
 
 
 # Properties shared by models stored in DB
