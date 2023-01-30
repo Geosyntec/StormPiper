@@ -91,3 +91,10 @@ def create_default_globals(engine):
                 dct["updated_by"] = "system_default"
                 batch.append(GlobalSetting(**dct))
         session.add_all(batch)
+
+
+def build_views(engine):
+    from stormpiper.database.connection import engine
+    from stormpiper.database.schemas.views import initialize_views
+
+    initialize_views(engine)

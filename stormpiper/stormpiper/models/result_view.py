@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import create_model
 
-from stormpiper.database.schemas import results, subbasin_result_view
+from stormpiper.database.schemas import results, views
 
 from .base import BaseORM
 
@@ -32,9 +32,7 @@ SubbasinResultView = create_model(
     __base__=BaseORM,
     **{
         str(c): (Optional[str] if c in strings else Optional[float], ...)
-        for c in set(
-            ["node_id", "epoch", "subbasin", "basinname"] + subbasin_result_view.COLS
-        )
+        for c in set(["node_id", "epoch", "subbasin", "basinname"] + views.COLS)
         if not any([c.startswith("_"), c == "geom"])
     },
 )

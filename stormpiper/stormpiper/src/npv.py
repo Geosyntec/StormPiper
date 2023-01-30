@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from stormpiper.core.exceptions import RecordNotFound
 from stormpiper.database import crud
 from stormpiper.database.utils import orm_to_dict, scalars_to_records
-from stormpiper.models.npv import NPVRequest
+from stormpiper.models.tmnt_cost import NPVRequest
 
 
 def compute_bmp_npv(
@@ -62,7 +62,7 @@ async def calculate_npv_for_existing_tmnt_in_db(
 ):
     """Calculates the net present value of a structural bmp facility"""
 
-    attr = await crud.tmnt_attr.get(db=db, id=altid)
+    attr = await crud.tmnt_cost.get(db=db, id=altid)
 
     if not attr:
         raise RecordNotFound(f"Record not found for altid={altid}")
@@ -76,14 +76,14 @@ async def calculate_npv_for_existing_tmnt_in_db(
         )
 
     except ValidationError:
-        attr = await crud.tmnt_attr.update(
+        attr = await crud.tmnt_cost.update(
             db=db, id=altid, new_obj={"net_present_value": None}
         )
         raise
 
     result, _ = compute_bmp_npv(**npv_req.dict())
 
-    attr = await crud.tmnt_attr.update(
+    attr = await crud.tmnt_cost.update(
         db=db, id=altid, new_obj={"net_present_value": result}
     )
 
