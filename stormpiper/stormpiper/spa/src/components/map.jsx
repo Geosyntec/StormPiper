@@ -4,7 +4,8 @@ import StaticMap from "react-map-gl";
 import getTooltipContents from "./tooltip.jsx";
 import { useLocation } from "react-router-dom";
 import { useState,useEffect } from "react";
-
+import { useCallback } from "react";
+import debounce from "lodash.debounce"
 
 // Viewport settings
 const INITIAL_VIEW_STATE = {
@@ -47,13 +48,13 @@ function DeckGLMap(props) {
               console.log("Target Feature Found: ", zoomFeature);
             }
           });
-          if (zoomFeature.length > 0) {
+          if (zoomFeature && zoomFeature.length > 0) {
             setViewState({
               ...viewState,
               longitude: zoomFeature[0].geometry.coordinates[0],
               latitude: zoomFeature[0].geometry.coordinates[1],
-              zoom: Math.max(currentZoom,14),
-              transitionDuration:1500,
+              zoom: currentZoom,
+              transitionDuration:1000,
               transitionInterpolator: new FlyToInterpolator()
             });
           }
@@ -61,23 +62,33 @@ function DeckGLMap(props) {
     }
   }
 
+  const debouncedSetZoom = useCallback(
+    debounce((state)=>setCurrentZoom(state.viewState.zoom), 300)
+  , []);
+
+
   return (
     <DeckGL
       initialViewState={viewState}
       controller={true}
       layers={props.layers}
       onClick={props.onClick}
-      // onViewStateChange={(state)=>{
-      //   console.log("Viewstate:",state)
-      //   setCurrentZoom(state.viewState.zoom)
-      // }}
-      // onload={()=>checkFeature(props)}
+      onViewStateChange={(state)=>{
+        debouncedSetZoom(state)
+      }}
       getTooltip={(object) => {
+        let width = 0
+        let height = 0
+        if(object.viewport){
+          ({width, height} = object.viewport)
+        }
+        let closeToEdge = object.y > height *0.8 || object.x > width*0.85
         if(object?.object){console.log('Selected Object',object)}
-        return object.object && {
+        return object.object && !closeToEdge && {
           html: getTooltipContents(object.object, object?.layer?.id,object?.layer?.props?.label),
           style:{
             borderRadius:'6px',
+            maxWidth:'175px'
           }
         };
       }}
