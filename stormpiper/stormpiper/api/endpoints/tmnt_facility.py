@@ -50,27 +50,27 @@ async def get_all_tmnt(
 
 
 @router.get(
-    "/{altid}/token/{token}",
+    "/{node_id}/token/{token}",
     response_model=TMNTView,
     name="tmnt_facility:get_tmnt_via_token",
     dependencies=[Depends(check_readonly_token)],
 )
 @router.get(
-    "/{altid}",
+    "/{node_id}",
     response_model=TMNTView,
     name="tmnt_facility:get_tmnt",
     dependencies=[Depends(check_user)],
 )
 async def get_tmnt(
-    altid: str,
+    node_id: str,
     db: AsyncSession = Depends(get_async_session),
 ):
     result = await db.execute(
-        select(tmnt.TMNT_View).where(tmnt.TMNT_View.altid == altid)
+        select(tmnt.TMNT_View).where(tmnt.TMNT_View.node_id == node_id)
     )
     scalar = result.scalars().first()
 
     if scalar is None:
-        raise HTTPException(status_code=404, detail=f"not found: {altid}")
+        raise HTTPException(status_code=404, detail=f"id not found: {node_id}")
 
     return scalar

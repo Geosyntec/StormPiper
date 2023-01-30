@@ -22,11 +22,6 @@ class TMNTFacilityAttrBase(BaseModel):
     retained_pct: None | float = None
 
 
-# Properties to receive on creation
-class TMNTFacilityAttrCreate(TMNTFacilityAttrBase):
-    ...
-
-
 # Properties to receive on update
 class TMNTFacilityAttrPatch(TMNTFacilityAttrBase):
     ...
@@ -35,6 +30,11 @@ class TMNTFacilityAttrPatch(TMNTFacilityAttrBase):
 # Properties to send on update
 class TMNTFacilityAttrUpdate(TMNTFacilityAttrPatch):
     updated_by: None | str
+
+
+# Properties to receive on creation
+class TMNTFacilityAttrCreate(TMNTFacilityAttrUpdate):
+    ...
 
 
 # Properties shared by models stored in DB

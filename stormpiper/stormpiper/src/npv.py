@@ -57,15 +57,15 @@ async def get_npv_settings(
 
 
 async def calculate_npv_for_existing_tmnt_in_db(
-    altid: str,
+    node_id: str,
     db: AsyncSession,
 ):
     """Calculates the net present value of a structural bmp facility"""
 
-    attr = await crud.tmnt_cost.get(db=db, id=altid)
+    attr = await crud.tmnt_cost.get(db=db, id=node_id)
 
     if not attr:
-        raise RecordNotFound(f"Record not found for altid={altid}")
+        raise RecordNotFound(f"Record not found for node_id={node_id}")
 
     npv_global_settings: Dict[str, float] = await get_npv_settings(db)
 
@@ -77,14 +77,14 @@ async def calculate_npv_for_existing_tmnt_in_db(
 
     except ValidationError:
         attr = await crud.tmnt_cost.update(
-            db=db, id=altid, new_obj={"net_present_value": None}
+            db=db, id=node_id, new_obj={"net_present_value": None}
         )
         raise
 
     result, _ = compute_bmp_npv(**npv_req.dict())
 
     attr = await crud.tmnt_cost.update(
-        db=db, id=altid, new_obj={"net_present_value": result}
+        db=db, id=node_id, new_obj={"net_present_value": result}
     )
 
     return attr

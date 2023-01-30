@@ -4,25 +4,29 @@ from stormpiper.database.connection import engine
 
 
 def build_edge_list(lgu_boundary, tmnt_v):
-    lgu = lgu_boundary.assign(
-        basinname=lambda df: "B_" + df["basinname"].str.replace(" ", "_")
-    ).assign(ntype="land_surface")
+    lgu = (
+        lgu_boundary.assign(
+            basinname=lambda df: "B_" + df["basinname"].str.replace(" ", "_")
+        )
+        .assign(subbasin=lambda df: "SB_" + df["subbasin"])
+        .assign(ntype="land_surface")
+    )
 
     fac = tmnt_v.assign(ntype="tmnt_structural")
 
     da_to_tmnt = (
-        lgu.dropna(subset=["altid"])
+        lgu.loc[lgu["node_id"].str.startswith("ls_")]
         .assign(source=lambda df: df["node_id"])
         .assign(target=lambda df: df["relid"])
     )
 
     tmnt_to_subbasin = fac.assign(source=lambda df: df["node_id"]).assign(
-        target=lambda df: "SB_" + df["subbasin"]
+        target=lambda df: df["subbasin"]
     )
 
     subbasin_to_wshed = (
-        lgu.loc[lgu["altid"].isna()]
-        .assign(source=lambda df: df["node_id"])
+        lgu.drop_duplicates(subset=["subbasin"])
+        .assign(source=lambda df: df["subbasin"])
         .assign(target=lambda df: df["basinname"])
     )
 

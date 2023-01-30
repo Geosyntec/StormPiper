@@ -4,7 +4,7 @@ from .. import utils as test_utils
 
 
 @pytest.mark.parametrize(
-    "altid, blob, exp_npv",
+    "node_id, blob, exp_npv",
     [
         # complete npv patch
         (
@@ -32,10 +32,10 @@ from .. import utils as test_utils
         ),
     ],
 )
-def test_npv_api_response_altid(client, altid, blob, exp_npv):
+def test_npv_api_response_node_id(client, node_id, blob, exp_npv):
     user_token = test_utils.user_token(client)
 
-    route = f"/api/rest/tmnt_attr/{altid}"
+    route = f"/api/rest/tmnt_attr/{node_id}"
     _ = client.patch(
         route,
         headers={"Authorization": f"Bearer {user_token['access_token']}"},

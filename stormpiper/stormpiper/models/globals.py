@@ -1,5 +1,3 @@
-from typing import Optional
-
 from .base import BaseModel, BaseORM
 
 
@@ -21,8 +19,8 @@ class GlobalSettingPost(GlobalSettingBase):
 
 
 class GlobalSettingUpdate(GlobalSettingBase):
-    updated_by: Optional[str] = None
+    updated_by: None | str = None
 
 
-class GlobalSettingCreate(GlobalSettingBase):
-    updated_by: Optional[str] = None
+class GlobalSettingCreate(GlobalSettingUpdate):
+    ...

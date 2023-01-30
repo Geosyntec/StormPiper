@@ -20,15 +20,15 @@ def test_npv_api_response(client, blob):
 
 
 @pytest.mark.parametrize("method", ["get", "post"])
-@pytest.mark.parametrize("altid", ["SWFA-100018"])
-def test_npv_api_response_altid_no_server_error(client, altid, method):
+@pytest.mark.parametrize("node_id", ["SWFA-100018"])
+def test_npv_api_response_node_id_no_server_error(client, node_id, method):
     caller = getattr(client, method)
-    response = caller(f"/api/rpc/calculate_net_present_value/{altid}")
+    response = caller(f"/api/rpc/calculate_net_present_value/{node_id}")
     assert response.status_code < 500, response.content
 
 
 @pytest.mark.parametrize(
-    "altid, blob, exp",
+    "node_id, blob, exp",
     [
         # this patch is complete for npv calcs.
         (
@@ -57,25 +57,25 @@ def test_npv_api_response_altid_no_server_error(client, altid, method):
             {
                 "capital_cost": 450002,
                 "om_cost_per_yr": 6002,
-                "replacement_cost": 225002,
+                "replacement_cost": 22500,
                 "lifespan_yrs": None,
             },
             None,
         ),
     ],
 )
-def test_npv_api_response_altid(client, altid, blob, exp):
-    route = f"/api/rest/tmnt_attr/{altid}"
+def test_npv_api_response_node_id(client, node_id, blob, exp):
+    route = f"/api/rest/tmnt_attr/{node_id}"
     p_response = client.patch(route, json=blob)
 
-    route = f"/api/rpc/calculate_net_present_value/{altid}"
+    route = f"/api/rpc/calculate_net_present_value/{node_id}"
     response = client.get(route)
 
     rjson = response.json()
 
     ## cleanup
     empty_blob = {k: None for k in blob.keys()}
-    route = f"/api/rest/tmnt_attr/{altid}"
+    route = f"/api/rest/tmnt_attr/{node_id}"
     _ = client.patch(route, json=empty_blob)
 
     if exp is None:

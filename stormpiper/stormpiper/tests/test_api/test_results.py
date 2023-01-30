@@ -46,7 +46,7 @@ def test_get_result_by_node_id(client, node_id, epoch, exists):
 
 
 @pytest.mark.parametrize(
-    "altid, blob, after_change_is_dirty",
+    "node_id, blob, after_change_is_dirty",
     [
         # dirty the results
         (
@@ -65,7 +65,7 @@ def test_get_result_by_node_id(client, node_id, epoch, exists):
         ),
     ],
 )
-def test_clean_dirty_clean(client, altid, blob, after_change_is_dirty):
+def test_clean_dirty_clean(client, node_id, blob, after_change_is_dirty):
     tasks.delete_and_refresh_all_results_tables(engine=engine)
 
     # check if db is clean
@@ -75,11 +75,11 @@ def test_clean_dirty_clean(client, altid, blob, after_change_is_dirty):
     assert rsp_json["is_dirty"] == False, rsp_json
 
     # try to dirty the results by patching an attribute
-    response = client.get(f"/api/rest/tmnt_attr/{altid}")
+    response = client.get(f"/api/rest/tmnt_attr/{node_id}")
     assert 200 <= response.status_code < 300, response.content
     rsp_json = response.json()
 
-    response = client.patch(f"/api/rest/tmnt_attr/{altid}", json=blob)
+    response = client.patch(f"/api/rest/tmnt_attr/{node_id}", json=blob)
     assert 200 <= response.status_code < 300, response.content
     rsp_json = response.json()
 

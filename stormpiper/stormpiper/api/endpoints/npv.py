@@ -19,23 +19,23 @@ async def calculate_npv(npv: NPVRequest):
 
 
 @rpc_router.get(
-    "/calculate_net_present_value/{altid}",
+    "/calculate_net_present_value/{node_id}",
     response_model=TMNTFacilityCost,
     tags=["rpc"],
 )
 @rpc_router.post(
-    "/calculate_net_present_value/{altid}",
+    "/calculate_net_present_value/{node_id}",
     response_model=TMNTFacilityCost,
     tags=["rpc"],
 )
 async def calculate_npv_for_existing_tmnt(
-    altid: str,
+    node_id: str,
     db: AsyncSession = Depends(get_async_session),
 ):
     """Calculates the net present value of an existing structural bmp facility"""
 
     try:
-        attr = await calculate_npv_for_existing_tmnt_in_db(db=db, altid=altid)
+        attr = await calculate_npv_for_existing_tmnt_in_db(db=db, node_id=node_id)
 
     except RecordNotFound as e:
         raise HTTPException(status_code=404, detail=f"{e}")

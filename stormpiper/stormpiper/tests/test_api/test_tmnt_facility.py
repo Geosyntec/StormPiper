@@ -2,10 +2,10 @@ import pytest
 
 
 @pytest.mark.parametrize(
-    "altid,exists", [("SWFA-100018", True), ("SWFA-1000dd", False)]
+    "node_id,exists", [("SWFA-100018", True), ("SWFA-1000dd", False)]
 )
-def test_get_tmnt_facility_by_altid(client, altid, exists):
-    response = client.get(f"/api/rest/tmnt_facility/{altid}")
+def test_get_tmnt_facility_by_node_id(client, node_id, exists):
+    response = client.get(f"/api/rest/tmnt_facility/{node_id}")
 
     if not exists:
         assert response.status_code >= 400, response.content
