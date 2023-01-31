@@ -12,7 +12,8 @@
 
 #layer-toggler-title{
     display:flex;
-    justify-content: center;
+    justify-content: start;
+    margin-bottom:1rem;
 }
 
 #layer-toggler-title-hidden{
@@ -37,6 +38,17 @@
     top:0%
     /* min-width: 25%; */
 }
+
+div.hihi{
+    border-bottom: 0.5px solid grey;
+    margin-bottom:1rem
+}
+
+div.hihi:last-child{
+    border-bottom:none
+}
+
+
 
 
 
