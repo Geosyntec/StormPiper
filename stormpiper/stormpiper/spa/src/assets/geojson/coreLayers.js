@@ -189,7 +189,7 @@ const activeLocalSWFacility = {
     data: "/api/rest/tmnt_facility/?f=geojson",
     id: "activeSWFacility",
     label: "Active Surface Water Facilities",
-    getFillColor: [160, 160, 180, 0],
+    getFillColor: [70, 170, 21, 0],
     getLineColor: [160, 160, 180, 0],
     getLineWidth: (f) => 1,
     getElevation: (f) => 500,
@@ -333,7 +333,7 @@ export const layerDict = {
       // clusteredPopRaster
     ],
   },
-  Surfacewater: {
+  "Surface Water Infrastructure": {
     "Active Network": [
       delineations,
       // activeSWMain,
