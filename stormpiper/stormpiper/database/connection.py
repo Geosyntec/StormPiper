@@ -1,7 +1,7 @@
 import logging
 from typing import AsyncGenerator
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from tenacity import after_log  # type: ignore
@@ -52,7 +52,7 @@ def reconnect_engine(engine=engine):
     try:
         with engine.begin() as conn:
             # this should connect/login and ensure that the database is available.
-            conn.execute("select 1").fetchall()
+            conn.execute(text("select 1")).fetchall()
 
     except Exception as e:
         logger.error(e)
