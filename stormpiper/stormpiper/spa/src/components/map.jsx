@@ -27,8 +27,14 @@ function DeckGLMap(props) {
   const loc = useLocation()
   const [viewState,setViewState] = useState(INITIAL_VIEW_STATE)
   const [currentZoom,setCurrentZoom] = useState(11)
-  console.log("Current Feature: ",props.currentFeature)
-
+  const baseLayerStyles = [
+    {
+      styleURL:"mapbox://styles/mapbox/streets-v12"
+    },
+    {
+      styleURL:"mapbox://styles/mapbox/satellite-streets-v12"
+    }
+  ]
   useEffect(()=>{
     zoomToCurrentFeature()
   },[loc])
@@ -93,7 +99,7 @@ function DeckGLMap(props) {
         };
       }}
     >
-      <StaticMap mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN} />
+      <StaticMap mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN} mapStyle={baseLayerStyles[props.baseLayer].styleURL} />
     </DeckGL>
   );
 }

@@ -6,11 +6,13 @@ import LayerSelector from "./components/layerSelector";
 import ProminentAppBar from "./components/topMenu";
 import BMPStatWindow from "./components/bmpStatWindow";
 import AuthProvider from "./components/authProvider"
-import { Card, CardActions, CardContent, Typography, Button } from "@material-ui/core";
+import { Card, CardActions, CardContent, Typography, Button,Box} from "@material-ui/core";
 import HomeRoundedIcon from "@material-ui/icons/HomeRounded"
 import InfoRoundedIcon from "@material-ui/icons/InfoRounded"
 import GridOnRoundedIcon from "@material-ui/icons/GridOnRounded"
 import ScatterPlotRoundedIcon from "@material-ui/icons/ScatterPlotRounded"
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import "./App.css";
 
 const DeckGLMap = React.lazy(()=>import("./components/map"))
@@ -27,6 +29,7 @@ function App() {
   const [verificationDisplayState,setVerificationDisplayState] = useState(false)//when true, tell the user that they need to verify their email
   const [focusFeature, setFocusFeature] = useState(params?.id || null);
   const [isDirty,setIsDirty] = useState({is_dirty:false,last_updated:Date.now()})
+  const [baseLayer,setBaseLayer] = useState(0)
   const [activeLayers, setActiveLayers] = useState(() => {
     var res = {};
     Object.keys(layerDict).map((category) => {
@@ -63,7 +66,7 @@ function App() {
     .then((res) => {
       console.log("Parsed is_dirty results: ",res)
       setIsDirty(res||null)
-      setDBLastUpdated(res.last_updated||null)
+      // setDBLastUpdated(res.last_updated||null)
     })
   };
 
@@ -93,7 +96,7 @@ function App() {
     // },
     project:{
       label:"Evaluate Project",
-      icon:<ScatterPlotRoundedIcon/>,
+      icon:<GridOnRoundedIcon/>,
       clickHandler:_toggleSetResultsDisplayState
     },
     // watershed:{
@@ -177,7 +180,7 @@ function App() {
 
   function _injectLayerAccessors(props){
       props.getFillColor = (d)=>{
-        return d.properties.altid===focusFeature? props.highlightColor||[52,222,235]:props.defaultFillColor||[160, 160, 180, 200]
+        return d.properties.altid===focusFeature? props.highlightColor||[52,222,235]:props.getFillColor||[70, 170, 21, 200]
       }
       props.updateTriggers = {
         getFillColor:[focusFeature||null]
@@ -211,6 +214,7 @@ function App() {
             <DeckGLMap
               id="main-map"
               layers={_renderLayers(layerDict,activeLayers,firstRender)}
+              baseLayer={baseLayer}
               onClick={_lyrClickHandlers.bind(this)}
               currentFeature={focusFeature}
             ></DeckGLMap>
@@ -227,8 +231,15 @@ function App() {
               displayStatus={lyrSelectDisplayState}
               displayController={_togglelyrSelectDisplayState}
             ></LayerSelector>
+
           </CardContent>
         </Card>
+        <Box id="base-layer-control-panel">
+          <Tabs value={baseLayer} onChange={(e,n)=>{setBaseLayer(n)}} indicatorColor="primary" textColor="primary">
+            <Tab className="base-layer-tab" label="Streets" />
+            <Tab className="base-layer-tab" label="Satellite"/>
+          </Tabs>
+        </Box>
         <Card
           id={prjStatDisplayState ? "prj-stat-panel" : "prj-stat-panel-hidden"}
         >
