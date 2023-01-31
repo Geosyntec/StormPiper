@@ -61,8 +61,7 @@ jobs:
           STP_EMAIL_API_SECRET: ${{ secrets.STP_EMAIL_API_SECRET }}
           STP_EMAIL_SEND_URL: ${{ secrets.STP_EMAIL_SEND_URL }}
           STP_MAINTAINER_EMAIL_LIST: ${{ secrets.STP_MAINTAINER_EMAIL_LIST }}
-        shell: bash
         run: |-
           echo "Checking Deployment to production Application"
           sleep 15m
-          scripts/health_check.sh
+          bash ./scripts/health_check.sh
