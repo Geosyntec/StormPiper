@@ -24,6 +24,12 @@ type ResultsTableProps={
     displayState:boolean,
 }
 
+type ResultsTableState={
+    results:[],
+    headers:{[k:string]:TableHeader},
+    loaded:Boolean
+}
+
 const useStyles = makeStyles(theme=>({
     tableContainer:{ display: "flex", height:"95%",width: "100%",flexGrow:1,flexDirection:"column" },
     tableHeader:{display: "flex",},
@@ -115,10 +121,11 @@ export default function ResultsTable(props:ResultsTableProps){
     const classes = useStyles()
     let allResults:any
     let resSpec:any
-    let headers:TableHeader[] = []
+    let headers:{[k:string]:TableHeader}
+    // let headers:TableHeader[] = []
 
 
-    const pinnedFields = ["node_id","epoch_id"]
+    const pinnedFields = ["node_id","epoch"]
     const fieldGroups:FieldGroup[]=[
         {
             groupName:"Overview",
@@ -138,9 +145,10 @@ export default function ResultsTable(props:ResultsTableProps){
         },
     ]
 
-    const [resultState,setResultState] = useState({
+    const [resultState,setResultState] = useState<ResultsTableState>({
         results:[],
-        headers:[{field:"",headerName:""}],
+        // headers:{"field":{field:"",headerName:""}},
+        headers:{},
         loaded:false
     })
     const [currentFields,setCurrentFields] = useState([...pinnedFields,"facility_type","node_type","captured_pct","treated_pct","retained_pct","bypassed_pct"])
@@ -165,17 +173,18 @@ export default function ResultsTable(props:ResultsTableProps){
         .catch(err=>console.warn("Couldn't get results", err))
     },[props.displayState])
 
-    function _buildTableColumns(props:{[key:string]:{title:string,type:string}}):TableHeader[]{
-        let colArr:TableHeader[] = []
+    function _buildTableColumns(props:{[key:string]:{title:string,type:string}}):{[k:string]:TableHeader}{
+        // let colArr:TableHeader[] = []
+        let colArr:{[k:string]:TableHeader} = {}
         Object.keys(props).map(k=>{
-            colArr.push({
+            colArr[k]={
                 field:k,
                 headerName:props[k].title,
                 width:pinnedFields.includes(k)? 150:200+(props[k].title.length-20)*5,
                 headerAlign:'center',
                 align:'center',
                 valueFormatter:(params)=>{
-                    console.log("Formatting value: ",params)
+                    // console.log("Formatting value: ",params)
                     if(params.value && params.value==null){
                         return ''
                     }
@@ -185,8 +194,9 @@ export default function ResultsTable(props:ResultsTableProps){
                         return params.value
                     }
                 }
-            })
+            }
         })
+        console.log("Displaying: ",colArr)
         return colArr
     }
 
@@ -229,10 +239,11 @@ export default function ResultsTable(props:ResultsTableProps){
                         }
                     }}
                     rows={resultState.results}
-                    columns={resultState.headers.filter(h=>currentFields.includes(h.field))}
+                    // columns={resultState.headers.filter(h=>currentFields.includes(h.field))}
+                    columns={currentFields.map<{field:string,headerName:string}>(f=>{return {field:resultState.headers[f].field,headerName:resultState.headers[f].headerName}})}
                     rowsPerPageOptions={[5,25,100]}
                     disableSelectionOnClick
-                    getRowId={(row) => row['node_id'] + row['epoch_id']}
+                    getRowId={(row) => row['node_id'] + row['epoch']}
                     density={"compact"}
                     // getRowHeight={() => 'auto'}
                     // getEstimatedRowHeight={() => 200}

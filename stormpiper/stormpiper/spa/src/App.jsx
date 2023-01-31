@@ -180,7 +180,7 @@ function App() {
 
   function _injectLayerAccessors(props){
       props.getFillColor = (d)=>{
-        return d.properties.altid===focusFeature? props.highlightColor||[52,222,235]:props.getFillColor||[70, 170, 21, 200]
+        return d.properties.altid===focusFeature? props.highlightColor||[52,222,235]:props.defaultFillColor||[70, 170, 21, 200]
       }
       props.updateTriggers = {
         getFillColor:[focusFeature||null]
