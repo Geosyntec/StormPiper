@@ -1,3 +1,5 @@
+from sqlalchemy import inspect
+
 from .subbasin import Subbasin, SubbasinResult
 from .tmnt import TMNTFacility, TMNTFacilityAttr
 from .tmnt_cost import TMNTFacilityCost
@@ -113,7 +115,6 @@ def initialize_views(engine, views=VIEW_REGISTRY):
 
 
 if __name__ == "__main__":
-    from sqlalchemy import inspect
 
     from stormpiper.database.connection import engine
 
