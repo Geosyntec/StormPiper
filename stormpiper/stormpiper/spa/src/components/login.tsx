@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme)=>({
     backgroundColor:theme.palette.grey[100],
   },
   mainButton:{
-    backgroundColor:theme.palette.grey[400]
+    margin:'1rem'
   }
 }))
 
@@ -84,15 +84,16 @@ export default function Login(){
           <Card className={classes.mainCard}>
             <CardContent>
               <Typography variant="subtitle1" align="center"> Welcome to the Tacoma Watershed Insights Tool</Typography>
-              <Typography variant="subtitle2" align="center"> Login or <a href="javascript:;" onClick={()=>navigate('/app/register')}>Register</a> to get Started</Typography>
+              <Typography variant="subtitle2" align="center"> Login or Register to get Started</Typography>
               <Box sx={{margin:'1em'}}>
                 <form className="flex" onSubmit={handleSubmit(_handleSubmit)}>
                   {_renderFormFields()}
                   <div className="flex auth-form-row">
                     <a className="form-label" href="javascript:;" onClick={()=>{navigate("/app/forgot-password")}}>Forgot your password?</a>
                   </div>
-                  <div className="auth-button-bar">
-                    <Button className={classes.mainButton} variant="contained" type = "submit">Submit</Button>
+                  <div className="flex-row auth-button-bar">
+                    <Button className={classes.mainButton} variant="contained" color="primary" type = "submit">Login</Button>
+                    <Button className={classes.mainButton} variant="contained" color="primary" onClick={()=>navigate('/app/register')}>Register</Button>
                   </div>
                   {
                     error &&

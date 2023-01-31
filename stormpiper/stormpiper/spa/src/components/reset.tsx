@@ -11,7 +11,10 @@ const useStyles = makeStyles((theme)=>({
   errorMsg:{
     color:theme.palette.warning.main,
     margin:'5px 20px'
-  }
+  },
+  mainButton: {
+    margin:"1rem",
+  },
 }))
 
 export default function Reset(){
@@ -128,14 +131,15 @@ export default function Reset(){
             <CardContent>
               {
                 now>expiryDateFormatted
-                  ?(<React.Fragment>
-                    <Typography variant="subtitle1">
+                  ?(<Box className="flex-column">
+                    <Typography align="center" variant="subtitle1">
                         Sorry, your password reset link has expired
                       </Typography>
-                      <Typography variant="subtitle2">
-                        Please return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>login </a> to request another link
+                      <Typography align="center" variant="subtitle2">
+                        Please return to login to request another link
                       </Typography>
-                    </React.Fragment>)
+                      <Button className={classes.mainButton} color="primary" variant= "contained" onClick={()=>navigate('/app/login')}>Login</Button>
+                    </Box>)
                   :(
                     <React.Fragment>
                       <Typography align="center" variant="subtitle1"> Welcome to the Tacoma Watershed Insights Tool</Typography>
@@ -144,7 +148,8 @@ export default function Reset(){
                         <form className = "flex" onSubmit={handleSubmit(_handleSubmit)}>
                           {_renderFormFields()}
                           <div className="auth-button-bar flex-column">
-                            <Button variant="contained" type="submit">Submit</Button>
+                            <Button className={classes.mainButton} variant="contained" type="submit" color="primary">Submit</Button>
+                            <Button className={classes.mainButton} color="primary" variant= "contained" onClick={()=>navigate('/app/login')}>Login</Button>
                             {
                               error &&
                                 <div className="flex auth-form-row">
