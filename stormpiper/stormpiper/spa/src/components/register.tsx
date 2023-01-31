@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme)=>({
     backgroundColor:theme.palette.grey[100],
   },
   mainButton:{
-    backgroundColor:theme.palette.grey[400]
+    margin:'1rem'
   }
 }))
 
@@ -125,8 +125,9 @@ export default function Register(){
             <Box sx={{margin:'1em'}}>
               <form className="flex-column" onSubmit={handleSubmit(_handleSubmit)}>
                 {_renderFormFields()}
-                <div className="auth-button-bar">
-                  <Button className={classes.mainButton} variant="contained" type = "submit">Submit</Button>
+                <div className="auth-button-bar flex-row">
+                  <Button className={classes.mainButton} variant="contained" color="primary" type = "submit">Submit</Button>
+                  <Button className={classes.mainButton} color="primary" variant="contained"  onClick={()=>navigate('/app/login')}>Return to Login</Button>
                 </div>
                 {
                   error && <Typography variant='caption' className={classes.errorMsg} align='center'>User already exists</Typography>

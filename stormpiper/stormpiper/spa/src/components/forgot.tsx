@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate,useSearchParams } from "react-router-dom"
 import { useForm } from "react-hook-form";
-import { Typography,TextField,Button, CardContent, Card, Box, makeStyles } from "@material-ui/core";
+import { Typography,TextField,Button, CardContent, Card, Box, makeStyles} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   errorMsg: {
@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.grey[100],
   },
   mainButton: {
-    backgroundColor: theme.palette.grey[400],
+    margin:"1rem",
   },
 }));
 
@@ -98,7 +98,8 @@ export default function Forgot(){
                             <form onSubmit={handleSubmit(_handleSubmit)}>
                             {_renderFormFields()}
                             <div className="auth-button-bar flex">
-                                <Button className={classes.mainButton} variant="contained" type = "submit">Submit</Button>
+                                <Button className={classes.mainButton} color="primary" variant="contained" type = "submit">Submit</Button>
+                                <Button className={classes.mainButton} color="primary" variant="contained"  onClick={()=>navigate('/app/login')}>Login</Button>
                                 {
                                     error &&
                                         <div className="flex auth-form-row">
@@ -107,8 +108,8 @@ export default function Forgot(){
                                 }
                                 {
                                     success &&
-                                        <div className="flex auth-form-row">
-                                            <Typography variant='caption' className={classes.successMsg} align='center'>A reset link was sent to the email associated with this account - Use the link to reset your email, and return to <a href="javascript:;" onClick={()=>navigate('/app/login')}>Login</a></Typography>
+                                        <div className="flex-column auth-form-row">
+                                            <Typography variant='caption' className={classes.successMsg} align='center'>A reset link was sent to the email associated with this account - Use the link to reset your email, and return to login</Typography>
                                         </div>
                                 }
                             </div>
