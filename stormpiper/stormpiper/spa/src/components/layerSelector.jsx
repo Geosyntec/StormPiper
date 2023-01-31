@@ -1,4 +1,5 @@
 import { makeStyles } from "@material-ui/core/styles";
+import Checkbox from '@material-ui/core/Checkbox';
 import Typography from "@material-ui/core/Typography";
 import LayersRoundedIcon from "@material-ui/icons/LayersRounded"
 import { useState } from "react";
@@ -8,25 +9,24 @@ import "./layerSelector.css"
 const useStyles = makeStyles((theme) => ({
 
   layerTogglerTitle:{
-    textAlign: "center",
+    marginLeft:"5px",
   },
 
   nestedLayer: {
-    padding:"2px",
-    marginLeft: "20px",
+    padding:"2px 0px",
+    // marginLeft: "20px",
   },
 
   nestedLayerTitle: {
-    padding:"2px",
-    marginLeft: "20px",
-    textDecoration: "underline",
+    marginLeft: "5px",
+    color:theme.palette.grey[700],
   },
   mainLayerTitle: {
-    padding:"5px",
+    // paddingBottom:"5px",
     marginLeft: "5px",
   },
   mainLayer: {
-    padding:"5px",
+    padding:"5px 0px",
     marginLeft: "5px",
   },
 
@@ -54,7 +54,10 @@ const useStyles = makeStyles((theme) => ({
     height:"75%",
     width:"100%",
     background:"rgba(255,255,255,0.8)"
-  }
+  },
+
+
+
 }));
 
 function LayerSelector(props) {
@@ -98,7 +101,7 @@ function _renderCategories(
     const layers = layerDict[layerCategory];
     if (!layers.length) {
       return (
-        <div>
+        <div className="hihi">
           <Typography variant="h6" className={classes.mainLayerTitle}>
             {layerCategory}
           </Typography>
@@ -145,11 +148,11 @@ function LayerToggler(props) {
   return (
     <div className={classes[props.className]}>
       <div className="checkbox">
-        <input
-          type="checkbox"
+        <Checkbox
           id={props.layerID}
           checked={props.activeLayers[props.layerID]}
           onChange={() => props._toggleLayer(props.layerID)}
+          color="primary"
         />
         <label htmlFor={props.layerLabel}>
           <span>{props.layerLabel}</span>
