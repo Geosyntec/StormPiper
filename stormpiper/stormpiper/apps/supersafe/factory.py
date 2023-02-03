@@ -9,7 +9,6 @@ from .users import bearer_backend, cookie_backend, fastapi_users
 
 
 def create_router(**kwargs):
-
     router = APIRouter(**kwargs)
 
     router.include_router(
@@ -46,7 +45,6 @@ def create_app(
     settings_override: Optional[Dict[str, Any]] = None,
     app_kwargs: Optional[Dict[str, Any]] = None,
 ) -> FastAPI:  # pragma: no cover
-
     _settings = settings.copy(deep=True)
     if settings_override is not None:  # pragma: no branch
         _settings.update(settings_override)

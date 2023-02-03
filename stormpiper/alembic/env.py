@@ -33,7 +33,6 @@ target_metadata: MetaData = Base.metadata  # type: ignore
 
 
 def include_name(name, type_, parent_names):
-
     if type_ == "table":
         # use schema_qualified_table_name directly
         tablename = parent_names["schema_qualified_table_name"]

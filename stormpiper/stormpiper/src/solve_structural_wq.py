@@ -28,7 +28,6 @@ def get_tmnt_facilities_from_db(connectable):
 
 
 def init_graph_from_df(*, edge_list: pandas.DataFrame) -> nx.DiGraph:
-
     g = nx.from_pandas_edgelist(edge_list, create_using=nx.DiGraph)
     edge_data = {
         dct.get("source"): {k: v for k, v in dct.to_dict().items() if k != "id"}
@@ -63,7 +62,6 @@ def init_treatment_facilities_from_df(
 def solve_wq(
     *, edge_list, loading, tmnt_facilities, context: Optional[Dict[str, Any]] = None
 ) -> pandas.DataFrame:
-
     if context is None:  # pragma: no cover
         context = get_context()
 
@@ -118,7 +116,6 @@ def solve_wq_epochs(
     epochs: List,
     context: Optional[Dict[str, Any]] = None
 ):
-
     if context is None:  # pragma: no cover
         context = get_context()
     results_per_epoch_dfs = []
@@ -186,7 +183,6 @@ def solve_wq_epochs_from_db(engine=engine):
 
     """
     with engine.begin() as conn:
-
         edge_list = get_graph_edges_from_db(conn)
         tmnt_facilities = get_tmnt_facilities_from_db(conn)
         met = pandas.read_sql("met", con=conn)

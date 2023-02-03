@@ -247,7 +247,6 @@ def test_patch_user(
     exp_blob,
     authorized,
 ):
-
     client = client_lookup.get(client_name)
     route = route_getter(client)
 

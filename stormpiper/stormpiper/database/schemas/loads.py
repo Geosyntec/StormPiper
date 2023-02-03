@@ -9,7 +9,6 @@ __all__ = ["LGUBoundary", "LGULoad", "LGULoadToStructural", "LoadToDownStreamSrc
 
 
 class LGUBoundary(Base):
-
     __tablename__ = "lgu_boundary"
 
     id = Column(Integer, primary_key=True)

@@ -2,7 +2,6 @@ from textwrap import dedent
 
 
 def reset_password(*, email, token, name=None, reset_url="", **kwargs):
-
     name = name or "Dear User"
 
     template = {
@@ -28,7 +27,6 @@ def reset_password(*, email, token, name=None, reset_url="", **kwargs):
 
 
 def request_verify(*, email, token, name=None, verify_url="", **kwargs):
-
     name = name or "Dear User"
 
     template = {
@@ -54,7 +52,6 @@ def request_verify(*, email, token, name=None, verify_url="", **kwargs):
 
 
 def welcome_verify(*, email, token, name=None, verify_url="", **kwargs):
-
     name = name or "New User"
 
     template = {
@@ -91,7 +88,6 @@ def welcome_verify(*, email, token, name=None, verify_url="", **kwargs):
 
 
 def error_message(*, email_dict_list, content, attachments=None, **kwargs):
-
     template = {
         "Messages": [
             {

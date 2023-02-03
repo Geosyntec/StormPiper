@@ -4,7 +4,6 @@ import pandas
 
 
 def create_met_dataframe() -> pandas.DataFrame:
-
     string = """
 epoch	mean_annual_precip_depth_inches	design_storm_precip_depth_inches
 1980s	35.539	0.652

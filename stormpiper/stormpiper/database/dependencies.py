@@ -82,7 +82,6 @@ def check_if_sorted(*, preds, tablename, changelog):
 
 
 def check_if_deps_are_sorted(*, g: nx.DiGraph, tablename: str, changelog: list):
-
     preds = list(g.predecessors(tablename))
 
     # for a given tablename check if it's deps are sorted in time.
@@ -102,7 +101,6 @@ def check_if_deps_are_sorted(*, g: nx.DiGraph, tablename: str, changelog: list):
 
 
 def is_dirty(*, g: nx.DiGraph, tablename: str, changelog: list) -> bool:
-
     ng = simplify_graph(g=g, nodes=changelog)
 
     is_sorted = check_if_deps_are_sorted(g=ng, tablename=tablename, changelog=changelog)
@@ -111,7 +109,6 @@ def is_dirty(*, g: nx.DiGraph, tablename: str, changelog: list) -> bool:
 
 
 def sync_is_dirty(*, tablename: str, engine):
-
     changelog = (
         pandas.read_sql(
             "select tablename, last_updated from tablechangelog", con=engine
@@ -125,7 +122,6 @@ def sync_is_dirty(*, tablename: str, engine):
 
 
 async def sorted_changelog_records(db: AsyncSession) -> List[Dict]:
-
     changelog_results = (
         (await db.execute(select(changelog.TableChangeLog))).scalars().all()
     )
@@ -137,7 +133,6 @@ async def sorted_changelog_records(db: AsyncSession) -> List[Dict]:
 
 
 async def async_is_dirty(*, tablename: str, db: AsyncSession) -> Tuple[bool, str]:
-
     records = await sorted_changelog_records(db=db)
     result_record = next(filter(lambda x: x["tablename"] == tablename, records))
     last_updated = str(result_record["last_updated"])

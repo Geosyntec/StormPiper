@@ -36,7 +36,6 @@ def add_virtual_pocs_to_tidy_load_summary(
 
 
 def add_virtual_pocs_to_wide_load_summary(results):
-
     tss_cols = [c for c in results.columns if "tss" in c.lower()]
 
     for poc in VIRTUAL_POCS:

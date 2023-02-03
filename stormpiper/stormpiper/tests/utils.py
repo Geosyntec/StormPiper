@@ -76,11 +76,9 @@ def public_token(client):
 
 
 def seed_users(engine):
-
     Session = get_session(engine)
 
     with Session.begin() as session:  # type: ignore
-
         admin = User(  # type: ignore
             email="admin@geosyntec.com",
             hashed_password=hasher(settings.ADMIN_ACCOUNT_PASSWORD),
@@ -187,14 +185,12 @@ def seed_tacoma_table_dependencies(engine):
 
 
 def seed_tacoma_derived_tables(engine):
-
     tasks.delete_and_refresh_met_table(engine=engine)
     tasks.update_tmnt_attributes(engine=engine)
     tasks.delete_and_refresh_all_results_tables(engine=engine)
 
 
 def seed_db(engine):
-
     clear_db(engine)
     seed_users(engine)
     create_default_globals(engine)

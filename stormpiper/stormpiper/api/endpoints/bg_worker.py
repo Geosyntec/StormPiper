@@ -18,7 +18,6 @@ rpc_router = APIRouter(dependencies=[Depends(check_admin)])
 
 @router.get("/{task_id}", response_class=JSONResponse)
 async def get_task(task_id: str) -> Dict[str, Any]:
-
     task = bg.celery_app.AsyncResult(task_id)
     response = dict(task_id=task.task_id, status=task.status)
     if task.successful():
@@ -44,7 +43,6 @@ async def run_task(
     taskname: TaskName,  # type: ignore
     timeout: float = Query(0.5, le=120),
 ) -> Dict[str, Any]:
-
     task = bg.celery_app.send_task(taskname)
     _ = await utils.wait_a_sec_and_see_if_we_can_return_some_data(task, timeout=timeout)
     response = dict(task_id=task.task_id, status=task.status)
@@ -63,7 +61,6 @@ async def run_workflow(
     taskname: Workflows,  # type: ignore
     timeout: float = Query(0.5, le=120),
 ) -> Dict[str, Any]:
-
     t = getattr(bg.Workflows, taskname, None)
 
     if t is None:
@@ -81,7 +78,6 @@ async def run_workflow(
 
 @rpc_router.get("/ping_background", response_class=JSONResponse)
 async def ping_background() -> Dict[str, Any]:
-
     task = bg.ping.apply_async()
     response = dict(task_id=task.task_id, status=task.status)
     if task.successful():
@@ -92,7 +88,6 @@ async def ping_background() -> Dict[str, Any]:
 
 @rpc_router.get("/solve_watershed", response_class=JSONResponse, tags=["rpc"])
 async def solve_watershed() -> Dict[str, Any]:
-
     task = bg.delete_and_refresh_all_results_tables.apply_async()
     response = dict(task_id=task.task_id, status=task.status)
     if task.successful():
@@ -103,14 +98,12 @@ async def solve_watershed() -> Dict[str, Any]:
 
 @rpc_router.get("/_test_upstream_loading", response_class=JSONResponse)
 async def us_loading() -> None:
-
     tasks.delete_and_refresh_upstream_src_ctrl_tables()
     tasks.delete_and_refresh_downstream_src_ctrl_tables()
 
 
 @rpc_router.get("/_test_solve_wq", response_class=JSONResponse)
 async def solve_wq() -> None:
-
     tasks.delete_and_refresh_result_table()
 
 
@@ -122,7 +115,6 @@ ForegroundTasks = StrEnum("ForegroundTasks", {k: k for k in _tasks})
 async def run_foreground_task(
     taskname: ForegroundTasks,  # type: ignore
 ) -> None:
-
     t = getattr(tasks, taskname, None)
 
     if t is None:

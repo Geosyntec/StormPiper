@@ -9,7 +9,6 @@ from ._base import datadir
 
 
 def fetch_tacoma_gis_data():  # pragma: no cover
-
     n = list(range(50))
 
     gdf_delin = arcgis.get_tmnt_facility_delineations(url=None).iloc[n]

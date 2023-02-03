@@ -39,13 +39,11 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
         limit: Optional[int] = None,
         offset: Optional[int] = None,
     ) -> Optional[List[SchemaType]]:
-
         q = sa.select(self.base).offset(offset).limit(limit)
         result = await db.execute(q)
         return result.scalars().all()
 
     async def create(self, db: AsyncSession, *, new_obj: CreateModelType) -> SchemaType:
-
         db_obj = self.base(**new_obj.dict(exclude_unset=True))
 
         db.add(db_obj)
@@ -61,7 +59,6 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
         id: Any,
         new_obj: Union[UpdateModelType, Dict[str, Any]],
     ) -> SchemaType:
-
         obj = await self.get(db=db, id=id)
 
         if obj is None:  # pragma: no cover
@@ -92,7 +89,6 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
         await async_log(tablename=self.tablename, db=db, changelog=self.changelog)
 
     async def remove(self, db: AsyncSession, *, id: Any) -> None:
-
         q = sa.delete(self.base).where(getattr(self.base, self.id) == id)
 
         await db.execute(q)

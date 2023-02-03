@@ -22,7 +22,6 @@ def unpack_results_blob(results_blob):
 
 
 def get_loading_df_from_db(*, tablename="lgu_load", epoch=None, engine):
-
     if epoch is None:
         epoch_str, user_epoch = "1=%(epoch)s", "1"
     else:

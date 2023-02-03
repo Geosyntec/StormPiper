@@ -14,7 +14,6 @@ rpc_router = APIRouter(dependencies=[Depends(check_user)])
 
 @rpc_router.post("/calculate_net_present_value", tags=["rpc"])
 async def calculate_npv(npv: NPVRequest):
-
     result, costs = compute_bmp_npv(**npv.dict())
 
     return {"net_present_value": result, "annual_costs": costs}

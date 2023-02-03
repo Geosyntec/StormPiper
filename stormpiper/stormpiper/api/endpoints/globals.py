@@ -79,7 +79,6 @@ async def create_global_setting(
     db: AsyncSession = Depends(get_async_session),
     user: ss.users.User = Depends(ss.users.current_active_user),
 ):
-
     new_obj = GlobalSettingCreate(
         **setting.dict(exclude_unset=True, exclude_none=True), updated_by=user.email
     )

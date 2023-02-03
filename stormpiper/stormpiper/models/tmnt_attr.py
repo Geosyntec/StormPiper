@@ -5,7 +5,6 @@ from .base import BaseModel, BaseORM
 
 # Shared properties
 class TMNTFacilityAttrBase(BaseModel):
-
     # modeling attrs
     facility_type: Optional[str] = None
     hsg: Optional[str] = None

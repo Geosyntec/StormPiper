@@ -81,7 +81,6 @@ async def create_tmnt_source_control(
     db: AsyncSession = Depends(get_async_session),
     user: ss.users.User = Depends(ss.users.current_active_user),
 ):
-
     new_obj = TMNTSourceControlCreate(
         **tmnt_attr.dict(exclude_unset=True, exclude_none=True), updated_by=user.email
     )
@@ -127,7 +126,6 @@ async def get_all_tmnt_source_control(
     offset: int = Query(0),
     db: AsyncSession = Depends(get_async_session),
 ):
-
     result = await db.execute(
         select(tmnt.TMNTSourceControl).offset(offset).limit(limit)
     )

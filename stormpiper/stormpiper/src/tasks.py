@@ -33,7 +33,6 @@ def update_tmnt_attributes(engine=engine, overwrite=None):
 def delete_and_refresh_tmnt_facility_table(
     *, engine=engine, bmp_url=None, codes_url=None, cols=None
 ):  # pragma: no cover
-
     logger.info("fetching tmnt facilities")
     gdf = (
         arcgis.get_tmnt_facilities(bmp_url=bmp_url, codes_url=codes_url, cols=cols)
@@ -51,7 +50,6 @@ def delete_and_refresh_tmnt_facility_table(
 def delete_and_refresh_tmnt_facility_delineation_table(
     *, engine=engine, url=None
 ):  # pragma: no cover
-
     logger.info("fetching tmnt facility delineations")
     gdf = (
         arcgis.get_tmnt_facility_delineations(url=url)
@@ -73,7 +71,6 @@ def delete_and_refresh_tmnt_facility_delineation_table(
 def delete_and_refresh_subbasin_table(
     *, engine=engine, url=None, cols=None, equity_ix_url=None, equity_ix_cols=None
 ):  # pragma: no cover
-
     logger.info("fetching subbasin info")
     gdf = (
         arcgis.get_subbasins_with_equity_ix(
@@ -263,7 +260,6 @@ def _delete_and_refresh_source_controls_downstream_load_reduction(*, engine=engi
 
 
 def delete_and_refresh_subbasin_result_table(*, engine=engine):
-
     df = (
         loading.subbasin_loading_summary_result_from_db(engine=engine)
         .reset_index(drop=True)

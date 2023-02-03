@@ -40,7 +40,6 @@ def facility_node_id(altid):
 
 
 def warn_maintainers_of_duplicates(*, df, bmp_url):
-
     duplicate_altids = df
     b64_content = base64.b64encode(duplicate_altids.to_json().encode()).decode()
     content = (
@@ -71,7 +70,6 @@ def warn_maintainers_of_duplicates(*, df, bmp_url):
 
 
 def get_tmnt_facilities(*, bmp_url=None, codes_url=None, cols=None):
-
     if cols is None:
         cols = external_resources["tmnt_facilities"]["columns"]
 
@@ -129,7 +127,6 @@ def delineation_node_id(relid, altid):
 
 
 def get_tmnt_facility_delineations(*, url=None):
-
     if url is None:
         url = external_resources["tmnt_facility_delineations"]["url"]
 

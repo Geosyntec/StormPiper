@@ -98,7 +98,6 @@ def validate_tmnt_modeling_params(unvalidated_data: dict, context: dict) -> None
 def maybe_update_npv_params(
     unvalidated_data: dict, npv_global_settings: dict
 ) -> dict[str, Any]:
-
     # check if the patch changes an npv field. If not, pass. if so, validate it,
     # and if it doesn't validate then set npv calc to None so that it's not out of date.
     npv_fields = NPVRequest.get_fields()
@@ -158,7 +157,6 @@ async def validate_facility_create_or_update(
     db: AsyncSession = Depends(get_async_session),
     user: ss.users.User = Depends(ss.users.current_active_user),
 ) -> TMNTFacilityAttrUpdate:
-
     unvalidated_data = deepcopy(tmnt_attr)
 
     if isinstance(unvalidated_data, BaseModel):
@@ -185,7 +183,6 @@ async def patch_tmnt_attr(
     tmnt_attr: TMNTFacilityAttrUpdate = Depends(validate_facility_create_or_update),
     db: AsyncSession = Depends(get_async_session),
 ):
-
     try:
         return await crud.tmnt_attr.update(db=db, id=altid, new_obj=tmnt_attr)
 
@@ -205,7 +202,6 @@ async def get_all_tmnt_attr(
     offset: int = Query(0),
     db: AsyncSession = Depends(get_async_session),
 ):
-
     result = await crud.tmnt_attr.get_all(db=db, limit=limit, offset=offset)
 
     return result

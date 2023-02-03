@@ -249,7 +249,6 @@ class Workflows:
 
 @celery_app.task
 def run_refresh_task():
-
     # calling 'get' risks deadlocks in the backend. But since Celery won't propagate
     # errors or pass signatures from chords, it appears to be impossible to work
     # around this for a series workflow chains of chords rather than chains of tasks.

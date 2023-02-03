@@ -65,7 +65,6 @@ def test_npv_api_response_altid_no_server_error(client, altid, method):
     ],
 )
 def test_npv_api_response_altid(client, altid, blob, exp):
-
     route = f"/api/rest/tmnt_attr/{altid}"
     p_response = client.patch(route, json=blob)
 

@@ -27,7 +27,6 @@ COLS = [
 
 
 def build_view_template():
-
     sub_cols = "\n".join([f"""\ts."{s}",""" for s in s_cols])
     subr_cols = "\n".join([f"""\tsr."{s}",""" for s in sr_cols])
 

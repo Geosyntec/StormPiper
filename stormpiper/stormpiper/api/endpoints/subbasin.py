@@ -26,7 +26,6 @@ async def get_subbasin(
     epoch: Epoch = Query(Epoch.all, example="1980s"),  # type: ignore
     db: AsyncSession = Depends(get_async_session),
 ):
-
     q = select(SubbasinResult_View).where(SubbasinResult_View.subbasin == subbasin_id)
     if epoch != "all":
         q = q.where(SubbasinResult_View.epoch == epoch)
@@ -58,7 +57,6 @@ async def get_all_subbasins(
     epoch: Epoch = Query(Epoch.all, example="1980s"),  # type: ignore
     db: AsyncSession = Depends(get_async_session),
 ):
-
     q = select(SubbasinResult_View).offset(offset).limit(limit)
     if epoch != "all":
         q = q.where(SubbasinResult_View.epoch == epoch)

@@ -37,7 +37,6 @@ def __init_url(layer_spec_json):
 
 @lru_cache
 def _init_layers():
-
     layer_json = stormpiper_path / "data" / "ee" / "layers.json"
 
     raw_layers = json.loads(layer_json.read_text())
@@ -170,7 +169,6 @@ def _init_layers():
 
 @lru_cache
 def _init_tile_registry():
-
     tile_registry = {}
 
     tile_registry[
@@ -183,7 +181,6 @@ def _init_tile_registry():
     layers = _init_layers()
 
     for spec in layers.values():
-
         name = spec.get("safe_name")
         url = spec.get("layer", {}).get("url")
         if name and url:  # pragma: no branch

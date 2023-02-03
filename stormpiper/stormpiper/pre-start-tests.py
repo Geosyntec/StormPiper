@@ -7,7 +7,6 @@ logger = logging.getLogger(__name__)
 
 
 def init() -> None:  # pragma: no cover
-
     get_database_connection()
 
     return
