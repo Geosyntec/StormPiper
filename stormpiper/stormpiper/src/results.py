@@ -128,7 +128,6 @@ def calculate_src_ctrl_percent_reduction(
     df2 = []
     orders = sorted(df1["order"].unique())
     for i, order in enumerate(orders):
-
         _df = df1.query("order == @order")
 
         col = "value"

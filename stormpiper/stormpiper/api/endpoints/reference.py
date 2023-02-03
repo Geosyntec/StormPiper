@@ -16,7 +16,6 @@ async def get_cxt(context=Depends(get_context)):
 
 @router.get("/check_router", dependencies=[Depends(check_admin)], name="check_router")
 async def get_check(request: Request):
-
     rsp = {
         "request.url": str(request.url),
         "scheme": str(request.scope["scheme"]),

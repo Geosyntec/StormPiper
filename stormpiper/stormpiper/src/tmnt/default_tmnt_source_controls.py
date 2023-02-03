@@ -4,7 +4,6 @@ import pandas
 
 
 def dummy_tmnt_source_control(subbasins: List[str]):  # pragma: no cover
-
     StormLineCleaning_Pct_Reduction = {
         "DEHP": 54,  # %
         "PHE": 75,
@@ -80,7 +79,6 @@ def dummy_tmnt_source_control(subbasins: List[str]):  # pragma: no cover
 
 
 def foss_tmnt_source_control(foss_subbasins: List[str]):  # pragma: no cover
-
     StormLineCleaning_Pct_Reduction = {
         "DEHP": 54,  # %
         "PHE": 75,

@@ -9,7 +9,6 @@ from stormpiper.database.schemas.base import Base, TableChangeLog
 
 
 def sync_log(*, tablename: str, db: Session, changelog: Base = TableChangeLog):
-
     result = db.execute(sa.select(changelog).where(changelog.tablename == tablename))
     ls = result.scalars().all()
     exists = len(ls) >= 1

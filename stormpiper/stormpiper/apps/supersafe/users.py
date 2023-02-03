@@ -265,7 +265,6 @@ check_protect_role_field = check_protected_user_patch(
 
 
 def get_token_from_backend(request: Request) -> str | None:
-
     for be in fastapi_users.authenticator.backends:
         token = be.transport.get_token(request)  # type: ignore
         if token:  # pragma: no branch

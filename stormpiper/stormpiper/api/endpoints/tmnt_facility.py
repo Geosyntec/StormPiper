@@ -33,7 +33,6 @@ async def get_all_tmnt(
     offset: int = Query(0),
     db: AsyncSession = Depends(get_async_session),
 ):
-
     result = await db.execute(select(tmnt.TMNT_View).offset(offset).limit(limit))
     scalars = result.scalars().all()
 
@@ -66,7 +65,6 @@ async def get_tmnt(
     altid: str,
     db: AsyncSession = Depends(get_async_session),
 ):
-
     result = await db.execute(
         select(tmnt.TMNT_View).where(tmnt.TMNT_View.altid == altid)
     )

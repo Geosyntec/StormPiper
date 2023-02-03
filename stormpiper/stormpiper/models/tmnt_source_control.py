@@ -7,7 +7,6 @@ from .base import BaseModel, BaseORM
 
 # Shared properties
 class TMNTSourceControlBase(BaseModel):
-
     activity: Optional[str] = None
     subbasin: Optional[str] = None
     direction: Optional[Direction] = None

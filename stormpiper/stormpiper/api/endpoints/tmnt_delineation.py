@@ -68,7 +68,6 @@ async def get_all_tmnt_delineations(
     offset: int = Query(0),
     db: AsyncSession = Depends(get_async_session),
 ):
-
     q = select(tmnt.TMNTFacilityDelineation).offset(offset).limit(limit)
     result = await db.execute(q)
     scalars = result.scalars().all()

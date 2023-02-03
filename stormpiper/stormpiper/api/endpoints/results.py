@@ -32,7 +32,6 @@ async def get_all_results(
 
 @router.get("/is_dirty", name="results:get_result_is_dirty")
 async def get_result_is_dirty(db: AsyncSession = Depends(get_async_session)):
-
     response = {"is_dirty": True, "last_updated": "0"}
 
     is_dirty, last_updated = await async_is_dirty(tablename="subbasin_result", db=db)
@@ -49,7 +48,6 @@ async def get_result(
     epoch: Epoch = Query(Epoch.all, example="1980s"),  # type: ignore
     db: AsyncSession = Depends(get_async_session),
 ):
-
     q = select(results.ResultBlob).where(results.ResultBlob.node_id == node_id)
 
     if epoch != "all":

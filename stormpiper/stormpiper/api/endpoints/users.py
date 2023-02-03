@@ -37,7 +37,6 @@ async def get_readonly_token(
     user: User = Depends(current_active_user),
     user_db=Depends(get_user_db),
 ):
-
     u = await user_db.get(user.id)
 
     if u.readonly_token:
@@ -58,7 +57,6 @@ async def rotate_readonly_token(
     user: User = Depends(current_active_user),
     user_db=Depends(get_user_db),
 ):
-
     u = await user_db.get(user.id)
     user = await user_db.update(u, {"readonly_token": str(uuid4())})
 
@@ -72,7 +70,6 @@ router.include_router(
 
 @router.get("/", response_model=List[UserResponse], name="users:get_users")
 async def get_users(db: AsyncSession = Depends(get_async_session)):
-
     result = await db.execute(select(User))
     return result.scalars().all()
 

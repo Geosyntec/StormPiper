@@ -26,7 +26,6 @@ async def create_user(
         async with get_async_session_context() as session:
             async with get_user_db_context(session) as user_db:
                 async with get_user_manager_context(user_db) as user_manager:
-
                     user = await user_manager.user_db.get_by_email(email)
                     if user is not None and force_set_password:
                         await user_manager.update(

@@ -26,7 +26,6 @@ def delin_node_id(context):
 
 
 class TMNTFacilityDelineation(Base):
-
     __tablename__ = "tmnt_facility_delineation"
 
     id = Column(Integer, primary_key=True)
@@ -65,7 +64,6 @@ class TMNTFacility(Base):
 
 
 class TMNTFacilityAttr(Base, MutableTrackedTable):
-
     __tablename__ = "tmnt_facility_attributes"
 
     id = Column(Integer, primary_key=True)
@@ -132,7 +130,6 @@ class TMNTSourceControl(Base, MutableTrackedTable):
 
 
 class TMNTSourceControlResultsBase:
-
     id = Column(Integer, primary_key=True)
     node_id = Column(String, nullable=False)
     subbasin = Column(String, nullable=False)

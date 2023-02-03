@@ -60,7 +60,6 @@ def compute_loading_zonal_stats(
 
 
 def wide_load_to_tidy_load(wide_load: pandas.DataFrame, poc_remapper=POC_REMAPPER):
-
     df_tidy = (
         wide_load.melt(id_vars=["node_id", "epoch"])
         .assign(
@@ -88,7 +87,6 @@ def wide_load_to_tidy_load(wide_load: pandas.DataFrame, poc_remapper=POC_REMAPPE
 def convert_tidy_data_from_metric_to_system(
     tidy_df: pandas.DataFrame,
 ) -> pandas.DataFrame:
-
     mapper = {"l": "cuft", "mcg": "lbs"}
     cols = tidy_df.columns
 
@@ -132,7 +130,6 @@ def compute_loading(
 
 
 def compute_loading_db(engine=engine, runoff_path=None, coc_path=None):
-
     with engine.begin() as conn:
         zones = geopandas.read_postgis("lgu_boundary", con=conn)
 
@@ -181,7 +178,6 @@ def _prep_01_loading_joins(prepped_wide, lgu_boundary, met):
 
 
 def _prep_02_loading_units(prepped_wide):
-
     _df = (
         prepped_wide.rename(
             columns=lambda c: c.replace("_lbs", "_load_lbs").replace(
@@ -218,7 +214,6 @@ def land_surface_load_nereid(df_tidy, zones, met):
 
 
 def land_surface_load_to_structural_from_db(epoch=None, connectable=engine):
-
     df_tidy = get_loading_df_from_db(
         tablename="lgu_load_to_structural", epoch=epoch, engine=connectable
     )
@@ -261,7 +256,6 @@ def load_to_structural_bmps_from_db(*, engine=engine):
 
 
 def load_to_downstream_src_ctrls(result_blob):
-
     results = unpack_results_blob(result_blob)
     discharge_cols = [c for c in results.columns if "_total_discharged" in c.lower()]
 

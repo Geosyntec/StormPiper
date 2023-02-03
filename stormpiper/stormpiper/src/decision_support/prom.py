@@ -42,7 +42,6 @@ def run_promethee_ii(
     weights: Sequence[float],
     types: Sequence[int],
 ):
-
     promethee_ii = PROMETHEE_II("usual")
     matrix = df[criteria].to_numpy()
 
@@ -60,7 +59,6 @@ def run_subbasins_promethee_prioritization(
     wq_type: WQType,
     engine=engine,
 ) -> geopandas.GeoDataFrame:
-
     direction = 1 if wq_type == "restoration" else -1
     types = [direction if c in POC_COLS else -1 for c in criteria]
 

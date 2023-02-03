@@ -20,7 +20,6 @@ async def post(url, headers, json=None):
 
 
 async def send_email_to_user(*, template: str, client=None, **template_kwargs):
-
     url = settings.EMAIL_SEND_URL
     key_secret = f"{settings.EMAIL_API_KEY}:{settings.EMAIL_API_SECRET}"
     auth = base64.b64encode(key_secret.encode()).decode()

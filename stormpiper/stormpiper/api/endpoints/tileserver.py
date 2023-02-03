@@ -19,7 +19,6 @@ async def get_tile_zxy_redirect(
     s: str = "none",
     tile_registry: Dict = Depends(get_tile_registry),
 ) -> RedirectResponse:
-
     url = tile_registry.get(tilename, "").format(**dict(x=x, y=y, z=z, s=s))
 
     if not url:
@@ -38,7 +37,6 @@ async def get_tile_file_zxy(
     s: str = "a",
     tile_registry: Dict = Depends(get_tile_registry),
 ) -> StreamingResponse:
-
     url = tile_registry.get(tilename, "").format(**dict(x=x, y=y, z=z, s=s))
 
     if not url:

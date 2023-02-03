@@ -11,7 +11,6 @@ logger = logging.getLogger(__name__)
 
 
 def init() -> None:
-
     get_database_connection()
     get_redis_connection()
     get_background_worker_connection()

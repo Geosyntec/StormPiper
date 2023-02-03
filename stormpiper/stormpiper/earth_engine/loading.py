@@ -10,7 +10,6 @@ from ee import FeatureCollection, Image
 def _build_poc_loading_Image(
     runoff_depth_ImageBand: Image, concentration_ImageMultiBand: Image
 ) -> Image:
-
     ro_units = runoff_depth_ImageBand.toDictionary().get("units").getInfo()
     c_dict = concentration_ImageMultiBand.toDictionary()
     c_units = c_dict.get("units").getInfo()
@@ -40,7 +39,6 @@ def get_poc_loading_Image(
     concentration_path: str,
     runoff_band: Optional[Union[int, str]] = None,
 ) -> Image:
-
     if runoff_band is None:
         runoff_band = 0
 
@@ -62,7 +60,6 @@ def get_runoff_bands(runoff_path: str) -> List[str]:
 def get_loading_zonal_stats(
     loading: Image, zones: FeatureCollection, scale=1
 ) -> FeatureCollection:
-
     # sum of values for each feature. For mean values, use ee.Reducer.mean()
     stats = loading.reduceRegions(
         collection=zones, reducer=ee.Reducer.sum(), scale=scale  # type: ignore
@@ -71,7 +68,6 @@ def get_loading_zonal_stats(
 
 
 def get_loading_zonal_stats_df(info: dict) -> pandas.DataFrame:
-
     df = pandas.DataFrame([f["properties"] for f in info["features"]])
 
     return df
@@ -106,7 +102,6 @@ def zonal_stats(
 
     poc_dfs = []
     for epoch in ro_bands:
-
         loadingImage = get_poc_loading_Image(runoff_path, concentration_path, epoch)
         c_band = loadingImage.bandNames().getInfo()
         poc_dct = get_loading_zonal_stats(loadingImage, zones=zones_fc).getInfo()
@@ -120,7 +115,11 @@ def zonal_stats(
         poc_dfs.append(poc_df)
 
     poc_df = pandas.concat(poc_dfs)
-    df_wide = df.merge(poc_df, on=[join_id, "epoch"], how="left",).rename(
+    df_wide = df.merge(
+        poc_df,
+        on=[join_id, "epoch"],
+        how="left",
+    ).rename(
         columns=lambda c: c.replace("mm_per_year_x_m2", "L").replace(
             "mcg_per_L_x_L", "mcg"
         )
@@ -156,7 +155,6 @@ def get_loading_layers(
     }
 
     for epoch in ro_bands:
-
         loadingImage = get_poc_loading_Image(runoff_path, concentration_path, epoch)
         load_bands = loadingImage.bandNames().getInfo()
         for band in load_bands:

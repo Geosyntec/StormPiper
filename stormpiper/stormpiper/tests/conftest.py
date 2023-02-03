@@ -101,7 +101,6 @@ def client_lookup(
     client_local,
     public_client,
 ):
-
     return {
         "client": client,
         "admin_client": admin_client,

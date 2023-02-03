@@ -21,7 +21,6 @@ templates = Jinja2Templates(directory=str(stormpiper_path / "site" / "templates"
 async def tileservice_view(
     request: Request, layers: Dict[str, str] = Depends(get_layers)
 ) -> Response:
-
     return templates.TemplateResponse(
         "tileserver.html", {"request": request, "layers": layers.values()}
     )

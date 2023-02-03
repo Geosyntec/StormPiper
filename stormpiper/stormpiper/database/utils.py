@@ -75,7 +75,6 @@ WHERE sequence_schema=%s AND sequence_name=%s
 
 
 def reset_sequence(*, table_name, connectable):
-
     sequence_name = f"{table_name}_id_seq"
 
     try:

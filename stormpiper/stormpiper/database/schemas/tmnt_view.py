@@ -12,7 +12,6 @@ ta_cols = [
 
 
 def build_view_template():
-
     tcols = [f"""\tt."{s}", """ for s in t_cols]
     tacols = [f"""\tta."{s}", """ for s in ta_cols]
     tacols[-1] = tacols[-1].replace(", ", " ")

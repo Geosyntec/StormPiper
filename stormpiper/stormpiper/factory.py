@@ -30,7 +30,6 @@ def create_app(
     settings_override: Optional[Dict[str, Any]] = None,
     app_kwargs: Optional[Dict[str, Any]] = None
 ) -> FastAPI:
-
     _settings = settings.copy(deep=True)
     if settings_override is not None:  # pragma: no branch
         _settings.update(settings_override)
@@ -66,7 +65,6 @@ def create_app(
 
     @app.on_event("shutdown")
     async def shutdown():
-
         # close all sessions
         sessions = getattr(app, "sessions", {})
         for session in sessions.values():
@@ -107,7 +105,6 @@ def create_app(
         request: Request,
         user: ss.users.User = Depends(ss.users.current_user_safe(optional=True)),
     ) -> Dict:
-
         msg = {
             "message": "welcome home.",
             "version": _settings.VERSION,

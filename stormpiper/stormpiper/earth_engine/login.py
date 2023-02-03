@@ -72,7 +72,6 @@ async def ee_continuous_login(sleep_seconds: int = 3600) -> None:
     logged_in = await async_login()
 
     while logged_in:
-
         await asyncio.sleep(sleep_seconds)
         logger.info("logging in to earth engine again")
         logged_in = await async_login()

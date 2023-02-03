@@ -36,7 +36,6 @@ def overlay_rodeo(
 
 
 def overlay_rodeo_from_database(engine) -> geopandas.GeoDataFrame:
-
     with engine.begin() as conn:
         relid = pandas.read_sql("select distinct altid from tmnt_facility", con=conn)[
             "altid"

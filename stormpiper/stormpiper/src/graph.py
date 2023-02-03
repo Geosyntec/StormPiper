@@ -4,7 +4,6 @@ from stormpiper.database.connection import engine
 
 
 def build_edge_list(lgu_boundary, tmnt_v):
-
     lgu = lgu_boundary.assign(
         basinname=lambda df: "B_" + df["basinname"].str.replace(" ", "_")
     ).assign(ntype="land_surface")
@@ -49,9 +48,7 @@ def build_edge_list(lgu_boundary, tmnt_v):
 
 
 def build_edge_list_from_database(*, engine=engine):
-
     with engine.begin() as conn:
-
         lgu = pandas.read_sql("lgu_boundary", con=conn)
         fac = pandas.read_sql("select * from tmnt_v", con=conn)
 

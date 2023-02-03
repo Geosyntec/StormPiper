@@ -16,7 +16,6 @@ logger = logging.getLogger(__name__)
 def set_default_tmnt_attributes(
     tmnt_facility_df: Union[pandas.DataFrame, geopandas.GeoDataFrame]
 ):
-
     df = tmnt_facility_df
 
     df = df.assign(facility_type="no_treatment")
@@ -94,7 +93,6 @@ def set_default_tmnt_attributes(
 
 
 def update_tmnt_attributes(engine, overwrite=False):
-
     df = geopandas.read_postgis("tmnt_facility", con=engine).pipe(  # type: ignore
         set_default_tmnt_attributes
     )
