@@ -16,7 +16,7 @@ def columns_of_dtype(df: pandas.DataFrame, selector: str) -> List[str]:
     output: ['time_created', 'time_updated']
 
     """
-    return [c for c in df.columns if selector in str(df[c].dtype)]
+    return [str(c) for c in df.columns if selector in str(df[c].dtype)]
 
 
 def datetime_to_isoformat(df, cols=None, dt_selector=None, inplace=False):

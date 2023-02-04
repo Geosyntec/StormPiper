@@ -1,6 +1,6 @@
-import ee
-
 from stormpiper.core.config import settings
+
+from . import ee
 
 
 def assets():
