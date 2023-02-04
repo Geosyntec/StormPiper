@@ -2,10 +2,9 @@ import json
 import logging
 from functools import lru_cache
 
-import ee
-
 from stormpiper.core.config import settings, stormpiper_path
 
+from .ee import Image
 from .loading import get_loading_layers
 
 logging.basicConfig(level=settings.LOGLEVEL)
@@ -25,7 +24,7 @@ def __init_url(layer_spec_json):
     if not eeObject and visParams:  # pragma: no cover
         return layer_spec
 
-    image = ee.Image(eeObject).selfMask()
+    image = Image(eeObject).selfMask()
 
     map_id_dict = image.getMapId(visParams)
     url = map_id_dict["tile_fetcher"].url_format
