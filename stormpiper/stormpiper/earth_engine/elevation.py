@@ -1,7 +1,8 @@
 from typing import Dict
 
-from .ee import Geometry, Image
 import ee
+
+from .ee import Geometry, Image
 
 
 def get_elevation(long: float, lat: float) -> Dict[str, float]:

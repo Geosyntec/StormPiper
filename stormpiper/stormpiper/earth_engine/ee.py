@@ -1,10 +1,8 @@
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import ee
 from ee import FeatureCollection as FeatureCollection
-from ee import Geometry
-
-from ee import Initialize, ServiceAccountCredentials
+from ee import Geometry, Initialize, ServiceAccountCredentials
 
 if TYPE_CHECKING:
 
