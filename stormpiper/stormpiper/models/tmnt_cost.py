@@ -24,7 +24,6 @@ class NPVRequest(BaseModel):
 
 # Shared properties
 class TMNTFacilityCostBase(BaseModel):
-
     # cost attrs
     capital_cost: None | float = None
     om_cost_per_yr: None | float = None
