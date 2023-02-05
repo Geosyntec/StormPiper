@@ -2,6 +2,7 @@ import json
 from functools import lru_cache
 from typing import List, Optional, Union
 
+import ee
 import pandas
 
 from .ee import FeatureCollection, Image
@@ -62,7 +63,9 @@ def get_loading_zonal_stats(
 ) -> FeatureCollection:
     # sum of values for each feature. For mean values, use ee.Reducer.mean()
     stats: FeatureCollection = loading.reduceRegions(
-        collection=zones, reducer=ee.Reducer.sum(), scale=scale  # type: ignore
+        collection=zones,
+        reducer=ee.Reducer.sum(),  # type: ignore
+        scale=scale,
     )
     return stats
 

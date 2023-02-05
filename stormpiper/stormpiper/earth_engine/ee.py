@@ -1,11 +1,15 @@
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
+import ee
 from ee import FeatureCollection as FeatureCollection
-from ee import Reducer  # type: ignore
 from ee import Geometry
-from ee import Image as _Image
-from ee import Initialize, ServiceAccountCredentials, data
 
+from ee import Initialize, ServiceAccountCredentials
 
-class Image(Any, _Image):
-    ...
+if TYPE_CHECKING:
+
+    class Image(Any):
+        ...
+
+else:
+    from ee import Image
