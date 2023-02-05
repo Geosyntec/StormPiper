@@ -23,7 +23,6 @@ COLS = [
 
 
 def build_subbasinresult_v():
-
     sub_cols = "\n".join([f"""\ts."{s}",""" for s in s_cols])
     subr_cols = "\n".join([f"""\tsr."{s}",""" for s in sr_cols])
 
@@ -58,7 +57,6 @@ from subbasin_result as sr JOIN subbasin as s on sr.subbasin = s.subbasin
 
 
 def build_tmnt_v():
-
     ts_cols = ["time_created", "time_updated", "updated_by"]
 
     t_cols = [k for k in TMNTFacility.__table__.columns.keys() if k not in ["id"]]
@@ -108,7 +106,6 @@ def initialize_views(engine, views=VIEW_REGISTRY):
     existing_v = [_v for _v in inspect(engine).get_view_names() if _v.endswith("_v")]
 
     with engine.begin() as db:
-
         # stp views have a _v suffix so begin by removing all stp views.
         for _v in existing_v:
             db.execute(f"drop view {_v}")

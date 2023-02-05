@@ -26,7 +26,6 @@ class CRUDTMNTFacilityCost(
         id: Any,
         new_obj: TMNTFacilityCostUpdate | dict[str, Any],
     ) -> TMNTFacilityCost:
-
         if isinstance(new_obj, dict):
             update_data = new_obj
         else:
