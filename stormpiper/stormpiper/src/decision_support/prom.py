@@ -13,7 +13,6 @@ logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
 
 
-PFunction = Literal["usual", "ushape", "vshape", "level", "vshape_2"]
 WQType = Literal["retrofit", "restoration"]
 
 
