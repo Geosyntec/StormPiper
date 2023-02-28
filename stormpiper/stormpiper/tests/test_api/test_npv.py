@@ -69,7 +69,7 @@ def test_npv_api_response_node_id(client, node_id, blob, exp):
     p_response = client.patch(route, json=blob)
 
     route = f"/api/rpc/calculate_net_present_value/{node_id}"
-    response = client.get(route)
+    response = client.post(route)
 
     rjson = response.json()
 
@@ -80,7 +80,7 @@ def test_npv_api_response_node_id(client, node_id, blob, exp):
 
     if exp is None:
         assert rjson.get("net_present_value") is None, rjson
-        assert rjson.get("detail"), rjson
+        assert rjson.get("detail"), (rjson, response.content)
     else:
         res = rjson.get("net_present_value")
-        assert (abs(exp - res) / exp) < 0.01, (res, exp)
+        assert (abs(exp - res) / exp) < 0.01, (rjson, exp, response.content)

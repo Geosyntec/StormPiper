@@ -1,5 +1,6 @@
 import geopandas
 import pandas
+import sqlalchemy as sa
 from passlib.context import CryptContext
 
 from stormpiper.core.config import settings
@@ -22,7 +23,7 @@ def clear_db(engine):
             if table.endswith("_v"):
                 continue
             else:
-                conn.execute(f'delete from "{table}";')
+                conn.execute(sa.text(f'delete from "{table}";'))
 
 
 def get_token(app, username, password):

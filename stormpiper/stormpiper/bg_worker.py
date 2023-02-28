@@ -88,7 +88,8 @@ def task_raises():
     except Exception as e:
         logger.exception(e)
         return False
-    return True
+    else:
+        return True  # type: ignore
 
 
 @celery_app.task
@@ -274,6 +275,29 @@ def run_refresh_task():
     _ = Workflows._group2().get(disable_sync_subtasks=False, timeout=1200)
 
     _ = Workflows._group3().get(disable_sync_subtasks=False, timeout=360)
+
+    return True
+
+
+@celery_app.task(base=Singleton, acks_late=True, track_started=True)
+def update_scenario_results(data: dict, force: bool = False):
+    tasks.update_scenario_results(data=data, force=force)
+    return True
+
+
+@celery_app.task(base=Singleton, acks_late=True, track_started=True)
+def compute_scenario_results(data: dict):
+    return tasks.scenario.solve_scenario_data(data=data)
+
+
+@celery_app.task(base=Singleton, acks_late=True, track_started=True)
+def update_all_scenario_results(data_list: list[dict], force: bool = False):
+    raise DeprecationWarning(
+        "this functionality should be supported by the frontend, not the backend."
+    )
+    _ = group(
+        update_scenario_results.s(data=data, force=force) for data in data_list
+    )().get(disable_sync_subtasks=False)
 
     return True
 
