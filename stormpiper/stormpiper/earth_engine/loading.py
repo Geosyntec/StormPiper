@@ -1,6 +1,5 @@
 import json
 from functools import lru_cache
-from typing import List, Optional, Union
 
 import ee
 import pandas
@@ -38,7 +37,7 @@ def _build_poc_loading_Image(
 def get_poc_loading_Image(
     runoff_path: str,
     concentration_path: str,
-    runoff_band: Optional[Union[int, str]] = None,
+    runoff_band: int | str | None = None,
 ) -> Image:
     if runoff_band is None:
         runoff_band = 0
@@ -54,12 +53,12 @@ def get_poc_loading_Image(
 
 
 @lru_cache
-def get_runoff_bands(runoff_path: str) -> List[str]:
+def get_runoff_bands(runoff_path: str) -> list[str]:
     return Image(runoff_path).bandNames().getInfo()
 
 
 def get_loading_zonal_stats(
-    loading: Image, zones: FeatureCollection, scale=1
+    loading: Image, zones: FeatureCollection, scale: float = 1.0
 ) -> FeatureCollection:
     # sum of values for each feature. For mean values, use ee.Reducer.mean()
     stats: FeatureCollection = loading.reduceRegions(
@@ -135,7 +134,7 @@ def zonal_stats(
 def get_loading_layers(
     runoff_path: str,
     concentration_path: str,
-):
+) -> dict:
     layer_dict = {}
 
     ro_bands = get_runoff_bands(runoff_path)

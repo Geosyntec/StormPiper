@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
     after=after_log(logger, logging.WARN),
 )
 async def async_login(**kwargs):
+    logger.debug("Calling async_login...")
     email = kwargs.pop("email", settings.EE_SERVICE_ACCOUNT)
     key_file = kwargs.pop("key_file", None)
     key_data = kwargs.pop(
@@ -34,7 +35,11 @@ async def async_login(**kwargs):
             email=email, key_file=key_file, key_data=key_data
         )
         # the ee library has set incorrect type hints/constraints on the ee.Initialize function.
-        await run_in_threadpool(ee.Initialize, credentials)  # type: ignore
+        await run_in_threadpool(
+            ee.Initialize,
+            credentials=credentials,  # type: ignore
+            opt_url="https://earthengine-highvolume.googleapis.com",
+        )
         logger.info("Login to earth engine succeeded.")
         return True
 
@@ -50,6 +55,7 @@ async def async_login(**kwargs):
     after=after_log(logger, logging.WARN),
 )
 def login(**kwargs):
+    logger.debug("Calling login...")
     email = kwargs.pop("email", settings.EE_SERVICE_ACCOUNT)
     key_file = kwargs.pop("key_file", None)
     key_data = kwargs.pop(
@@ -70,6 +76,7 @@ def login(**kwargs):
 
 
 async def ee_continuous_login(sleep_seconds: int = 3600) -> None:
+    logger.debug("Calling ee_continuous_login...")
     logged_in = await async_login()
 
     while logged_in:
