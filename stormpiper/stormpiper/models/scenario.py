@@ -163,9 +163,6 @@ class ScenarioPatch(ScenarioBase):
     ...
 
 
-
-
-
 class ScenarioUpdate(ScenarioPatch):
     updated_by: str | None = None
     input: ScenarioInputUpdate | None = None
