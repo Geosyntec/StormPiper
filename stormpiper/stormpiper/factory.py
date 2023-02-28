@@ -17,7 +17,7 @@ from stormpiper.api import api_router, rpc_router
 from stormpiper.api.docs import get_swagger_ui_html
 from stormpiper.apps import ratelimiter
 from stormpiper.apps import supersafe as ss
-from stormpiper.apps.supersafe.users import check_admin
+from stormpiper.apps.supersafe.users import check_admin, check_reader
 from stormpiper.core.config import settings
 from stormpiper.earth_engine import ee_continuous_login
 from stormpiper.site import site_router
@@ -43,6 +43,7 @@ def create_app(
         version=_settings.VERSION,
         docs_url=None,
         redoc_url=None,
+        openapi_url=None,
         **kwargs,
     )
     setattr(app, "_settings", _settings)
@@ -134,7 +135,7 @@ def create_app(
     @app.get("/docs", include_in_schema=False, dependencies=[Depends(check_admin)])
     async def custom_swagger_ui_html():
         return get_swagger_ui_html(
-            openapi_url=str(app.openapi_url),
+            openapi_url="/openapi.json",
             title=app.title + " - Swagger UI",
         )
 
@@ -146,5 +147,9 @@ def create_app(
     @app.get("/")
     async def home(request: Request) -> Response:
         return RedirectResponse("/app")
+
+    @app.get("/openapi.json", dependencies=[Depends(check_reader)])
+    async def openapi_override():
+        return app.openapi()
 
     return app
