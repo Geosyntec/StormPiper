@@ -31,7 +31,6 @@ class TMNTFacilityDelineation(Base):
     altid = Column(String)
     relid = Column(String)
     node_id = Column(String, default=delin_node_id, onupdate=delin_node_id)
-    ds_node_id = Column(String)
     geom = Column(Geometry(srid=settings.TACOMA_EPSG))
 
 
@@ -50,9 +49,7 @@ class TMNTFacility(Base):
 
     id = Column(Integer, primary_key=True)
     altid = Column(String, unique=True)
-    node_id = Column(
-        String, unique=True, default=facility_node_id, onupdate=facility_node_id
-    )
+    node_id = Column(String, default=facility_node_id, onupdate=facility_node_id)
     commonname = Column(String)
     facilitytype = Column(String)
     facilitydetail = Column(String)
@@ -70,9 +67,7 @@ class TMNTFacilityAttr(Base, MutableTrackedTable):
 
     id = Column(Integer, primary_key=True)
     altid = Column(String, unique=True)
-    node_id = Column(
-        String, unique=True, default=facility_node_id, onupdate=facility_node_id
-    )
+    node_id = Column(String, default=facility_node_id, onupdate=facility_node_id)
 
     basinname = Column(String)
     subbasin = Column(String)

@@ -1,4 +1,11 @@
+import logging
+
+from stormpiper.core.config import settings
+
 from .base import BaseModel, BaseORM
+
+logging.basicConfig(level=settings.LOGLEVEL)
+logger = logging.getLogger(__name__)
 
 
 # Shared properties
@@ -52,4 +59,56 @@ class TMNTFacilityAttr(TMNTFacilityAttrInDBBase):
 
 # Properties properties stored in DB
 class TMNTFacilityAttrInDB(TMNTFacilityAttrInDBBase):
+    ...
+
+
+# TMNT Cost related attributes
+
+
+# Shared properties
+class TMNTFacilityCostBase(BaseModel):
+    # cost attrs
+    capital_cost: None | float = None
+    om_cost_per_yr: None | float = None
+    lifespan_yrs: None | float = None
+    replacement_cost: None | float = None
+
+
+# Properties to receive on update
+class TMNTFacilityCostPatch(TMNTFacilityCostBase):
+    ...
+
+
+# Properties to send to DB on update
+class TMNTFacilityCostUpdate(TMNTFacilityCostPatch):
+    updated_by: None | str = None
+    net_present_value: None | float = None
+
+
+# Properties to receive on creation
+class TMNTFacilityCostCreate(TMNTFacilityCostUpdate):
+    node_id: str
+
+
+# Properties shared by models stored in DB
+class TMNTFacilityCostInDBBase(BaseORM, TMNTFacilityCostBase):
+    node_id: str
+    net_present_value: None | float = None
+
+
+# Properties to return to client
+class TMNTFacilityCost(TMNTFacilityCostInDBBase):
+    ...
+
+
+class TMNTUpdate(BaseModel):
+    tmnt_attr: None | TMNTFacilityAttrUpdate = None
+    tmnt_cost: None | TMNTFacilityCostUpdate = None
+
+
+class TMNTFacilityPatch(TMNTFacilityCostPatch, TMNTFacilityAttrPatch):
+    ...
+
+
+class InvalidModel(Exception):
     ...

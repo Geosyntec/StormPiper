@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Tuple
+from typing import Tuple
 
 import numpy
 import numpy_financial as nf
@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from stormpiper.core.exceptions import RecordNotFound
 from stormpiper.database import crud
 from stormpiper.database.utils import orm_to_dict, scalars_to_records
-from stormpiper.models.tmnt_cost import NPVRequest
+from stormpiper.models.npv import NPVRequest
 
 
 def compute_bmp_npv(
@@ -17,8 +17,8 @@ def compute_bmp_npv(
     lifespan_yrs: float,
     discount_rate: float,  # globals
     planning_horizon_yrs: float,  # globals
-    replacement_cost: Optional[float] = None,  # default is zero
-) -> Tuple[float, List]:
+    replacement_cost: float | None = None,  # default is zero
+) -> Tuple[float, list]:
     # planning_horizon_yrs = 50 # years
     # discount_rate = 0.05 # avg interest rate 0.08 - 0.03 for inflation
 
@@ -45,9 +45,7 @@ def compute_bmp_npv(
     return round(net_present_value, 2), list(costs.round(2))
 
 
-async def get_npv_settings(
-    db: AsyncSession,
-) -> Dict[str, float]:
+async def get_npv_settings(db: AsyncSession) -> dict[str, float]:
     _settings = await crud.global_setting.get_all(db=db)
     settings = {dct["variable"]: dct["value"] for dct in scalars_to_records(_settings)}
     npv_settings = {
@@ -56,10 +54,7 @@ async def get_npv_settings(
     return npv_settings
 
 
-async def calculate_npv_for_existing_tmnt_in_db(
-    node_id: str,
-    db: AsyncSession,
-):
+async def calculate_npv_for_existing_tmnt_in_db(node_id: str, db: AsyncSession):
     """Calculates the net present value of a structural bmp facility"""
 
     attr = await crud.tmnt_cost.get(db=db, id=node_id)
@@ -67,7 +62,7 @@ async def calculate_npv_for_existing_tmnt_in_db(
     if not attr:
         raise RecordNotFound(f"Record not found for node_id={node_id}")
 
-    npv_global_settings: Dict[str, float] = await get_npv_settings(db)
+    npv_global_settings = await get_npv_settings(db)
 
     try:
         npv_req = NPVRequest(

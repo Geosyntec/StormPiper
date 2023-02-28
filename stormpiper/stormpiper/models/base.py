@@ -1,3 +1,5 @@
+from enum import Enum
+
 from pydantic import BaseModel as BASE
 
 
@@ -10,3 +12,6 @@ class BaseModel(BASE):
 class BaseORM(BaseModel):
     class Config:
         orm_mode = True
+
+class StrEnum(str, Enum):
+    ...

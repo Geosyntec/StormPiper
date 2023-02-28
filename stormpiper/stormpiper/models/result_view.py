@@ -1,11 +1,10 @@
-from enum import Enum
 from typing import Optional
 
 from pydantic import create_model
 
 from stormpiper.database.schemas import results, views
 
-from .base import BaseORM
+from .base import BaseORM, StrEnum
 
 strings = [
     "node_id",
@@ -36,10 +35,6 @@ SubbasinResultView = create_model(
         if not any([c.startswith("_"), c == "geom"])
     },
 )
-
-
-class StrEnum(str, Enum):
-    ...
 
 
 Epoch = StrEnum(

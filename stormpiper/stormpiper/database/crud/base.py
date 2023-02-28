@@ -21,6 +21,11 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
         **Parameters**
 
         * `base`: A SQLAlchemy class
+
+        **Reference**
+
+        https://github.com/tiangolo/full-stack-fastapi-postgresql/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/backend/app/app/crud/base.py
+
         """
         self.base = base
         self.tablename = self.base.__tablename__
@@ -43,14 +48,22 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
         result = await db.execute(q)
         return result.scalars().all()
 
+    async def on_after_create(self, *, db: AsyncSession, obj: SchemaType) -> None:
+        return None
+
     async def create(self, db: AsyncSession, *, new_obj: CreateModelType) -> SchemaType:
         db_obj = self.base(**new_obj.dict(exclude_unset=True))
 
         db.add(db_obj)
         await db.commit()
         await db.refresh(db_obj)
-        _ = await self.log(db=db)
+        await self.log(db=db)
+        await self.on_after_create(db=db, obj=db_obj)
+
         return db_obj
+
+    async def on_after_update(self, *, db: AsyncSession, obj: SchemaType) -> None:
+        return None
 
     async def update(
         self,
@@ -77,11 +90,11 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
             .values(update_data)
         )
 
-        q.execution_options(synchronize_session="fetch")
         await db.execute(q)
         await db.commit()
-
-        _ = await self.log(db=db)
+        await db.refresh(obj)
+        await self.log(db=db)
+        await self.on_after_update(db=db, obj=obj)
 
         return obj
 
@@ -92,11 +105,7 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
         q = sa.delete(self.base).where(getattr(self.base, self.id) == id)
 
         await db.execute(q)
-        try:
-            await db.commit()
-        except Exception:  # pragma: no cover
-            await db.rollback()
-            raise
-        _ = await self.log(db=db)
+        await db.commit()
+        await self.log(db=db)
 
         return None
