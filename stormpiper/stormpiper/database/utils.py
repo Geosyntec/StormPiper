@@ -1,5 +1,4 @@
 import logging
-from typing import List, Optional
 
 import geopandas
 import pandas
@@ -17,20 +16,24 @@ logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
 
 
+def orm_fields(orm) -> list[str]:
+    return [str(f) for f in orm.__table__.columns.keys()]
+
+
 def orm_to_dict(row) -> dict:
     """Convert an ORM return object to a dict."""
-    row_dict = {col: getattr(row, col) for col in row.__table__.columns.keys()}
+    row_dict = {col: getattr(row, col) for col in orm_fields(row)}
     return row_dict
 
 
-def scalars_to_records(rows) -> List[dict]:
+def scalars_to_records(rows) -> list[dict]:
     """Convert ORM scalars to list of dicts [records]"""
 
     return [orm_to_dict(row) for row in rows]
 
 
 def scalar_records_to_gdf(
-    records: List[dict], crs: Optional[int] = None, geometry: str = "geom"
+    records: list[dict], crs: int | None = None, geometry: str = "geom"
 ) -> geopandas.GeoDataFrame:
     if crs is None:
         crs = 4326
@@ -47,13 +50,13 @@ def scalar_records_to_gdf(
 
 
 def scalars_to_gdf(
-    scalars: List, crs: Optional[int] = None, geometry: str = "geom"
+    scalars: list, crs: int | None = None, geometry: str = "geom"
 ) -> geopandas.GeoDataFrame:
     records = scalars_to_records(scalars)
     return scalar_records_to_gdf(records, crs=crs, geometry=geometry)
 
 
-def scalars_to_gdf_to_geojson(scalars):
+def scalars_to_gdf_to_geojson(scalars: list):
     gdf = scalars_to_gdf(scalars, crs=settings.TACOMA_EPSG, geometry="geom")
     gdf.to_crs(epsg=4326, inplace=True)
     content = gdf.to_json()
@@ -62,16 +65,19 @@ def scalars_to_gdf_to_geojson(scalars):
 
 
 def sequence_exists(*, sequence_name: str, connectable, schema: str = "public") -> bool:
-    q = connectable.execute(
+    q = sa.text(
         """
 SELECT COUNT(*)
 FROM information_schema.sequences
-WHERE sequence_schema=%s AND sequence_name=%s
+WHERE sequence_schema=:schema AND sequence_name=:sequence_name
 """,
-        (schema, sequence_name),
+    )
+
+    res = connectable.execute(
+        q, {"schema": schema, "sequence_name": sequence_name}
     ).fetchone()
 
-    return q.count > 0
+    return res.count > 0
 
 
 def reset_sequence(*, table_name, connectable):
@@ -84,9 +90,8 @@ def reset_sequence(*, table_name, connectable):
         )
         if seq_exists:
             logger.info(f"resetting sequence: {sequence_name}")
-            connectable.execute(
-                f"select setval(%s, max(id)) from {table_name}", (sequence_name)
-            )
+            q = sa.text(f"select setval(:sequence_name, max(id)) from {table_name}")
+            connectable.execute(q, {"sequence_name": sequence_name})
     except Exception as e:
         logger.exception(e)
 
@@ -109,7 +114,8 @@ def _delete_and_replace_db(
     Session = get_session(engine=engine)
     with engine.begin() as conn:
         if engine.dialect.has_table(conn, table_name):
-            conn.execute(f'delete from "{table_name}";')
+            q = sa.text(f'delete from "{table_name}";')
+            conn.execute(q)
         method(table_name, con=conn, if_exists="append", index=index, **kwargs)
 
         # same transaction scope to update the change log
@@ -132,7 +138,8 @@ def delete_and_replace_postgis_table(
     Overwrites contents of `table_name` with contents of gdf.
     gdf schema must match destination table if the table already exists.
     """
-    gdf = gdf.rename_geometry("geom")  # type: ignore
+    if "geom" not in gdf.columns:
+        gdf = gdf.rename_geometry("geom")  # type: ignore
     return _delete_and_replace_db(
         method_name="to_postgis",
         df=gdf,

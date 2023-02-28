@@ -1,9 +1,9 @@
-from typing import List
-
 import pandas
 
 
-def dummy_tmnt_source_control(subbasins: List[str]):  # pragma: no cover
+def dummy_tmnt_source_control(
+    subbasins: list[str],
+) -> pandas.DataFrame:  # pragma: no cover
     StormLineCleaning_Pct_Reduction = {
         "DEHP": 54,  # %
         "PHE": 75,
@@ -69,7 +69,7 @@ def dummy_tmnt_source_control(subbasins: List[str]):  # pragma: no cover
 
     src_ctrl = (
         pandas.concat([sweeping, linecleaning, dumping])
-        .merge(pandas.DataFrame({"subbasin": subbasins}), how="cross")  # type: ignore cross
+        .merge(pandas.DataFrame({"subbasin": subbasins}), how="cross")
         .reset_index(drop=True)
         .assign(id=lambda df: df.index.values + 1)
         .set_index("id")
@@ -78,7 +78,9 @@ def dummy_tmnt_source_control(subbasins: List[str]):  # pragma: no cover
     return src_ctrl
 
 
-def foss_tmnt_source_control(foss_subbasins: List[str]):  # pragma: no cover
+def foss_tmnt_source_control(
+    foss_subbasins: list[str],
+) -> pandas.DataFrame:  # pragma: no cover
     StormLineCleaning_Pct_Reduction = {
         "DEHP": 54,  # %
         "PHE": 75,
@@ -123,7 +125,7 @@ def foss_tmnt_source_control(foss_subbasins: List[str]):  # pragma: no cover
 
     src_ctrl = (
         pandas.concat([sweeping, linecleaning])
-        .merge(pandas.DataFrame({"subbasin": foss_subbasins}), how="cross")  # type: ignore cross
+        .merge(pandas.DataFrame({"subbasin": foss_subbasins}), how="cross")
         .reset_index(drop=True)
         .assign(id=lambda df: df.index.values + 1)
         .set_index("id")

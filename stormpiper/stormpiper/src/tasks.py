@@ -5,9 +5,11 @@ import pandas
 from stormpiper.connections import arcgis
 from stormpiper.core.config import settings
 from stormpiper.database.connection import engine
+from stormpiper.database.schemas.loads import LGUBoundary
 from stormpiper.database.utils import (
     delete_and_replace_postgis_table,
     delete_and_replace_table,
+    orm_fields,
 )
 
 from . import graph, loading, met, results, solve_structural_wq
@@ -90,12 +92,17 @@ def delete_and_refresh_subbasin_table(
     return gdf
 
 
+LGU_BOUNDARY_FIELDS = orm_fields(LGUBoundary)
+
+
 def delete_and_refresh_lgu_boundary_table(*, engine=engine):  # pragma: no cover
     logger.info("Creating lgu_boundary with the overlay rodeo")
     gdf = (
         spatial.overlay_rodeo_from_database(engine)
         .reset_index(drop=True)
         .assign(id=lambda df: df.index.values + 1)
+        .rename_geometry("geom")
+        .reindex(columns=LGU_BOUNDARY_FIELDS)
     )
 
     logger.info("deleting and replacing lgu_boundary table")

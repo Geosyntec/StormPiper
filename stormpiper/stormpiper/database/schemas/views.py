@@ -1,4 +1,4 @@
-from sqlalchemy import inspect
+from sqlalchemy import inspect, text
 
 from .subbasin import Subbasin, SubbasinResult
 from .tmnt import TMNTFacility, TMNTFacilityAttr
@@ -108,8 +108,8 @@ def initialize_views(engine, views=VIEW_REGISTRY):
     with engine.begin() as db:
         # stp views have a _v suffix so begin by removing all stp views.
         for _v in existing_v:
-            db.execute(f"drop view {_v}")
+            db.execute(text(f"drop view {_v}"))
 
         # add back only the views in the current registry.
         for stmnt in views:
-            db.execute(stmnt)
+            db.execute(text(stmnt))

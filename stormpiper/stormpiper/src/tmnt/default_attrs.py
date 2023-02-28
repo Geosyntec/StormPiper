@@ -4,6 +4,7 @@ from typing import Union
 import geopandas
 import numpy
 import pandas
+import sqlalchemy as sa
 
 from stormpiper.core.config import settings
 from stormpiper.database.changelog import sync_log
@@ -104,7 +105,7 @@ def update_tmnt_attributes(engine, overwrite=False):
     with engine.begin() as conn:
         if overwrite:
             existing_altids = []
-            conn.execute(f"delete from tmnt_facility_attribute")
+            conn.execute(sa.text("delete from tmnt_facility_attribute"))
 
         df = df.query("altid not in @existing_altids")
 

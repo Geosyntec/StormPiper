@@ -89,6 +89,7 @@ def solve_wq(
     _r = response_dict["results"] + response_dict["leaf_results"]
     result = json.loads(
         add_virtual_pocs_to_wide_load_summary(pandas.DataFrame(_r))
+        .fillna(value=pandas.NA)
         .replace({pandas.NA: None})
         .to_json(orient="records")
     )
@@ -113,8 +114,8 @@ def solve_wq_epochs(
     met,
     loading,
     tmnt_facilities,
-    epochs: List,
-    context: Optional[Dict[str, Any]] = None
+    epochs: list[str],
+    context: dict[str, Any] | None = None
 ):
     if context is None:  # pragma: no cover
         context = get_context()
