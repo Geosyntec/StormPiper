@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 DEPENDENCY_ADJACENCY_LIST = """# This graph is backward, it needs to be reversed to be in the order of 'information flow'.
 # whitespace delimited
-# table                                         depends_on      depends_on          depends_on
+# table                                         depends_on      depends_on          depends_on ...
 met
 tmnt_facility
 tmnt_facility_delineation
@@ -26,6 +26,7 @@ subbasin
 tmnt_source_control
 tmnt_facility_attribute
 tmnt_facility_cost                              global_setting
+scenario                                        global_setting
 tmnt_v                                          tmnt_facility_attribute    tmnt_facility    tmnt_facility_cost
 lgu_boundary                                    subbasin        tmnt_facility_delineation
 graph_edge                                      lgu_boundary    tmnt_facility_attribute     tmnt_facility
@@ -133,9 +134,14 @@ async def sorted_changelog_records(db: AsyncSession) -> List[Dict]:
     return records
 
 
-async def async_is_dirty(*, tablename: str, db: AsyncSession) -> Tuple[bool, str]:
+async def async_is_dirty(
+    *, tablename: str, db: AsyncSession
+) -> Tuple[bool, str] | Tuple[None, None]:
     records = await sorted_changelog_records(db=db)
-    result_record = next(filter(lambda x: x["tablename"] == tablename, records))
+    result_record = next(filter(lambda x: x["tablename"] == tablename, records), None)
+    if result_record is None:
+        return None, None
+
     last_updated = str(result_record["last_updated"])
     changelog = [t["tablename"] for t in records]
 
