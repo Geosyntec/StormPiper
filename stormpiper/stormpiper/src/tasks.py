@@ -12,7 +12,7 @@ from stormpiper.database.utils import (
     orm_fields,
 )
 
-from . import graph, loading, met, results, solve_structural_wq
+from . import graph, loading, met, results, scenario, solve_structural_wq
 from .tmnt import default_attrs, default_tmnt_source_controls, spatial
 
 logging.basicConfig(level=settings.LOGLEVEL)
@@ -318,3 +318,9 @@ def build_default_tmnt_source_controls(*, engine=engine):
     logger.info("TASK COMPLETE: replaced tmnt_source_control table.")
 
     return df
+
+
+def update_scenario_results(data, force=False, engine=engine):
+    new_data = scenario.solve_scenario_data(data=data, force=force, engine=engine)
+    updated_data = scenario.solve_scenario_db(data=new_data, engine=engine)
+    return updated_data

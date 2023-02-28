@@ -23,7 +23,6 @@ async def get_task(task_id: str) -> Dict[str, Any]:
     return await utils.generate_task_response(task)
 
 
-
 # RPC Routes
 
 
@@ -60,6 +59,7 @@ async def run_workflow(
 async def ping_background() -> Dict[str, Any]:
     task = bg.ping.apply_async()
     return await utils.generate_task_response(task)
+
 
 @rpc_router.get("/solve_watershed", response_class=JSONResponse, tags=["rpc"])
 async def solve_watershed() -> Dict[str, Any]:

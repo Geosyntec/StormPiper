@@ -75,6 +75,11 @@ def test_crud_patch(client, route, blob, cleanup_blob):
             },
             "id",
         ),
+        (
+            "/api/rest/scenario",
+            {"name": "empty scenario"},
+            "id",
+        ),
     ],
 )
 def test_crud_create_and_delete(client, route, blob, idvar):
