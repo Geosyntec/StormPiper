@@ -33,3 +33,8 @@
   justify-self: center;
   align-self: center;
 }
+
+
+#swagger-ui .curl-command .curl {
+    max-height: 20em;
+}
