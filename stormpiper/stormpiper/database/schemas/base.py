@@ -9,6 +9,7 @@ from .graph import GraphEdge
 from .loads import *
 from .met import Met
 from .results import ResultBlob
+from .scenario import Scenario
 from .subbasin import Subbasin, SubbasinResult
 from .tmnt import *
 from .tmnt_cost import TMNTFacilityCost
