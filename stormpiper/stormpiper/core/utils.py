@@ -1,14 +1,15 @@
 import asyncio
-import datetime
 import functools
-from typing import List, Optional
+from datetime import datetime, timezone
+from hashlib import sha256
+from typing import Any
 
+import orjson
 import pandas
-import pytz
 from celery.result import AsyncResult
 
 
-def columns_of_dtype(df: pandas.DataFrame, selector: str) -> List[str]:
+def columns_of_dtype(df: pandas.DataFrame, selector: str) -> list[str]:
     """get columns of df that  match the 'selector' dtype
 
     e.g.,
@@ -19,7 +20,9 @@ def columns_of_dtype(df: pandas.DataFrame, selector: str) -> List[str]:
     return [str(c) for c in df.columns if selector in str(df[c].dtype)]
 
 
-def datetime_to_isoformat(df, cols=None, dt_selector=None, inplace=False):
+def datetime_to_isoformat(
+    df: pandas.DataFrame, cols=None, dt_selector=None, inplace=False
+) -> pandas.DataFrame:
     """create json serializable timestamps by converting all datetime columns to isoformat"""
     if dt_selector is None:
         dt_selector = "datetime"
@@ -35,8 +38,8 @@ def datetime_to_isoformat(df, cols=None, dt_selector=None, inplace=False):
 
 async def wait_a_sec_and_see_if_we_can_return_some_data(
     task: AsyncResult,
-    timeout: Optional[float] = None,
-    exp: Optional[float] = None,
+    timeout: float | None = None,
+    exp: float | None = None,
 ) -> None:
     if timeout is None:
         timeout = 0.5
@@ -56,8 +59,22 @@ async def wait_a_sec_and_see_if_we_can_return_some_data(
     return
 
 
-def datetime_now():
-    return datetime.datetime.now(pytz.timezone("US/Pacific"))
+async def generate_task_response(
+    task: AsyncResult,
+    timeout: float | None = None,
+    exp: float | None = None,
+) -> dict[str, Any]:
+    _ = await wait_a_sec_and_see_if_we_can_return_some_data(
+        task, timeout=timeout, exp=exp
+    )
+    response = dict(task_id=task.task_id, status=task.status)
+    if task.successful():
+        response["result"] = task.result
+    return response
+
+
+def datetime_now() -> datetime:
+    return datetime.now(timezone.utc)
 
 
 def rsetattr(obj, attr, val):
@@ -77,3 +94,8 @@ def rgetattr(obj, attr, *args):
         return getattr(obj, attr, *args)
 
     return functools.reduce(_getattr, [obj] + attr.split("."))
+
+
+def get_data_hash(jsonable_data: Any) -> str:
+    data = orjson.dumps(jsonable_data, option=orjson.OPT_SORT_KEYS)
+    return sha256(data).hexdigest()

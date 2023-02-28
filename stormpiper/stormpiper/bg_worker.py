@@ -3,7 +3,9 @@ from typing import Optional
 
 from celery import Celery, chain, group
 from celery.schedules import crontab
+from celery.signals import celeryd_init, worker_ready
 
+from stormpiper.bg_utils import Singleton, clear_locks
 from stormpiper.core.config import settings
 from stormpiper.src import tasks
 
@@ -12,6 +14,17 @@ logger = logging.getLogger(__name__)
 
 celery_app = Celery("tasks")
 
+
+@worker_ready.connect()
+def w_unlock_all(**kwargs):
+    clear_locks(celery_app)
+
+
+@celeryd_init.connect()
+def d_unlock_all(**kwargs):
+    clear_locks(celery_app)
+
+
 celery_app.conf.update(
     task_serializer="json",
     accept_content=["json"],  # Ignore other content
@@ -19,6 +32,7 @@ celery_app.conf.update(
     broker_url=settings.REDIS_BROKER_URL,
     result_backend=settings.REDIS_RESULT_BACKEND,
     timezone="US/Pacific",
+    singleton_lock_expiry=1800,
 )
 
 
@@ -39,6 +53,11 @@ def run_in_chain(func, *args, **kwargs):
 
 class IncompleteChainError(Exception):
     ...
+
+
+@celery_app.task(acks_late=True, track_started=True)
+def clear_singleton_locks(**kwargs):
+    clear_locks(celery_app)
 
 
 @celery_app.task(acks_late=True, track_started=True)
@@ -162,10 +181,8 @@ def delete_and_refresh_downstream_src_ctrl_tables(
     )
 
 
-@celery_app.task(acks_late=True, track_started=True)
-def delete_and_refresh_all_results_tables(
-    continue_chain=True,
-):  # pragma: no cover
+@celery_app.task(base=Singleton, acks_late=True, track_started=True)
+def delete_and_refresh_all_results_tables(continue_chain=True):  # pragma: no cover
     return run_in_chain(
         tasks.delete_and_refresh_all_results_tables, continue_chain=continue_chain
     )
@@ -247,14 +264,14 @@ class Workflows:
     # ) | check_results.s(msg="finalize refresh all results")
 
 
-@celery_app.task
+@celery_app.task(base=Singleton, acks_late=True, track_started=True)
 def run_refresh_task():
     # calling 'get' risks deadlocks in the backend. But since Celery won't propagate
     # errors or pass signatures from chords, it appears to be impossible to work
     # around this for a series workflow chains of chords rather than chains of tasks.
     _ = Workflows._group1().get(disable_sync_subtasks=False, timeout=360)
 
-    _ = Workflows._group2().get(disable_sync_subtasks=False, timeout=600)
+    _ = Workflows._group2().get(disable_sync_subtasks=False, timeout=1200)
 
     _ = Workflows._group3().get(disable_sync_subtasks=False, timeout=360)
 
@@ -289,6 +306,11 @@ celery_app.conf.beat_schedule = {
     #     "task": "stormpiper.bg_worker.ping",
     #     "schedule": 10 * 60,
     # },
+    "clear_locks": {
+        "task": "stormpiper.bg_worker.clear_singleton_locks",
+        # daily at 0545
+        "schedule": crontab("45", "5"),
+    },
     "refresh_all_tables": {
         "task": "stormpiper.bg_worker.run_refresh_task",
         # daily at 6am
