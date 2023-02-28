@@ -40,7 +40,7 @@ alembic
 
 celery[redis]
 
-fastapi==0.89.1
+fastapi==0.92.0
 starlette
 pydantic
 orjson
