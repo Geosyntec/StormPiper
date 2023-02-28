@@ -12,11 +12,13 @@ logger = logging.getLogger(__name__)
 
 
 def _init_url(layer_spec):
+    logger.debug("calling _init_url")
     return __init_url(layer_spec_json=json.dumps(layer_spec, sort_keys=True))
 
 
 @lru_cache
 def __init_url(layer_spec_json):
+    logger.debug("calling __init_url")
     layer_spec = json.loads(layer_spec_json)
     eeObject = layer_spec.get("layer", {}).get("eeObject")
     visParams = layer_spec.get("layer", {}).get("visParams")
@@ -36,6 +38,7 @@ def __init_url(layer_spec_json):
 
 @lru_cache
 def _init_layers():
+    logger.debug("calling _init_layers")
     layer_json = stormpiper_path / "data" / "ee" / "layers.json"
 
     raw_layers = json.loads(layer_json.read_text())
@@ -168,6 +171,8 @@ def _init_layers():
 
 @lru_cache
 def _init_tile_registry():
+    logger.debug("calling _init_tile_registry")
+
     tile_registry = {}
 
     tile_registry[
@@ -189,8 +194,10 @@ def _init_tile_registry():
 
 
 def get_layers():
+    logger.debug("calling get_layers")
     return _init_layers()
 
 
 def get_tile_registry():
+    logger.debug("calling get_tile_registry")
     return _init_tile_registry()
