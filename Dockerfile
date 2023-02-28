@@ -115,3 +115,4 @@ RUN apt-get update -y \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 COPY ./stormpiper/requirements_unpinned.txt /requirements_unpinned.txt
+RUN pip install -r /requirements_unpinned.txt
