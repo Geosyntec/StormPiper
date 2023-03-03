@@ -1,3 +1,6 @@
+import json
+import uuid
+
 import geopandas
 import pandas
 import sqlalchemy as sa
@@ -7,6 +10,7 @@ from stormpiper.core.config import settings
 from stormpiper.database import utils
 from stormpiper.database.connection import get_session
 from stormpiper.database.schemas.base import Base, User
+from stormpiper.database.schemas.scenario import Scenario
 from stormpiper.database.schemas.views import initialize_views
 from stormpiper.src import tasks
 from stormpiper.startup import create_default_globals
@@ -143,7 +147,7 @@ def load_json(filepath, engine):
     table_name = filepath.stem
 
     utils.delete_and_replace_table(
-        df=df,  # type: ignore
+        df=df,
         table_name=table_name,
         engine=engine,
         index=False,
@@ -193,6 +197,17 @@ def seed_tacoma_derived_tables(engine):
     tasks.delete_and_refresh_all_results_tables(engine=engine)
 
 
+def seed_tacoma_scenarios(engine):
+    with open(_base.datadir / "scenario.json") as fp:
+        scenarios = json.load(fp)
+
+    Session = get_session(engine=engine)
+    with Session.begin() as session:  # type: ignore
+        for i, scenario in enumerate(scenarios):
+            scenario["id"] = uuid.UUID(int=i, version=4)
+            session.add(Scenario(**scenario))
+
+
 def seed_db(engine):
     clear_db(engine)
     initialize_views(engine)
@@ -200,3 +215,4 @@ def seed_db(engine):
     create_default_globals(engine)
     seed_tacoma_table_dependencies(engine)
     seed_tacoma_derived_tables(engine)
+    seed_tacoma_scenarios(engine)
