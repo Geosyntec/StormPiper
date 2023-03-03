@@ -13,6 +13,7 @@ from stormpiper.database.utils import (
 )
 
 from . import graph, loading, met, results, scenario, solve_structural_wq
+from .decision_support import prom
 from .tmnt import default_attrs, default_tmnt_source_controls, spatial
 
 logging.basicConfig(level=settings.LOGLEVEL)
@@ -324,3 +325,16 @@ def update_scenario_results(data, force=False, engine=engine):
     new_data = scenario.solve_scenario_data(data=data, force=force, engine=engine)
     updated_data = scenario.solve_scenario_db(data=new_data, engine=engine)
     return updated_data
+
+
+def calculate_subbasin_promethee_prioritization(data: dict) -> list[dict]:
+    criteria, weights = zip(*((m["criteria"], m["weight"]) for m in data["criteria"]))
+    wq_type = data["wq_type"]
+
+    scored_df = prom.run_subbasins_promethee_prioritization(
+        criteria=criteria,
+        weights=weights,
+        wq_type=wq_type,
+    )[["subbasin", "score"]]
+
+    return scored_df.to_dict(orient="records")  # type: ignore
