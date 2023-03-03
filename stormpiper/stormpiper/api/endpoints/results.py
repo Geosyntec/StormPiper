@@ -2,13 +2,13 @@ from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from stormpiper.apps.supersafe.users import check_user
+from stormpiper.apps.supersafe.users import user_role_ge_editor
 from stormpiper.database.connection import get_async_session
 from stormpiper.database.dependencies import async_is_dirty
 from stormpiper.database.schemas import results
 from stormpiper.models.result_view import Epoch, ResultView
 
-router = APIRouter(dependencies=[Depends(check_user)])
+router = APIRouter(dependencies=[Depends(user_role_ge_editor)])
 
 
 @router.get("/", response_model=list[ResultView], name="results:get_all_results")

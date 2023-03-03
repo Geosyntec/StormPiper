@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from stormpiper.apps.supersafe.users import check_user
+from stormpiper.apps.supersafe.users import user_role_ge_editor
 from stormpiper.core.exceptions import RecordNotFound
 from stormpiper.database import crud
 from stormpiper.database.connection import get_async_session
@@ -10,7 +10,7 @@ from stormpiper.models.npv import NPVRequest
 from stormpiper.models.tmnt_attr import TMNTFacilityCost
 from stormpiper.src.npv import calculate_npv_for_existing_tmnt_in_db, compute_bmp_npv
 
-rpc_router = APIRouter(dependencies=[Depends(check_user)])
+rpc_router = APIRouter(dependencies=[Depends(user_role_ge_editor)])
 
 
 @rpc_router.post("/calculate_net_present_value", tags=["rpc"])

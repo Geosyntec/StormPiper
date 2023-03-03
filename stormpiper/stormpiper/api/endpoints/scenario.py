@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 import stormpiper.bg_worker as bg
 from stormpiper.apps import supersafe as ss
-from stormpiper.apps.supersafe.users import check_user
+from stormpiper.apps.supersafe.users import user_role_ge_editor
 from stormpiper.core.config import settings
 from stormpiper.core.context import get_context
 from stormpiper.core.utils import generate_task_response
@@ -29,8 +29,8 @@ logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
 
 
-router = APIRouter(dependencies=[Depends(check_user)])
-rpc_router = APIRouter(dependencies=[Depends(check_user)])
+router = APIRouter(dependencies=[Depends(user_role_ge_editor)])
+rpc_router = APIRouter(dependencies=[Depends(user_role_ge_editor)])
 
 
 async def validate_scenario(
