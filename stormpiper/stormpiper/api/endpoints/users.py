@@ -8,12 +8,12 @@ from stormpiper.apps.supersafe import models
 from stormpiper.apps.supersafe.users import (
     User,
     check_protect_role_field,
-    check_reader,
-    check_user_admin,
     current_active_user,
     fastapi_users,
     get_async_session,
     get_user_db,
+    user_role_ge_reader,
+    user_role_ge_user_admin,
 )
 
 
@@ -30,7 +30,7 @@ from uuid import uuid4
 @router.get(
     "/readonly_token",
     name="users:get_readonly_token",
-    dependencies=[Depends(check_reader)],
+    dependencies=[Depends(user_role_ge_reader)],
     response_model=UserResponse,
 )
 async def get_readonly_token(
@@ -50,7 +50,7 @@ async def get_readonly_token(
 @router.post(
     "/rotate_readonly_token",
     name="users:rotate_readonly_token",
-    dependencies=[Depends(check_reader)],
+    dependencies=[Depends(user_role_ge_reader)],
     response_model=UserResponse,
 )
 async def rotate_readonly_token(
@@ -86,7 +86,7 @@ for r in router.routes:
         "users:user",
         "users:get_users",
     ]:
-        deps.append(Depends(check_user_admin))
+        deps.append(Depends(user_role_ge_user_admin))
 
     # Prevent non-admins from changing their role.
     if n in [

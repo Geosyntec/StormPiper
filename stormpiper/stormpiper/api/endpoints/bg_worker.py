@@ -5,15 +5,15 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import JSONResponse
 
 import stormpiper.bg_worker as bg
-from stormpiper.apps.supersafe.users import check_admin, check_user
+from stormpiper.apps.supersafe.users import user_role_ge_admin, user_role_ge_editor
 from stormpiper.core import utils
 from stormpiper.models.base import StrEnum
 from stormpiper.models.bg import TaskModel
 from stormpiper.src import tasks
 
-router = APIRouter(dependencies=[Depends(check_user)])
-rpc_router_admin = APIRouter(dependencies=[Depends(check_admin)])
-rpc_router = APIRouter(dependencies=[Depends(check_user)])
+router = APIRouter(dependencies=[Depends(user_role_ge_editor)])
+rpc_router_admin = APIRouter(dependencies=[Depends(user_role_ge_admin)])
+rpc_router = APIRouter(dependencies=[Depends(user_role_ge_editor)])
 # Rest Routes
 
 

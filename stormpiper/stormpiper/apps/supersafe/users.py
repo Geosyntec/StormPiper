@@ -196,32 +196,34 @@ current_active_super_user = current_user_safe(
 
 
 def check_role(min_role: Role = Role.admin):
-    async def current_active_user_role(user=Depends(current_active_user)):
+    async def user_role_ge_(user=Depends(current_active_user)):
         if user.role._q() >= min_role._q():
             return user
 
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
-    return current_active_user_role
+    user_role_ge_.__name__ += f"{min_role.value}"
+
+    return user_role_ge_
 
 
 # check if role >= 100
-check_admin = check_role(min_role=Role.admin)
+user_role_ge_admin = check_role(min_role=Role.admin)
 
 # check user has edit rights
-check_user_admin = check_role(min_role=Role.user_admin)
+user_role_ge_user_admin = check_role(min_role=Role.user_admin)
 
 # check if role >= 1, i.e., not public
-check_reader = check_role(min_role=Role.reader)
+user_role_ge_reader = check_role(min_role=Role.reader)
 
 # check user has edit rights
-check_user = check_role(min_role=Role.editor)
+user_role_ge_editor = check_role(min_role=Role.editor)
 
 
 def check_protected_user_patch(field: str, min_role: Role = Role.admin):
     """Check if user is attempting to edit the user role."""
 
-    async def current_active_user_role(
+    async def _check_protected_user_patch(
         user_update: UserUpdate,
         current_user=Depends(current_active_user),
         user_db=Depends(get_user_db),
@@ -256,7 +258,11 @@ def check_protected_user_patch(field: str, min_role: Role = Role.admin):
 
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
-    return current_active_user_role
+    _check_protected_user_patch.__name__ = (
+        f"user_role_ge_{min_role.value}_and_field_{field}_editable"
+    )
+
+    return _check_protected_user_patch
 
 
 check_protect_role_field = check_protected_user_patch(

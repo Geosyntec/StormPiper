@@ -4,7 +4,7 @@ from fastapi.responses import Response
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from stormpiper.apps.supersafe.users import check_readonly_token, check_user
+from stormpiper.apps.supersafe.users import check_readonly_token, user_role_ge_editor
 from stormpiper.database.connection import get_async_session
 from stormpiper.database.schemas.subbasin_result_view import SubbasinResult_View
 from stormpiper.database.utils import scalars_to_gdf_to_geojson
@@ -17,7 +17,7 @@ router = APIRouter()
     "/{subbasin_id}",
     response_model=SubbasinResultView,
     name="subbasin:get_subbasin",
-    dependencies=[Depends(check_user)],
+    dependencies=[Depends(user_role_ge_editor)],
 )
 async def get_subbasin(
     subbasin_id: str,
@@ -46,7 +46,7 @@ async def get_subbasin(
     "/",
     response_model=list[SubbasinResultView],
     name="subbasin:get_all_subbasins",
-    dependencies=[Depends(check_user)],
+    dependencies=[Depends(user_role_ge_editor)],
 )
 async def get_all_subbasins(
     f: str = Query("json"),

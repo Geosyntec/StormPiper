@@ -7,7 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.apps import supersafe as ss
-from stormpiper.apps.supersafe.users import check_user
+from stormpiper.apps.supersafe.users import user_role_ge_editor
 from stormpiper.core.context import get_context
 from stormpiper.database import crud
 from stormpiper.database.connection import get_async_session
@@ -16,7 +16,7 @@ from stormpiper.models.tmnt_attr import TMNTFacilityPatch, TMNTUpdate
 from stormpiper.models.tmnt_attr_validator import tmnt_attr_validator
 from stormpiper.models.tmnt_view import TMNTView
 
-router = APIRouter(dependencies=[Depends(check_user)])
+router = APIRouter(dependencies=[Depends(user_role_ge_editor)])
 
 
 @router.get(

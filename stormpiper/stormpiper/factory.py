@@ -17,7 +17,7 @@ from stormpiper.api import api_router, rpc_router
 from stormpiper.api.docs import get_swagger_ui_html
 from stormpiper.apps import ratelimiter
 from stormpiper.apps import supersafe as ss
-from stormpiper.apps.supersafe.users import check_admin, check_reader
+from stormpiper.apps.supersafe.users import user_role_ge_admin, user_role_ge_reader
 from stormpiper.core.config import settings
 from stormpiper.earth_engine import ee_continuous_login
 from stormpiper.site import site_router
@@ -132,7 +132,9 @@ def create_app(
 
     templates = Jinja2Templates(directory="stormpiper/spa/build")
 
-    @app.get("/docs", include_in_schema=False, dependencies=[Depends(check_admin)])
+    @app.get(
+        "/docs", include_in_schema=False, dependencies=[Depends(user_role_ge_admin)]
+    )
     async def custom_swagger_ui_html():
         return get_swagger_ui_html(
             openapi_url="/openapi.json",
@@ -148,7 +150,7 @@ def create_app(
     async def home(request: Request) -> Response:
         return RedirectResponse("/app")
 
-    @app.get("/openapi.json", dependencies=[Depends(check_reader)])
+    @app.get("/openapi.json", dependencies=[Depends(user_role_ge_reader)])
     async def openapi_override():
         return app.openapi()
 
