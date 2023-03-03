@@ -14,7 +14,9 @@ def overlay_rodeo(
     if any(i is None for i in [delineations, subbasins]):
         return geopandas.GeoDataFrame([])
 
-    subbasins = subbasins.rename_geometry("geometry").reindex(  # type: ignore
+    if subbasins.geometry.name != "geometry":
+        subbasins = subbasins.rename_geometry("geometry")  # type: ignore
+    subbasins = subbasins.reindex(  # type: ignore
         columns=["subbasin", "basinname", "geometry"]
     )
     out: geopandas.GeoDataFrame = (
