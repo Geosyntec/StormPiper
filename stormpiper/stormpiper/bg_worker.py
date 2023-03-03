@@ -302,6 +302,11 @@ def update_all_scenario_results(data_list: list[dict], force: bool = False):
     return True
 
 
+@celery_app.task(base=Singleton, acks_late=True, track_started=True)
+def calculate_subbasin_promethee_prioritization(data: dict):
+    return tasks.calculate_subbasin_promethee_prioritization(data=data)
+
+
 # crontab scheduling tips: (https://docs.celeryproject.org/en/stable/userguide/periodic-tasks.html)
 # ==========================================
 # crontab() ==> Execute every minute.
