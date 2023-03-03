@@ -31,6 +31,42 @@ StructuralFacilityFeatureCollection = FeatureCollection[
     Point, dict[str, Any] | TMNTFacilityPatch | STRUCTURAL_FACILITY_TYPE
 ]
 
+DELIN_BBOX_COORD_01 = [
+    [
+        [-122.473, 47.250],
+        [-122.466, 47.250],
+        [-122.466, 47.255],
+        [-122.473, 47.255],
+        [-122.473, 47.250],
+    ]
+]
+
+TMNT_PROPERTIES_BMP_01 = {
+    "node_id": "bmp-01",
+    "facility_type": "bioretention_with_partial_infiltration_simple",
+    "captured_pct": 80,
+    "retained_pct": 20,
+    "capital_cost": 250000,
+    "om_cost_per_yr": 6000,
+    "lifespan_yrs": 30,
+    "replacement_cost": 180000,
+}
+
+DELIN_ONLY = {
+    "delineation_collection": {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "properties": {"name": "delin-01"},
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": DELIN_BBOX_COORD_01,
+                },
+            }
+        ],
+    }
+}
 
 DELIN_TO_TMNT = {
     "delineation_collection": {
@@ -44,15 +80,7 @@ DELIN_TO_TMNT = {
                 },
                 "geometry": {
                     "type": "Polygon",
-                    "coordinates": [
-                        [
-                            [-122.473, 47.250],
-                            [-122.466, 47.250],
-                            [-122.466, 47.255],
-                            [-122.473, 47.255],
-                            [-122.473, 47.250],
-                        ]
-                    ],
+                    "coordinates": DELIN_BBOX_COORD_01,
                 },
             },
             {
@@ -63,15 +91,7 @@ DELIN_TO_TMNT = {
                 },
                 "geometry": {
                     "type": "Polygon",
-                    "coordinates": [
-                        [
-                            [-122.473, 47.250],
-                            [-122.466, 47.250],
-                            [-122.466, 47.255],
-                            [-122.473, 47.255],
-                            [-122.473, 47.250],
-                        ]
-                    ],
+                    "coordinates": DELIN_BBOX_COORD_01,
                 },
             },
         ],
@@ -81,12 +101,7 @@ DELIN_TO_TMNT = {
         "features": [
             {
                 "type": "Feature",
-                "properties": {
-                    "node_id": "bmp-01",
-                    "facility_type": "bioretention_with_partial_infiltration_simple",
-                    "captured_pct": 80,
-                    "retained_pct": 20,
-                },
+                "properties": TMNT_PROPERTIES_BMP_01,
                 "geometry": {
                     "type": "Point",
                     "coordinates": [-122.473, 47.255],
@@ -96,34 +111,6 @@ DELIN_TO_TMNT = {
     },
 }
 
-DELIN_ONLY = {
-    "delineation_collection": {
-        "type": "FeatureCollection",
-        "features": [
-            {
-                "type": "Feature",
-                "properties": {"name": "delin-01"},
-                "geometry": {
-                    "type": "Polygon",
-                    "coordinates": [
-                        [
-                            [-122.473, 47.250],
-                            [-122.466, 47.250],
-                            [-122.466, 47.255],
-                            [-122.473, 47.255],
-                            [-122.473, 47.250],
-                        ]
-                    ],
-                },
-            }
-        ],
-    }
-}
-
-SCENARIO_INPUT_EXAMPLES = {
-    "delin only": {"summary": "", "value": DELIN_ONLY},
-    "delin to tmnt": {"summary": "", "value": DELIN_TO_TMNT},
-}
 
 TMNT_SCENARIO = {"name": "tmnt scenario", "input": DELIN_TO_TMNT}
 

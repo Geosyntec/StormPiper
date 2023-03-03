@@ -1,7 +1,9 @@
 import logging
+from typing import Any
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Query, status
 from fastapi.responses import ORJSONResponse
+from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -34,15 +36,17 @@ rpc_router = APIRouter(dependencies=[Depends(user_role_ge_editor)])
 
 
 async def validate_scenario(
-    scenario: ScenarioPost = Body(..., examples=SCENARIO_EXAMPLES),
+    scenario: ScenarioPost | dict[str, Any] = Body(..., examples=SCENARIO_EXAMPLES),
     user: ss.users.User = Depends(ss.users.current_active_user),
     db: AsyncSession = Depends(get_async_session),
     context: dict = Depends(get_context),
 ) -> ScenarioUpdate:
+    if isinstance(scenario, BaseModel):
+        scenario = scenario.dict(exclude_unset=True)
+    scenario["updated_by"] = user.email
+
     try:
-        return await scenario_validator(
-            scenario=scenario, user=user, context=context, db=db
-        )
+        return await scenario_validator(scenario=scenario, context=context, db=db)
 
     except Exception as e:
         raise HTTPException(
@@ -217,10 +221,12 @@ async def solve_single_scenario(
 
     task = bg.update_scenario_results.apply_async(kwargs={"data": data, "force": force})
 
-    return generate_task_response(task=task)
+    return await generate_task_response(task=task)
 
 
-@rpc_router.post("/solve_scenario", name="scenario:solve_all", response_model=TaskModel)
+@rpc_router.post(
+    "/solve_all_scenarios", name="scenario:solve_all", response_model=TaskModel
+)
 async def solve_all_scenarios(
     force: bool = Query(False),
     db: AsyncSession = Depends(get_async_session),
@@ -254,4 +260,4 @@ async def solve_scenario(
     """Stateless solves of scenarios with identical logic as the stateful variant."""
     data = scenario.dict(exclude_unset=True)
     task = bg.compute_scenario_results.apply_async(kwargs={"data": data})
-    return generate_task_response(task=task)
+    return await generate_task_response(task=task)

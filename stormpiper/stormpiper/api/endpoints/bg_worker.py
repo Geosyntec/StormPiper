@@ -1,7 +1,7 @@
 from inspect import getmembers, isfunction
-from typing import Any, Dict
+from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 
 import stormpiper.bg_worker as bg
@@ -18,7 +18,7 @@ rpc_router = APIRouter(dependencies=[Depends(user_role_ge_editor)])
 
 
 @router.get("/{task_id}", response_model=TaskModel)
-async def get_task(task_id: str) -> Dict[str, Any]:
+async def get_task(task_id: str) -> dict[str, Any]:
     task = bg.celery_app.AsyncResult(task_id)
     return await utils.generate_task_response(task)
 
@@ -33,7 +33,7 @@ TaskName: StrEnum = StrEnum("TaskName", {k: k for k in _tasks})
 @rpc_router_admin.get("/run_task/{taskname}", response_class=JSONResponse)
 async def run_task(
     taskname: TaskName,  # type: ignore
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     task = bg.celery_app.send_task(taskname)
     return await utils.generate_task_response(task)
 
@@ -45,7 +45,7 @@ Workflows = StrEnum("Workflows", {k: k for k in _tasks})
 @rpc_router_admin.get("/run_workflow/{taskname}", response_class=JSONResponse)
 async def run_workflow(
     taskname: Workflows,  # type: ignore
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     t = getattr(bg.Workflows, taskname, None)
 
     if t is None:
@@ -56,13 +56,13 @@ async def run_workflow(
 
 
 @rpc_router.get("/ping_background", response_class=JSONResponse)
-async def ping_background() -> Dict[str, Any]:
+async def ping_background() -> dict[str, Any]:
     task = bg.ping.apply_async()
     return await utils.generate_task_response(task)
 
 
 @rpc_router.get("/solve_watershed", response_class=JSONResponse, tags=["rpc"])
-async def solve_watershed() -> Dict[str, Any]:
+async def solve_watershed() -> dict[str, Any]:
     task = bg.delete_and_refresh_all_results_tables.apply_async()
     return await utils.generate_task_response(task)
 

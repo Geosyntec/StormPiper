@@ -1,8 +1,9 @@
-from typing import Any, Dict, List
+from typing import Any, List
 
 from fastapi import APIRouter, Body, Depends, Path, Query, status
 from fastapi.exceptions import HTTPException
 from nereid.api.api_v1.models.treatment_facility_models import STRUCTURAL_FACILITY_TYPE
+from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -41,7 +42,7 @@ async def get_tmnt_attr(
 
 
 async def validate_tmnt_update(
-    tmnt_patch: Dict[str, Any]
+    tmnt_patch: dict[str, Any]
     | TMNTFacilityPatch
     | STRUCTURAL_FACILITY_TYPE = Body(
         ...,
@@ -70,10 +71,12 @@ async def validate_tmnt_update(
     db: AsyncSession = Depends(get_async_session),
     user: ss.users.User = Depends(ss.users.current_active_user),
 ) -> TMNTUpdate:
+    if isinstance(tmnt_patch, BaseModel):
+        tmnt_patch = tmnt_patch.dict(exclude_unset=True)
+    tmnt_patch["updated_by"] = user.email
+
     try:
-        return await tmnt_attr_validator(
-            tmnt_patch=tmnt_patch, context=context, db=db, user=user
-        )
+        return await tmnt_attr_validator(tmnt_patch=tmnt_patch, context=context, db=db)
 
     except Exception as e:
         raise HTTPException(

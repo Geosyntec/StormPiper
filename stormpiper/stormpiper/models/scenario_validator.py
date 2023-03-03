@@ -1,15 +1,15 @@
 import json
 from copy import deepcopy
 from hashlib import sha256
+from typing import Any
 
 import geopandas
 from shapely import wkt
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from stormpiper.apps import supersafe as ss
 from stormpiper.core.utils import get_data_hash
 
-from .scenario import ScenarioPost, ScenarioUpdate
+from .scenario import ScenarioUpdate
 from .tmnt_attr_validator import tmnt_attr_validator
 
 
@@ -25,11 +25,10 @@ def validate_delineation_collection(delineation_collection_geojson: str) -> str:
         .assign(
             altid=lambda df: df.apply(
                 lambda r: scenario_delin_uid(
-                    # r.name is the index, r['name'] is value stored in 'name' column.
-                    r.name,
+                    r.name,  # r.name is the index
                     wkt.dumps(r.geometry),
-                    r["name"],
-                    r.relid,
+                    r["name"],  # r['name'] is value stored in 'name' column.
+                    getattr(r, "relid", None),
                 ),
                 axis=1,
             )
@@ -43,56 +42,50 @@ def validate_delineation_collection(delineation_collection_geojson: str) -> str:
 
 
 async def scenario_validator(
-    scenario: ScenarioPost,
-    user: ss.users.User,
-    context: dict,
-    db: AsyncSession,
+    scenario: dict[str, Any],
+    context: dict[str, Any] | None = None,
+    db: AsyncSession | None = None,
 ) -> ScenarioUpdate:
-    """TODO: make this validate tmnt attrs."""
-    data = scenario.dict(exclude_unset=True)
     loading_hash = "null"
     input_hash = "null"
+    input_ = scenario.get("input", None)
+    structural_tmnt = None
 
-    if scenario.input is not None:
-        input_hash = get_data_hash(scenario.input.dict())
-        if scenario.input.delineation_collection is not None:
+    if input_ is not None:
+        input_hash = get_data_hash(input_)
+        delineation_collection = input_.get("delineation_collection", None)
+        if delineation_collection is not None:
             delin_col_valid = validate_delineation_collection(
-                scenario.input.delineation_collection.json()
+                json.dumps(delineation_collection)
             )
 
             delineation_collection = json.loads(delin_col_valid)
             loading_hash = get_data_hash(delineation_collection)
 
-            data["input"]["delineation_collection"] = delineation_collection
+            scenario["input"]["delineation_collection"] = delineation_collection
 
-    structural_tmnt = None
+        tmnt_facility_collection = input_.get("tmnt_facility_collection", None)
+        if tmnt_facility_collection is not None:
+            collection = scenario["input"]["tmnt_facility_collection"]
+            structural_tmnt = []
+            for f in collection.get("features", [{}]):
+                props = f.get("properties")
+                if props:
+                    tmnt_update = await tmnt_attr_validator(
+                        tmnt_patch=props, context=context, db=db
+                    )
+                    new_props = deepcopy(props)
+                    if tmnt_update.tmnt_attr:
+                        new_props.update(**tmnt_update.tmnt_attr.dict())
+                    if tmnt_update.tmnt_cost:
+                        new_props.update(**tmnt_update.tmnt_cost.dict())
 
-    if (
-        scenario.input is not None
-        and scenario.input.tmnt_facility_collection is not None
-    ):
-        collection = data["input"]["tmnt_facility_collection"]
-        structural_tmnt = []
-        for f in collection.get("features", [{}]):
-            props = f.get("properties")
-            if props:
-                tmnt_update = await tmnt_attr_validator(
-                    tmnt_patch=props, context=context, db=db, user=user
-                )
-                new_props = deepcopy(props)
-                if tmnt_update.tmnt_attr:
-                    new_props.update(**tmnt_update.tmnt_attr.dict())
-                if tmnt_update.tmnt_cost:
-                    new_props.update(**tmnt_update.tmnt_cost.dict())
+                    structural_tmnt.append(new_props)
 
-                structural_tmnt.append(new_props)
+    scenario["loading_hash"] = loading_hash
+    scenario["input_hash"] = input_hash
+    scenario["structural_tmnt"] = structural_tmnt
 
-    new_obj = ScenarioUpdate(
-        **data,
-        updated_by=user.email,
-        loading_hash=loading_hash,
-        input_hash=input_hash,
-        structural_tmnt=structural_tmnt,
-    )
+    new_obj = ScenarioUpdate(**scenario)
 
     return new_obj
