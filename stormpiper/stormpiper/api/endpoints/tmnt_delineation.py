@@ -6,7 +6,7 @@ from fastapi.responses import Response
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from stormpiper.apps.supersafe.users import check_readonly_token, user_role_ge_editor
+from stormpiper.apps.supersafe.users import check_readonly_token, user_role_ge_reader
 from stormpiper.database.connection import get_async_session
 from stormpiper.database.schemas import tmnt
 from stormpiper.database.utils import scalars_to_gdf_to_geojson
@@ -25,7 +25,7 @@ router = APIRouter()
     "/{altid}",
     response_model=List[TMNTFacilityDelineation],
     name="tmnt_delineation:get_tmnt",
-    dependencies=[Depends(user_role_ge_editor)],
+    dependencies=[Depends(user_role_ge_reader)],
 )
 async def get_tmnt_delineations(
     altid: str,
@@ -60,7 +60,7 @@ async def get_tmnt_delineations(
     "/",
     response_model=List[TMNTFacilityDelineation],
     name="tmnt_delineation:get_all_tmnt",
-    dependencies=[Depends(user_role_ge_editor)],
+    dependencies=[Depends(user_role_ge_reader)],
 )
 async def get_all_tmnt_delineations(
     f: str = Query("json"),

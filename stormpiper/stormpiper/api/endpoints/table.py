@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from stormpiper.apps.supersafe.users import user_role_ge_editor
+from stormpiper.apps.supersafe.users import user_role_ge_reader
 from stormpiper.database.connection import get_async_session
 from stormpiper.database.dependencies import async_is_dirty
 
-router = APIRouter(dependencies=[Depends(user_role_ge_editor)])
+router = APIRouter(dependencies=[Depends(user_role_ge_reader)])
 
 
 @router.get("/{tablename}/is_dirty", name="results:get_result_is_dirty")
