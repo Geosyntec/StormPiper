@@ -52,7 +52,7 @@ def simplify_graph(g: nx.DiGraph, nodes: list) -> nx.DiGraph:
     connectivity between predecessors and successors to missing nodes.
     """
 
-    ng = g.copy()
+    ng: nx.DiGraph = g.copy()  # type: ignore
 
     for n in g.nodes:
         if n not in nodes:
