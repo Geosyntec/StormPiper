@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends
 from fastapi.responses import Response
 
-from stormpiper.apps.supersafe.users import user_role_ge_editor
+from stormpiper.apps.supersafe.users import user_role_ge_reader
 from stormpiper.models.prom import PromRequest
 from stormpiper.src.decision_support.prom import run_subbasins_promethee_prioritization
 
-rpc_router = APIRouter(dependencies=[Depends(user_role_ge_editor)])
+rpc_router = APIRouter(dependencies=[Depends(user_role_ge_reader)])
 
 
 @rpc_router.post("/calculate_subbasin_promethee_prioritization", tags=["rpc"])

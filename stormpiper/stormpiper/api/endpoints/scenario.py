@@ -17,9 +17,9 @@ from stormpiper.database import crud, utils
 from stormpiper.database.connection import get_async_session
 from stormpiper.database.schemas.scenario import Scenario
 from stormpiper.models.bg import TaskModel
-from stormpiper.models.scenario import SCENARIO_EXAMPLES  # , SCENARIO_INPUT_EXAMPLES
+from stormpiper.models.scenario import SCENARIO_EXAMPLES
 from stormpiper.models.scenario import Scenario as ScenarioResponse
-from stormpiper.models.scenario import (  # ScenarioInput,
+from stormpiper.models.scenario import (
     ScenarioCreate,
     ScenarioPost,
     ScenarioSolve,

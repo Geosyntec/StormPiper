@@ -2,11 +2,11 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import JSONResponse
 from sqlalchemy.engine.url import make_url
 
-from stormpiper.apps.supersafe.users import user_role_ge_admin, user_role_ge_editor
+from stormpiper.apps.supersafe.users import user_role_ge_admin, user_role_ge_reader
 from stormpiper.core.config import settings
 from stormpiper.core.context import get_context
 
-router = APIRouter(dependencies=[Depends(user_role_ge_editor)])
+router = APIRouter(dependencies=[Depends(user_role_ge_reader)])
 
 
 @router.get("/context")
