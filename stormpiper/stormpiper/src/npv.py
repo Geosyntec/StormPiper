@@ -5,6 +5,7 @@ import numpy_financial as nf
 from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from stormpiper.core.config import default_global_settings
 from stormpiper.core.exceptions import RecordNotFound
 from stormpiper.database import crud
 from stormpiper.database.utils import orm_to_dict, scalars_to_records
@@ -45,9 +46,12 @@ def compute_bmp_npv(
     return round(net_present_value, 2), list(costs.round(2))
 
 
-async def get_npv_settings(db: AsyncSession) -> dict[str, float]:
-    _settings = await crud.global_setting.get_all(db=db)
-    settings = {dct["variable"]: dct["value"] for dct in scalars_to_records(_settings)}
+async def get_npv_settings(db: AsyncSession | None = None) -> dict[str, float]:
+    _settings = default_global_settings
+    if db is not None:
+        _settings = scalars_to_records(await crud.global_setting.get_all(db=db))
+
+    settings = {dct["variable"]: dct["value"] for dct in (_settings)}
     npv_settings = {
         k: float(v) for k, v in settings.items() if k in NPVRequest.get_fields()
     }
@@ -62,7 +66,7 @@ async def calculate_npv_for_existing_tmnt_in_db(node_id: str, db: AsyncSession):
     if not attr:
         raise RecordNotFound(f"Record not found for node_id={node_id}")
 
-    npv_global_settings = await get_npv_settings(db)
+    npv_global_settings = await get_npv_settings(db=db)
 
     try:
         npv_req = NPVRequest(

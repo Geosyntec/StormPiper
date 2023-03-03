@@ -10,8 +10,8 @@ from nereid.api.api_v1.models.treatment_facility_models import (
 from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from stormpiper.apps import supersafe as ss
 from stormpiper.core.config import settings
+from stormpiper.core.context import get_context
 from stormpiper.src.npv import compute_bmp_npv, get_npv_settings
 
 from .base import BASE, BaseModel
@@ -30,8 +30,10 @@ logger = logging.getLogger(__name__)
 
 
 def validate_tmnt_modeling_params(
-    unvalidated_data: dict, context: dict
+    unvalidated_data: dict, context: dict[str, Any] | None = None
 ) -> None | TMNTFacilityAttrUpdate:
+    if context is None:
+        context = get_context()
     modeling_fields = {
         f
         for c in TREATMENT_FACILITY_MODELS
@@ -101,18 +103,15 @@ def maybe_update_npv_params(
 
 async def tmnt_attr_validator(
     tmnt_patch: dict[str, Any] | TMNTFacilityPatch | STRUCTURAL_FACILITY_TYPE,
-    context: dict,
-    db: AsyncSession,
-    user: ss.users.User,
+    context: dict[str, Any] | None = None,
+    db: AsyncSession | None = None,
 ) -> TMNTUpdate:
     unvalidated_data = deepcopy(tmnt_patch)
 
     if isinstance(unvalidated_data, BASE):
         unvalidated_data = unvalidated_data.dict()
 
-    unvalidated_data["updated_by"] = user.email
-
-    tmnt_attr = validate_tmnt_modeling_params(unvalidated_data, context)
+    tmnt_attr = validate_tmnt_modeling_params(unvalidated_data, context=context)
 
     npv_global_settings = await get_npv_settings(db)
     tmnt_cost = maybe_update_npv_params(unvalidated_data, npv_global_settings)

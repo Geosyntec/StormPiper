@@ -7,7 +7,7 @@ import pandas
 import sqlalchemy as sa
 
 from stormpiper.core.config import settings
-from stormpiper.database.connection import engine, sessionmaker
+from stormpiper.database.connection import engine, get_session
 from stormpiper.database.schemas.scenario import Scenario
 from stormpiper.database.utils import orm_to_dict
 from stormpiper.models.scenario import ScenarioSolve
@@ -15,6 +15,7 @@ from stormpiper.src import loading, solve_structural_wq
 
 from .graph import build_edge_list
 from .loading import compute_loading
+from .met import create_met_dataframe
 from .tmnt import spatial
 
 logging.basicConfig(level=settings.LOGLEVEL)
@@ -42,7 +43,7 @@ def build_scenario_edge_list(lgu_boundary: str, tmnt_json: str, engine=engine):
     return edge_list
 
 
-def solve_scenario_data(data: dict, force=False, engine=engine) -> dict:
+def solve_scenario_data(data: dict, force=False, engine=None) -> dict:
     """if 'force' is false, then only missing fields will be filled."""
     delin_collection = data.get("input", {}).get("delineation_collection", {})
     recalculate_loading = delin_collection and (
@@ -83,8 +84,10 @@ def solve_scenario_data(data: dict, force=False, engine=engine) -> dict:
         edge_list = build_scenario_edge_list(lgu_boundary=lgu_b, tmnt_json=tmnt_json)
         data["graph_edge"] = edge_list.to_dict(orient="records")
 
-        with engine.begin() as conn:
-            met = pandas.read_sql("met", con=conn)
+        met = create_met_dataframe()
+        if engine is not None:
+            with engine.begin() as conn:
+                met = pandas.read_sql("met", con=conn)
 
         epochs = list(met.epoch.unique())
         zones = geopandas.read_file(orjson.dumps(data["lgu_boundary"]).decode()).to_crs(
@@ -114,11 +117,12 @@ def solve_scenario_data(data: dict, force=False, engine=engine) -> dict:
     else:
         logger.info("SCENARIO: Inputs are unchanged. Updating changelog only.")
 
-    return ScenarioSolve(**data).dict(exclude_unset=True)
+    return data
 
 
 def solve_scenario_db(data: dict, engine=engine) -> dict:
-    Session = sessionmaker(bind=engine)
+    Session = get_session(engine=engine)
+    data = ScenarioSolve(**data).dict(exclude_unset=True)
     id_ = data["id"]
     with Session.begin() as session:  # type: ignore
         q = sa.update(Scenario).where(Scenario.id == id_).values(data)

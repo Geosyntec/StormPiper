@@ -138,7 +138,7 @@ def delete_and_replace_postgis_table(
     Overwrites contents of `table_name` with contents of gdf.
     gdf schema must match destination table if the table already exists.
     """
-    if "geom" not in gdf.columns:
+    if gdf.geometry.name != "geom":
         gdf = gdf.rename_geometry("geom")  # type: ignore
     return _delete_and_replace_db(
         method_name="to_postgis",
