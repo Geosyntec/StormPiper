@@ -1,4 +1,4 @@
-from stormpiper.models.base import BaseORM
+from .base import BaseORM
 
 
 class TMNTView(BaseORM):
