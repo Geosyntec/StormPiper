@@ -2,6 +2,9 @@ services:
   stormpiper-test:
     image: gcr.io/tacoma-app/stormpiper-test:${VERSION:-latest}
 
+  bg_worker:
+    image: gcr.io/tacoma-app/bg_worker:${VERSION:-latest}
+
   postgis:
     image: gcr.io/tacoma-app/postgis:${VERSION:-latest}
 

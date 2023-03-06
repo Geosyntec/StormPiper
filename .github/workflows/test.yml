@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        image: [stormpiper-test, redis, postgis]
+        image: [stormpiper-test, redis, postgis, bg_worker]
     steps:
       - uses: actions/checkout@v3
 
@@ -80,8 +80,6 @@ jobs:
   test:
     needs: build
     runs-on: ubuntu-latest
-    env:
-      VERSION: ci-test-${{ needs.build.outputs.sha_short }}
     steps:
       - uses: actions/checkout@v3
 
@@ -97,6 +95,9 @@ jobs:
           password: ${{ secrets.GCR_JSON_KEY }}
 
       - name: run tests
+        env:
+          VERSION: ci-test-${{ needs.build.outputs.sha_short }}
+          STP_EE_JSON_BASE64: ${{ secrets.STP_EE_JSON_BASE64 }}
         run: make coverage-ci
 
       - name: coverage

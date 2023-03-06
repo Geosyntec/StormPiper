@@ -77,7 +77,7 @@ lint: clean
 	bash scripts/lint.sh
 
 init-test:
-	docker compose up -d stormpiper-test postgis redis
+	docker compose up -d stormpiper-test postgis redis bg_worker
 	docker compose exec stormpiper-test bash prestart-tests.sh
 
 test-ci: stack-ci init-test ## run tests quickly with the default Python
@@ -95,7 +95,7 @@ alert-prod-unreachable: stack-ci
 	docker compose exec stormpiper-test python -m stormpiper.if_error "ERROR: Prod Site is not reachable."
 
 coverage: clean restart init-test ## check code coverage quickly with the default Python
-	docker compose exec stormpiper-test coverage run -m pytest -x -m "not integration"
+	docker compose exec stormpiper-test coverage run -m pytest -x
 	docker compose exec stormpiper-test coverage report -mi
 
 typecheck: clean ## run static type checker
