@@ -1,5 +1,7 @@
 import json
+import time
 import uuid
+from functools import wraps
 
 import geopandas
 import pandas
@@ -12,11 +14,24 @@ from stormpiper.database.connection import get_session
 from stormpiper.database.schemas.base import Base, User
 from stormpiper.database.schemas.scenario import Scenario
 from stormpiper.database.schemas.views import initialize_views
+from stormpiper.earth_engine import login as ee_login
 from stormpiper.src import tasks
 from stormpiper.startup import create_default_globals
 from stormpiper.tests.data import _base
 
 hasher = CryptContext(schemes=["bcrypt"], deprecated="auto").hash
+
+
+def with_ee_login(func):
+    is_logged_in = ee_login()
+    if not is_logged_in:
+        raise ValueError("Not logged in to EE")
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+
+    return wrapper
 
 
 def clear_db(engine):
@@ -197,9 +212,14 @@ def seed_tacoma_derived_tables(engine):
     tasks.delete_and_refresh_all_results_tables(engine=engine)
 
 
-def seed_tacoma_scenarios(engine):
+def tacoma_scenarios() -> list[dict]:
     with open(_base.datadir / "scenario.json") as fp:
         scenarios = json.load(fp)
+        return scenarios
+
+
+def seed_tacoma_scenarios(engine):
+    scenarios = tacoma_scenarios()
 
     Session = get_session(engine=engine)
     with Session.begin() as session:  # type: ignore
@@ -216,3 +236,22 @@ def seed_db(engine):
     seed_tacoma_table_dependencies(engine)
     seed_tacoma_derived_tables(engine)
     seed_tacoma_scenarios(engine)
+
+
+def poll_testclient_url(testclient, url, timeout=5, verbose=False):  # pragma: no cover
+    ts = time.perf_counter()
+    timer = lambda: time.perf_counter() - ts
+    tries = 0
+
+    while timer() < timeout:
+        tries += 1
+        response = testclient.get(url)
+        status = response.json().get("status", "")
+        if status.lower() == "success":
+            if verbose:
+                print(f"\nget request polling tried: {tries} times.")
+            return response
+
+        time.sleep(0.1)
+
+    return

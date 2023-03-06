@@ -16,6 +16,7 @@ from stormpiper.database.schemas import tmnt_view as tmnt
 from stormpiper.models.tmnt_attr import TMNTFacilityPatch, TMNTUpdate
 from stormpiper.models.tmnt_attr_validator import tmnt_attr_validator
 from stormpiper.models.tmnt_view import TMNTView
+from stormpiper.src.npv import get_npv_settings_db
 
 router = APIRouter(dependencies=[Depends(user_role_ge_reader)])
 
@@ -76,7 +77,12 @@ async def validate_tmnt_update(
     tmnt_patch["updated_by"] = user.email
 
     try:
-        return await tmnt_attr_validator(tmnt_patch=tmnt_patch, context=context, db=db)
+        npv_global_settings = await get_npv_settings_db(db=db)
+        return tmnt_attr_validator(
+            tmnt_patch=tmnt_patch,
+            context=context,
+            npv_global_settings=npv_global_settings,
+        )
 
     except Exception as e:
         raise HTTPException(

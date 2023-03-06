@@ -111,12 +111,12 @@ DELIN_TO_TMNT = {
     },
 }
 
-
+DELIN_SCENARIO = {"name": "delin only", "input": DELIN_ONLY}
 TMNT_SCENARIO = {"name": "tmnt scenario", "input": DELIN_TO_TMNT}
 
 SCENARIO_EXAMPLES = {
     "empty": {"summary": "", "value": {"name": "empty scenario"}},
-    "delin only": {"summary": "", "value": {"name": "delin only", "input": DELIN_ONLY}},
+    "delin only": {"summary": "", "value": DELIN_SCENARIO},
     "delin to tmnt": {"summary": "", "value": TMNT_SCENARIO},
 }
 

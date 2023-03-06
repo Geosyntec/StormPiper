@@ -46,16 +46,19 @@ def compute_bmp_npv(
     return round(net_present_value, 2), list(costs.round(2))
 
 
-async def get_npv_settings(db: AsyncSession | None = None) -> dict[str, float]:
-    _settings = default_global_settings
-    if db is not None:
-        _settings = scalars_to_records(await crud.global_setting.get_all(db=db))
-
-    settings = {dct["variable"]: dct["value"] for dct in (_settings)}
+def get_npv_settings(settings: list[dict] | None = None) -> dict[str, float]:
+    if settings is None:
+        settings = default_global_settings
+    _settings = {dct["variable"]: dct["value"] for dct in settings}
     npv_settings = {
-        k: float(v) for k, v in settings.items() if k in NPVRequest.get_fields()
+        k: float(v) for k, v in _settings.items() if k in NPVRequest.get_fields()
     }
     return npv_settings
+
+
+async def get_npv_settings_db(db: AsyncSession) -> dict[str, float]:
+    settings = scalars_to_records(await crud.global_setting.get_all(db=db))
+    return get_npv_settings(settings)
 
 
 async def calculate_npv_for_existing_tmnt_in_db(node_id: str, db: AsyncSession):
@@ -66,7 +69,7 @@ async def calculate_npv_for_existing_tmnt_in_db(node_id: str, db: AsyncSession):
     if not attr:
         raise RecordNotFound(f"Record not found for node_id={node_id}")
 
-    npv_global_settings = await get_npv_settings(db=db)
+    npv_global_settings = await get_npv_settings_db(db=db)
 
     try:
         npv_req = NPVRequest(
