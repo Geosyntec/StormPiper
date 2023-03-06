@@ -8,7 +8,6 @@ from nereid.api.api_v1.models.treatment_facility_models import (
     TREATMENT_FACILITY_MODELS,
 )
 from pydantic import ValidationError
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.core.config import settings
 from stormpiper.core.context import get_context
@@ -101,10 +100,10 @@ def maybe_update_npv_params(
     return TMNTFacilityCostUpdate(**unvalidated_data)
 
 
-async def tmnt_attr_validator(
+def tmnt_attr_validator(
     tmnt_patch: dict[str, Any] | TMNTFacilityPatch | STRUCTURAL_FACILITY_TYPE,
     context: dict[str, Any] | None = None,
-    db: AsyncSession | None = None,
+    npv_global_settings: dict[str, Any] | None = None,
 ) -> TMNTUpdate:
     unvalidated_data = deepcopy(tmnt_patch)
 
@@ -113,7 +112,8 @@ async def tmnt_attr_validator(
 
     tmnt_attr = validate_tmnt_modeling_params(unvalidated_data, context=context)
 
-    npv_global_settings = await get_npv_settings(db)
+    if npv_global_settings is None:
+        npv_global_settings = get_npv_settings()
     tmnt_cost = maybe_update_npv_params(unvalidated_data, npv_global_settings)
 
     return TMNTUpdate(tmnt_attr=tmnt_attr, tmnt_cost=tmnt_cost)

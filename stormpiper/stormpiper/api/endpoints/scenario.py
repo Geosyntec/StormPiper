@@ -26,6 +26,7 @@ from stormpiper.models.scenario import (
     ScenarioUpdate,
 )
 from stormpiper.models.scenario_validator import scenario_validator
+from stormpiper.src.npv import get_npv_settings_db
 
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
@@ -46,7 +47,10 @@ async def validate_scenario(
     scenario["updated_by"] = user.email
 
     try:
-        return await scenario_validator(scenario=scenario, context=context, db=db)
+        npv_global_settings = await get_npv_settings_db(db=db)
+        return scenario_validator(
+            scenario=scenario, context=context, npv_global_settings=npv_global_settings
+        )
 
     except Exception as e:
         raise HTTPException(

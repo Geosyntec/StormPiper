@@ -45,11 +45,12 @@ def build_scenario_edge_list(lgu_boundary: str, tmnt_json: str, engine=engine):
 
 def solve_scenario_data(data: dict, force=False, engine=None) -> dict:
     """if 'force' is false, then only missing fields will be filled."""
-    delin_collection = data.get("input", {}).get("delineation_collection", {})
+    input_ = data.get("input", None) or {}
+    delin_collection = input_.get("delineation_collection", {})
     recalculate_loading = delin_collection and (
         force or any([f is None for f in [data.get(k, None) for k in ["lgu_load"]]])
     )
-    tmnt_collection = data.get("input", {}).get("tmnt_facility_collection", {})
+    tmnt_collection = input_.get("tmnt_facility_collection", {})
     recalculate_wq = tmnt_collection and (
         force
         or recalculate_loading

@@ -5,7 +5,6 @@ from typing import Any
 
 import geopandas
 from shapely import wkt
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.core.utils import get_data_hash
 
@@ -41,10 +40,10 @@ def validate_delineation_collection(delineation_collection_geojson: str) -> str:
     return delin_json
 
 
-async def scenario_validator(
+def scenario_validator(
     scenario: dict[str, Any],
     context: dict[str, Any] | None = None,
-    db: AsyncSession | None = None,
+    npv_global_settings: dict[str, Any] | None = None,
 ) -> ScenarioUpdate:
     loading_hash = "null"
     input_hash = "null"
@@ -71,8 +70,10 @@ async def scenario_validator(
             for f in collection.get("features", [{}]):
                 props = f.get("properties")
                 if props:
-                    tmnt_update = await tmnt_attr_validator(
-                        tmnt_patch=props, context=context, db=db
+                    tmnt_update = tmnt_attr_validator(
+                        tmnt_patch=props,
+                        context=context,
+                        npv_global_settings=npv_global_settings,
                     )
                     new_props = deepcopy(props)
                     if tmnt_update.tmnt_attr:
