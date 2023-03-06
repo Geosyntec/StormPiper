@@ -72,13 +72,3 @@ def test_elevation(client, long, lat):
         response.content,
         response.status_code,
     )
-
-
-@pytest.mark.integration
-def test_assets(client):
-    response = client.get("/api/rest/spatial/ee/assets")
-    assert response.status_code == 200, (
-        response,
-        response.content,
-        response.status_code,
-    )

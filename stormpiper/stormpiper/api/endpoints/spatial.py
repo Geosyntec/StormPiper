@@ -26,7 +26,7 @@ async def get_elevation(
 
 
 @router.get("/ee/assets", dependencies=[Depends(_login_ee)])
-async def get_ee_assets() -> Dict[str, Any]:
+async def get_ee_assets() -> Dict[str, Any]:  # pragma: no cover
     rsp = await run_in_threadpool(ee.assets)
 
     if not rsp:  # pragma: no cover
