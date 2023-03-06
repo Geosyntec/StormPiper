@@ -239,3 +239,30 @@ def test_scenario_solve(client):
             raise ValueError(
                 f"Task timed out or failed for scenario {scenario['name']}. {response.content}"
             )
+
+
+# @pytest.mark.integration
+# @test_utils.with_ee_login
+# def test_scenario_solve_id(client):
+#     response = client.get("/api/rest/scenario")
+
+#     scenarios = [dct for dct in response.json()][:3]
+
+#     for scenario in scenarios:
+#         scenario_id = scenario["id"]
+#         response = client.post(f"/api/rpc/solve_scenario/{scenario_id}")
+#         task_id = response.json()["task_id"]
+
+#         task_response = test_utils.poll_testclient_url(
+#             client, f"/api/rest/tasks/{task_id}", timeout=60
+#         )
+
+#         if task_response:
+#             rjson = task_response.json()
+#             assert rjson.get("status", "").lower() == "success"
+#         else:
+#             response = client.get(f"/api/rest/tasks/{task_id}")
+
+#             raise ValueError(
+#                 f"Task timed out or failed for scenario {scenario['name']}. {response.content}"
+#             )

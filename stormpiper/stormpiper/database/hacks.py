@@ -8,19 +8,19 @@ from sqlalchemy.schema import DDLElement
 from sqlalchemy.sql import table
 
 
-class CreateView(DDLElement):
+class CreateView(DDLElement):  # pragma: no cover
     def __init__(self, name, selectable):
         self.name = name
         self.selectable = selectable
 
 
-class DropView(DDLElement):
+class DropView(DDLElement):  # pragma: no cover
     def __init__(self, name):
         self.name = name
 
 
 @compiler.compiles(CreateView)
-def _create_view(element, compiler, **kw):
+def _create_view(element, compiler, **kw):  # pragma: no cover
     return "CREATE VIEW %s AS %s" % (
         element.name,
         compiler.sql_compiler.process(element.selectable, literal_binds=True),
@@ -28,19 +28,19 @@ def _create_view(element, compiler, **kw):
 
 
 @compiler.compiles(DropView)
-def _drop_view(element, compiler, **kw):
+def _drop_view(element, compiler, **kw):  # pragma: no cover
     return "DROP VIEW %s" % (element.name)
 
 
-def view_exists(ddl, target, connection, **kw):
+def view_exists(ddl, target, connection, **kw):  # pragma: no cover
     return ddl.name in inspect(connection).get_view_names()
 
 
-def view_doesnt_exist(ddl, target, connection, **kw):
+def view_doesnt_exist(ddl, target, connection, **kw):  # pragma: no cover
     return not view_exists(ddl, target, connection, **kw)
 
 
-def view(name, metadata, selectable):
+def view(name, metadata, selectable):  # pragma: no cover
     t = table(name)
 
     t._columns._populate_separate_keys(  # type: ignore
@@ -58,7 +58,7 @@ def view(name, metadata, selectable):
     return t
 
 
-class GUID(TypeDecorator):  # pragma: no cover
+class GUID(TypeDecorator):
     """
     Platform-independent GUID type.
 

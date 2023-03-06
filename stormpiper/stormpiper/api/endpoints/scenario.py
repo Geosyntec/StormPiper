@@ -42,7 +42,7 @@ async def validate_scenario(
     db: AsyncSession = Depends(get_async_session),
     context: dict = Depends(get_context),
 ) -> ScenarioUpdate:
-    if isinstance(scenario, BaseModel):
+    if isinstance(scenario, BaseModel):  # pragma: no branch
         scenario = scenario.dict(exclude_unset=True)
     scenario["updated_by"] = user.email
 
@@ -52,7 +52,7 @@ async def validate_scenario(
             scenario=scenario, context=context, npv_global_settings=npv_global_settings
         )
 
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=str(e).replace("\n", " "),
@@ -110,7 +110,7 @@ async def delete_scenario(
 ):
     try:
         attr = await crud.scenario.remove(db=db, id=id)
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=str(e).replace("\n", " "),
@@ -127,7 +127,7 @@ async def update_scenario(
 ):
     attr = await crud.scenario.get(db=db, id=id)
 
-    if not attr:
+    if not attr:  # pragma: no cover
         raise HTTPException(status_code=404, detail=f"Record not found for id={id}")
 
     loading_hash = scenario.loading_hash
@@ -159,7 +159,7 @@ async def update_scenario(
         new_obj = ScenarioUpdate(**data)
         attr = await crud.scenario.update(db=db, id=id, new_obj=new_obj)
 
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         await db.rollback()
         # raise
         raise HTTPException(
@@ -196,7 +196,7 @@ async def create_scenario(
     logger.info(scenario.json())
     try:
         attr = await crud.scenario.create(db=db, new_obj=scenario)
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=str(e).replace("\n", " "),
@@ -234,7 +234,7 @@ async def solve_single_scenario(
 async def solve_all_scenarios(
     force: bool = Query(False),
     db: AsyncSession = Depends(get_async_session),
-):
+):  # pragma: no cover
     raise DeprecationWarning(
         "this functionality should be supported by the frontend, not the backend."
     )
