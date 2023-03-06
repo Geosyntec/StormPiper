@@ -62,6 +62,7 @@ stack-ci: ## write the docker-stack.yml file for ci
 	docker compose \
 		-f docker-compose.gar-image-ci.yml \
 		-f docker-compose.dev-postgis.yml \
+		-f docker-compose.dev-environment-ci.yml \
 		config > docker-stack.yml
 
 build: ## build the docker-stack.yml file
