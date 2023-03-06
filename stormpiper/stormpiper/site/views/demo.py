@@ -6,11 +6,16 @@ from fastapi.templating import Jinja2Templates
 
 from stormpiper.apps.supersafe import users
 from stormpiper.core.config import stormpiper_path
-from stormpiper.earth_engine import get_layers
+from stormpiper.earth_engine import async_login, get_layers
 
 router = APIRouter()
 
 templates = Jinja2Templates(directory=str(stormpiper_path / "site" / "templates"))
+
+
+async def _init():
+    await async_login()
+    return get_layers()
 
 
 @router.get(
@@ -19,7 +24,7 @@ templates = Jinja2Templates(directory=str(stormpiper_path / "site" / "templates"
     dependencies=[Depends(users.current_active_user)],
 )
 async def tileservice_view(
-    request: Request, layers: Dict[str, str] = Depends(get_layers)
+    request: Request, layers: Dict[str, str] = Depends(_init)
 ) -> Response:
     return templates.TemplateResponse(
         "tileserver.html", {"request": request, "layers": layers.values()}

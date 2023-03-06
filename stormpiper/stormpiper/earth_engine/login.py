@@ -35,6 +35,8 @@ async def async_login(**kwargs):
             email=email, key_file=key_file, key_data=key_data
         )
         # the ee library has set incorrect type hints/constraints on the ee.Initialize function.
+        logger.info("initializing ee with async_login attempt")
+
         await run_in_threadpool(
             ee.Initialize,
             credentials=credentials,  # type: ignore

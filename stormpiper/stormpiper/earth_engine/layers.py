@@ -44,30 +44,30 @@ def _init_layers():
     raw_layers = json.loads(layer_json.read_text())
     raw_layers.update(
         {
-            "tnc_runoff_mm": {
-                "sourceName": "City of Tacoma",
-                # "units": "°C",
-                # "description": "Evening temperature measurements",
-                "safe_name": "tnc_runoff_mm",
-                "layer": {
-                    "eeObject": "projects/ee-tacoma-watershed/assets/raster/tnc_runoff_mm",
-                    "visParams": {
-                        "min": 0,
-                        "max": 600,
-                        "palette": [
-                            "#4575b4",
-                            "#91bfdb",
-                            "#e0f3f8",
-                            "#ffffbf",
-                            "#fee090",
-                            "#fc8d59",
-                            "#d73027",
-                        ],
-                        "opacity": 0.8,
-                        "name": "tnc_runoff_mm",
-                    },
-                },
-            },
+            # "tnc_runoff_mm": {
+            #     "sourceName": "City of Tacoma",
+            #     # "units": "°C",
+            #     # "description": "Evening temperature measurements",
+            #     "safe_name": "tnc_runoff_mm",
+            #     "layer": {
+            #         "eeObject": "projects/ee-tacoma-watershed/assets/raster/tnc_runoff_mm",
+            #         "visParams": {
+            #             "min": 0,
+            #             "max": 600,
+            #             "palette": [
+            #                 "#4575b4",
+            #                 "#91bfdb",
+            #                 "#e0f3f8",
+            #                 "#ffffbf",
+            #                 "#fee090",
+            #                 "#fc8d59",
+            #                 "#d73027",
+            #             ],
+            #             "opacity": 0.8,
+            #             "name": "tnc_runoff_mm",
+            #         },
+            #     },
+            # },
             "TNC_80s_runoff_mm": {
                 "sourceName": "City of Tacoma",
                 # "units": "°C",
@@ -93,30 +93,30 @@ def _init_layers():
                     },
                 },
             },
-            "tnc_tss_ug_L": {
-                "sourceName": "City of Tacoma",
-                # "units": "°C",
-                # "description": "Evening temperature measurements",
-                "safe_name": "tnc_tss_ug_L",
-                "layer": {
-                    "eeObject": "projects/ee-tacoma-watershed/assets/raster/tnc_tss_ug_L",
-                    "visParams": {
-                        "min": 0,
-                        "max": 1e5,
-                        "palette": [
-                            "#4575b4",
-                            "#91bfdb",
-                            "#e0f3f8",
-                            "#ffffbf",
-                            "#fee090",
-                            "#fc8d59",
-                            "#d73027",
-                        ],
-                        "opacity": 0.8,
-                        "name": "tnc_tss_ug_L",
-                    },
-                },
-            },
+            # "tnc_tss_ug_L": {
+            #     "sourceName": "City of Tacoma",
+            #     # "units": "°C",
+            #     # "description": "Evening temperature measurements",
+            #     "safe_name": "tnc_tss_ug_L",
+            #     "layer": {
+            #         "eeObject": "projects/ee-tacoma-watershed/assets/raster/tnc_tss_ug_L",
+            #         "visParams": {
+            #             "min": 0,
+            #             "max": 1e5,
+            #             "palette": [
+            #                 "#4575b4",
+            #                 "#91bfdb",
+            #                 "#e0f3f8",
+            #                 "#ffffbf",
+            #                 "#fee090",
+            #                 "#fc8d59",
+            #                 "#d73027",
+            #             ],
+            #             "opacity": 0.8,
+            #             "name": "tnc_tss_ug_L",
+            #         },
+            #     },
+            # },
         }
     )
     layer_dict = {}
@@ -128,36 +128,36 @@ def _init_layers():
             logger.exception(f"ERROR loading layer {name}")
             continue
 
-    TSS = layer_dict["tnc_tss_ug_L"]["layer"]["image"]
-    Q = layer_dict["tnc_runoff_mm"]["layer"]["image"]
-    load = (
-        TSS.divide(1000)  # convert => mg/l
-        .multiply(Q)  # convert => mg/sqm
-        .rename("TSS_mg_sqm")
-        .selfMask()
-    )
+    # TSS = layer_dict["tnc_tss_ug_L"]["layer"]["image"]
+    # Q = layer_dict["tnc_runoff_mm"]["layer"]["image"]
+    # load = (
+    #     TSS.divide(1000)  # convert => mg/l
+    #     .multiply(Q)  # convert => mg/sqm
+    #     .rename("TSS_mg_sqm")
+    #     .selfMask()
+    # )
 
-    url = load.getMapId(
-        {
-            "min": 0,
-            "max": 1e5,
-            "palette": [
-                "#4575b4",
-                "#91bfdb",
-                "#e0f3f8",
-                "#ffffbf",
-                "#fee090",
-                "#fc8d59",
-                "#d73027",
-            ],
-            "opacity": 0.8,
-            "name": "TSS_mg_sqm",
-        },
-    )["tile_fetcher"].url_format
-    layer_dict["TSS_mg_sqm"] = {
-        "safe_name": "TSS_mg_sqm",
-        "layer": {"url": url, "image": load},
-    }
+    # url = load.getMapId(
+    #     {
+    #         "min": 0,
+    #         "max": 1e5,
+    #         "palette": [
+    #             "#4575b4",
+    #             "#91bfdb",
+    #             "#e0f3f8",
+    #             "#ffffbf",
+    #             "#fee090",
+    #             "#fc8d59",
+    #             "#d73027",
+    #         ],
+    #         "opacity": 0.8,
+    #         "name": "TSS_mg_sqm",
+    #     },
+    # )["tile_fetcher"].url_format
+    # layer_dict["TSS_mg_sqm"] = {
+    #     "safe_name": "TSS_mg_sqm",
+    #     "layer": {"url": url, "image": load},
+    # }
 
     runoff_path = settings.EE_RUNOFF_PATH
     concentration_path = settings.EE_COC_PATH

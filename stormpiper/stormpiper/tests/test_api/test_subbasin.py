@@ -48,12 +48,12 @@ def test_get_subbasin_with_token(readonly_client, f, limit):
 @pytest.mark.parametrize(
     "method, route, client_name, token, authorized",
     [
-        ("get", "/api/rest/subbasin/WS_03", "client", False, True),
-        ("get", "/api/rest/subbasin/WS_03", "readonly_client", False, False),
-        ("get", "/api/rest/subbasin", "client", False, True),
-        ("get", "/api/rest/subbasin", "readonly_client", False, False),
-        ("get", "/api/rest/subbasin/token", "client", True, True),
+        ("get", "/api/rest/subbasin/WS_03", "readonly_client", False, True),
+        ("get", "/api/rest/subbasin/WS_03", "public_client", False, False),
+        ("get", "/api/rest/subbasin", "readonly_client", False, True),
+        ("get", "/api/rest/subbasin", "public_client", False, False),
         ("get", "/api/rest/subbasin/token", "readonly_client", True, True),
+        ("get", "/api/rest/subbasin/token", "public_client", True, False),
     ],
 )
 @pytest.mark.parametrize("f", ["json", "geojson"])
