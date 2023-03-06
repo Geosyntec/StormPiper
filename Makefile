@@ -72,7 +72,7 @@ restart: ## restart the redis server and the background workers
 	docker compose restart redis bg_worker beat_worker
 
 test: ## run tests quickly with the default Python
-	bash scripts/test.sh -sv -m "not integration"
+	bash scripts/test.sh -sv
 
 lint: clean
 	bash scripts/lint.sh
@@ -82,10 +82,10 @@ init-test:
 	docker compose exec stormpiper-test bash prestart-tests.sh
 
 test-ci: stack-ci init-test ## run tests quickly with the default Python
-	docker compose exec stormpiper-test pytest -xsv  -m "not integration"
+	docker compose exec stormpiper-test pytest -xsv
 
 coverage-ci: stack-ci init-test ## run tests on CI with the default Python
-	docker compose exec stormpiper-test coverage run -m pytest -v -m "not integration"
+	docker compose exec stormpiper-test coverage run -m pytest -v
 
 alert-dev-unreachable: stack-ci
 	docker compose up -d stormpiper-test
