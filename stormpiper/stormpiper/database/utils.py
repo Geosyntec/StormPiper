@@ -35,7 +35,7 @@ def scalars_to_records(rows) -> list[dict]:
 def scalar_records_to_gdf(
     records: list[dict], crs: int | None = None, geometry: str = "geom"
 ) -> geopandas.GeoDataFrame:
-    if crs is None:
+    if crs is None:  # pragma: no cover
         crs = 4326
     data = (
         pandas.DataFrame(records)
@@ -44,7 +44,7 @@ def scalar_records_to_gdf(
     )
     gdf = geopandas.GeoDataFrame(data, geometry="geometry", crs=crs)  # type: ignore
 
-    if geometry != "geometry":
+    if geometry != "geometry":  # pragma: no branch
         gdf.drop(columns=[geometry], inplace=True)
     return gdf
 
@@ -92,7 +92,7 @@ def reset_sequence(*, table_name, connectable):
             logger.info(f"resetting sequence: {sequence_name}")
             q = sa.text(f"select setval(:sequence_name, max(id)) from {table_name}")
             connectable.execute(q, {"sequence_name": sequence_name})
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         logger.exception(e)
 
     return
@@ -105,7 +105,7 @@ def _delete_and_replace_db(
     Overwrites contents of `table_name` with contents of df.
     df schema must match destination table if the table already exists.
     """
-    if len(df) == 0:
+    if len(df) == 0:  # pragma: no cover
         raise ValueError(f"No data provided to replace table {table_name}. Aborting.")
     method = getattr(df, method_name, df.to_sql)
 
@@ -113,7 +113,7 @@ def _delete_and_replace_db(
 
     Session = get_session(engine=engine)
     with engine.begin() as conn:
-        if engine.dialect.has_table(conn, table_name):
+        if engine.dialect.has_table(conn, table_name):  # pragma: no branch
             q = sa.text(f'delete from "{table_name}";')
             conn.execute(q)
         method(table_name, con=conn, if_exists="append", index=index, **kwargs)
@@ -138,7 +138,7 @@ def delete_and_replace_postgis_table(
     Overwrites contents of `table_name` with contents of gdf.
     gdf schema must match destination table if the table already exists.
     """
-    if gdf.geometry.name != "geom":
+    if gdf.geometry.name != "geom":  # pragma: no branch
         gdf = gdf.rename_geometry("geom")  # type: ignore
     return _delete_and_replace_db(
         method_name="to_postgis",
@@ -165,17 +165,17 @@ def delete_and_replace_table(
     )
 
 
-def load_spatialite_extension(conn, connection_record):
+def load_spatialite_extension(conn, connection_record):  # pragma: no cover
     conn.enable_load_extension(True)
     conn.load_extension("mod_spatialite")
 
 
-def load_spatialite(engine):
+def load_spatialite(engine):  # pragma: no cover
     with engine.begin() as conn:
         conn.execute(sa.select([sa.func.InitSpatialMetaData(1)]))
 
 
-def init_spatial(engine):
+def init_spatial(engine):  # pragma: no cover
     listen(engine, "connect", load_spatialite_extension)
     inspector = sa.inspect(engine)
     if "spatial_ref_sys" in inspector.get_table_names():

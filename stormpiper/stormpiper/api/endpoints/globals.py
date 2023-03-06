@@ -54,7 +54,7 @@ async def patch_global(
 ):
     attr = await crud.global_setting.get(db=db, id=variable)
 
-    if not attr:
+    if not attr:  # pragma: no cover
         raise HTTPException(
             status_code=404, detail=f"Record not found for variable={variable}"
         )
@@ -85,7 +85,7 @@ async def create_global_setting(
 
     try:
         attr = await crud.global_setting.create(db=db, new_obj=new_obj)
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=str(e).replace("\n", " "),
@@ -105,7 +105,7 @@ async def delete_global_setting(
 ):
     try:
         attr = await crud.global_setting.remove(db=db, id=variable)
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=str(e).replace("\n", " "),

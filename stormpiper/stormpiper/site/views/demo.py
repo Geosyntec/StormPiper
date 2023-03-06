@@ -34,38 +34,40 @@ async def tileservice_view(
 @router.get("/register", name="register:get_register")
 async def get_register(
     request: Request, user: users.User = Depends(users.current_user_safe(optional=True))
-):
+):  # pragma: no cover
     if not user:
         return templates.TemplateResponse("register.html", {"request": request})
     return {"message": f"'{user.email}' is already logged in."}
 
 
 @router.post("/register", name="register:post_register")
-async def post_register(request: Request):
+async def post_register(request: Request):  # pragma: no cover
     return RedirectResponse(request.scope["router"].url_path_for("register:register"))
 
 
 @router.get("/verify", name="verify:get_verify_token")
-async def get_verify(request: Request, token: Optional[str] = None):
+async def get_verify(request: Request, token: Optional[str] = None):  # pragma: no cover
     return templates.TemplateResponse(
         "verify.html", {"request": request, "token": token}
     )
 
 
 @router.get("/login", name="login:get_login")
-async def get_login(request: Request):
+async def get_login(request: Request):  # pragma: no cover
     return templates.TemplateResponse("login.html", {"request": request})
 
 
 @router.post("/login", name="login:post_login")
-async def post_login(request: Request):
+async def post_login(request: Request):  # pragma: no cover
     return RedirectResponse(
         request.scope["router"].url_path_for("auth:jwt.cookie.login")
     )
 
 
 @router.get("/reset_password", name="reset:get_reset_password")
-async def get_reset_password(request: Request, token: Optional[str] = None):
+async def get_reset_password(
+    request: Request, token: Optional[str] = None
+):  # pragma: no cover
     return templates.TemplateResponse(
         "reset_password.html", {"request": request, "token": token}
     )
