@@ -6,10 +6,10 @@ from ..utils import get_my_data
 @pytest.mark.parametrize(
     "method, route, client_name, authorized",
     [
-        ("get", "/api/rest/tmnt_delineation/", "client", True),
-        ("get", "/api/rest/tmnt_delineation/", "readonly_client", False),
-        ("get", "/api/rest/tmnt_delineation/SWFC-100001/", "client", True),
-        ("get", "/api/rest/tmnt_delineation/SWFC-100001/", "readonly_client", False),
+        ("get", "/api/rest/tmnt_delineation/", "readonly_client", True),
+        ("get", "/api/rest/tmnt_delineation/", "public_client", False),
+        ("get", "/api/rest/tmnt_delineation/SWFC-100001/", "readonly_client", True),
+        ("get", "/api/rest/tmnt_delineation/SWFC-100001/", "public_client", False),
     ],
 )
 @pytest.mark.parametrize("f", ["json", "geojson"])
