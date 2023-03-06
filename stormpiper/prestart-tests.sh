@@ -5,7 +5,7 @@ prefix="Prestart Tests script: "
 
 echo "$prefix prestart found"
 echo "$prefix mingling with db..."
-python /stormpiper/stormpiper/pre-start-tests.py
+python /stormpiper/stormpiper/pre-start.py
 
 
 # Run migrations
