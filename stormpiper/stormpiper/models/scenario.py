@@ -139,6 +139,10 @@ class ScenarioInputUpdate(BaseModel):
 
 class ScenarioBase(BaseModel):
     name: str = "unnamed"
+    info: dict | None = Field(
+        None,
+        description="Any associated data object to store with the project. Frontend can determine the keys and values of this object.",
+    )
     input: ScenarioInput | None = None
 
 
@@ -177,7 +181,8 @@ class ScenarioSolve(ScenarioUpdate):
 class ScenarioCreate(ScenarioBase):
     loading_hash: str
     input_hash: str
-    updated_by: None | str = None
+    created_by: str | None = None
+    updated_by: str | None = None
     input_time_updated: datetime | None = Field(default_factory=datetime_now)
 
     def __init__(self, **data: Any) -> None:
@@ -188,6 +193,7 @@ class ScenarioCreate(ScenarioBase):
 # Properties shared by models stored in DB
 class ScenarioInDBBase(BaseORM, ScenarioUpdate):
     id: UUID
+    created_by: str | None = None
     time_created: datetime | None = None
     time_updated: datetime | None = None
 

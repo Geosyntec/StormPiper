@@ -190,9 +190,11 @@ async def get_all_scenarios(
 
 @router.post("/", name="scenario:create", response_model=ScenarioResponse)
 async def create_scenario(
-    scenario: ScenarioCreate = Depends(validate_scenario),
+    data: ScenarioUpdate = Depends(validate_scenario),
     db: AsyncSession = Depends(get_async_session),
+    user: ss.users.User = Depends(ss.users.current_active_user),
 ):
+    scenario = ScenarioCreate(**data.dict(exclude_unset=True), created_by=user.email)
     logger.info(scenario.json())
     try:
         attr = await crud.scenario.create(db=db, new_obj=scenario)
