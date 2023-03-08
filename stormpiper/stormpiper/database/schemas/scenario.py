@@ -17,9 +17,11 @@ class Scenario(Base, MutableTrackedTable):
 
     # id must go to the client to track, edit, update the scenario
     id = Column(GUID, primary_key=True, default=uuid.uuid4)
+    created_by = Column(String)
 
     # name is not unique, user can set as they wish, sort rename etc.
     name = Column(String)
+    info = Column(JSONB)
 
     # contains entire user submitted scenario blob. parts of this can change, so we
     # hash it's state to see what needs to be computed or recomputed to keep the
