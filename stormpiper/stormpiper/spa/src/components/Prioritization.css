@@ -1,0 +1,10 @@
+#priority-info {
+	position: fixed;
+	z-index: 9;
+	top: 10%;
+  left: 8%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 75%;
+  width: 25%;
+}

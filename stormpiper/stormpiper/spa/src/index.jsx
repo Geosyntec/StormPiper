@@ -9,32 +9,31 @@ import Register from "./components/register";
 import { Users, EditUser } from "./components/users";
 import Verify from "./components/verify";
 import Forgot from "./components/forgot"
-// import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/app/" element={<App/>}></Route>
+        <Route path="/app/" element={<App viewComponent='landing'/>}></Route>
         <Route path="/app/login/" element={<Login/>}></Route>
         <Route path="/app/register/" element={<Register/>}></Route>
         <Route path="/app/verify/" element={<Verify/>}></Route>
         <Route path="/app/reset/" element={<Reset/>}></Route>
         <Route path="/app/forgot-password/" element={<Forgot/>}></Route>
-        <Route path="/app/map/" element={<App/>}>
-          <Route path="tmnt" element={<App/>}>
-            <Route path=":id" element = {<App/>}></Route>
+        <Route path="/app/map/" element={<App viewComponent='systemExplorer'/>}>
+          <Route path="tmnt" element={<App viewComponent='systemExplorer'/>}>
+            <Route path=":id" element = {<App viewComponent='systemExplorer'/>}></Route>
           </Route>
         </Route>
+<<<<<<< HEAD
         <Route path="/app/manage-users" element={<Users />}></Route>
         <Route path="/app/manage-users/:id" element={<EditUser />}></Route>
+=======
+        <Route path="/app/prioritization/" element={<App viewComponent='prioritization'/>}></Route>
+>>>>>>> 62c4fed (scaffolded subbasin scoring module; refactor to nest modules within top level component)
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root")
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-// reportWebVitals();

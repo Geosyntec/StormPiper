@@ -3,6 +3,7 @@ const fieldDict = {
     activeSWMain:['altid','diameter'],
     activeSWFacility:['altid','subbasin','facilitytype'],
     tmnt_delineations:['altid','relid'],
+    subbasins:['subbasin'],
     default:['altid']
 }
 
