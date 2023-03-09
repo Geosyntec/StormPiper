@@ -98,6 +98,7 @@ function DeckGLMap(props) {
           }
         };
       }}
+      style={props.style}
     >
       <StaticMap mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN} mapStyle={baseLayerStyles[props.baseLayer].styleURL} />
     </DeckGL>

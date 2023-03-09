@@ -144,7 +144,7 @@ export default function ProminentAppBar(props) {
   const navigate=useNavigate()
 
   const [open,setOpen] = useState(false)
-  const [selectedButton,setSelectedButton] = useState("Home")
+  const [selectedButton,setSelectedButton] = useState("")
   const [userProfile,setUserProfile] = useState({
     firstName:'User',
     email:'email@tacoma.watersheds.com'
