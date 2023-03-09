@@ -1,4 +1,3 @@
-
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -19,23 +18,23 @@
   color: #61dafb;
 }
 
-#header-panel{
+#header-panel {
   position: absolute;
-	z-index: 10;
-	top: 0;
+  z-index: 10;
+  top: 0;
   bottom: 0;
-	right: 0;
+  right: 0;
   overflow-x: hidden;
-  overflow-y:hidden;
+  overflow-y: hidden;
   height: 15%;
   width: 100%;
   background: rgb(36, 21, 170);
 }
 
 #control-panel {
-	position: absolute;
-	z-index: 9;
-	top: 8%;
+  position: absolute;
+  z-index: 9;
+  top: 8%;
   left: 5%;
   overflow-x: hidden;
   overflow-y: auto;
@@ -43,52 +42,50 @@
   width: 25%;
   /* background: rgba(255, 255, 255, 1);
   border-radius: 2px; */
-
 }
 
-#control-panel-hidden{
+#control-panel-hidden {
   position: absolute;
-	z-index: 9;
-	top: 8%;
+  z-index: 9;
+  top: 8%;
   left: 5%;
   overflow-x: hidden;
   overflow-y: hidden;
-  height:5%;
+  height: 5%;
   width: 3%;
   background: rgba(255, 255, 255, 1);
   border-radius: 2px;
-
 }
 
-#base-layer-control-panel{
+#base-layer-control-panel {
   position: absolute;
-	z-index: 9;
-	top: 86%;
+  z-index: 9;
+  top: 86%;
   left: 5%;
   overflow-x: hidden;
   overflow-y: hidden;
-  height:auto;
+  height: auto;
   width: auto;
   background: rgba(255, 255, 255, 1);
   border-radius: 2px;
 }
 
-.base-layer-tab{
-  font-size:0.7rem !important;
-  min-width:80px !important;
+.base-layer-tab {
+  font-size: 0.7rem !important;
+  min-width: 80px !important;
 }
 
 .layer-controls {
-	border: groove 2px #fff;
+  border: groove 2px #fff;
   border-left: none;
   border-right: none;
   padding: 8px 0;
 }
 
 .deck-tooltip {
-  z-index:8 !important;
-  left:100px;
-  top:100px;
+  z-index: 8 !important;
+  left: 100px;
+  top: 100px;
   font-family: Helvetica, Arial, sans-serif;
   padding: 6px !important;
   margin: 8px;
@@ -97,61 +94,59 @@
 }
 
 #prj-stat-panel {
-	position: fixed;
-	z-index: 9;
-	top: 16%;
+  position: fixed;
+  z-index: 9;
+  top: 16%;
   left: 58%;
   overflow-x: hidden;
   overflow-y: auto;
   height: auto;
   width: 40%;
-  text-align:center;
+  text-align: center;
   /* background: rgba(255, 255, 255, 1); */
   /* border-radius: 2px; */
-
 }
 
-#prj-stat-panel-hidden{
+#prj-stat-panel-hidden {
   /* transition-property: height,width,left;
   transition-duration: 500ms; */
   position: fixed;
-	z-index: 9;
-	top: 16%;
+  z-index: 9;
+  top: 16%;
   left: 90%;
   /* left: 125%; */
   overflow-x: hidden;
   overflow-y: hidden;
-  height:5%;
+  height: 5%;
   width: 3%;
   background: rgba(255, 255, 255, 1);
   border-radius: 2px;
 }
 #verification-panel {
-	position: fixed;
-	z-index: 9;
-	top: 30%;
+  position: fixed;
+  z-index: 9;
+  top: 30%;
   left: 25%;
   overflow-x: hidden;
   overflow-y: auto;
   height: auto;
   width: 50%;
-  text-align:center;
+  text-align: center;
   /* background: rgba(255, 255, 255, 1); */
   /* border-radius: 2px; */
-
 }
 
-#verification-panel-hidden{
+#verification-panel-hidden {
   /* transition-property: height,width,left;
   transition-duration: 500ms; */
   position: fixed;
-	z-index: 9;
-	top: 30%;
+  z-index: 9;
+  top: 30%;
   left: -50%;
   /* left: 125%; */
   overflow-x: hidden;
   overflow-y: hidden;
-  height:5%;
+  height: 5%;
   width: 3%;
   background: rgba(255, 255, 255, 1);
   border-radius: 2px;
@@ -160,116 +155,115 @@
   transition-property: top;
   transition-timing-function: linear;
   transition-duration: 500ms;
-	position: fixed;
-	z-index: 9;
-	top: 9%;
+  position: fixed;
+  z-index: 9;
+  top: 9%;
   left: 6%;
   overflow-x: hidden;
   overflow-y: auto;
   height: 91%;
   width: 94%;
-  text-align:center;
+  text-align: center;
   /* background: rgba(255, 255, 255, 1); */
   /* border-radius: 2px; */
-
 }
 
-#results-panel-hidden{
+#results-panel-hidden {
   transition-property: top;
   transition-timing-function: linear;
   transition-duration: 500ms;
-	position: fixed;
-	z-index: 9;
-	top: 150%;
+  position: fixed;
+  z-index: 9;
+  top: 150%;
   left: 6%;
   overflow-x: hidden;
   overflow-y: auto;
   height: auto;
   width: 94%;
-  text-align:center;
+  text-align: center;
 }
 
-.zero-padding{
-  padding:0px !important;
+.zero-padding {
+  padding: 0px !important;
 }
 
-.zero-margin{
-  margin:0px !important;
+.zero-margin {
+  margin: 0px !important;
 }
 
-.lg-margin{
-  margin:5em;
+.lg-margin {
+  margin: 5em;
 }
 
-.flex-row{
-  display:flex;
+.flex-row {
+  display: flex;
   justify-content: center;
-  flex-wrap:wrap;
+  flex-wrap: wrap;
 }
-.flex-column{
-  display:flex;
-  flex-direction:column;
+.flex-column {
+  display: flex;
+  flex-direction: column;
   align-content: center;
-  flex-wrap:wrap;
-  align-items:center;
+  flex-wrap: wrap;
+  align-items: center;
 }
-
 
 /* Authentication Form Styles (reset, verify, forgot, login, register) */
-.flex{
-  display:flex;
+.flex {
+  display: flex;
   justify-content: center;
-  flex-wrap:wrap;
+  flex-wrap: wrap;
 }
 
-.auth-form{
-  width:100%;
-  height:50%;
+.auth-form {
+  width: 100%;
+  height: 50%;
 }
 
-.auth-form-body{
-  width:30%;
-  height:auto;
-  display:flex;
-  flex-wrap:wrap;
+.auth-form-body {
+  width: 30%;
+  height: auto;
+  display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  background:rgba(249, 247, 247, 0.8);
-  margin:50px;
-  padding:10px;
+  background: rgba(249, 247, 247, 0.8);
+  margin: 50px;
+  padding: 10px;
 }
 
-.form-label{
+.form-label {
   font-size: 10px;
   margin: 5px 20px;
 }
 
-.required::after{
-  content:"*";
+.required::after {
+  content: "*";
   color: red;
 }
 
-.form-input{
+.form-input {
   margin: 5px 20px;
-  width:90%;
+  width: 90%;
 }
 
-.auth-form-row{
-  text-align:start;
-  width:100%;
+.auth-form-row {
+  text-align: start;
+  width: 100%;
 }
 
-.result-header, .err-list-header{
+.result-header,
+.err-list-header {
   padding: 0em 1em;
 }
 
-.err-msg{
-  color:red
+.err-msg {
+  color: red;
 }
 
 /* input .auth{
   width:50%
 } */
 
-.auth-button-bar{
+.auth-button-bar {
   padding: 10px 0px;
 }

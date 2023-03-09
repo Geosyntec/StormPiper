@@ -1,5 +1,5 @@
 import { GeoJsonLayer } from "@deck.gl/layers";
-import {urlPrefix} from "../../utils/utils"
+import { urlPrefix } from "../../utils/utils";
 
 // let baseURL
 // if(import.meta.env.MODE==='development'){
@@ -13,13 +13,15 @@ const subbasins = {
   layer: GeoJsonLayer,
   props: {
     // data:"https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/21/query?where=1%3D1&outFields=*&returnGeometry=true&f=geojson&outSR=4326",
-    data: urlPrefix+ "/api/rest/subbasin/?f=geojson&limit=100000&offset=0&epoch=1980s",
+    data:
+      urlPrefix +
+      "/api/rest/subbasin/?f=geojson&limit=100000&offset=0&epoch=1980s",
     loadOptions: {
       fetch: {
         headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_AUTH_TOKEN}`,
-        }
-      }
+          Authorization: `Bearer ${import.meta.env.VITE_AUTH_TOKEN}`,
+        },
+      },
     },
     id: "subbasins",
     label: "Subbasins for Prioritization",
@@ -42,11 +44,11 @@ const subbasins = {
 
 /* eslint-disable quote-props */
 export const layerDict = {
-  "Subbasins": {
+  Subbasins: {
     Subbasins: [
       subbasins,
       // landCoverRaster,
       // clusteredPopRaster
     ],
-  }
+  },
 };
