@@ -55,7 +55,6 @@ stack: ## write the docker-stack.yml file
 		-f docker-compose.develop.yml \
 		-f docker-compose.dev-volume.yml \
 		-f docker-compose.dev-environment.yml \
-		-f docker-compose.dev-postgis.yml \
 		config > docker-stack.yml
 
 stack-ci: ## write the docker-stack.yml file for ci
@@ -65,13 +64,28 @@ stack-ci: ## write the docker-stack.yml file for ci
 		-f docker-compose.dev-environment-ci.yml \
 		config > docker-stack.yml
 
+stack-fe: ## make stack for front end development
+	docker compose \
+		-f docker-compose.develop.yml \
+		-f docker-compose.dev-environment.yml \
+		config > docker-stack.yml
+
+
+stack-test: ## make stack for testing on local
+	docker compose \
+		-f docker-compose.develop.yml \
+		-f docker-compose.dev-volume.yml \
+		-f docker-compose.dev-environment.yml \
+		-f docker-compose.dev-postgis.yml \
+		config > docker-stack.yml
+
 build: ## build the docker-stack.yml file
 	docker compose build
 
 restart: ## restart the redis server and the background workers
 	docker compose restart redis bg_worker beat_worker
 
-test: ## run tests quickly with the default Python
+test: stack-test ## run tests quickly with the default Python
 	bash scripts/test.sh -sv
 
 lint: clean
@@ -95,7 +109,7 @@ alert-prod-unreachable: stack-ci
 	docker compose up -d stormpiper-test
 	docker compose exec stormpiper-test python -m stormpiper.if_error "ERROR: Prod Site is not reachable."
 
-coverage: clean restart init-test ## check code coverage quickly with the default Python
+coverage: clean stack-test restart init-test ## check code coverage quickly with the default Python
 	docker compose exec stormpiper-test coverage run -m pytest -x
 	docker compose exec stormpiper-test coverage report -mi
 
@@ -112,6 +126,11 @@ up-d: stack ## bring up the containers in '-d' mode
 
 up-test: stack init-test
 
+up-fe-dev: stack-fe ## bring up the containers without mounting volumes for `npm run dev`
+	docker compose up
+
+up-fe-watch: up ## bring up the containers with mounted volumes for `npm run watch`
+
 down: ## bring down the containers
 	docker compose down
 
@@ -126,3 +145,9 @@ release: ## push production images to registry
 
 cluster: ## bring up local kubenertes cluster
 	bash scripts/local_cluster.sh
+
+fe-dev:
+	( cd stormpiper/stormpiper/spa && npm run dev )
+
+fe-watch:
+	( cd stormpiper/stormpiper/spa && npm run watch )
