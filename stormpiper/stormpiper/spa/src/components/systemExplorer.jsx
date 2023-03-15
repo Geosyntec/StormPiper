@@ -179,6 +179,7 @@ function SystemExplorer(props) {
           <Suspense fallback={<div>Loading Map...</div>}>
             <DeckGLMap
               id="main-map"
+              context="existing-system"
               layers={_renderLayers(layerDict,activeLayers,firstRender)}
               baseLayer={baseLayer}
               onClick={_lyrClickHandlers.bind(this)}

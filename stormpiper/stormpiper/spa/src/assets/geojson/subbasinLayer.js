@@ -9,7 +9,7 @@ const subbasins = {
     label: "Subbasins for Prioritization",
     getFillColor: [1, 1, 28, 1],
     defaultFillColor: [1, 1, 28, 1],
-    getLineColor: [150, 130, 248, 200],
+    getLineColor: [189, 189, 189, 255],
     getDashArray: (f) => [20, 0],
     getLineWidth: (f) => 1,
     getElevation: (f) => 500,

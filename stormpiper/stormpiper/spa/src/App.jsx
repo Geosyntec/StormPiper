@@ -7,9 +7,10 @@ import HomeRoundedIcon from "@material-ui/icons/HomeRounded"
 import InfoRoundedIcon from "@material-ui/icons/InfoRounded"
 import GridOnRoundedIcon from "@material-ui/icons/GridOnRounded"
 import ScatterPlotRoundedIcon from "@material-ui/icons/ScatterPlotRounded"
+import {Box} from "@material-ui/core";
 import SystemExplorer from "./components/systemExplorer"
 import Prioritization from "./components/Prioritization";
-import Landing from "./components/Landing"
+import Landing from "./components/landing"
 
 import "./App.css";
 
@@ -28,8 +29,10 @@ function App(props) {
     switch(props.viewComponent){
       case 'systemExplorer':
         return <SystemExplorer resultsDisplayState = {resultsDisplayState} resultsDisplayController={_toggleSetResultsDisplayState}/>
+        break
       case 'prioritization':
         return <Prioritization/>
+        break
       default:
         return <Landing/>
     }
@@ -76,10 +79,10 @@ function App(props) {
 
   return (
     <AuthProvider>
-      <div className="App">
+      <Box className="App" sx={{overflow:'hidden'}}>
         <ProminentAppBar buttons={topMenuButtons[props.viewComponent]}></ProminentAppBar>
         {props && _getViewComponent()}
-      </div>
+      </Box>
     </AuthProvider>
   );
 }
