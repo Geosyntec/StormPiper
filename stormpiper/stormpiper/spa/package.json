@@ -5,19 +5,19 @@
   "author": "Adrian Ang",
   "license": "ISC",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --base=/app/",
     "build": "vite build --base=/app/",
     "preview": "vite preview",
-    "watch": "vite build --watch --base=/app/",
+    "watch": "vite build --watch --base=/app/ --mode production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^2.1.0",
+    "@vitejs/plugin-react": "^3.1.0",
     "cypress": "^9.7.0",
     "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-polyfill-node": "^0.10.2",
     "typescript": "^4.8.4",
-    "vite": "^3.1.4"
+    "vite": "^4.1.4"
   },
   "dependencies": {
     "@deck.gl/core": "^8.8.12",
@@ -28,8 +28,8 @@
     "@emotion/styled": "^11.10.4",
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",
-    "@mui/material": "^5.10.8",
-    "@mui/x-data-grid": "^5.17.5",
+    "@mui/material": "^5.11.12",
+    "@mui/x-data-grid": "^6.0.1",
     "@types/jest": "^28.1.1",
     "@types/node": "^18.8.2",
     "@types/react": "^17.0.45",
