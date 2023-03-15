@@ -60,20 +60,49 @@ async def create_service_datastudio():  # pragma: no cover
         email="datastudio@geosyntec.com",  # type: ignore
         password=settings.DATASTUDIO_ACCOUNT_PASSWORD,
         force_set_password=True,
+        is_verified=True,
         role=Role.reader,
     )
 
 
-async def create_public():  # pragma: no cover
-    return await create_user(
+async def create_demo_users():  # pragma: no cover
+    await create_user(
+        first_name="Joe",
+        last_name="Shmo",
         email="public@nowhere.com",  # type: ignore
         password="unsafe_password",
+        force_set_password=True,
+    )
+
+    await create_user(
+        email="existing_reader@example.com",  # type: ignore
+        password="existing_reader_password",
+        force_set_password=True,
+        is_verified=True,
+        role=Role.reader,
+    )
+
+    await create_user(
+        email="existing_user@example.com",  # type: ignore
+        password="existing_user_password",
+        force_set_password=True,
+        is_verified=True,
+        role=Role.editor,
+    )
+
+    await create_user(
+        email="existing_user_admin@example.com",  # type: ignore
+        password="existing_user_admin_password",
+        force_set_password=True,
+        is_verified=True,
+        role=Role.user_admin,
     )
 
 
 async def create_all():  # pragma: no cover
     await create_admin()
-    await create_public()
+    await create_service_datastudio()
+    await create_demo_users()
 
 
 def main():  # pragma: no cover
