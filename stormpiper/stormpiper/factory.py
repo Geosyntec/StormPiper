@@ -77,7 +77,7 @@ def create_app(
         allow_origins=_settings.ALLOW_CORS_ORIGINS,
         allow_origin_regex=_settings.ALLOW_CORS_ORIGIN_REGEX,
         allow_credentials=False,
-        allow_methods=["GET", "OPTIONS", "POST"],
+        allow_methods=["GET", "OPTIONS", "POST", "PATCH", "DELETE"],
         allow_headers=["*"],
     )
     if "prod" in _settings.ENVIRONMENT.lower():
