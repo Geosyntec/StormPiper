@@ -32,10 +32,13 @@ COPY --from=build-frontend /app/build /stormpiper/stormpiper/spa/build
 RUN chmod +x /start.sh /start-pod.sh /start-reload.sh /start-test-container.sh
 
 
-FROM python:3.11.2-bullseye as builder
+FROM python:3.11.2-bullseye as base-builder
 RUN apt-get update -y \
     && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
+    && apt-get clean \
+    && pip install -U pip wheel setuptools
+
+FROM base-builder as builder
 COPY ./stormpiper/requirements.txt /requirements.txt
 RUN mkdir /core \
     && pip wheel \
@@ -110,9 +113,6 @@ COPY ./stormpiper/gunicorn_conf.py /gunicorn_conf.py
 EXPOSE 80
 
 
-FROM python:3.11.2-bullseye as stormpiper-unpinned
-RUN apt-get update -y \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
+FROM base-builder as stormpiper-unpinned
 COPY ./stormpiper/requirements_unpinned.txt /requirements_unpinned.txt
 RUN pip install -r /requirements_unpinned.txt
