@@ -13,7 +13,8 @@ brotli-asgi
 
 earthengine-api
 
-fastapi-users[sqlalchemy]
+fastapi-users
+fastapi-users-db-sqlalchemy<5.0.0
 
 fiona
 GeoAlchemy2
@@ -40,7 +41,7 @@ alembic
 
 celery[redis]
 
-fastapi==0.92.0
+fastapi
 starlette
 pydantic
 orjson
@@ -53,4 +54,4 @@ asgi-ratelimit
 Pint==0.19.2
 nereid @ https://github.com/Geosyntec/nereid/archive/v0.7.0.zip
 
-pymcdm==1.1.0
+pymcdm>=1.1.0
