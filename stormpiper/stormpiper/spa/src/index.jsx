@@ -3,6 +3,9 @@ import ReactDOM from "react-dom";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 import App from "./App";
+import Login from "./components/login";
+import Reset from "./components/reset";
+import Register from "./components/register";
 import { Users, EditUser } from "./components/users";
 import Verify from "./components/verify";
 import Forgot from "./components/forgot"
