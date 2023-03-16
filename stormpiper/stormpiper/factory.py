@@ -113,7 +113,7 @@ def create_app(
             "redirect_url_path_for": request.scope["router"].url_path_for(
                 "login:get_login"
             ),
-            "redirect_url_for": request.url_for("login:get_login"),
+            "redirect_url_for": str(request.url_for("login:get_login")),
         }
 
         return msg

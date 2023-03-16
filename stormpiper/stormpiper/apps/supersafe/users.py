@@ -70,7 +70,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         )
 
         query = urllib.parse.urlencode({"token": token, "expires_at": expires_at})
-        reset_url = request.url_for("home") + f"/reset?{query}"
+        reset_url = str(request.url_for("home")) + f"/reset?{query}"
 
         await email.send_email_to_user(
             template="reset_password",
@@ -104,7 +104,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         )
 
         query = urllib.parse.urlencode({"token": token, "expires_at": expires_at})
-        verify_url = request.url_for("home") + f"/verify?{query}"
+        verify_url = str(request.url_for("home")) + f"/verify?{query}"
 
         logger.info(f"verify url: {verify_url}")
         template = getattr(request, "_email_template", "request_verify")

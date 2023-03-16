@@ -21,7 +21,7 @@ async def get_check(request: Request):
     rsp = {
         "request.url": str(request.url),
         "scheme": str(request.scope["scheme"]),
-        "request.url_for": request.url_for("check_router"),
+        "request.url_for": str(request.url_for("check_router")),
         "request.scope['router'].url_path_for": request.scope["router"].url_path_for(
             "check_router"
         ),
