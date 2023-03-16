@@ -63,7 +63,8 @@
   <div class="db-notes">
     <div id="error_msgs"></div>
     <div class="center">
-      Return to <a href="{{ request.url_for('home') }}">Tacoma Watersheds</a>
+      Return to
+      <a href="{{ str(request.url_for('home')) }}">Tacoma Watersheds</a>
     </div>
   </div>
 </div>
@@ -86,7 +87,7 @@
     }
     return "";
   }
-  const submitUrl = "{{ request.url_for('verify:verify') }}";
+  const submitUrl = "{{ str(request.url_for('verify:verify')) }}";
   const token = "{{ token }}";
   var err_div = document.getElementById("error_msgs");
 
