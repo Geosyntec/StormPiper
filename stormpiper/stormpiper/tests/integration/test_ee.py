@@ -65,6 +65,7 @@ def test_tileserver_api_response_404(client, route):
         (-121.756163642, 46.85166326),
     ],
 )
+@test_utils.with_ee_login
 def test_elevation(client, long, lat):
     response = client.get(f"/api/rest/spatial/ee/elevation?long={long}&lat={lat}")
     assert response.status_code == 200, (
