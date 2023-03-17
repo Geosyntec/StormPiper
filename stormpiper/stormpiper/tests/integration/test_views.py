@@ -3,10 +3,12 @@ import pytest
 from .. import utils as test_utils
 
 
+@pytest.mark.integration
 @pytest.mark.parametrize(
     "route",
     ["/tileserver"],
 )
+@test_utils.with_ee_login
 def test_tileserver_view_response(client_local, route):
     user_token = test_utils.user_token(client_local)
     response = client_local.get(
