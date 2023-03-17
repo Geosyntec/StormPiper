@@ -129,6 +129,15 @@ export default function Users() {
     {
       field: "role",
       headerName: "Role",
+      type: "singleSelect",
+      minWidth: 200,
+      valueOptions: [
+        { label: "Public", value: "public" },
+        { label: "Read-only", value: "reader" },
+        { label: "User/Editor", value: "editor" },
+        { label: "User Admin", value: "user_admin" },
+        { label: "System Admin", value: "admin" },
+      ],
     },
     {
       field: "first_name",
