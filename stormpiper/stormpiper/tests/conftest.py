@@ -1,9 +1,9 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from stormpiper.core.config import settings
 from stormpiper.database.connection import engine
 from stormpiper.earth_engine import get_layers, get_tile_registry
+from stormpiper.email_helper import email
 from stormpiper.factory import create_app
 
 from . import utils
@@ -110,3 +110,12 @@ def client_lookup(
         "public_client": public_client,
         "client_local": client_local,
     }
+
+
+@pytest.fixture(autouse=True)
+def mock_send_email_to_user(monkeypatch):
+    async def _mock_send_email(*args, **kwargs):
+        print("fake email sent.")
+        return
+
+    monkeypatch.setattr(email, "send_email_to_user", _mock_send_email)
