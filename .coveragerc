@@ -14,6 +14,8 @@ omit =
     **/start*.py
     **/pre-start*.py
     **/initial_data.py
+    **/if_error.py
+    **/create_views.py
     **/bg_*.py
     **/_no_git*/*
     **/_no_git*
