@@ -6,14 +6,14 @@ import geopandas
 import requests
 
 from stormpiper.core.config import external_resources, settings
-from stormpiper.email_helper.email import send_email_to_user
+from stormpiper.email_helper import email
 
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
 
 
 def _get_tmnt_facility_type_codes(*, url=None):
-    if url is None:
+    if url is None:  # pragma: no branch
         url = external_resources["tmnt_facility_codes"]["url"]
     r = requests.get(url)
     data = r.json()
@@ -29,7 +29,7 @@ def _get_tmnt_facility_type_codes(*, url=None):
 
 
 def _get_tmnt_facilities(*, url=None):
-    if url is None:
+    if url is None:  # pragma: no branch
         url = external_resources["tmnt_facilities"]["url"]
 
     return geopandas.read_file(url)
@@ -39,7 +39,7 @@ def facility_node_id(altid):
     return altid
 
 
-def warn_maintainers_of_duplicates(*, df, bmp_url):
+def warn_maintainers_of_duplicates(*, df, bmp_url):  # pragma: no cover
     duplicate_altids = df
     b64_content = base64.b64encode(duplicate_altids.to_json().encode()).decode()
     content = (
@@ -57,10 +57,10 @@ def warn_maintainers_of_duplicates(*, df, bmp_url):
     ]
 
     emails = settings.MAINTAINER_EMAIL_LIST[:1]
-    email_dict_list = [{"Email": email} for email in emails]
+    email_dict_list = [{"Email": _email} for _email in emails]
 
     asyncio.ensure_future(
-        send_email_to_user(
+        email.send_email_to_user(
             template="error_message",
             email_dict_list=email_dict_list,
             content=content,
@@ -69,8 +69,8 @@ def warn_maintainers_of_duplicates(*, df, bmp_url):
     )
 
 
-def get_tmnt_facilities(*, bmp_url=None, codes_url=None, cols=None):
-    if cols is None:
+def get_tmnt_facilities(*, bmp_url=None, codes_url=None, cols=None, with_warning=True):
+    if cols is None:  # pragma: no branch
         cols = external_resources["tmnt_facilities"]["columns"]
 
     # FYI
@@ -113,7 +113,7 @@ def get_tmnt_facilities(*, bmp_url=None, codes_url=None, cols=None):
 
     duplicate_altids = gdf.loc[gdf["altid"].duplicated()]
 
-    if len(duplicate_altids) > 0:
+    if len(duplicate_altids) > 0 and with_warning:  # pragma: no cover
         # send email to maintainers
         warn_maintainers_of_duplicates(df=duplicate_altids, bmp_url=bmp_url)
 
@@ -127,7 +127,7 @@ def delineation_node_id(relid, altid):
 
 
 def get_tmnt_facility_delineations(*, url=None):
-    if url is None:
+    if url is None:  # pragma: no branch
         url = external_resources["tmnt_facility_delineations"]["url"]
 
     delineations = (
@@ -153,9 +153,9 @@ def get_tmnt_facility_delineations(*, url=None):
 
 
 def get_subbasins(*, url=None, cols=None):
-    if url is None:
+    if url is None:  # pragma: no branch
         url = external_resources["subbasins"]["url"]
-    if cols is None:
+    if cols is None:  # pragma: no branch
         cols = external_resources["subbasins"]["columns"]
 
     subbasins = (
@@ -172,9 +172,9 @@ def get_subbasins(*, url=None, cols=None):
 
 
 def get_equity_index(*, url=None, cols=None):
-    if url is None:
+    if url is None:  # pragma: no branch
         url = external_resources["equity_index"]["url"]
-    if cols is None:
+    if cols is None:  # pragma: no branch
         cols = external_resources["equity_index"]["columns"]
 
     equity_index = (
