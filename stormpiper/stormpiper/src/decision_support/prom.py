@@ -12,9 +12,7 @@ from stormpiper.models.result_view import SubbasinResultView
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
 
-
 WQType = Literal["retrofit", "restoration"]
-
 
 # TODO: make this a config option, or derived from the subbasin results summary somehow.
 EQUITY_COLS = [
@@ -28,9 +26,13 @@ EQUITY_COLS = [
 POC_COLS = [
     c
     for c in SubbasinResultView.get_fields()
-    if any((v in c.lower() for v in ["yield_lbs", "depth_inches", "conc_mg/l"]))
+    if any(
+        (
+            v in c.lower()
+            for v in ["_load_lbs", "_yield_lbs", "_depth_inches", "_conc_mg/l"]
+        )
+    )
 ]
-
 
 CRITERIA = EQUITY_COLS + POC_COLS
 
@@ -55,10 +57,10 @@ def run_promethee_ii(
 def run_subbasins_promethee_prioritization(
     criteria: Sequence[str],
     weights: Sequence[float],
-    wq_type: WQType,
+    wq_type: WQType | None = None,
     engine=engine,
 ) -> geopandas.GeoDataFrame:
-    direction = 1 if wq_type == "restoration" else -1
+    direction = -1 if wq_type == "restoration" else 1
 
     types = [
         direction if c in POC_COLS
