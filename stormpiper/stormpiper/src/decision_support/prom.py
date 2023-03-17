@@ -59,7 +59,15 @@ def run_subbasins_promethee_prioritization(
     engine=engine,
 ) -> geopandas.GeoDataFrame:
     direction = 1 if wq_type == "restoration" else -1
-    types = [direction if c in POC_COLS else -1 for c in criteria]
+
+    types = [
+        direction if c in POC_COLS
+        # subbasins with high scores for equity cols should be de-prioritized
+        else -1 if c in EQUITY_COLS
+        # fallback to assuming the criteria should be prioritized
+        else 1
+        for c in criteria
+    ]
 
     sub_results = geopandas.read_postgis(
         f"select * from subbasinresult_v where epoch = '1980s' order by subbasin ASC",
