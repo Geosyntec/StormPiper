@@ -20,16 +20,16 @@ def test_prom_equity():
     assert_index_equal(subbasins_attr, subbasins_score)
 
 
-def test_prom_restoration():
+def test_prom_preservation():
     criteria = ["TSS_load_lbs"]
     weights = [1]
-    wq_type = "restoration"
+    wq_type = "preservation"
 
     df = prom.run_subbasins_promethee_prioritization(
         criteria, weights, wq_type
     ).set_index("subbasin")
 
-    # if we're seeking restoration projects, we prioritize low load first
+    # if we're seeking preservation projects, we prioritize low load first
     subbasins_attr = df["TSS_load_lbs"].sort_values().index
 
     # sort to high scores first - descending
