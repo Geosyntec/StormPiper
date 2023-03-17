@@ -106,7 +106,6 @@ jobs:
           docker compose exec -T stormpiper-test coverage xml
           docker compose cp stormpiper-test:/stormpiper/coverage.xml coverage.xml
           docker compose cp stormpiper-test:/stormpiper/.coverage .coverage
-          echo $'coverage:\n\tstatus:\n\t\tpatch: off' > codecov.yml
 
       - name: upload coverage
         uses: codecov/codecov-action@v3
