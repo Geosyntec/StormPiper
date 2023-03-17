@@ -14,7 +14,7 @@ from stormpiper.database.connection import get_session
 from stormpiper.database.schemas.base import Base, User
 from stormpiper.database.schemas.scenario import Scenario
 from stormpiper.database.schemas.views import initialize_views
-from stormpiper.earth_engine import login as ee_login
+from stormpiper.earth_engine.login import base_login
 from stormpiper.src import tasks
 from stormpiper.startup import create_default_globals
 from stormpiper.tests.data import _base
@@ -23,9 +23,13 @@ hasher = CryptContext(schemes=["bcrypt"], deprecated="auto").hash
 
 
 def with_ee_login(func):
-    is_logged_in = ee_login()
+    is_logged_in = None
+    try:
+        is_logged_in = base_login()
+    except:
+        pass
     if not is_logged_in:
-        raise ValueError("Not logged in to EE")
+        print("Not logged in to EE!")
 
     @wraps(func)
     def wrapper(*args, **kwargs):
