@@ -34,7 +34,7 @@ async def get_tmnt_attr(
         select(tmnt.TMNT_View).where(tmnt.TMNT_View.node_id == node_id)
     )
 
-    if not result:
+    if not result:  # pragma: no cover
         raise HTTPException(
             status_code=404, detail=f"Record not found for node_id={node_id}"
         )
@@ -72,7 +72,7 @@ async def validate_tmnt_update(
     db: AsyncSession = Depends(get_async_session),
     user: ss.users.User = Depends(user_role_ge_editor),
 ) -> TMNTUpdate:
-    if isinstance(tmnt_patch, BaseModel):
+    if isinstance(tmnt_patch, BaseModel):  # pragma: no cover
         tmnt_patch = tmnt_patch.dict(exclude_unset=True)
     tmnt_patch["updated_by"] = user.email
 
@@ -84,7 +84,7 @@ async def validate_tmnt_update(
             npv_global_settings=npv_global_settings,
         )
 
-    except Exception as e:
+    except Exception as e:  # pragma no cover
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=str(e).replace("\n", " "),

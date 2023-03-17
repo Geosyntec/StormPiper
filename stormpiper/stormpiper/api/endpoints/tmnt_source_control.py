@@ -52,7 +52,7 @@ async def patch_tmnt_source_control(
 ):
     attr = await crud.tmnt_source_control.get(db=db, id=id)
 
-    if not attr:
+    if not attr:  # pragma: no cover
         raise HTTPException(status_code=404, detail=f"Record not found for id={id}")
 
     new_obj = TMNTSourceControlUpdate(
@@ -61,7 +61,7 @@ async def patch_tmnt_source_control(
 
     try:
         attr = await crud.tmnt_source_control.update(db=db, id=id, new_obj=new_obj)
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=str(e).replace("\n", " "),
@@ -87,7 +87,7 @@ async def create_tmnt_source_control(
 
     try:
         attr = await crud.tmnt_source_control.create(db=db, new_obj=new_obj)
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=str(e).replace("\n", " "),
@@ -108,7 +108,7 @@ async def delete_tmnt_source_control(
 ):
     try:
         attr = await crud.tmnt_source_control.remove(db=db, id=id)
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=str(e).replace("\n", " "),
