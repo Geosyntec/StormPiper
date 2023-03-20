@@ -1,5 +1,6 @@
 import asyncio
-from typing import Any, Dict, Optional
+from contextlib import asynccontextmanager
+from typing import Any
 
 import aiohttp
 from brotli_asgi import BrotliMiddleware
@@ -19,16 +20,39 @@ from stormpiper.apps import ratelimiter
 from stormpiper.apps import supersafe as ss
 from stormpiper.apps.supersafe.users import user_role_ge_admin, user_role_ge_reader
 from stormpiper.core.config import settings
+from stormpiper.core.context import get_context
 from stormpiper.earth_engine import ee_continuous_login
 from stormpiper.site import site_router
 
 ss_router = ss.create_router()
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    _settings = getattr(app, "_settings", settings)
+    if _settings.EE_LOGIN_ON_STARTUP:
+        asyncio.create_task(ee_continuous_login(_settings.EE_LOGIN_INTERVAL_SECONDS))
+
+    state = {}
+    state["context"] = get_context()
+    async with (
+        aiohttp.ClientSession() as tileserver_session,
+        aiohttp.ClientSession() as user_email_session,
+    ):
+        # initialize a dedicated async session to facilitate fetching
+        # tiles from external tileservers.
+        state["sessions"] = {
+            "tileserver_session": tileserver_session,
+            "user_email_session": user_email_session,
+        }
+
+        yield state
+
+
 def create_app(
     *,
-    settings_override: Optional[Dict[str, Any]] = None,
-    app_kwargs: Optional[Dict[str, Any]] = None
+    settings_override: dict[str, Any] | None = None,
+    app_kwargs: dict[str, Any] | None = None,
 ) -> FastAPI:
     _settings = settings.copy(deep=True)
     if settings_override is not None:  # pragma: no branch
@@ -44,32 +68,10 @@ def create_app(
         docs_url=None,
         redoc_url=None,
         openapi_url=None,
+        lifespan=lifespan,
         **kwargs,
     )
     setattr(app, "_settings", _settings)
-
-    @app.on_event("startup")
-    async def startup():
-        # initialize a dedicated async session to facilitate fetching
-        # tiles from external tileservers.
-        sessions = {
-            "tileserver_session": aiohttp.ClientSession(),
-            "user_email_session": aiohttp.ClientSession(),
-        }
-        setattr(app, "sessions", sessions)
-
-        # login to ee
-        if _settings.EE_LOGIN_ON_STARTUP:
-            asyncio.create_task(
-                ee_continuous_login(_settings.EE_LOGIN_INTERVAL_SECONDS)
-            )
-
-    @app.on_event("shutdown")
-    async def shutdown():
-        # close all sessions
-        sessions = getattr(app, "sessions", {})
-        for session in sessions.values():
-            await session.close()
 
     app.add_middleware(BrotliMiddleware)
     app.add_middleware(
@@ -143,7 +145,7 @@ def create_app(
 
     @app.get("/app", name="home")
     @app.get("/app/{fullpath:path}")
-    async def serve_spa(request: Request, fullpath: Optional[str] = None) -> Response:
+    async def serve_spa(request: Request, fullpath: str | None = None) -> Response:
         return templates.TemplateResponse("index.html", {"request": request})
 
     @app.get("/")
