@@ -1,20 +1,16 @@
 import logging
 from typing import Any
 
-from fastapi import APIRouter, Body, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Body, Depends, HTTPException, Query, Request, status
 from fastapi.responses import ORJSONResponse
 from pydantic import BaseModel
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 
 import stormpiper.bg_worker as bg
-from stormpiper.apps import supersafe as ss
 from stormpiper.apps.supersafe.users import user_role_ge_editor
 from stormpiper.core.config import settings
-from stormpiper.core.context import get_context
 from stormpiper.core.utils import generate_task_response
 from stormpiper.database import crud, utils
-from stormpiper.database.connection import get_async_session
 from stormpiper.database.schemas.scenario import Scenario
 from stormpiper.models.bg import TaskModel
 from stormpiper.models.scenario import SCENARIO_EXAMPLES
@@ -28,6 +24,8 @@ from stormpiper.models.scenario import (
 from stormpiper.models.scenario_validator import scenario_validator
 from stormpiper.src.npv import get_npv_settings_db
 
+from ..depends import AsyncSessionDB, Editor
+
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
 
@@ -37,11 +35,12 @@ rpc_router = APIRouter(dependencies=[Depends(user_role_ge_editor)])
 
 
 async def validate_scenario(
+    request: Request,
+    user: Editor,
+    db: AsyncSessionDB,
     scenario: ScenarioPost | dict[str, Any] = Body(..., examples=SCENARIO_EXAMPLES),
-    user: ss.users.User = Depends(ss.users.current_active_user),
-    db: AsyncSession = Depends(get_async_session),
-    context: dict = Depends(get_context),
 ) -> ScenarioUpdate:
+    context = request.state.context
     if isinstance(scenario, BaseModel):  # pragma: no branch
         scenario = scenario.dict(exclude_unset=True)
     scenario["updated_by"] = user.email
@@ -67,7 +66,7 @@ async def validate_scenario(
 async def get_scenario(
     *,
     id: str,
-    db: AsyncSession = Depends(get_async_session),
+    db: AsyncSessionDB,
 ):
     attr = await crud.scenario.get(db=db, id=id)
 
@@ -82,12 +81,7 @@ async def get_scenario(
     response_class=ORJSONResponse,
     name="scenario:get_scenario_details",
 )
-async def get_scenario_details(
-    *,
-    id: str,
-    field: str,
-    db: AsyncSession = Depends(get_async_session),
-):
+async def get_scenario_details(*, id: str, field: str, db: AsyncSessionDB):
     attr = await crud.scenario.get(db=db, id=id)
 
     if not attr:
@@ -104,10 +98,7 @@ async def get_scenario_details(
 
 
 @router.delete("/{id}", name="scenario:delete")
-async def delete_scenario(
-    id: str,
-    db: AsyncSession = Depends(get_async_session),
-):
+async def delete_scenario(id: str, db: AsyncSessionDB):
     try:
         attr = await crud.scenario.remove(db=db, id=id)
     except Exception as e:  # pragma: no cover
@@ -122,8 +113,8 @@ async def delete_scenario(
 @router.patch("/{id}", name="scenario:update")
 async def update_scenario(
     id: str,
+    db: AsyncSessionDB,
     scenario: ScenarioUpdate = Depends(validate_scenario),
-    db: AsyncSession = Depends(get_async_session),
 ):
     attr = await crud.scenario.get(db=db, id=id)
 
@@ -177,9 +168,9 @@ async def update_scenario(
 )
 async def get_all_scenarios(
     *,
+    db: AsyncSessionDB,
     limit: None | int = None,
     offset: None | int = None,
-    db: AsyncSession = Depends(get_async_session),
 ):
     q = select(Scenario).order_by(Scenario.time_created).offset(offset).limit(limit)
     result = await db.execute(q)
@@ -190,9 +181,9 @@ async def get_all_scenarios(
 
 @router.post("/", name="scenario:create", response_model=ScenarioResponse)
 async def create_scenario(
+    db: AsyncSessionDB,
+    user: Editor,
     data: ScenarioUpdate = Depends(validate_scenario),
-    db: AsyncSession = Depends(get_async_session),
-    user: ss.users.User = Depends(ss.users.current_active_user),
 ):
     scenario = ScenarioCreate(**data.dict(exclude_unset=True), created_by=user.email)
     logger.info(scenario.json())
@@ -214,8 +205,8 @@ async def create_scenario(
 )
 async def solve_single_scenario(
     id: str,
+    db: AsyncSessionDB,
     force: bool = Query(False),
-    db: AsyncSession = Depends(get_async_session),
 ):
     """implement solve-all in the frontend."""
     attr = await crud.scenario.get(db=db, id=id)
@@ -235,7 +226,7 @@ async def solve_single_scenario(
 )
 async def solve_all_scenarios(
     force: bool = Query(False),
-    db: AsyncSession = Depends(get_async_session),
+    # db: AsyncSession = Depends(get_async_session),
 ):  # pragma: no cover
     raise DeprecationWarning(
         "this functionality should be supported by the frontend, not the backend."

@@ -4,13 +4,13 @@ from sqlalchemy.engine.url import make_url
 
 from stormpiper.apps.supersafe.users import user_role_ge_admin, user_role_ge_reader
 from stormpiper.core.config import settings
-from stormpiper.core.context import get_context
 
 router = APIRouter(dependencies=[Depends(user_role_ge_reader)])
 
 
 @router.get("/context")
-async def get_cxt(context=Depends(get_context)):
+async def get_cxt(request: Request):
+    context = request.state.context
     return JSONResponse(content=context, headers={"Cache-Control": "max-age=86400"})
 
 

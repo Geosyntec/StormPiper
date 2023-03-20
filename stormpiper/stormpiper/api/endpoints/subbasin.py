@@ -2,13 +2,13 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import Response
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.apps.supersafe.users import check_readonly_token, user_role_ge_reader
-from stormpiper.database.connection import get_async_session
 from stormpiper.database.schemas.subbasin_result_view import SubbasinResult_View
 from stormpiper.database.utils import scalars_to_gdf_to_geojson
 from stormpiper.models.result_view import Epoch, SubbasinResultView
+
+from ..depends import AsyncSessionDB
 
 router = APIRouter()
 
@@ -21,8 +21,8 @@ router = APIRouter()
 )
 async def get_subbasin(
     subbasin_id: str,
+    db: AsyncSessionDB,
     epoch: Epoch = Query(Epoch.all, example="1980s"),  # type: ignore
-    db: AsyncSession = Depends(get_async_session),
 ):
     q = select(SubbasinResult_View).where(SubbasinResult_View.subbasin == subbasin_id)
     if epoch != "all":
@@ -49,11 +49,11 @@ async def get_subbasin(
     dependencies=[Depends(user_role_ge_reader)],
 )
 async def get_all_subbasins(
+    db: AsyncSessionDB,
     f: str = Query("json"),
     limit: None | int = Query(int(1e6)),
     offset: int = Query(0),
     epoch: Epoch = Query(Epoch.all, example="1980s"),  # type: ignore
-    db: AsyncSession = Depends(get_async_session),
 ):
     q = select(SubbasinResult_View).offset(offset).limit(limit)
     if epoch != "all":

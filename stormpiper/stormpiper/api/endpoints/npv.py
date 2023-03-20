@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import ValidationError
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.apps.supersafe.users import user_role_ge_editor
 from stormpiper.core.exceptions import RecordNotFound
 from stormpiper.database import crud
-from stormpiper.database.connection import get_async_session
 from stormpiper.models.npv import NPVRequest
 from stormpiper.models.tmnt_attr import TMNTFacilityCost
 from stormpiper.src.npv import calculate_npv_for_existing_tmnt_in_db, compute_bmp_npv
+
+from ..depends import AsyncSessionDB
 
 rpc_router = APIRouter(dependencies=[Depends(user_role_ge_editor)])
 
@@ -27,7 +27,7 @@ async def calculate_npv(npv: NPVRequest):
 )
 async def calculate_npv_for_existing_tmnt(
     node_id: str,
-    db: AsyncSession = Depends(get_async_session),
+    db: AsyncSessionDB,
 ):
     """Calculates the net present value of an existing structural bmp facility
 
@@ -47,9 +47,7 @@ async def calculate_npv_for_existing_tmnt(
 
 
 @rpc_router.post("/refresh_npv_for_all_existing_tmnt", tags=["rpc"])
-async def refresh_npv_for_all_existing_tmnt(
-    db: AsyncSession = Depends(get_async_session),
-):
+async def refresh_npv_for_all_existing_tmnt(db: AsyncSessionDB):
     """Calculates the net present value of an existing structural bmp facility"""
 
     raise DeprecationWarning(

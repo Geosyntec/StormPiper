@@ -2,12 +2,9 @@ from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from stormpiper.apps import supersafe as ss
 from stormpiper.apps.supersafe.users import user_role_ge_user_admin
 from stormpiper.database import crud
-from stormpiper.database.connection import get_async_session
 from stormpiper.database.schemas.globals import GlobalSetting
 from stormpiper.models.globals import (
     GlobalSettingCreate,
@@ -16,6 +13,8 @@ from stormpiper.models.globals import (
     GlobalSettingResponse,
     GlobalSettingUpdate,
 )
+
+from ..depends import AsyncSessionDB, UserAdmin
 
 router = APIRouter(dependencies=[Depends(user_role_ge_user_admin)])
 
@@ -28,7 +27,7 @@ router = APIRouter(dependencies=[Depends(user_role_ge_user_admin)])
 async def get_global(
     *,
     variable: str,
-    db: AsyncSession = Depends(get_async_session),
+    db: AsyncSessionDB,
 ):
     attr = await crud.global_setting.get(db=db, id=variable)
 
@@ -49,8 +48,8 @@ async def patch_global(
     *,
     variable: str,
     setting: GlobalSettingPatch,
-    db: AsyncSession = Depends(get_async_session),
-    user: ss.users.User = Depends(ss.users.current_active_user),
+    db: AsyncSessionDB,
+    user: UserAdmin,
 ):
     attr = await crud.global_setting.get(db=db, id=variable)
 
@@ -76,8 +75,8 @@ async def patch_global(
 async def create_global_setting(
     *,
     setting: GlobalSettingPost,
-    db: AsyncSession = Depends(get_async_session),
-    user: ss.users.User = Depends(ss.users.current_active_user),
+    db: AsyncSessionDB,
+    user: UserAdmin,
 ):
     new_obj = GlobalSettingCreate(
         **setting.dict(exclude_unset=True, exclude_none=True), updated_by=user.email
@@ -101,7 +100,7 @@ async def create_global_setting(
 )
 async def delete_global_setting(
     variable: str,
-    db: AsyncSession = Depends(get_async_session),
+    db: AsyncSessionDB,
 ):
     try:
         attr = await crud.global_setting.remove(db=db, id=variable)
@@ -117,7 +116,7 @@ async def delete_global_setting(
 @router.get(
     "/", name="globals:get_all_globals", response_model=List[GlobalSettingResponse]
 )
-async def get_all_globals(db: AsyncSession = Depends(get_async_session)):
+async def get_all_globals(db: AsyncSessionDB):
     q = select(GlobalSetting)
     result = await db.execute(q)
     scalars = result.scalars().all()

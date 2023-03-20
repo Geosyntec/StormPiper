@@ -1,36 +1,34 @@
-from typing import List, Optional
-
 from fastapi import APIRouter, Depends, Query
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import Response
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.apps.supersafe.users import check_readonly_token, user_role_ge_reader
-from stormpiper.database.connection import get_async_session
 from stormpiper.database.schemas import tmnt
 from stormpiper.database.utils import scalars_to_gdf_to_geojson
 from stormpiper.models.tmnt_delineation import TMNTFacilityDelineation
+
+from ..depends import AsyncSessionDB
 
 router = APIRouter()
 
 
 @router.get(
     "/{altid}/token/{token}",
-    response_model=List[TMNTFacilityDelineation],
+    response_model=list[TMNTFacilityDelineation],
     name="tmnt_delineation:get_tmnt_via_token",
     dependencies=[Depends(check_readonly_token)],
 )
 @router.get(
     "/{altid}",
-    response_model=List[TMNTFacilityDelineation],
+    response_model=list[TMNTFacilityDelineation],
     name="tmnt_delineation:get_tmnt",
     dependencies=[Depends(user_role_ge_reader)],
 )
 async def get_tmnt_delineations(
+    db: AsyncSessionDB,
     altid: str,
     f: str = Query("json"),
-    db: AsyncSession = Depends(get_async_session),
 ):
     """Returns a list because more than one delineation can be associated with a facility"""
 
@@ -52,21 +50,21 @@ async def get_tmnt_delineations(
 
 @router.get(
     "/token/{token}",
-    response_model=List[TMNTFacilityDelineation],
+    response_model=list[TMNTFacilityDelineation],
     name="tmnt_delineation:get_all_tmnt_via_token",
     dependencies=[Depends(check_readonly_token)],
 )
 @router.get(
     "/",
-    response_model=List[TMNTFacilityDelineation],
+    response_model=list[TMNTFacilityDelineation],
     name="tmnt_delineation:get_all_tmnt",
     dependencies=[Depends(user_role_ge_reader)],
 )
 async def get_all_tmnt_delineations(
+    db: AsyncSessionDB,
     f: str = Query("json"),
-    limit: Optional[int] = Query(int(1e6)),
+    limit: int | None = Query(int(1e6)),
     offset: int = Query(0),
-    db: AsyncSession = Depends(get_async_session),
 ):
     q = select(tmnt.TMNTFacilityDelineation).offset(offset).limit(limit)
     result = await db.execute(q)
