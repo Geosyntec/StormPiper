@@ -116,3 +116,8 @@ EXPOSE 80
 FROM base-builder as stormpiper-unpinned
 COPY ./stormpiper/requirements_unpinned.txt /requirements_unpinned.txt
 RUN pip install -r /requirements_unpinned.txt
+
+# docker stop unpinned
+# docker rm unpinned
+# docker build . --target stormpiper-unpinned -t unpinned
+# docker run -it --name unpinned unpinned bash
