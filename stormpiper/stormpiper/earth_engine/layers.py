@@ -121,12 +121,12 @@ def _init_layers():
     )
     layer_dict = {}
 
-    for name, layer_spec in raw_layers.items():
-        try:
-            layer_dict[name] = _init_url(layer_spec)
-        except Exception as e:  # pragma: no cover
-            logger.exception(f"ERROR loading layer {name}")
-            continue
+    # for name, layer_spec in raw_layers.items():
+    #     try:
+    #         layer_dict[name] = _init_url(layer_spec)
+    #     except Exception as e:  # pragma: no cover
+    #         logger.exception(f"ERROR loading layer {name}")
+    #         continue
 
     # TSS = layer_dict["tnc_tss_ug_L"]["layer"]["image"]
     # Q = layer_dict["tnc_runoff_mm"]["layer"]["image"]
