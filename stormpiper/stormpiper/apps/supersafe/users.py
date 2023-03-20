@@ -2,7 +2,7 @@ import datetime
 import logging
 import urllib.parse
 import uuid
-from typing import Any, Optional
+from typing import Annotated, Any
 
 import jwt
 from fastapi import Depends, HTTPException, Request, status
@@ -13,16 +13,14 @@ from fastapi_users.authentication import (
     CookieTransport,
     JWTStrategy,
 )
-from fastapi_users.db import SQLAlchemyUserDatabase
 from fastapi_users.jwt import decode_jwt
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.core import utils
 from stormpiper.core.config import settings
 from stormpiper.email_helper import email
 
-from .db import User, get_async_session, get_user_db
+from .db import AsyncSessionDB, User, UserDB
 from .models import Role, UserCreate, UserRead, UserUpdate
 
 logging.basicConfig(level=settings.LOGLEVEL)
@@ -36,7 +34,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     verification_token_lifetime_seconds = 3600
 
     async def on_after_register(
-        self, user: User, request: Optional[Request] = None
+        self, user: User, request: Request | None = None
     ) -> None:
         if request is None:  # pragma: no cover
             return
@@ -48,14 +46,12 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         await self.request_verify(user=user, request=request)
 
     async def on_after_forgot_password(
-        self, user: User, token: str, request: Optional[Request] = None
+        self, user: User, token: str, request: Request | None = None
     ) -> None:
         if request is None:  # pragma: no cover
             return
 
-        client = utils.rgetattr(request, "app.sessions", None).get(
-            "user_email_session", None
-        )
+        client = request.state.sessions["user_email_session"]
 
         expires_at = (
             max(
@@ -84,12 +80,12 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         logger.info(f"User {user.id} forgot their password. Reset token: {token}")
 
     async def on_after_request_verify(
-        self, user: User, token: str, request: Optional[Request] = None
+        self, user: User, token: str, request: Request | None = None
     ) -> None:
         if request is None:  # pragma: no cover
             return
 
-        client = utils.rgetattr(request, "app.sessions", None).get(
+        client = utils.rgetattr(request, "state.sessions", None).get(
             "user_email_session", None
         )
 
@@ -123,7 +119,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         )
 
 
-async def get_user_manager(user_db: SQLAlchemyUserDatabase = Depends(get_user_db)):
+async def get_user_manager(user_db: UserDB):
     yield UserManager(user_db)
 
 
@@ -179,20 +175,9 @@ fastapi_users = FastAPIUsers[User, uuid.UUID](
 )
 
 
-def current_user_safe(**kwargs):
-    async def _get_current_user(
-        user: User = Depends(fastapi_users.current_user(**kwargs)),
-    ) -> Optional[UserRead]:
-        if user:
-            return UserRead.from_orm(user)
-
-    return _get_current_user
-
-
-current_active_user = current_user_safe(active=True, optional=False)
-current_active_super_user = current_user_safe(
-    active=True, superuser=True, optional=False
-)
+current_user = fastapi_users.current_user
+current_active_user = current_user(active=True, optional=False)
+current_active_super_user = current_user(active=True, superuser=True, optional=False)
 
 
 def check_role(min_role: Role = Role.admin):
@@ -209,15 +194,21 @@ def check_role(min_role: Role = Role.admin):
 
 # check if role >= 100
 user_role_ge_admin = check_role(min_role=Role.admin)
+Admin = Annotated[User, Depends(user_role_ge_admin)]
 
-# check user has edit rights
+# check user has user manager rights
 user_role_ge_user_admin = check_role(min_role=Role.user_admin)
+UserAdmin = Annotated[User, Depends(user_role_ge_user_admin)]
 
 # check if role >= 1, i.e., not public
 user_role_ge_reader = check_role(min_role=Role.reader)
+Reader = Annotated[User, Depends(user_role_ge_reader)]
 
 # check user has edit rights
 user_role_ge_editor = check_role(min_role=Role.editor)
+Editor = Annotated[User, Depends(user_role_ge_editor)]
+
+CurrentUserOrNone = Annotated[User | None, Depends(current_user(optional=True))]
 
 
 def check_protected_user_patch(field: str, min_role: Role = Role.admin):
@@ -225,8 +216,8 @@ def check_protected_user_patch(field: str, min_role: Role = Role.admin):
 
     async def _check_protected_user_patch(
         user_update: UserUpdate,
+        user_db: UserDB,
         current_user=Depends(current_active_user),
-        user_db=Depends(get_user_db),
         id: Any = None,
     ) -> UserUpdate:
         data = user_update.dict(exclude_unset=True)
@@ -321,8 +312,8 @@ def validate_uuid4(token: str):
 
 
 async def check_readonly_token(
+    db: AsyncSessionDB,
     token: str = Depends(validate_uuid4),
-    db: AsyncSession = Depends(get_async_session),
     min_role: Role = Role.reader,
 ):
     result = await db.execute(select(User).where(User.readonly_token == token))

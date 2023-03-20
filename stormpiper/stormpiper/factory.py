@@ -104,8 +104,8 @@ def create_app(
     @app.get("/ping", name="ping")
     async def ping(
         request: Request,
-        user: ss.users.User = Depends(ss.users.current_user_safe(optional=True)),
-    ) -> Dict:
+        user: ss.users.CurrentUserOrNone,
+    ) -> dict:
         msg = {
             "message": "welcome home.",
             "version": _settings.VERSION,

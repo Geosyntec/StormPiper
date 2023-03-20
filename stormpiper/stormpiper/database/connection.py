@@ -1,6 +1,7 @@
 import logging
-from typing import AsyncGenerator
+from typing import Annotated, AsyncIterator
 
+from fastapi import Depends
 from sqlalchemy import create_engine, text
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
@@ -23,7 +24,7 @@ engine = create_engine(
 _there_can_be_only_one = None
 
 
-async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
+async def get_async_session() -> AsyncIterator[AsyncSession]:
     if _there_can_be_only_one is None:
         async_engine = create_async_engine(
             settings.DATABASE_URL_ASYNC, pool_recycle=settings.DATABASE_POOL_RECYCLE
@@ -36,6 +37,9 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
 
     async with async_session_maker() as session:
         yield session
+
+
+AsyncSessionDB = Annotated[AsyncSession, Depends(get_async_session)]
 
 
 def get_session(engine=engine):

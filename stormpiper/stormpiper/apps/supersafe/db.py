@@ -1,12 +1,12 @@
 import uuid
+from typing import Annotated, AsyncIterator
 
 from fastapi import Depends
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID, SQLAlchemyUserDatabase
 from sqlalchemy import Column, Enum, String
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.core.config import settings
-from stormpiper.database.connection import get_async_session
+from stormpiper.database.connection import AsyncSessionDB
 from stormpiper.database.hacks import GUID
 from stormpiper.database.schemas.base_class import Base
 
@@ -29,5 +29,10 @@ async def create_db_and_tables(async_engine):
         await conn.run_sync(Base.metadata.create_all)
 
 
-async def get_user_db(session: AsyncSession = Depends(get_async_session)):
+async def get_user_db(
+    session: AsyncSessionDB,
+) -> AsyncIterator[SQLAlchemyUserDatabase]:
     yield SQLAlchemyUserDatabase(session, User)
+
+
+UserDB = Annotated[SQLAlchemyUserDatabase, Depends(get_user_db)]
