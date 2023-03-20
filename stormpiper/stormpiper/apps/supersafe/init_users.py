@@ -4,8 +4,9 @@ from fastapi_users.exceptions import UserAlreadyExists
 from pydantic import EmailStr
 
 from stormpiper.core.config import settings
+from stormpiper.database.connection import get_async_session
 
-from .db import get_async_session, get_user_db
+from .db import get_user_db
 from .models import Role, UserCreate, UserUpdate
 from .users import get_user_manager
 
