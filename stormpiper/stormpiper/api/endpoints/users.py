@@ -1,20 +1,18 @@
-from typing import List
+from uuid import uuid4
 
 from fastapi import APIRouter, Depends
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from stormpiper.apps.supersafe import models
 from stormpiper.apps.supersafe.users import (
     User,
     check_protect_role_field,
-    current_active_user,
     fastapi_users,
-    get_async_session,
-    get_user_db,
     user_role_ge_reader,
     user_role_ge_user_admin,
 )
+
+from ..depends import AsyncSessionDB, Reader, UserDB
 
 
 class UserResponse(models.UserRead):
@@ -24,8 +22,6 @@ class UserResponse(models.UserRead):
 
 router = APIRouter()
 
-from uuid import uuid4
-
 
 @router.get(
     "/readonly_token",
@@ -34,17 +30,14 @@ from uuid import uuid4
     response_model=UserResponse,
 )
 async def get_readonly_token(
-    user: User = Depends(current_active_user),
-    user_db=Depends(get_user_db),
+    user: Reader,
+    user_db: UserDB,
 ):
-    u = await user_db.get(user.id)
+    if user.readonly_token:
+        return user
 
-    if u.readonly_token:
-        return u
-
-    user = await user_db.update(u, {"readonly_token": str(uuid4())})
-
-    return user
+    user_ = await user_db.update(user, {"readonly_token": str(uuid4())})
+    return user_
 
 
 @router.post(
@@ -54,13 +47,11 @@ async def get_readonly_token(
     response_model=UserResponse,
 )
 async def rotate_readonly_token(
-    user: User = Depends(current_active_user),
-    user_db=Depends(get_user_db),
+    user: Reader,
+    user_db: UserDB,
 ):
-    u = await user_db.get(user.id)
-    user = await user_db.update(u, {"readonly_token": str(uuid4())})
-
-    return user
+    user_ = await user_db.update(user, {"readonly_token": str(uuid4())})
+    return user_
 
 
 router.include_router(
@@ -68,8 +59,8 @@ router.include_router(
 )
 
 
-@router.get("/", response_model=List[UserResponse], name="users:get_users")
-async def get_users(db: AsyncSession = Depends(get_async_session)):
+@router.get("/", response_model=list[UserResponse], name="users:get_users")
+async def get_users(db: AsyncSessionDB):
     result = await db.execute(select(User))
     return result.scalars().all()
 

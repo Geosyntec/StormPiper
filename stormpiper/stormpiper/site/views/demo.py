@@ -33,7 +33,7 @@ async def tileservice_view(
 
 @router.get("/register", name="register:get_register")
 async def get_register(
-    request: Request, user: users.User = Depends(users.current_user_safe(optional=True))
+    request: Request, user: users.CurrentUserOrNone
 ):  # pragma: no cover
     if not user:
         return templates.TemplateResponse("register.html", {"request": request})
