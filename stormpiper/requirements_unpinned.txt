@@ -44,6 +44,7 @@ celery[redis]
 fastapi
 starlette
 pydantic
+httpx
 orjson
 uvicorn
 Jinja2
