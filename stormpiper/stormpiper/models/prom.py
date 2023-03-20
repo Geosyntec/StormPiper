@@ -1,4 +1,4 @@
-from typing import List, Literal
+from typing import Literal
 
 from pydantic import Field
 
@@ -14,4 +14,4 @@ class PromRequestCriteria(BaseModel):
 
 class PromRequest(BaseModel):
     wq_type: prom.WQType
-    criteria: List[PromRequestCriteria]
+    criteria: list[PromRequestCriteria]

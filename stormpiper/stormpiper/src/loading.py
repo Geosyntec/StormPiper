@@ -1,5 +1,4 @@
 import logging
-from typing import Optional
 
 import geopandas
 import numpy
@@ -32,8 +31,8 @@ POC_REMAPPER = {
 def compute_loading_zonal_stats(
     *,
     lgu_boundary: geopandas.GeoDataFrame,
-    runoff_path: Optional[str] = None,
-    coc_path: Optional[str] = None,
+    runoff_path: str | None = None,
+    coc_path: str | None = None,
 ) -> pandas.DataFrame:
     """Calculate land surface loading in metric units."""
 
@@ -110,8 +109,8 @@ def convert_tidy_data_from_metric_to_system(
 def compute_loading(
     *,
     lgu_boundary: geopandas.GeoDataFrame,
-    runoff_path: Optional[str] = None,
-    coc_path: Optional[str] = None,
+    runoff_path: str | None = None,
+    coc_path: str | None = None,
 ) -> pandas.DataFrame:
     try:
         # metric units

@@ -4,7 +4,6 @@ import geopandas
 import pandas
 import sqlalchemy as sa
 from geoalchemy2.shape import to_shape
-from sqlalchemy.event import listen
 
 from stormpiper.core.config import settings
 
@@ -163,29 +162,3 @@ def delete_and_replace_table(
         engine=engine,
         **kwargs,
     )
-
-
-def load_spatialite_extension(conn, connection_record):  # pragma: no cover
-    conn.enable_load_extension(True)
-    conn.load_extension("mod_spatialite")
-
-
-def load_spatialite(engine):  # pragma: no cover
-    with engine.begin() as conn:
-        conn.execute(sa.select([sa.func.InitSpatialMetaData(1)]))
-
-
-def init_spatial(engine):  # pragma: no cover
-    listen(engine, "connect", load_spatialite_extension)
-    inspector = sa.inspect(engine)
-    if "spatial_ref_sys" in inspector.get_table_names():
-        logger.info("spatial plugins already enabled.")
-        return
-
-    if "sqlite" in engine.url:
-        logger.info("enabling spatialite...")
-        load_spatialite(engine)
-        logger.info("enabling spatialite...complete.")
-        return
-
-    logger.error("postgis or libspatialite required.")

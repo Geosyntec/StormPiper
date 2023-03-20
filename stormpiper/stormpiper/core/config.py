@@ -1,7 +1,7 @@
 import json
 import secrets
 from pathlib import Path
-from typing import List, Literal, Optional, Union
+from typing import Literal
 
 from pydantic import AnyHttpUrl, BaseSettings, validator
 
@@ -21,12 +21,12 @@ class Settings(BaseSettings):
     # ALLOW_CORS_ORIGINS is a JSON-formatted list of origins
     # e.g: '["http://localhost", "http://localhost:4200", "http://localhost:3000", \
     # "http://localhost:8080", "http://local.dockertoolbox.tiangolo.com"]'
-    ALLOW_CORS_ORIGINS: List[Union[AnyHttpUrl, Literal["*"]]] = []
-    ALLOW_CORS_ORIGIN_REGEX: Optional[str] = None
-    TRUSTED_HOSTS: Union[List[str], str] = "127.0.0.1"
+    ALLOW_CORS_ORIGINS: list[AnyHttpUrl | Literal["*"]] = []
+    ALLOW_CORS_ORIGIN_REGEX: str | None = None
+    TRUSTED_HOSTS: list[str] | str = "127.0.0.1"
 
     @validator("ALLOW_CORS_ORIGINS", pre=True)  # pragma: no cover
-    def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
+    def assemble_cors_origins(cls, v: str | list[str]) -> str | list[str]:
         if isinstance(v, str) and not v.startswith("["):
             return [i.strip() for i in v.split(",")]
         elif isinstance(v, (list, str)):
@@ -72,12 +72,10 @@ class Settings(BaseSettings):
     EMAIL_SEND_URL: str = "http://example.com"
     EMAIL_API_KEY: str = ""
     EMAIL_API_SECRET: str = ""
-    MAINTAINER_EMAIL_LIST: Union[str, List[str]] = ""
+    MAINTAINER_EMAIL_LIST: str | list[str] = ""
 
     @validator("MAINTAINER_EMAIL_LIST", pre=True)  # pragma: no cover
-    def assemble_maintainer_emails(
-        cls, v: Union[str, List[str]]
-    ) -> Union[List[str], str]:
+    def assemble_maintainer_emails(cls, v: str | list[str]) -> str | list[str]:
         if isinstance(v, str) and not v.startswith("["):
             return [i.strip() for i in v.split(",")]
         elif isinstance(v, (list, str)):

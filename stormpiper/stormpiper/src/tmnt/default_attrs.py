@@ -1,5 +1,4 @@
 import logging
-from typing import Union
 
 import geopandas
 import numpy
@@ -14,9 +13,7 @@ logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
 
 
-def set_default_tmnt_attributes(
-    tmnt_facility_df: Union[pandas.DataFrame, geopandas.GeoDataFrame]
-):
+def set_default_tmnt_attributes(tmnt_facility_df: pandas.DataFrame):
     df = tmnt_facility_df
 
     df = df.assign(facility_type="no_treatment")

@@ -1,6 +1,6 @@
 import uuid
 from enum import Enum
-from typing import Optional, Self
+from typing import Self
 
 from fastapi_users import schemas
 from pydantic import BaseModel
@@ -29,13 +29,13 @@ class Role(str, Enum):
 
 
 class UserExtras(BaseModel):
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
+    first_name: str | None = None
+    last_name: str | None = None
 
 
 class UserRead(UserExtras, schemas.BaseUser[uuid.UUID]):
     role: Role = Role.public
-    readonly_token: Optional[uuid.UUID] = None
+    readonly_token: uuid.UUID | None = None
 
 
 class UserRegister(UserExtras, schemas.BaseUserCreate):

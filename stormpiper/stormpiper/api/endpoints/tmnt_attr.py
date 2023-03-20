@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any
 
 from fastapi import APIRouter, Body, Depends, Path, Query, Request, status
 from fastapi.exceptions import HTTPException
@@ -124,7 +124,7 @@ async def patch_tmnt_attr(
 
 @router.get(
     "/",
-    response_model=List[TMNTView],
+    response_model=list[TMNTView],
     name="tmnt_facility_attr:get_all_tmnt_attr",
 )
 async def get_all_tmnt_attr(

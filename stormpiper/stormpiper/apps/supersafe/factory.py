@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional
+from typing import Any
 
 from fastapi import APIRouter, FastAPI
 
@@ -42,8 +42,8 @@ def create_router(**kwargs):
 
 def create_app(
     *,
-    settings_override: Optional[Dict[str, Any]] = None,
-    app_kwargs: Optional[Dict[str, Any]] = None,
+    settings_override: dict[str, Any] | None = None,
+    app_kwargs: dict[str, Any] | None = None,
 ) -> FastAPI:  # pragma: no cover
     _settings = settings.copy(deep=True)
     if settings_override is not None:  # pragma: no branch

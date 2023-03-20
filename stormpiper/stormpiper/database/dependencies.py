@@ -1,7 +1,6 @@
 import logging
 from io import BytesIO
 from itertools import product
-from typing import Dict, List, Tuple
 
 import networkx as nx
 import pandas
@@ -123,7 +122,7 @@ def sync_is_dirty(*, tablename: str, engine):
     return is_dirty(g=OG, tablename=tablename, changelog=changelog)
 
 
-async def sorted_changelog_records(db: AsyncSession) -> List[Dict]:
+async def sorted_changelog_records(db: AsyncSession) -> list[dict]:
     changelog_results = (
         (await db.execute(select(changelog.TableChangeLog))).scalars().all()
     )
@@ -136,7 +135,7 @@ async def sorted_changelog_records(db: AsyncSession) -> List[Dict]:
 
 async def async_is_dirty(
     *, tablename: str, db: AsyncSession
-) -> Tuple[bool, str] | Tuple[None, None]:
+) -> tuple[bool, str] | tuple[None, None]:
     records = await sorted_changelog_records(db=db)
     result_record = next(filter(lambda x: x["tablename"] == tablename, records), None)
     if result_record is None:
