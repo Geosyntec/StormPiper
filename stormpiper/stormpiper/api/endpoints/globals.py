@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 
@@ -114,7 +112,7 @@ async def delete_global_setting(
 
 
 @router.get(
-    "/", name="globals:get_all_globals", response_model=List[GlobalSettingResponse]
+    "/", name="globals:get_all_globals", response_model=list[GlobalSettingResponse]
 )
 async def get_all_globals(db: AsyncSessionDB):
     q = select(GlobalSetting)

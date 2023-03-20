@@ -1,4 +1,4 @@
-from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
+from typing import Any, Generic, Type, TypeVar
 
 import sqlalchemy as sa
 from pydantic import BaseModel
@@ -32,7 +32,7 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
         self.id = id
         self.changelog = TableChangeLog
 
-    async def get(self, db: AsyncSession, id: Any) -> Optional[SchemaType]:
+    async def get(self, db: AsyncSession, id: Any) -> SchemaType | None:
         result = await db.execute(
             sa.select(self.base).where(getattr(self.base, self.id) == id)
         )
@@ -41,9 +41,9 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
     async def get_all(
         self,
         db: AsyncSession,
-        limit: Optional[int] = None,
-        offset: Optional[int] = None,
-    ) -> Optional[List[SchemaType]]:
+        limit: int | None = None,
+        offset: int | None = None,
+    ) -> list[SchemaType] | None:
         q = sa.select(self.base).offset(offset).limit(limit)
         result = await db.execute(q)
         return result.scalars().all()
@@ -70,7 +70,7 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
         db: AsyncSession,
         *,
         id: Any,
-        new_obj: Union[UpdateModelType, Dict[str, Any]],
+        new_obj: UpdateModelType | dict[str, Any],
     ) -> SchemaType:
         obj = await self.get(db=db, id=id)
 

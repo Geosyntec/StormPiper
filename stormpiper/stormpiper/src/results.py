@@ -1,5 +1,5 @@
 import warnings
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import pandas
 from sqlalchemy import select
@@ -10,7 +10,7 @@ from stormpiper.database.schemas import changelog
 from stormpiper.database.utils import orm_to_dict, scalars_to_records
 
 
-async def is_dirty_dep(db: AsyncSession) -> Dict[str, Any]:  # pragma: no cover
+async def is_dirty_dep(db: AsyncSession) -> dict[str, Any]:  # pragma: no cover
     warnings.warn("this is deprecated.", DeprecationWarning, stacklevel=2)
 
     response = {"is_dirty": True, "last_updated": "0"}
@@ -50,8 +50,8 @@ async def is_dirty_dep(db: AsyncSession) -> Dict[str, Any]:  # pragma: no cover
 
 
 async def is_dirty(
-    *, db: AsyncSession, tablename: str, dependents: Optional[List[str]] = None
-) -> Dict[str, Any]:  # pragma: no cover
+    *, db: AsyncSession, tablename: str, dependents: list[str] | None = None
+) -> dict[str, Any]:  # pragma: no cover
     warnings.warn("this is deprecated.", DeprecationWarning, stacklevel=2)
     response = {"is_dirty": True, "last_updated": "0"}
 
@@ -91,7 +91,7 @@ def calculate_src_ctrl_percent_reduction(
     *,
     load: pandas.DataFrame,
     src_ctrls: pandas.DataFrame,
-    direction: Optional[str] = "upstream"
+    direction: str | None = "upstream"
 ):
     """
     load must have the subbasins and basinname attributes pre-joined in and runoff removed (pocs only)

@@ -1,5 +1,5 @@
 import json
-from typing import Any, Dict, Hashable, List, Optional
+from typing import Any, Hashable
 
 import networkx as nx
 import pandas
@@ -40,7 +40,7 @@ def init_graph_from_df(*, edge_list: pandas.DataFrame) -> nx.DiGraph:
 
 def init_land_surface_loading_node_data_from_df(
     *, df: pandas.DataFrame
-) -> Dict[str, Dict[Hashable, Any]]:
+) -> dict[str, dict[Hashable, Any]]:
     """pre filter for epoch"""
     ls_data = {
         str(dct.get("node_id", "")): {
@@ -54,13 +54,13 @@ def init_land_surface_loading_node_data_from_df(
 
 def init_treatment_facilities_from_df(
     *, df: pandas.DataFrame
-) -> List[Dict[Hashable, Any]]:
+) -> list[dict[Hashable, Any]]:
     treatment_facilities_list = [row.dropna().to_dict() for _, row in df.iterrows()]
     return treatment_facilities_list
 
 
 def solve_wq(
-    *, edge_list, loading, tmnt_facilities, context: Optional[Dict[str, Any]] = None
+    *, edge_list, loading, tmnt_facilities, context: dict[str, Any] | None = None
 ) -> pandas.DataFrame:
     if context is None:  # pragma: no cover
         context = get_context()

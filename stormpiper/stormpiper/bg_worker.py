@@ -1,5 +1,4 @@
 import logging
-from typing import Optional
 
 from celery import Celery, chain, group
 from celery.schedules import crontab
@@ -67,7 +66,7 @@ def ping():  # pragma: no cover
 
 
 @celery_app.task
-def check_results(results, can_raise=False, msg: Optional[str] = None):
+def check_results(results, can_raise=False, msg: str | None = None):
     """naively check that the return value for all tasks is 'truthy'"""
     results = results if isinstance(results, list) else [results]
     logger.info(f"type:{type(results)}; results: {results}; len:{len(results)}")

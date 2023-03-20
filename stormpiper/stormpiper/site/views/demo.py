@@ -1,5 +1,3 @@
-from typing import Dict, Optional
-
 from fastapi import APIRouter, Depends, Request, Response
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -24,7 +22,7 @@ async def _init():
     dependencies=[Depends(users.current_active_user)],
 )
 async def tileservice_view(
-    request: Request, layers: Dict[str, str] = Depends(_init)
+    request: Request, layers: dict[str, str] = Depends(_init)
 ) -> Response:
     return templates.TemplateResponse(
         "tileserver.html", {"request": request, "layers": layers.values()}
@@ -46,7 +44,7 @@ async def post_register(request: Request):  # pragma: no cover
 
 
 @router.get("/verify", name="verify:get_verify_token")
-async def get_verify(request: Request, token: Optional[str] = None):  # pragma: no cover
+async def get_verify(request: Request, token: str | None = None):  # pragma: no cover
     return templates.TemplateResponse(
         "verify.html", {"request": request, "token": token}
     )
@@ -66,7 +64,7 @@ async def post_login(request: Request):  # pragma: no cover
 
 @router.get("/reset_password", name="reset:get_reset_password")
 async def get_reset_password(
-    request: Request, token: Optional[str] = None
+    request: Request, token: str | None = None
 ):  # pragma: no cover
     return templates.TemplateResponse(
         "reset_password.html", {"request": request, "token": token}
