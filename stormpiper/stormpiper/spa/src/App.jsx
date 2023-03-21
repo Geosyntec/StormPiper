@@ -19,6 +19,7 @@ function App(props) {
   let navigate = useNavigate()
 
   const [resultsDisplayState,setResultsDisplayState] = useState(false) //when true, results table is displayed
+  const [priorityWorkflowState,setPriorityWorkflowState] = useState('scoring')
 
   function _toggleSetResultsDisplayState() {
     setResultsDisplayState(!resultsDisplayState);
@@ -29,10 +30,8 @@ function App(props) {
     switch(props.viewComponent){
       case 'systemExplorer':
         return <SystemExplorer resultsDisplayState = {resultsDisplayState} resultsDisplayController={_toggleSetResultsDisplayState}/>
-        break
       case 'prioritization':
-        return <Prioritization/>
-        break
+        return <Prioritization workflowState={priorityWorkflowState}/>
       default:
         return <Landing/>
     }
@@ -66,13 +65,13 @@ function App(props) {
       about:{
           label:"About Prioritization",
           icon:<InfoRoundedIcon/>,
-          clickHandler:null
+          clickHandler:()=>setPriorityWorkflowState('info')
         },
 
       project:{
         label:"Define Criteria Weights",
         icon:<GridOnRoundedIcon/>,
-        clickHandler:null
+        clickHandler:()=>setPriorityWorkflowState('scoring')
       },
     }
   }

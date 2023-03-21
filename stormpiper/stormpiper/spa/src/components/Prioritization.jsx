@@ -2,7 +2,7 @@ import React, {Suspense, useEffect, useState, useRef } from "react";
 import { useParams,useNavigate } from "react-router-dom";
 import { layerDict } from "../assets/geojson/subbasinLayer";
 // import LayerSelector from "./layerSelector";
-import { Card, CardActions, CardContent, Typography, Button,Box,makeStyles,TextField,Select,MenuItem, FormControlLabel} from "@material-ui/core";
+import { Card, CardActions, CardContent, Typography, Button,Box,makeStyles,TextField,Select,MenuItem, FormControlLabel, FormControl, InputLabel} from "@material-ui/core";
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { interpolateViridis } from "d3-scale-chromatic";
@@ -19,6 +19,18 @@ const useStyles = makeStyles((theme) => ({
     mainButton: {
       margin:"1rem",
     },
+    formBody:{
+      display:"grid",
+      gridTemplateColumns:"repeat(1,1r)",
+      gap:"0em",
+      padding:"0px 10px"
+    },
+    formRow:{
+      display:"flex",
+      flexDirection:"column",
+      borderBottom:"0.5px solid grey",
+      marginBottom:"1rem"
+    }
   }));
 
 
@@ -64,32 +76,22 @@ function Prioritization(props) {
 
   const formFields=[
     {
-      fieldID:'access',
-      label:'Access',
+      label:'Equity',
+      fieldID:'equity',
+      description:'Prioritize areas based on equity-based economic, environmental, and livability attributes',
+      fieldGroup:['access','economic_value','environmental_value','livability_value','opportunity_value']
     },
     {
-      fieldID:'economic_value',
-      label:'Economic Value'
+      label:'Pollutant Loads',
+      fieldID:'loads',
+      description:'Prioritize areas with high pollutant concentrations and runoff volumes',
+      fieldGroup:['runoff_depth_inches','TP_conc_mg/l','TSS_conc_mg/l','TN_conc_mg/l']
     },
     {
-      fieldID:'environmental_value',
-      label:'Environmental Value'
-    },
-    {
-      fieldID:'livability_value',
-      label:'Livability Value'
-    },
-    {
-      fieldID:'opportunity_value',
-      label:'Opportunity Value'
-    },
-    {
-      fieldID:'TSS_conc_mg/l',
-      label:'TSS Concentration'
-    },
-    {
-      fieldID:'TSS_yield_lbs_per_acre',
-      label:'TSS Yield'
+      label:'Pollutant Yields',
+      fieldID:'yields',
+      description:'Prioritize areas with high pollutant yields (e.g. high concentrations and large areas)',
+      fieldGroup:['TP_yield_lbs_per_acre','TSS_yield_lbs_per_acre','TN_yield_lbs_per_acre']
     }
   ]
 
@@ -136,8 +138,6 @@ function Prioritization(props) {
 }
 
   function _injectLayerAccessors(props){
-      console.log("Starting color: ",hexToRgbA(interpolateViridis(0)))
-      console.log("Ending color: ",hexToRgbA(interpolateViridis(1)))
       props.getFillColor = (d)=>{
         if (subbasinScores.length>0){
           console.log("Setting score for : ",d.properties.subbasin)
@@ -171,10 +171,14 @@ function Prioritization(props) {
       if(k=='wq_type'){
         res[k]=data[k]
       }else{
-        res.criteria.push({
-          criteria:k,
-          weight:data[k]
-        })
+        formFields
+          .filter(field=>field['fieldID']===k)[0]['fieldGroup']
+          .map(criteria=>{
+            res.criteria.push({
+              criteria:criteria,
+              weight:data[k]
+            })
+          })
       }
     })
 
@@ -182,10 +186,16 @@ function Prioritization(props) {
   }
 
   async function _handleSubmit(data){
+    let baseURL
+    if(process.env.NODE_ENV==='development'){
+      baseURL='localhost:8080/'
+    }else{
+      baseURL='/'
+    }
 
     const parsedFormData = formatFormData(data)
     console.log("Submitting Patch Request: ",parsedFormData)
-    const response = await fetch('/api/rpc/calculate_subbasin_promethee_prioritization', {
+    const response = await fetch(baseURL+'api/rpc/calculate_subbasin_promethee_prioritization', {
         credentials: "same-origin",
         headers:{
             "accept":"application/json",
@@ -216,19 +226,29 @@ function _renderFormFields(){
       console.log("With fields:",formFields)
       let fieldDiv = Object.values(formFields).map((formField)=>{
           return (
-              <Box className="form-row">
+              <Box className={classes.formRow}>
                 <TextField variant="outlined" margin="dense" {...register(formField.fieldID,{min:{value:0,message:'Must be greater than 0'}})} type = 'number' defaultValue = {0} required={true} label={formField.label} inputProps={{step:1}}/>
-                {errors[formField.fieldID] && <Typography variant="subtitle1">{errors[formField.fieldID].message}</Typography>}
+                <Typography variant="caption">{formField.description}</Typography>
+                {errors[formField.fieldID] && <Typography variant="caption">{errors[formField.fieldID].message}</Typography>}
               </Box>
           )
       })
       return (
         <Box className="scoring-form">
-          <Select {...register('wq_type')} defaultValue='restoration' onChange={()=>{console.log(getValues())}}>
-            <MenuItem value='restoration'>Restoration</MenuItem>
-            <MenuItem value = 'retrofit'>Retrofit</MenuItem>
-          </Select>
-          <Box className="form-body">{fieldDiv}</Box>
+          <Box className={classes.formBody}>
+            <Box className={classes.formRow}>
+              <Typography variant='body1'>Set a project type</Typography>
+              <Typography variant="caption">Are you prioritizing restoration projects or retrofit projects?</Typography>
+              <FormControl>
+                <Select {...register('wq_type')} defaultValue='restoration'>
+                  <MenuItem value='restoration'>Restoration</MenuItem>
+                  <MenuItem value = 'retrofit'>Retrofit</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+            <Typography variant='body1'>Set Priority Weights</Typography>
+            {fieldDiv}
+          </Box>
           <Box className="button-bar">
             <Button variant="contained" type = "submit">Submit</Button>
           </Box>
@@ -290,10 +310,40 @@ function exportCSVFile(csv, fileTitle) {
   // }
 }
 
-function exportScoringResults(){
+async function exportScoringResults(){
+  //Fetch subbasin properties to join with scores
+  const subbasinAttributes = await fetch('/api/rest/subbasin/?f=geojson&limit=100000&offset=0&epoch=1980s', {
+    credentials: "same-origin",
+    headers:{
+        "accept":"application/json",
+        "Content-type":"application/json"
+    },
+    method: "GET",
+  })
+  .then(resp=>{
+    return resp.json()
+  })
+  .catch(err=>{
+    console.log("Error:")
+    console.log(err)
+  })
+  let basinFields = []
+  formFields.map(f=>{
+                    f.fieldGroup.map(field=>basinFields.push(field))
+                })
+  let joinedScores = subbasinAttributes.features.map(subbasin=>{
+    let r = {}
+    r['subbasin'] = subbasin.properties.subbasin
+    basinFields.map(attr=>{
+      r[attr]= subbasin.properties[attr]
+    })
+    r['score'] = subbasinScores.filter(sb=>sb['subbasin']===subbasin.properties.subbasin)[0].score
+    return r
+  })
+
   const buffer='////////////////////////////////////////\r\n'
   const formattedData = formatFormData(getValues())
-  let scoreCSV = convertToCSV(subbasinScores,['subbasin','score'])
+  let scoreCSV = convertToCSV(joinedScores,['subbasin',...basinFields,'score'])
   let scenarioCSV = convertToCSV(formattedData.criteria,['Criteria','Weight'])
   let wqTypeCSV = convertToCSV([{wq_type:formattedData.wq_type}],['WQ Project Type'])
   exportCSVFile([wqTypeCSV,scenarioCSV,scoreCSV].join(buffer),'testScoringOutput')
@@ -320,18 +370,18 @@ function exportScoringResults(){
               overflowY:"hidden"
             }}
           ></DeckGLMap>
-          {/* {subbasinScores.length>0 && <ColorRampLegend
+          {subbasinScores.length>0 && <ColorRampLegend
               style={{
                 position:"absolute",
-                top: "55%",
+                top: "54%",
                 left: "60%",
-                width: "15%",
-                height: "10%",
-                border: "1 px solid black",
+                width: "14%",
+                height: "6%",
+                border: "1px solid black",
                 background:"white",
                 overflow:"hidden"
               }}
-            ></ColorRampLegend>} */}
+            ></ColorRampLegend>}
         </Suspense>
         <Box id='priority-score-table'>
         {subbasinScores.length>0 &&
@@ -376,15 +426,25 @@ function exportScoringResults(){
       <Card id={"priority-info"}>
         <CardContent className={lyrSelectDisplayState ? "" : "zero-padding"}>
           <Box>
-            <form onSubmit={handleSubmit((data) => _handleSubmit(data))}>
-              {_renderFormFields()}
-            </form>
+            {props.workflowState=='scoring'
+              ?<form onSubmit={handleSubmit((data) => _handleSubmit(data))}>
+                {_renderFormFields()}
+               </form>
+              :<Box className={classes.formBody}>
+                <Box className={classes.formRow}>
+                  <Typography variant='body1'>About Subbasin Prioritization</Typography>
+                </Box>
+                <Box className={classes.formRow}>
+                  <Typography variant='caption'>Use this tool to identify regions of the City of Tacoma Watershed that are most in need of stormwater retrofit or preservation projects</Typography>
+                </Box>
+               </Box>
+            }
           </Box>
           {/* <Button className={classes.mainButton} color="primary" variant="contained" type = "submit">Submit</Button> */}
         </CardContent>
       </Card>
 
-      <Box id="base-layer-control-panel">
+      {/* <Box id="base-layer-control-panel">
         <Tabs
           value={baseLayer}
           onChange={(e, n) => {
@@ -396,7 +456,7 @@ function exportScoringResults(){
           <Tab className="base-layer-tab" label="Streets" />
           <Tab className="base-layer-tab" label="Satellite" />
         </Tabs>
-      </Box>
+      </Box> */}
 
 
     </Box>
