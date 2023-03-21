@@ -9,6 +9,14 @@ import { urlPrefix } from "../../utils/utils";
 //   baseURL=''
 // }
 
+let baseURL;
+if (import.meta.env.MODE === "development") {
+  baseURL = import.meta.env.VITE_API_FETCH_PREFIX ?? "http://localhost:8080";
+  console.log("Dev mode recognized - setting baseURL to: ", baseURL);
+} else {
+  baseURL = "";
+}
+
 const subbasins = {
   layer: GeoJsonLayer,
   props: {
