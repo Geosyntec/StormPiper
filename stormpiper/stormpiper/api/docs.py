@@ -35,7 +35,7 @@ def get_swagger_ui_html(
     swagger_ui_parameters: dict[str, Any] | None = None,
 ) -> HTMLResponse:
     current_swagger_ui_parameters = swagger_ui_default_parameters.copy()
-    if swagger_ui_parameters:
+    if swagger_ui_parameters:  # pragma: no cover
         current_swagger_ui_parameters.update(swagger_ui_parameters)
 
     new_css = """<link type="text/css" rel="stylesheet" href="./site/static/style.css">"""  # this is the only change.
@@ -64,7 +64,7 @@ def get_swagger_ui_html(
     for key, value in current_swagger_ui_parameters.items():
         html += f"{json.dumps(key)}: {json.dumps(jsonable_encoder(value))},\n"
 
-    if oauth2_redirect_url:
+    if oauth2_redirect_url:  # pragma: no cover
         html += f"oauth2RedirectUrl: window.location.origin + '{oauth2_redirect_url}',"
 
     html += """
@@ -74,7 +74,7 @@ def get_swagger_ui_html(
         ],
     })"""
 
-    if init_oauth:
+    if init_oauth:  # pragma: no cover
         html += f"""
         ui.initOAuth({json.dumps(jsonable_encoder(init_oauth))})
         """

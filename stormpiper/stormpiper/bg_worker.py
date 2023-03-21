@@ -303,6 +303,7 @@ def update_all_scenario_results(data_list: list[dict], force: bool = False):
 
 @celery_app.task(base=Singleton, acks_late=True, track_started=True)
 def calculate_subbasin_promethee_prioritization(data: dict):
+    """data: dict[str, list[dict[str, str|int|float]] | str],"""
     return tasks.calculate_subbasin_promethee_prioritization(data=data)
 
 

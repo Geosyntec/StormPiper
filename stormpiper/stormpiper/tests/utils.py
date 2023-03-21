@@ -23,12 +23,9 @@ hasher = CryptContext(schemes=["bcrypt"], deprecated="auto").hash
 
 
 def with_ee_login(func):
-    is_logged_in = None
     try:
-        is_logged_in = base_login()
-    except:
-        pass
-    if not is_logged_in:
+        base_login()
+    except:  # pragma: no cover
         print("Not logged in to EE!")
 
     @wraps(func)

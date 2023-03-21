@@ -58,21 +58,20 @@ def readonly_client(db):
 
 
 @pytest.fixture(scope="module")
+def readonly_token(readonly_client):
+    client = readonly_client
+    readonly_user_data = utils.get_my_data(client)
+    token = readonly_user_data.get("readonly_token", None)
+    return token
+
+
+@pytest.fixture(scope="module")
 def public_client(db):
     app = create_app()
     with TestClient(app) as client:
         token = utils.public_token(client)
         client.headers = {"Authorization": f"Bearer {token['access_token']}"}
         yield client
-
-
-def override_get_layers():
-    return {
-        "param": {
-            "safe_name": "param",
-            "layer": {"url": "string", "image": "image_obj"},
-        }
-    }
 
 
 @pytest.fixture(scope="module")
@@ -84,6 +83,15 @@ def client_local(db):
             return "./ping"
 
     override_get_tile_registry = lambda: Reg()
+
+    def override_get_layers():
+        return {
+            "param": {
+                "safe_name": "param",
+                "layer": {"url": "string", "image": "image_obj"},
+            }
+        }
+
     app.dependency_overrides[get_tile_registry] = override_get_tile_registry
     app.dependency_overrides[get_layers] = override_get_layers
 
@@ -112,7 +120,7 @@ def client_lookup(
     }
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture()
 def mock_send_email_to_user(monkeypatch):
     async def _mock_send_email(*args, **kwargs):
         print("fake email sent.")

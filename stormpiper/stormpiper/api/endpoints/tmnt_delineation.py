@@ -15,13 +15,13 @@ router = APIRouter()
 
 @router.get(
     "/{altid}/token/{token}",
-    response_model=list[TMNTFacilityDelineation],
+    response_model=TMNTFacilityDelineation,
     name="tmnt_delineation:get_tmnt_via_token",
     dependencies=[Depends(check_readonly_token)],
 )
 @router.get(
     "/{altid}",
-    response_model=list[TMNTFacilityDelineation],
+    response_model=TMNTFacilityDelineation,
     name="tmnt_delineation:get_tmnt",
     dependencies=[Depends(user_role_ge_reader)],
 )
@@ -36,16 +36,18 @@ async def get_tmnt_delineations(
         tmnt.TMNTFacilityDelineation.altid == altid
     )
     result = await db.execute(q)
-    scalars = result.scalars().all()
+
     if f == "geojson":
-        content = await run_in_threadpool(scalars_to_gdf_to_geojson, scalars)
+        content = await run_in_threadpool(
+            scalars_to_gdf_to_geojson, result.scalars().all()
+        )
         return Response(
             content=content,
             media_type="application/json",
             headers={"Cache-Control": "max-age=86400"},
         )
 
-    return scalars
+    return result.scalars().first()
 
 
 @router.get(

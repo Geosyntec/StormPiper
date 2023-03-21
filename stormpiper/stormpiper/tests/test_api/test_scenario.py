@@ -173,3 +173,20 @@ def test_scenario_crud(client, create_blob, patch_blob, exp_attrs):
                     assert gv == stv, (gv, stv, gdct)
         else:
             assert res == v, (res, v, gjson)
+
+
+@pytest.mark.parametrize(
+    "id_, field, rsp_status, rsp_data",
+    [
+        ("00000000-0000-4000-8000-000000000001", "name", 200, "delin only"),
+        ("00b77cfe-228e-4cb5-b4bb-b2bc18976a2e", "name", 404, None),  # no id
+        ("00000000-0000-4000-8000-000000000001", "bad", 404, None),  # no field
+    ],
+)
+def test_scenario_details(client, id_, field, rsp_status, rsp_data):
+    route = f"/api/rest/scenario/{id_}/{field}"
+    response = client.get(route)
+
+    assert response.status_code == rsp_status, response.content
+    if rsp_data:
+        assert response.json() == rsp_data, response.content

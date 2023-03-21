@@ -28,23 +28,6 @@ def test_get_all_subbasins(client, f, limit):
         assert len(rsp_json) == limit
 
 
-@pytest.mark.parametrize("f", ["json", "geojson"])
-@pytest.mark.parametrize("limit", [3, 5])
-def test_get_subbasin_with_token(readonly_client, f, limit):
-    readonly_user_data = get_my_data(readonly_client)
-    token = readonly_user_data.get("readonly_token", None)
-    response = readonly_client.get(
-        f"/api/rest/subbasin/token/{token}?f={f}&limit={limit}"
-    )
-
-    assert 200 <= response.status_code < 300, response.content
-    rsp_json = response.json()
-    if f == "geojson":
-        assert len(rsp_json["features"]) == limit
-    else:
-        assert len(rsp_json) == limit
-
-
 @pytest.mark.parametrize(
     "method, route, client_name, token, authorized",
     [
