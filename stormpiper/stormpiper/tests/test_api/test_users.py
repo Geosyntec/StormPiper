@@ -22,14 +22,13 @@ from .. import utils as test_utils
         ),
     ],
 )
-def test_create_user(public_client, new_user_blob, exp):
+def test_create_user(public_client, new_user_blob, exp, mock_send_email_to_user):
     client = public_client
     admin_token = test_utils.admin_token(client)
     # create it
     response = client.post("/auth/register", json=new_user_blob)
     assert 200 <= response.status_code <= 400, response.text
     data = response.json()
-    # assert data["email"] == "new_user@example.com"
     assert "id" in data
     user_id = data["id"]
 
@@ -89,13 +88,18 @@ def test_user_mods(client, route, method, blob, authorized):
 
 
 @pytest.mark.parametrize(
-    "route,method,blob,authorized",
+    "client_name,route,method,blob,authorized",
     [
-        ("/api/rest/users/readonly_token", "get", {}, True),
-        ("/api/rest/users/rotate_readonly_token", "post", {}, True),
+        ("client", "/api/rest/users/readonly_token", "get", {}, True),
+        ("client", "/api/rest/users/rotate_readonly_token", "post", {}, True),
+        ("public_client", "/api/rest/users/readonly_token", "get", {}, False),
+        ("public_client", "/api/rest/users/rotate_readonly_token", "post", {}, False),
     ],
 )
-def test_user_mods_readonly_token(client, route, method, blob, authorized):
+def test_user_mods_readonly_token(
+    client_lookup, client_name, route, method, blob, authorized
+):
+    client = client_lookup[client_name]
     base_response = client.get("/api/rest/users/me")
 
     methodf = getattr(client, method)

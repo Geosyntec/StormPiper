@@ -17,6 +17,7 @@ omit =
     **/if_error.py
     **/create_views.py
     **/bg_*.py
+    **/bg_utils/*
     **/_no_git*/*
     **/_no_git*
     **/tests/data/*

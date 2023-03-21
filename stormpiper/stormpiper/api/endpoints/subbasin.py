@@ -14,6 +14,12 @@ router = APIRouter()
 
 
 @router.get(
+    "/{subbasin_id}/token/{token}",
+    response_model=SubbasinResultView,
+    name="subbasin:get_subbasin_via_token",
+    dependencies=[Depends(check_readonly_token)],
+)
+@router.get(
     "/{subbasin_id}",
     response_model=SubbasinResultView,
     name="subbasin:get_subbasin",

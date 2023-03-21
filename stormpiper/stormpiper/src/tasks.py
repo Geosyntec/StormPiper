@@ -327,14 +327,20 @@ def update_scenario_results(data, force=False, engine=engine):
     return updated_data
 
 
-def calculate_subbasin_promethee_prioritization(data: dict) -> list[dict]:
-    criteria, weights = zip(*((m["criteria"], m["weight"]) for m in data["criteria"]))
-    wq_type = data["wq_type"]
+def calculate_subbasin_promethee_prioritization(
+    data: dict, engine=engine
+) -> list[dict]:
+    """data: dict[str, list[dict[str, str|int|float]] | str],"""
+    criteria, weights = zip(
+        *((m["criteria"], m["weight"]) for m in data.get("criteria", []))
+    )
+    wq_type = data.get("wq_type", None)
 
     scored_df = prom.run_subbasins_promethee_prioritization(
         criteria=criteria,
         weights=weights,
         wq_type=wq_type,
+        engine=engine,
     )[["subbasin", "score"]]
 
     return scored_df.to_dict(orient="records")  # type: ignore

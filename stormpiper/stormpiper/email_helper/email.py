@@ -15,7 +15,7 @@ async def post(url, headers, json=None):
     async with aiohttp.ClientSession() as client:
         async with client.post(url, headers=headers, json=json) as resp:
             txt = await resp.text()
-            log = logging.warning if resp.status > 200 else logging.info
+            log = logger.warning if resp.status > 200 else logger.info
             log(f"response status: {resp.status} text: {txt}")
 
 
@@ -34,5 +34,5 @@ async def send_email_to_user(*, template: str, client=None, **template_kwargs):
     else:
         async with client.post(url, headers=headers, json=_json) as resp:
             txt = await resp.text()
-            log = logging.warning if resp.status > 200 else logging.info
+            log = logger.warning if resp.status > 200 else logger.info
             log(f"response status: {resp.status} text: {txt}")

@@ -133,10 +133,11 @@ def test_crud_create_and_delete(client, route, blob, idvar):
         "/api/rest/tmnt_facility",
         "/api/rest/tmnt_attr",
         "/api/rest/tmnt_delineation",
+        "/api/rest/global_setting",
     ],
 )
-def test_crud_get_all(client, route):
-    response = client.get(route)
+def test_crud_get_all(admin_client, route):
+    response = admin_client.get(route)
     rjson = response.json()
 
     assert isinstance(rjson, list)
