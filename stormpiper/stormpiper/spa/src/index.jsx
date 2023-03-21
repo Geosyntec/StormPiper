@@ -25,12 +25,9 @@ ReactDOM.render(
             <Route path=":id" element = {<App viewComponent='systemExplorer'/>}></Route>
           </Route>
         </Route>
-<<<<<<< HEAD
         <Route path="/app/manage-users" element={<Users />}></Route>
         <Route path="/app/manage-users/:id" element={<EditUser />}></Route>
-=======
         <Route path="/app/prioritization/" element={<App viewComponent='prioritization'/>}></Route>
->>>>>>> 62c4fed (scaffolded subbasin scoring module; refactor to nest modules within top level component)
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,

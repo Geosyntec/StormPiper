@@ -1,10 +1,25 @@
 import { GeoJsonLayer } from "@deck.gl/layers";
 
+let baseURL
+if(import.meta.env.MODE==='development'){
+  baseURL=import.meta.env.VITE_API_FETCH_PREFIX ?? "http://localhost:8080"
+  console.log("Dev mode recognized - setting baseURL to: ",baseURL)
+}else{
+  baseURL=''
+}
+
 const subbasins = {
   layer: GeoJsonLayer,
   props: {
     // data:"https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/21/query?where=1%3D1&outFields=*&returnGeometry=true&f=geojson&outSR=4326",
-    data: "/api/rest/subbasin/?f=geojson&limit=100000&offset=0&epoch=1980s",
+    data: baseURL+ "/api/rest/subbasin/?f=geojson&limit=100000&offset=0&epoch=1980s",
+    loadOptions: {
+      fetch: {
+        headers: {
+          'Authorization': `Bearer ${import.meta.env.VITE_AUTH_TOKEN}`,
+        }
+      }
+    },
     id: "subbasins",
     label: "Subbasins for Prioritization",
     getFillColor: [1, 1, 28, 1],
