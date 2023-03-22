@@ -111,7 +111,7 @@ async def delete_tmnt_source_control(
             detail=str(e).replace("\n", " "),
         )
 
-    return attr
+    return None
 
 
 @router.get(
