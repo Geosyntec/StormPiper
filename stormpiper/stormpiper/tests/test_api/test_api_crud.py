@@ -112,7 +112,7 @@ def test_crud_create_and_delete(client, route, blob, idvar):
         headers={"Authorization": f"Bearer {token['access_token']}"},
     )
 
-    assert response.status_code < 400, (response.content, route, blob)
+    assert response.status_code == 204, (response.content, route, blob)
 
     # check delete resource
     response = client.get(

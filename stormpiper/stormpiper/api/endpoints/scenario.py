@@ -97,7 +97,7 @@ async def get_scenario_details(*, id: str, field: str, db: AsyncSessionDB):
     return jsonable
 
 
-@router.delete("/{id}", name="scenario:delete")
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT, name="scenario:delete")
 async def delete_scenario(id: str, db: AsyncSessionDB):
     try:
         attr = await crud.scenario.remove(db=db, id=id)
@@ -107,7 +107,7 @@ async def delete_scenario(id: str, db: AsyncSessionDB):
             detail=str(e).replace("\n", " "),
         )
 
-    return attr
+    return None
 
 
 @router.patch("/{id}", name="scenario:update")

@@ -108,7 +108,7 @@ async def delete_global_setting(
             detail=str(e).replace("\n", " "),
         )
 
-    return attr
+    return None
 
 
 @router.get(
