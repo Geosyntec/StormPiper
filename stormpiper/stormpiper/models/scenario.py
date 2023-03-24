@@ -68,6 +68,22 @@ DELIN_ONLY = {
     }
 }
 
+TMNT_ONLY = {
+    "tmnt_facility_collection": {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "properties": TMNT_PROPERTIES_BMP_01,
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [-122.473, 47.255],
+                },
+            },
+        ],
+    },
+}
+
 DELIN_TO_TMNT = {
     "delineation_collection": {
         "type": "FeatureCollection",
@@ -96,27 +112,17 @@ DELIN_TO_TMNT = {
             },
         ],
     },
-    "tmnt_facility_collection": {
-        "type": "FeatureCollection",
-        "features": [
-            {
-                "type": "Feature",
-                "properties": TMNT_PROPERTIES_BMP_01,
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [-122.473, 47.255],
-                },
-            },
-        ],
-    },
+    **TMNT_ONLY,
 }
 
-DELIN_SCENARIO = {"name": "delin only", "input": DELIN_ONLY}
+DELIN_ONLY_SCENARIO = {"name": "delin only", "input": DELIN_ONLY}
+TMNT_ONLY_SCENARIO = {"name": "tmnt only", "input": TMNT_ONLY}
 TMNT_SCENARIO = {"name": "tmnt scenario", "input": DELIN_TO_TMNT}
+
 
 SCENARIO_EXAMPLES = {
     "empty": {"summary": "", "value": {"name": "empty scenario"}},
-    "delin only": {"summary": "", "value": DELIN_SCENARIO},
+    "delin only": {"summary": "", "value": DELIN_ONLY_SCENARIO},
     "delin to tmnt": {"summary": "", "value": TMNT_SCENARIO},
 }
 
@@ -138,7 +144,7 @@ class ScenarioInputUpdate(BaseModel):
 
 
 class ScenarioBase(BaseModel):
-    name: str = "unnamed"
+    name: str | None = "unnamed"
     info: dict | None = Field(
         None,
         description="Any associated data object to store with the project. Frontend can determine the keys and values of this object.",
@@ -160,11 +166,11 @@ class ScenarioUpdate(ScenarioPatch):
     input_time_updated: datetime | None = Field(default_factory=datetime_now)
     loading_hash: str
     input_hash: str
+    structural_tmnt: list[dict] | None = None
     result_time_updated: datetime | None = Field(default_factory=datetime_now)
     lgu_boundary: dict | None = None
     lgu_load: list[dict] | None = None
     delin_load: list[dict] | None = None
-    structural_tmnt: list[dict] | None = None
     graph_edge: list[dict] | None = None
     structural_tmnt_result: list[dict] | None = None
 
@@ -185,6 +191,7 @@ class ScenarioCreate(ScenarioBase):
     input_time_updated: datetime | None = Field(default_factory=datetime_now)
     loading_hash: str
     input_hash: str
+    structural_tmnt: list[dict] | None = None
 
     def __init__(self, **data: Any) -> None:
         super().__init__(**data)

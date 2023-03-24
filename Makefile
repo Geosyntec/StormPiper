@@ -124,7 +124,7 @@ up: stack ## bring up the containers and run startup commands
 up-d: stack ## bring up the containers in '-d' mode
 	docker compose up -d
 
-up-test: stack init-test
+up-test: stack-test init-test
 
 up-fe-dev: stack-fe ## bring up the containers without mounting volumes for `npm run dev`
 	docker compose up

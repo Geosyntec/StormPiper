@@ -51,7 +51,7 @@ def solve_scenario_data(data: dict, force=False, engine=None) -> dict:
         force or any([f is None for f in [data.get(k, None) for k in ["lgu_load"]]])
     )
     tmnt_collection = input_.get("tmnt_facility_collection", {})
-    recalculate_wq = tmnt_collection and (
+    recalculate_wq = (delin_collection and tmnt_collection) and (
         force
         or recalculate_loading
         or any(

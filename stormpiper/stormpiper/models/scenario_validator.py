@@ -67,8 +67,8 @@ def scenario_validator(
         if tmnt_facility_collection is not None:
             collection = scenario["input"]["tmnt_facility_collection"]
             structural_tmnt = []
-            for f in collection.get("features", [{}]):
-                props = f.get("properties")
+            for f in collection.get("features", []):
+                props = f.get("properties", None)
                 if props:
                     tmnt_update = tmnt_attr_validator(
                         tmnt_patch=props,
