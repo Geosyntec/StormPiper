@@ -179,11 +179,12 @@ class ScenarioSolve(ScenarioUpdate):
 
 
 class ScenarioCreate(ScenarioBase):
-    loading_hash: str
-    input_hash: str
     created_by: str | None = None
     updated_by: str | None = None
+    input: ScenarioInputUpdate | None = None
     input_time_updated: datetime | None = Field(default_factory=datetime_now)
+    loading_hash: str
+    input_hash: str
 
     def __init__(self, **data: Any) -> None:
         super().__init__(**data)
