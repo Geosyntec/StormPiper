@@ -1,18 +1,19 @@
 import React, { Suspense, useEffect, useState, useRef } from "react";
 // import DeckGLMap from "./components/map";
-import ProminentAppBar from "./components/topMenu";
 import { useNavigate } from "react-router-dom";
 import AuthProvider from "./components/authProvider";
 import HomeRoundedIcon from "@material-ui/icons/HomeRounded";
 import InfoRoundedIcon from "@material-ui/icons/InfoRounded";
 import GridOnRoundedIcon from "@material-ui/icons/GridOnRounded";
 import ScatterPlotRoundedIcon from "@material-ui/icons/ScatterPlotRounded";
-import { Box } from "@material-ui/core";
+import { Box, ThemeProvider } from "@material-ui/core";
 import SystemExplorer from "./components/systemExplorer";
 import Prioritization from "./components/Prioritization";
 import Landing from "./components/landing";
+import { theme } from "./theme";
 
 import "./App.css";
+import Dashboard from "./components/dashboard";
 
 function App(props) {
   let navigate = useNavigate();
@@ -79,14 +80,18 @@ function App(props) {
     },
   };
 
+  const viewComponent = _getViewComponent();
+
   return (
     <AuthProvider>
+      {/* <ThemeProvider theme={theme}> */}
       <Box className="App" sx={{ overflow: "hidden" }}>
-        <ProminentAppBar
-          buttons={topMenuButtons[props.viewComponent]}
-        ></ProminentAppBar>
-        {props && _getViewComponent()}
+        <Dashboard
+          buttons={topMenuButtons[props.viewComponent] ?? []}
+          viewComponent={viewComponent}
+        />
       </Box>
+      {/* </ThemeProvider> */}
     </AuthProvider>
   );
 }

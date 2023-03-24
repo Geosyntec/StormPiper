@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Typography,Paper, Chip, Button,CircularProgress,Box } from "@material-ui/core";
 import { BMPForm } from "./bmpForm";
 import { ListAltRounded} from "@material-ui/icons";
+import {api_fetch} from "../utils/utils"
 import "./bmpStatWindow.css";
 
 // TODO: Make Facility Type editable (for now, only allow user to toggle between simple and not simple). Look for endpoint that can retrieve all facility types, and their respective data models
@@ -141,7 +142,7 @@ function BMPStatWindow(props:statWindowProps) {
     // Context endpoint holds mapping between project-specific names and base types
     let resources = ["/openapi.json","/api/rest/reference/context"]
 
-    Promise.all(resources.map(url=>fetch(url).then(res=>res.json())))
+    Promise.all(resources.map(url=>api_fetch(url).then(res=>res.json())))
       .then(resArray=>{
         setSpecs({
           facilitySpec:resArray[0].components.schemas,
@@ -165,7 +166,7 @@ function BMPStatWindow(props:statWindowProps) {
     let tmnt_results = ["/api/rest/results/"+props.feature,"/api/rest/tmnt_facility/"+props.feature]
 
     setLoadingState(false)
-    Promise.all(tmnt_results.map(url=>fetch(url).then(res=>res.json())))
+    Promise.all(tmnt_results.map(url=>api_fetch(url).then(res=>res.json())))
     .then(resArray=>{
       console.log("Fetched all resources; ",resArray)
       //TODO: Can we set the header based on RecalculationState? If true, then set to Performance Summary, else Overview
@@ -221,7 +222,7 @@ function BMPStatWindow(props:statWindowProps) {
   }
   function _recalculate(){
     setRecalculationState(true)
-    fetch('/api/rpc/solve_watershed')
+    api_fetch('/api/rpc/solve_watershed')
       .then(resp=>{
         return resp.json()
       })

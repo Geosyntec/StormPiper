@@ -2,7 +2,7 @@
 // let Authorization = "";
 
 let Authorization = null;
-let urlPrefix = "";
+export let urlPrefix = "";
 
 if (import.meta.env.MODE === "development") {
   if (import.meta.env?.VITE_AUTH_TOKEN) {
@@ -23,3 +23,4 @@ export async function api_fetch(resource, args = {}) {
 
   return await fetch(resource, args);
 }
+

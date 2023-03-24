@@ -8,6 +8,7 @@ import { Card, CardActions, CardContent, Typography, Button,Box} from "@material
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import "./systemExplorer.css";
+import { api_fetch } from "../utils/utils";
 
 const DeckGLMap = React.lazy(()=>import("./map"))
 const ResultsTable = React.lazy(()=>import("./resultsTable"))
@@ -53,7 +54,7 @@ function SystemExplorer(props) {
 
   function _fetchIsDirty(){
     // console.log("Checking isDirty")
-    fetch("/api/rest/results/is_dirty")
+    api_fetch("/api/rest/results/is_dirty")
     .then((res) => {
       return res.json();
     })
@@ -67,7 +68,7 @@ function SystemExplorer(props) {
   useEffect(()=>{
     //Only perform these operations on initial render
     //Notify user if they haven't verified email
-    fetch("/api/rest/users/me")
+    api_fetch("/api/rest/users/me")
       .then((res) => {
         return res.json();
       })
@@ -157,7 +158,7 @@ function SystemExplorer(props) {
   }
 
   function _sendVerificationEmail(){
-    fetch("/auth/request-verify-token",{
+    api_fetch("/auth/request-verify-token",{
       method:"POST",
       headers: {
         Accept: "application/json",
@@ -184,7 +185,7 @@ function SystemExplorer(props) {
               baseLayer={baseLayer}
               onClick={_lyrClickHandlers.bind(this)}
               currentFeature={focusFeature}
-              style={{}}
+              style={{width:"120%"}}
             ></DeckGLMap>
           </Suspense>
         </div>
