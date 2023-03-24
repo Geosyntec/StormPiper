@@ -201,7 +201,7 @@ export default function EditUser() {
     },
     {
       name: "readonly_token",
-      label: "Readony Token",
+      label: "Readonly Token",
       disabled: true,
       InputProps: {
         readOnly: true,

@@ -32,8 +32,14 @@ ReactDOM.render(
             ></Route>
           </Route>
         </Route>
-        <Route path="/app/manage-users" element={<Users />}></Route>
-        <Route path="/app/manage-users/:id" element={<EditUser />}></Route>
+        <Route
+          path="/app/manage-users"
+          element={<App viewComponent="editAllUsers" />}
+        ></Route>
+        <Route
+          path="/app/manage-users/:id"
+          element={<App viewComponent="editMe" />}
+        ></Route>
         <Route
           path="/app/prioritization/"
           element={<App viewComponent="prioritization" />}

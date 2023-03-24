@@ -19,7 +19,7 @@ import Link from "@mui/material/Link";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import { useNavigate } from "react-router-dom";
-import { ListItem } from "@material-ui/core";
+import { ListItem, Button } from "@material-ui/core";
 import WorkflowModal from "./workflowModal";
 
 import { api_fetch } from "../utils/utils";
@@ -119,10 +119,12 @@ export default function Dashboard(props) {
   const [userProfile, setUserProfile] = useState({
     firstName: "User",
     email: "email@tacoma.watersheds.com",
+    id: "",
+    role: "",
   });
 
   useEffect(() => {
-    api_fetch("api/rest/users/me")
+    api_fetch("/api/rest/users/me")
       .then((res) => {
         return res.json();
       })
@@ -134,6 +136,8 @@ export default function Dashboard(props) {
           setUserProfile({
             firstName: res.first_name,
             userEmail: res.email,
+            id: res.id,
+            role: res.role,
           });
         }
       });
@@ -206,9 +210,29 @@ export default function Dashboard(props) {
                   </Typography>
                 </ListItem>
                 <ListItem>
-                  <a href="javascript:;" onClick={_postLogout}>
+                  <Button
+                    variant="contained"
+                    onClick={() =>
+                      navigate("/app/manage-users/" + userProfile.id)
+                    }
+                  >
+                    Manage Profile
+                  </Button>
+                </ListItem>
+                {userProfile.role === "admin" && (
+                  <ListItem>
+                    <Button
+                      variant="contained"
+                      onClick={() => navigate("/app/manage-users")}
+                    >
+                      Manage All Users
+                    </Button>
+                  </ListItem>
+                )}
+                <ListItem>
+                  <Button variant="contained" onClick={_postLogout}>
                     Logout
-                  </a>
+                  </Button>
                 </ListItem>
               </React.Fragment>
             ) : (
