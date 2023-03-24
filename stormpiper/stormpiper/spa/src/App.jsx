@@ -14,6 +14,7 @@ import { theme } from "./theme";
 
 import "./App.css";
 import Dashboard from "./components/dashboard";
+import { EditUser, Users } from "./components/users";
 
 function App(props) {
   let navigate = useNavigate();
@@ -36,12 +37,23 @@ function App(props) {
         );
       case "prioritization":
         return <Prioritization workflowState={priorityWorkflowState} />;
+      case "editMe":
+        return <EditUser />;
+      case "editAllUsers":
+        return <Users />;
       default:
         return <Landing />;
     }
   }
 
   const topMenuButtons = {
+    default: {
+      home: {
+        label: "Home",
+        icon: <HomeRoundedIcon />,
+        clickHandler: () => navigate("/app"),
+      },
+    },
     landing: {},
     systemExplorer: {
       home: {
@@ -84,14 +96,16 @@ function App(props) {
 
   return (
     <AuthProvider>
-      {/* <ThemeProvider theme={theme}> */}
-      <Box className="App" sx={{ overflow: "hidden" }}>
-        <Dashboard
-          buttons={topMenuButtons[props.viewComponent] ?? []}
-          viewComponent={viewComponent}
-        />
-      </Box>
-      {/* </ThemeProvider> */}
+      <ThemeProvider theme={theme}>
+        <Box className="App" sx={{ overflow: "hidden" }}>
+          <Dashboard
+            buttons={
+              topMenuButtons[props.viewComponent] ?? topMenuButtons.default
+            }
+            viewComponent={viewComponent}
+          />
+        </Box>
+      </ThemeProvider>
     </AuthProvider>
   );
 }
