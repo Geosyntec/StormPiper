@@ -44,33 +44,6 @@ ReactDOM.render(
           path="/app/prioritization/"
           element={<App viewComponent="prioritization" />}
         ></Route>
-        <Route
-          path="/app/prioritization/"
-          element={<App viewComponent="prioritization" />}
-        ></Route>
-        <Route path="/app/" element={<App viewComponent="landing" />}></Route>
-        <Route path="/app/login/" element={<Login />}></Route>
-        <Route path="/app/register/" element={<Register />}></Route>
-        <Route path="/app/verify/" element={<Verify />}></Route>
-        <Route path="/app/reset/" element={<Reset />}></Route>
-        <Route path="/app/forgot-password/" element={<Forgot />}></Route>
-        <Route
-          path="/app/map/"
-          element={<App viewComponent="systemExplorer" />}
-        >
-          <Route path="tmnt" element={<App viewComponent="systemExplorer" />}>
-            <Route
-              path=":id"
-              element={<App viewComponent="systemExplorer" />}
-            ></Route>
-          </Route>
-        </Route>
-        <Route path="/app/manage-users" element={<Users />}></Route>
-        <Route path="/app/manage-users/:id" element={<EditUser />}></Route>
-        <Route
-          path="/app/prioritization/"
-          element={<App viewComponent="prioritization" />}
-        ></Route>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,
