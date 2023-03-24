@@ -1,5 +1,10 @@
 import pytest
 
+from stormpiper.models.scenario import (
+    DELIN_ONLY_SCENARIO,
+    TMNT_ONLY_SCENARIO,
+    TMNT_SCENARIO,
+)
 from stormpiper.src import tasks
 
 from .. import utils as test_utils
@@ -71,28 +76,41 @@ def test_scenario_solve_data_wq(client):
     assert updated_scenario["structural_tmnt_result"] != None, updated_scenario
 
 
-# @pytest.mark.integration
-# @test_utils.with_ee_login
-# def test_scenario_solve_id(client):
-#     response = client.get("/api/rest/scenario")
+@pytest.mark.integration
+@test_utils.with_ee_login
+@pytest.mark.parametrize(
+    "blob",
+    [
+        DELIN_ONLY_SCENARIO,
+        TMNT_ONLY_SCENARIO,
+        TMNT_SCENARIO,
+    ],
+)
+def test_solve_new_scenario(client, blob):
+    route = "/api/rest/scenario"
+    cresponse = client.post(route, json=blob)
+    scenario = cresponse.json()
 
-#     scenarios = [dct for dct in response.json()][:3]
+    scenario_id = scenario["id"]
+    route_id = route + f"/{scenario_id}"
 
-#     for scenario in scenarios:
-#         scenario_id = scenario["id"]
-#         response = client.post(f"/api/rpc/solve_scenario/{scenario_id}")
-#         task_id = response.json()["task_id"]
+    try:
+        response = client.post(f"/api/rpc/solve_scenario/{scenario_id}")
+        task_id = response.json()["task_id"]
 
-#         task_response = test_utils.poll_testclient_url(
-#             client, f"/api/rest/tasks/{task_id}", timeout=60
-#         )
+        task_response = test_utils.poll_testclient_url(
+            client, f"/api/rest/tasks/{task_id}", timeout=60
+        )
 
-#         if task_response:
-#             rjson = task_response.json()
-#             assert rjson.get("status", "").lower() == "success"
-#         else:
-#             response = client.get(f"/api/rest/tasks/{task_id}")
+        if task_response:
+            rjson = task_response.json()
+            assert rjson.get("status", "").lower() == "success"
+        else:
+            response = client.get(f"/api/rest/tasks/{task_id}")
 
-#             raise ValueError(
-#                 f"Task timed out or failed for scenario {scenario['name']}. {response.content}"
-#             )
+            raise ValueError(
+                f"Task timed out or failed for scenario {scenario['name']}. {response.content}"
+            )
+    finally:
+        ## cleanup
+        dresponse = client.delete(route_id)
