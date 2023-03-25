@@ -24,7 +24,7 @@ function DeckGLMap(props) {
         pitch: 0,
         bearing: 0,
       };
-      break
+      break;
     case "prioritization":
       INITIAL_VIEW_STATE = {
         longitude: -122.44003833897366,
@@ -33,7 +33,7 @@ function DeckGLMap(props) {
         pitch: 0,
         bearing: 0,
       };
-      break
+      break;
     default:
       INITIAL_VIEW_STATE = {
         longitude: -122.4,
@@ -44,7 +44,12 @@ function DeckGLMap(props) {
       };
   }
 
-  console.log("Initial view state for context", props.context,": ",INITIAL_VIEW_STATE)
+  console.log(
+    "Initial view state for context",
+    props.context,
+    ": ",
+    INITIAL_VIEW_STATE
+  );
 
   const loc = useLocation();
   const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
@@ -102,7 +107,7 @@ function DeckGLMap(props) {
       layers={props.layers}
       onClick={props.onClick}
       onViewStateChange={(state) => {
-        console.log("New View: ",state)
+        console.log("New View: ", state);
         debouncedSetZoom(state);
       }}
       getTooltip={(object) => {

@@ -5,72 +5,72 @@
     cursor:pointer;
 } */
 
-.panel-header{
-    display:flex;
+.panel-header {
+  display: flex;
 
-    justify-content: center;
-    background:rgb(137, 189, 238);
-    margin:0px;
+  justify-content: center;
+  background: rgb(137, 189, 238);
+  margin: 0px;
 }
 
-.title-container{
-    position:relative
+.title-container {
+  position: relative;
 }
 
-.cancel-container{
-    /* display:flex; */
-    position:absolute;
-    justify-content: end;
-    right:12%;
-    top:8px;
-    /* min-width: 25%; */
+.cancel-container {
+  /* display:flex; */
+  position: absolute;
+  justify-content: end;
+  right: 12%;
+  top: 8px;
+  /* min-width: 25%; */
 }
 
-.stats-table{
-    /* display:flex; */
-    text-align:center;
-    margin:5px;
-    /* border:2px solid black; */
+.stats-table {
+  /* display:flex; */
+  text-align: center;
+  margin: 5px;
+  /* border:2px solid black; */
 }
 
-.stats-table p{
-    font-size: 0.75em;
-    cursor:pointer;
+.stats-table p {
+  font-size: 0.75em;
+  cursor: pointer;
 }
 
-.stats-table p.active{
-    font-weight:bold;
+.stats-table p.active {
+  font-weight: bold;
 }
 
-.stat{
-    display:flex;
-    flex-flow:row;
-    padding: 5 5 5 15px;
+.stat {
+  display: flex;
+  flex-flow: row;
+  padding: 5 5 5 15px;
 }
-.stat p{
-    cursor:auto
-}
-
-.table-header{
-    display:flex;
-    flex-flow: row wrap;
-    /* border-bottom: 1px solid black; */
-    justify-content: space-around;
-    margin-bottom:20px;
+.stat p {
+  cursor: auto;
 }
 
-#cancel-icon{
-    cursor: pointer;
-    position:relative;
-    left:75%;
-    color:black;
+.table-header {
+  display: flex;
+  flex-flow: row wrap;
+  /* border-bottom: 1px solid black; */
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+#cancel-icon {
+  cursor: pointer;
+  position: relative;
+  left: 75%;
+  color: black;
 }
 
 #bmp-panel-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2px;
-    box-sizing: border-box;
-    height:100%
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  box-sizing: border-box;
+  height: 100%;
 }

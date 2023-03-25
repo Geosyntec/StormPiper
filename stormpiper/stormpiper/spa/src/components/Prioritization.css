@@ -1,7 +1,7 @@
 #priority-info {
-	position: fixed;
-	z-index: 9;
-	top: 10%;
+  position: fixed;
+  z-index: 9;
+  top: 10%;
   left: 8%;
   overflow-x: hidden;
   overflow-y: hidden;
@@ -9,10 +9,10 @@
   width: 25%;
 }
 
-#priority-score-table{
+#priority-score-table {
   position: absolute;
-	z-index: 9;
-	top: 70%;
+  z-index: 9;
+  top: 70%;
   left: 40%;
   height: auto;
   width: 25%;
