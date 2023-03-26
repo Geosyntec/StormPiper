@@ -45,13 +45,10 @@ def scenario_validator(
     context: dict[str, Any] | None = None,
     npv_global_settings: dict[str, Any] | None = None,
 ) -> ScenarioUpdate:
-    loading_hash = "null"
-    input_hash = "null"
     input_ = scenario.get("input", None)
-    structural_tmnt = None
 
     if input_ is not None:
-        input_hash = get_data_hash(input_)
+        scenario["input_hash"] = get_data_hash(input_)
         delineation_collection = input_.get("delineation_collection", None)
         if delineation_collection is not None:
             delin_col_valid = validate_delineation_collection(
@@ -59,8 +56,7 @@ def scenario_validator(
             )
 
             delineation_collection = json.loads(delin_col_valid)
-            loading_hash = get_data_hash(delineation_collection)
-
+            scenario["loading_hash"] = get_data_hash(delineation_collection)
             scenario["input"]["delineation_collection"] = delineation_collection
 
         tmnt_facility_collection = input_.get("tmnt_facility_collection", None)
@@ -83,9 +79,7 @@ def scenario_validator(
 
                     structural_tmnt.append(new_props)
 
-    scenario["loading_hash"] = loading_hash
-    scenario["input_hash"] = input_hash
-    scenario["structural_tmnt"] = structural_tmnt
+            scenario["structural_tmnt"] = structural_tmnt
 
     new_obj = ScenarioUpdate(**scenario)
 
