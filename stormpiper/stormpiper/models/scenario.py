@@ -164,8 +164,8 @@ class ScenarioUpdate(ScenarioPatch):
     updated_by: str | None = None
     input: ScenarioInputUpdate | None = None
     input_time_updated: datetime | None = Field(default_factory=datetime_now)
-    loading_hash: str
-    input_hash: str
+    loading_hash: str | None = None
+    input_hash: str | None = None
     structural_tmnt: list[dict] | None = None
     result_time_updated: datetime | None = Field(default_factory=datetime_now)
     lgu_boundary: dict | None = None
@@ -189,8 +189,8 @@ class ScenarioCreate(ScenarioBase):
     updated_by: str | None = None
     input: ScenarioInputUpdate | None = None
     input_time_updated: datetime | None = Field(default_factory=datetime_now)
-    loading_hash: str
-    input_hash: str
+    loading_hash: str | None = None
+    input_hash: str | None = None
     structural_tmnt: list[dict] | None = None
 
     def __init__(self, **data: Any) -> None:

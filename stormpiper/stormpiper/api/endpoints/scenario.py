@@ -121,30 +121,32 @@ async def update_scenario(
     if not attr:  # pragma: no cover
         raise HTTPException(status_code=404, detail=f"Record not found for id={id}")
 
-    loading_hash = scenario.loading_hash
-    input_hash = scenario.input_hash
-
-    logger.debug(f"old hash: {attr.loading_hash} new hash: {loading_hash}")
-
     data = scenario.dict(exclude_unset=True)
-    recalculate_loading = attr.loading_hash != loading_hash
-    recalculate_wq = attr.input_hash != input_hash
 
-    if recalculate_loading:
-        logger.info("SCENARIO: Clearing prev scenario loading results.")
+    if "input" in data:
+        loading_hash = scenario.loading_hash
+        input_hash = scenario.input_hash
 
-        data["lgu_boundary"] = None
-        data["lgu_load"] = None
-        data["delin_load"] = None
+        logger.debug(f"old hash: {attr.loading_hash} new hash: {loading_hash}")
 
-    if recalculate_wq:
-        logger.info("SCENARIO: Clearing scenario wq results")
-        data["graph_edge"] = None
-        data["structural_tmnt_result"] = None
-        data.pop("input_time_updated", None)
+        recalculate_loading = attr.loading_hash != loading_hash
+        recalculate_wq = attr.input_hash != input_hash
 
-    else:
-        logger.info("SCENARIO: Inputs are unchanged. Updating changelog only.")
+        if recalculate_loading:
+            logger.info("SCENARIO: Clearing prev scenario loading results.")
+
+            data["lgu_boundary"] = None
+            data["lgu_load"] = None
+            data["delin_load"] = None
+
+        if recalculate_wq:
+            logger.info("SCENARIO: Clearing scenario wq results")
+            data["graph_edge"] = None
+            data["structural_tmnt_result"] = None
+            data.pop("input_time_updated", None)
+
+        else:
+            logger.info("SCENARIO: Inputs are unchanged. Updating changelog only.")
 
     try:
         new_obj = ScenarioUpdate(**data)
