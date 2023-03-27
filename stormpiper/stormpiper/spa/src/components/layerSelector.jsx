@@ -1,83 +1,81 @@
 import { makeStyles } from "@material-ui/core/styles";
-import Checkbox from '@material-ui/core/Checkbox';
+import Checkbox from "@material-ui/core/Checkbox";
 import Typography from "@material-ui/core/Typography";
-import LayersRoundedIcon from "@material-ui/icons/LayersRounded"
+import LayersRoundedIcon from "@material-ui/icons/LayersRounded";
 import { useState } from "react";
-import "./layerSelector.css"
-
+import "./layerSelector.css";
 
 const useStyles = makeStyles((theme) => ({
-
-  layerTogglerTitle:{
-    marginLeft:"5px",
+  layerTogglerTitle: {
+    marginLeft: "5px",
   },
 
   nestedLayer: {
-    padding:"2px 0px",
+    padding: "2px 0px",
     // marginLeft: "20px",
   },
 
   nestedLayerTitle: {
     marginLeft: "5px",
-    color:theme.palette.grey[700],
+    color: theme.palette.grey[700],
   },
   mainLayerTitle: {
     // paddingBottom:"5px",
     marginLeft: "5px",
   },
   mainLayer: {
-    padding:"5px 0px",
+    padding: "5px 0px",
     marginLeft: "5px",
   },
 
-  testButtonClicked:{
-    transitionProperty:"width",
-    transitionDuration:"2s",
-    color:"red",
+  testButtonClicked: {
+    transitionProperty: "width",
+    transitionDuration: "2s",
+    color: "red",
     width: "100px",
   },
 
-  testButtonUnClicked:{
-    transitionProperty:"width",
-    transitionDuration:"2s",
-    color:"black",
-    width:"50px",
+  testButtonUnClicked: {
+    transitionProperty: "width",
+    transitionDuration: "2s",
+    color: "black",
+    width: "50px",
   },
 
-  controlPanel:{
+  controlPanel: {
     position: "fixed",
-    zIndex:"9",
+    zIndex: "9",
     top: "20%",
-    right:"0%",
-    overflowX:"hidden",
-    overflowY:"auto",
-    height:"75%",
-    width:"100%",
-    background:"rgba(255,255,255,0.8)"
+    right: "0%",
+    overflowX: "hidden",
+    overflowY: "auto",
+    height: "75%",
+    width: "100%",
+    background: "rgba(255,255,255,0.8)",
   },
-
-
-
 }));
 
 function LayerSelector(props) {
-  const classes = useStyles()
+  const classes = useStyles();
 
   return (
     <div className="layer-selector">
-      {
-        props.displayStatus
-          ?<div id = "layer-toggler-title">
-            <Typography variant = "h4"  className = {classes.layerTogglerTitle}>Layers</Typography>
-            <div className="cancel-container">
-              <h4 id="cancel-icon" onClick={props.displayController}>
-                &#10005;
-              </h4>
-            </div>
-           </div>
-
-          :<div id = "layer-toggler-title-hidden" ><LayersRoundedIcon onClick = {props.displayController}/></div>
-      }
+      {props.displayStatus ? (
+        <div id="layer-toggler-title">
+          <Typography variant="h4" className={classes.layerTogglerTitle}>
+            Layers
+          </Typography>
+          <div className="cancel-container">
+            <h4 id="cancel-icon" onClick={props.displayController}>
+              &#10005;
+            </h4>
+          </div>
+        </div>
+      ) : (
+        <div id="layer-toggler-title-hidden">
+          <LayersRoundedIcon onClick={props.displayController} />
+        </div>
+      )}
 
       {_renderCategories(
         props.layerDict,
@@ -161,7 +159,5 @@ function LayerToggler(props) {
     </div>
   );
 }
-
-
 
 export default LayerSelector;

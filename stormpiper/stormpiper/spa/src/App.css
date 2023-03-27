@@ -32,46 +32,6 @@
   background: rgb(36, 21, 170);
 }
 
-#control-panel {
-	position: fixed;
-	z-index: 9;
-	top: 10%;
-  left: 8%;
-  overflow-x: hidden;
-  overflow-y: auto;
-  height: 75%;
-  width: 25%;
-  /* background: rgba(255, 255, 255, 1);
-  border-radius: 2px; */
-
-}
-
-#control-panel-hidden{
-  position: fixed;
-	z-index: 9;
-	top: 10%;
-  left: 8%;
-  overflow-x: hidden;
-  overflow-y: hidden;
-  height:5%;
-  width: 3%;
-  background: rgba(255, 255, 255, 1);
-  border-radius: 2px;
-
-}
-
-#base-layer-control-panel{
-  position: fixed;
-	z-index: 9;
-	top: 92%;
-  left: 8%;
-  overflow-x: hidden;
-  overflow-y: hidden;
-  height:auto;
-  width: auto;
-  background: rgba(255, 255, 255, 1);
-  border-radius: 2px;
-}
 
 .base-layer-tab{
   font-size:0.7rem !important;
@@ -96,36 +56,7 @@
   font-size: 10px;
 }
 
-#prj-stat-panel {
-	position: fixed;
-	z-index: 9;
-	top: 10%;
-  left: 58%;
-  overflow-x: hidden;
-  overflow-y: auto;
-  height: auto;
-  width: 40%;
-  text-align:center;
-  /* background: rgba(255, 255, 255, 1); */
-  /* border-radius: 2px; */
 
-}
-
-#prj-stat-panel-hidden{
-  /* transition-property: height,width,left;
-  transition-duration: 500ms; */
-  position: fixed;
-	z-index: 9;
-	top: 10%;
-  left: 95%;
-  /* left: 125%; */
-  overflow-x: hidden;
-  overflow-y: hidden;
-  height:5%;
-  width: 3%;
-  background: rgba(255, 255, 255, 1);
-  border-radius: 2px;
-}
 #verification-panel {
 	position: fixed;
 	z-index: 9;
