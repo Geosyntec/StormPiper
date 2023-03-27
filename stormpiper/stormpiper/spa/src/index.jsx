@@ -44,10 +44,6 @@ ReactDOM.render(
           path="/app/prioritization/"
           element={<App viewComponent="prioritization" />}
         ></Route>
-        <Route
-          path="/app/prioritization/"
-          element={<App viewComponent="prioritization" />}
-        ></Route>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,
