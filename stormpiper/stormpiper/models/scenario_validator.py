@@ -6,6 +6,7 @@ from typing import Any
 import geopandas
 from shapely import wkt
 
+from stormpiper.core.config import settings
 from stormpiper.core.utils import get_data_hash
 
 from .scenario import ScenarioUpdate
@@ -21,6 +22,7 @@ def scenario_delin_uid(ix: int, geom: str, name: None | str, relid: None | str) 
 def validate_delineation_collection(delineation_collection_geojson: str) -> str:
     delin = (
         geopandas.read_file(delineation_collection_geojson)
+        .to_crs(epsg=settings.TACOMA_EPSG)
         .assign(
             altid=lambda df: df.apply(
                 lambda r: scenario_delin_uid(
@@ -33,6 +35,8 @@ def validate_delineation_collection(delineation_collection_geojson: str) -> str:
             )
         )
         .assign(node_id=lambda df: "ls_" + df["name"].astype(str) + "_" + df["altid"])
+        .assign(area_acres=lambda df: df.geometry.area / 43_560)
+        .to_crs(epsg=4326)
     )
 
     delin_json = delin.to_json()

@@ -22,6 +22,7 @@ class DelineationPropsUpdate(DelineationProps):
 
     altid: None | str = None
     node_id: None | str = None
+    area_acres: None | float = None
 
 
 DelineationFeatureCollection = FeatureCollection[Polygon, DelineationProps]
