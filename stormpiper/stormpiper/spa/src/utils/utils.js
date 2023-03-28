@@ -1,14 +1,32 @@
-// import { Authorization } from "./_no_git_auth";
-// let Authorization = "";
-
-let Authorization = null;
+export let Authorization = null;
 export let urlPrefix = "";
 
 if (import.meta.env.MODE === "development") {
+  urlPrefix = import.meta.env?.VITE_API_FETCH_PREFIX ?? "";
+
   if (import.meta.env?.VITE_AUTH_TOKEN) {
     Authorization = `Bearer ${import.meta.env?.VITE_AUTH_TOKEN}`;
+    console.log("set access token with .env");
+  } else if (
+    import.meta.env?.VITE_LOGIN_ACCOUNT_EMAIL &&
+    import.meta.env?.VITE_LOGIN_ACCOUNT_PASSWORD
+  ) {
+    const response = await fetch(`${urlPrefix}/auth/jwt-bearer/login`, {
+      method: "POST",
+      body: new URLSearchParams({
+        username: import.meta.env.VITE_LOGIN_ACCOUNT_EMAIL,
+        password: import.meta.env.VITE_LOGIN_ACCOUNT_PASSWORD,
+      }),
+      headers: {
+        "Content-type": "application/x-www-form-urlencoded",
+      },
+    });
+    if (response.status === 200) {
+      const data = await response.json();
+      Authorization = `Bearer ${data.access_token}`;
+      console.log("set access token with login credentials");
+    }
   }
-  urlPrefix = import.meta.env?.VITE_API_FETCH_PREFIX ?? "";
 }
 
 export async function api_fetch(resource, args = {}) {
@@ -23,4 +41,3 @@ export async function api_fetch(resource, args = {}) {
 
   return await fetch(resource, args);
 }
-
