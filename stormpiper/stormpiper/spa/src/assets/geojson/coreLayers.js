@@ -1,7 +1,7 @@
 // import { COORDINATE_SYSTEM } from "@deck.gl/core";
 import { GeoJsonLayer, BitmapLayer } from "@deck.gl/layers";
 import { TileLayer } from "@deck.gl/geo-layers";
-import {urlPrefix} from "../../utils/utils"
+import { urlPrefix, Authorization } from "../../utils/utils";
 
 // import { Matrix4 } from "math.gl";
 /*
@@ -188,13 +188,13 @@ const activeLocalSWFacility = {
   layer: GeoJsonLayer,
   props: {
     // data:"https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/21/query?where=1%3D1&outFields=*&returnGeometry=true&f=geojson&outSR=4326",
-    data: urlPrefix+"/api/rest/tmnt_facility/?f=geojson",
+    data: urlPrefix + "/api/rest/tmnt_facility/?f=geojson",
     loadOptions: {
       fetch: {
         headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_AUTH_TOKEN}`,
-        }
-      }
+          Authorization: Authorization,
+        },
+      },
     },
     id: "activeSWFacility",
     label: "Active Surface Water Facilities",
@@ -220,13 +220,13 @@ const delineations = {
   layer: GeoJsonLayer,
   props: {
     // data:"https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/21/query?where=1%3D1&outFields=*&returnGeometry=true&f=geojson&outSR=4326",
-    data: urlPrefix+"/api/rest/tmnt_delineation/?f=geojson",
+    data: urlPrefix + "/api/rest/tmnt_delineation/?f=geojson",
     loadOptions: {
       fetch: {
         headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_AUTH_TOKEN}`,
-        }
-      }
+          Authorization: Authorization,
+        },
+      },
     },
     id: "tmnt_delineations",
     label: "Active Treatment Facility Upstream Delineations",

@@ -1,5 +1,5 @@
 import { GeoJsonLayer } from "@deck.gl/layers";
-import { urlPrefix } from "../../utils/utils";
+import { urlPrefix, Authorization } from "../../utils/utils";
 
 const subbasins = {
   layer: GeoJsonLayer,
@@ -11,7 +11,7 @@ const subbasins = {
     loadOptions: {
       fetch: {
         headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_AUTH_TOKEN}`,
+          Authorization: Authorization,
         },
       },
     },
