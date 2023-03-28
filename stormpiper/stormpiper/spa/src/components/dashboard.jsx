@@ -212,14 +212,12 @@ export default function Dashboard(props) {
                 <ListItem>
                   <Button
                     variant="contained"
-                    onClick={() =>
-                      navigate("/app/manage-users/" + userProfile.id)
-                    }
+                    onClick={() => navigate("/app/manage-users/me")}
                   >
-                    Manage Profile
+                    Manage My Profile
                   </Button>
                 </ListItem>
-                {userProfile.role === "admin" && (
+                {["admin", "user_admin"].includes(userProfile.role) && (
                   <ListItem>
                     <Button
                       variant="contained"
