@@ -106,43 +106,6 @@ export default function EditUser() {
               </MenuItem>
             ))}
           </TextField>
-
-          {/*
-          {formField?.select ? (
-            <TextField
-              fullWidth
-              {...register(formField.name, { ...formField })}
-              label={formField.label}
-              type={formField?.type ?? "text"}
-              required={formField?.required ?? false}
-              value={formValues?.[formField.name] ?? "public"}
-              InputProps={formField?.InputProps}
-              disabled={formField?.disabled ?? false}
-              select
-              onChange={handleInputChange}
-            >
-              {formField?.options?.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          ) : (
-            <TextField
-              fullWidth
-              {...register(formField.name, { ...formField })}
-              // label={formField.label}
-              // type={formField?.type || "text"}
-              // required={formField?.required || false}
-              // value={formValues?.[formField.name] ?? ""}
-              // InputProps={formField?.InputProps}
-              // disabled={formField?.disabled || false}
-              // select={formField?.select || false}
-
-              onChange={handleInputChange}
-            ></TextField>
-          )} */}
-
           {errors[formField.name] && (
             <p className="form-label error-msg">
               {errors[formField.name]?.message}
