@@ -14,7 +14,7 @@ import { theme } from "./theme";
 
 import "./App.css";
 import Dashboard from "./components/dashboard";
-import { EditUser, Users } from "./components/users";
+import { EditAllUsers, EditUser } from "./components/users";
 
 function App(props) {
   let navigate = useNavigate();
@@ -40,7 +40,7 @@ function App(props) {
       case "editMe":
         return <EditUser />;
       case "editAllUsers":
-        return <Users />;
+        return <EditAllUsers />;
       default:
         return <Landing />;
     }

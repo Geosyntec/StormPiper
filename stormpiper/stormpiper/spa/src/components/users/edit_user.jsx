@@ -60,24 +60,23 @@ export default function EditUser() {
     formState: { errors },
   } = useForm({ defaultValues: defaultFormValues });
 
-  const userid = params.id;
-
   const userDataSetter = async () => {
-    const _userdata = await getUser(userid);
+    // console.log("data on getter", params.id);
+    const _userdata = await getUser(params.id);
     const _medata = await getUser("me");
 
     Promise.all([
-      setUserData(_userdata),
-      setFormValues(_userdata),
-      setMeData(_medata),
+      setUserData({ ..._userdata }),
+      setFormValues({ ..._userdata }),
+      setMeData({ ..._medata }),
     ]).then(() => {
-      console.log(userdata, medata, formValues);
+      // console.log(userdata, medata, formValues);
     });
   };
 
   useEffect(() => {
     userDataSetter();
-  }, []);
+  }, [params.id]);
 
   function _renderFormFields() {
     let fieldDiv = Object.values(fields).map((formField) => {
@@ -88,6 +87,27 @@ export default function EditUser() {
           }}
           key={formField.name}
         >
+          <TextField
+            fullWidth
+            {...register(formField.name, { ...formField })}
+            label={formField.label}
+            type={formField?.type ?? "text"}
+            required={formField?.required ?? false}
+            value={formValues?.[formField.name] || ""}
+            InputProps={formField?.InputProps}
+            disabled={formField?.disabled ?? false}
+            select={formField?.select || false}
+            onChange={handleInputChange}
+            {...formField}
+          >
+            {formField?.options?.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          {/*
           {formField?.select ? (
             <TextField
               fullWidth
@@ -95,7 +115,7 @@ export default function EditUser() {
               label={formField.label}
               type={formField?.type ?? "text"}
               required={formField?.required ?? false}
-              value={formValues[formField.name] ?? "public"}
+              value={formValues?.[formField.name] ?? "public"}
               InputProps={formField?.InputProps}
               disabled={formField?.disabled ?? false}
               select
@@ -111,16 +131,17 @@ export default function EditUser() {
             <TextField
               fullWidth
               {...register(formField.name, { ...formField })}
-              label={formField.label}
-              type={formField?.type || "text"}
-              required={formField?.required || false}
-              value={formValues[formField.name] ?? ""}
-              InputProps={formField?.InputProps}
-              disabled={formField?.disabled || false}
-              select={formField?.select || false}
+              // label={formField.label}
+              // type={formField?.type || "text"}
+              // required={formField?.required || false}
+              // value={formValues?.[formField.name] ?? ""}
+              // InputProps={formField?.InputProps}
+              // disabled={formField?.disabled || false}
+              // select={formField?.select || false}
+
               onChange={handleInputChange}
             ></TextField>
-          )}
+          )} */}
 
           {errors[formField.name] && (
             <p className="form-label error-msg">
@@ -141,7 +162,7 @@ export default function EditUser() {
     const formData = new FormData(e.target);
 
     const response = await patchUserId(
-      userid,
+      params.id,
       Object.fromEntries(formData.entries())
     );
 
@@ -153,7 +174,7 @@ export default function EditUser() {
       setUserData(rjson);
       setFormValues(rjson);
     } else {
-      console.warn("edit user failure", userid, response, rjson);
+      console.warn("edit user failure", params.id, response, rjson);
       setError(true);
       setSuccess(false);
     }
@@ -161,19 +182,32 @@ export default function EditUser() {
   }
 
   const isMeAdmin = ["admin", "user_admin"].includes(medata?.role);
+  const userIsMe = medata?.id === userdata?.id;
 
   const fields = [
     {
       name: "first_name",
       label: "First Name",
+      InputProps: {
+        readOnly: !userIsMe,
+      },
+      disabled: !userIsMe,
     },
     {
       name: "last_name",
       label: "Last Name",
+      InputProps: {
+        readOnly: !userIsMe,
+      },
+      disabled: !userIsMe,
     },
     {
       name: "email",
       label: "Email/Username",
+      InputProps: {
+        readOnly: !userIsMe,
+      },
+      disabled: !userIsMe,
     },
     {
       name: "role",
