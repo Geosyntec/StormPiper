@@ -81,6 +81,22 @@ ReactDOM.render(
           path="/app/prioritization/"
           element={<App viewComponent="prioritization" />}
         ></Route>
+        <Route
+          path="/app/bmp-detail/:id"
+          element={<App viewComponent="bmpDetail" />}
+        ></Route>
+        <Route
+          path="/app/scenario"
+          element={<App viewComponent="scenarioReview" />}
+        ></Route>
+        <Route
+          path="/app/create-scenario"
+          element={<App viewComponent="scenarioCreate" />}
+        ></Route>
+        <Route
+          path="/app/scenario/:id"
+          element={<App viewComponent="scenarioDetail" />}
+        ></Route>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,

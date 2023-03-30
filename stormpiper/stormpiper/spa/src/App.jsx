@@ -1,5 +1,4 @@
-import React, { Suspense, useEffect, useState, useRef } from "react";
-// import DeckGLMap from "./components/map";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthProvider from "./components/authProvider";
 import HomeRoundedIcon from "@material-ui/icons/HomeRounded";
@@ -14,6 +13,12 @@ import { theme } from "./theme";
 
 import Dashboard from "./components/dashboard";
 import { EditAllUsers, EditUser } from "./components/users";
+import { BMPDetailPage } from "./components/bmp-detail-page";
+import {
+  ScenarioReviewPage,
+  ScenarioDetailPage,
+  ScenarioCreatePage,
+} from "./components/scenario-module";
 
 function App(props) {
   let navigate = useNavigate();
@@ -40,6 +45,14 @@ function App(props) {
         return <EditUser />;
       case "editAllUsers":
         return <EditAllUsers />;
+      case "bmpDetail":
+        return <BMPDetailPage />;
+      case "scenarioDetail":
+        return <ScenarioDetailPage />;
+      case "scenarioReview":
+        return <ScenarioReviewPage />;
+      case "scenarioCreate":
+        return <ScenarioCreatePage />;
       default:
         return <Landing />;
     }
