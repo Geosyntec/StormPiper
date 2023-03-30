@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState, useRef } from "react";
+import { Suspense, useEffect, useState, useRef, lazy } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { layerDict } from "../assets/geojson/coreLayers";
 import LayerSelector from "./layerSelector";
@@ -16,8 +16,8 @@ import {
 } from "@mui/material";
 import { api_fetch } from "../utils/utils";
 
-const DeckGLMap = React.lazy(() => import("./map"));
-const ResultsTable = React.lazy(() => import("./resultsTable"));
+const DeckGLMap = lazy(() => import("./map"));
+const ResultsTable = lazy(() => import("./resultsTable"));
 
 const panelStyles = {
   prjStatPanel: {
@@ -387,7 +387,7 @@ function SystemExplorer(props) {
           </Typography>
           <Typography variant="subtitle2">
             If not, click{" "}
-            <a href="javascript:;" onClick={_sendVerificationEmail}>
+            <a href="#" onClick={_sendVerificationEmail}>
               here{" "}
             </a>{" "}
             to resend the verification email

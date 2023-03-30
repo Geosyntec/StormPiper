@@ -1,5 +1,5 @@
 import { Checkbox, Box, Typography } from "@mui/material";
-import LayersRoundedIcon from "@material-ui/icons/LayersRounded";
+import LayersRoundedIcon from "@mui/icons-material/LayersRounded";
 
 function LayerSelector(props) {
   return (
@@ -41,6 +41,7 @@ function _renderCategories(
     if (!layers.length) {
       return (
         <Box
+          key={layerCategory}
           sx={{
             borderBottom: "0.5px solid grey",
             mb: "1rem",
@@ -58,12 +59,12 @@ function _renderCategories(
       );
     } else {
       return (
-        <Box>
+        <Box key={layerCategory}>
           <Typography variant="subtitle1">{layerCategory}</Typography>
 
           {Object.values(layers).map((layer) => {
             return (
-              <Box id={layer.props.id}>
+              <Box key={layer.props.id} id={layer.props.id}>
                 <LayerToggler
                   layerID={layer.props.id}
                   layerLabel={layer.props.label}

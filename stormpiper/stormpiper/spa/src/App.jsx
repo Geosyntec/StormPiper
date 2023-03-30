@@ -1,16 +1,17 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthProvider from "./components/authProvider";
-import HomeRoundedIcon from "@material-ui/icons/HomeRounded";
-import InfoRoundedIcon from "@material-ui/icons/InfoRounded";
-import GridOnRoundedIcon from "@material-ui/icons/GridOnRounded";
-import ScatterPlotRoundedIcon from "@material-ui/icons/ScatterPlotRounded";
-import { Box, ThemeProvider } from "@material-ui/core";
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
+import GridOnRoundedIcon from "@mui/icons-material/GridOnRounded";
+import ScatterPlotRoundedIcon from "@mui/icons-material/ScatterPlotRounded";
+import { Box } from "@mui/material";
 import SystemExplorer from "./components/systemExplorer";
 import Prioritization from "./components/Prioritization";
 import Landing from "./components/landing";
-import { theme } from "./theme";
-
+import { themeOptions } from "./theme";
+import { createTheme } from "@mui/material";
+import { ThemeProvider } from "@mui/material";
 import Dashboard from "./components/dashboard";
 import { EditAllUsers, EditUser } from "./components/users";
 import { BMPDetailPage } from "./components/bmp-detail-page";
@@ -21,6 +22,16 @@ import {
 } from "./components/scenario-module";
 
 function App(props) {
+  const [open, setOpen] = useState(false);
+  const drawerWidth = 240;
+
+  const toggleDrawer = () => setOpen(!open);
+
+  const theme = useMemo(
+    () => createTheme(themeOptions(open, drawerWidth)),
+    [open]
+  );
+
   let navigate = useNavigate();
 
   const [resultsDisplayState, setResultsDisplayState] = useState(false); //when true, results table is displayed
@@ -109,8 +120,11 @@ function App(props) {
   return (
     <AuthProvider>
       <ThemeProvider theme={theme}>
-        <Box className="App" sx={{ overflow: "hidden" }}>
+        <Box className="App">
           <Dashboard
+            toggleDrawer={toggleDrawer}
+            open={open}
+            drawerWidth={drawerWidth}
             buttons={
               topMenuButtons[props.viewComponent] ?? topMenuButtons.default
             }

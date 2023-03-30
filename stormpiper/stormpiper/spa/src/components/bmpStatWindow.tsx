@@ -1,16 +1,10 @@
-import React, { useRef } from "react";
-import { useEffect, useState } from "react";
+import { ListAltRounded } from "@mui/icons-material";
 import {
-  Box,
-  Typography,
-  Paper,
-  Chip,
-  Button,
-  CircularProgress,
+    Box, Chip, CircularProgress, Paper, Typography
 } from "@mui/material";
-import { BMPForm } from "./bmpForm";
-import { ListAltRounded } from "@material-ui/icons";
+import React, { useEffect, useRef, useState } from "react";
 import { api_fetch } from "../utils/utils";
+import { BMPForm } from "./bmpForm";
 
 // TODO: Make Facility Type editable (for now, only allow user to toggle between simple and not simple). Look for endpoint that can retrieve all facility types, and their respective data models
 
@@ -285,7 +279,7 @@ function BMPStatWindow(props: statWindowProps) {
         }
       });
       return (
-        <React.Fragment>
+        <>
           {_renderUpdateBox()}
           <Box>
             {statsList.length > 0 ? (
@@ -296,7 +290,7 @@ function BMPStatWindow(props: statWindowProps) {
               </Typography>
             )}
           </Box>
-        </React.Fragment>
+        </>
       );
     }
   }
@@ -321,7 +315,7 @@ function BMPStatWindow(props: statWindowProps) {
       let facilityFields = specs.facilitySpec[baseType];
       let simpleFacilityFields = specs.facilitySpec[simpleBaseType];
       return (
-        <React.Fragment>
+        <>
           {_renderUpdateBox()}
           <BMPForm
             allFields={facilityFields}
@@ -331,7 +325,7 @@ function BMPStatWindow(props: statWindowProps) {
             currentFacility={facilityType}
             facilityChangeHandler={setFacilityType}
           ></BMPForm>
-        </React.Fragment>
+        </>
       );
     }
   }

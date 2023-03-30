@@ -1,18 +1,14 @@
 import {
-  Button,
-  Box,
-  Dialog,
-  DialogActions,
-  FormControlLabel,
-  MenuItem,
-  Switch,
-  TextField,
-  Typography,
+    Box, Button, Dialog,
+    DialogActions,
+    FormControlLabel,
+    MenuItem,
+    Switch,
+    TextField,
+    Typography
 } from "@mui/material";
-import React from "react";
-import { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-// import "./bmpForm.css";
 import { api_fetch } from "../utils/utils";
 
 const hiddenFields: string[] = [
@@ -371,7 +367,7 @@ export function BMPForm(props: formProps) {
     }
   }
   return (
-    <React.Fragment>
+    <>
       <form onSubmit={handleSubmit((data) => _handleSubmit(data))}>
         {_renderFormFields()}
       </form>
@@ -401,6 +397,6 @@ export function BMPForm(props: formProps) {
           })}
         </ul>
       </Dialog>
-    </React.Fragment>
+    </>
   );
 }
