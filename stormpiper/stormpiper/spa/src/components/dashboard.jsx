@@ -1,25 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
-import { makeStyles } from "@material-ui/core/styles";
+import { useState, useEffect } from "react";
+import { useTheme, styled } from "@mui/material/styles";
 
-import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
 import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import Badge from "@mui/material/Badge";
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
 import Link from "@mui/material/Link";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import { useNavigate } from "react-router-dom";
-import { ListItem, Button } from "@material-ui/core";
+import { ListItem, Button } from "@mui/material";
 import WorkflowModal from "./workflowModal";
 
 import { api_fetch } from "../utils/utils";
@@ -42,20 +35,9 @@ function Copyright(props) {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
-  centeredMenuItem: {
-    justifyContent: "center",
-  },
-  alignStartMenuItem: {
-    justifyContent: "flex-start",
-  },
-}));
-
-const drawerWidth = 240;
-
 const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
+  shouldForwardProp: (prop) => prop !== "open" && prop !== "drawerWidth",
+})(({ theme, open, drawerWidth }) => ({
   zIndex: theme.zIndex.drawer + 1,
   transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
@@ -64,6 +46,26 @@ const AppBar = styled(MuiAppBar, {
   backgroundColor: theme.palette.primary.main,
   ...(open && {
     marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(["width", "margin"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  }),
+}));
+
+const MainBox = styled(Box, {
+  shouldForwardProp: (prop) => prop !== "open" && prop !== "drawerWidth",
+})(({ theme, open, drawerWidth }) => ({
+  transition: theme.transitions.create(["width", "margin"], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  backgroundColor: (theme) =>
+    theme.palette.mode === "light"
+      ? theme.palette.grey[100]
+      : theme.palette.grey[900],
+  ...(open && {
     width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
@@ -82,8 +84,8 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
+  shouldForwardProp: (prop) => prop !== "open" && prop !== "drawerWidth",
+})(({ theme, open, drawerWidth }) => ({
   "& .MuiDrawer-paper": {
     position: "relative",
     whiteSpace: "nowrap",
@@ -108,20 +110,16 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function Dashboard(props) {
-  const classes = useStyles();
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
-  const toggleDrawer = () => {
-    setOpen(!open);
-  };
   const [selectedButton, setSelectedButton] = useState("");
-
   const [userProfile, setUserProfile] = useState({
     firstName: "User",
     email: "email@tacoma.watersheds.com",
     id: "",
     role: "",
   });
+
+  const theme = useTheme();
 
   useEffect(() => {
     api_fetch("/api/rest/users/me")
@@ -153,7 +151,11 @@ export default function Dashboard(props) {
   return (
     <Box sx={{ display: "flex" }}>
       {/* <CssBaseline /> */}
-      <AppBar position="absolute" open={open}>
+      <AppBar
+        position="absolute"
+        open={props.open}
+        drawerWidth={props.drawerWidth}
+      >
         <Toolbar
           sx={{
             pr: "24px", // keep right padding when drawer closed
@@ -163,10 +165,10 @@ export default function Dashboard(props) {
             edge="start"
             color="inherit"
             aria-label="open drawer"
-            onClick={toggleDrawer}
+            onClick={props.toggleDrawer}
             sx={{
               marginRight: "36px",
-              ...(open && { display: "none" }),
+              ...(props.open && { display: "none" }),
             }}
           >
             <MenuIcon />
@@ -182,7 +184,11 @@ export default function Dashboard(props) {
           </Typography>
         </Toolbar>
       </AppBar>
-      <Drawer variant="permanent" open={open}>
+      <Drawer
+        variant="permanent"
+        open={props.open}
+        drawerWidth={props.drawerWidth}
+      >
         <Toolbar
           sx={{
             display: "flex",
@@ -191,14 +197,14 @@ export default function Dashboard(props) {
             px: [1],
           }}
         >
-          <IconButton onClick={toggleDrawer}>
+          <IconButton onClick={props.toggleDrawer}>
             <ChevronLeftIcon />
           </IconButton>
         </Toolbar>
         <DrawerHeader sx={{ minHeight: 0 }}>
           <List>
-            {open ? (
-              <React.Fragment>
+            {props.open ? (
+              <>
                 <ListItem>
                   <Typography variant="subtitle1">
                     Hello {userProfile.firstName}
@@ -212,6 +218,10 @@ export default function Dashboard(props) {
                 <ListItem>
                   <Button
                     variant="contained"
+                    sx={{
+                      backgroundColor: theme.palette.grey[300],
+                      color: theme.palette.text.primary,
+                    }}
                     onClick={() => navigate("/app/manage-users/me")}
                   >
                     Manage My Profile
@@ -221,6 +231,10 @@ export default function Dashboard(props) {
                   <ListItem>
                     <Button
                       variant="contained"
+                      sx={{
+                        backgroundColor: theme.palette.grey[300],
+                        color: theme.palette.text.primary,
+                      }}
                       onClick={() => navigate("/app/manage-users")}
                     >
                       Manage All Users
@@ -228,11 +242,18 @@ export default function Dashboard(props) {
                   </ListItem>
                 )}
                 <ListItem>
-                  <Button variant="contained" onClick={_postLogout}>
+                  <Button
+                    sx={{
+                      backgroundColor: theme.palette.grey[300],
+                      color: theme.palette.text.primary,
+                    }}
+                    variant="contained"
+                    onClick={_postLogout}
+                  >
                     Logout
                   </Button>
                 </ListItem>
-              </React.Fragment>
+              </>
             ) : (
               <p></p>
             )}
@@ -243,14 +264,15 @@ export default function Dashboard(props) {
             const button = props.buttons[b];
             return (
               <ListItem
-                className={
-                  open ? classes.alignStartMenuItem : classes.centeredMenuItem
-                }
+                key={button.label}
+                sx={{
+                  justifyContent: props.open ? "flex-start" : "center",
+                }}
               >
                 <WorkflowModal
                   workflowTitle={button.label}
                   iconComponent={button.icon}
-                  displayTitle={open}
+                  displayTitle={props.open}
                   clickHandler={() => {
                     console.log("button clicked: ", button);
                     setSelectedButton(button.label);
@@ -265,27 +287,18 @@ export default function Dashboard(props) {
           })}
         </List>
       </Drawer>
-      <Box
+      <MainBox
         component="main"
         id="main"
         sx={{
-          backgroundColor: (theme) =>
-            theme.palette.mode === "light"
-              ? theme.palette.grey[100]
-              : theme.palette.grey[900],
           flexGrow: 1,
-          height: "500vh",
-          width: "500vw",
-          overflow: "auto",
+          mt: 8,
+          backgroundColor: theme.palette.grey[50],
+          minHeight: "calc(100vh - 66px)",
         }}
       >
-        <Container
-          disableGutters
-          sx={{ position: "absolute", height: "100%", mt: "4%" }}
-        >
           {props?.viewComponent}
-        </Container>
-      </Box>
+      </MainBox>
     </Box>
   );
 }
