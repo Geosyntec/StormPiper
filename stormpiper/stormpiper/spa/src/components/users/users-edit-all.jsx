@@ -2,11 +2,12 @@ import CancelIcon from "@material-ui/icons/Close";
 import DeleteIcon from "@material-ui/icons/DeleteOutlined";
 import EditIcon from "@material-ui/icons/Edit";
 import SaveIcon from "@material-ui/icons/Save";
-import Box from "@mui/material/Box";
 import { DataGrid, GridActionsCellItem, GridRowModes } from "@mui/x-data-grid";
 import { useState, useEffect } from "react";
-import { Button, Modal, Typography } from "@mui/material";
 import { api_fetch } from "../../utils/utils";
+import { FullSpan, TwoColGrid } from "../base/two-col-grid";
+import { Grid } from "@mui/material";
+import { ConfirmDeleteModal } from "./confirm-delete-modal";
 
 // https://mui.com/x/react-data-grid/editing/#FullFeaturedCrudGrid.js
 
@@ -214,91 +215,42 @@ export default function Users() {
 
   const getRowData = (id) => rows.find((x) => x.id == id);
 
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: { xs: "300px", sm: "60ch" },
-    maxWidth: 450,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
-    display: "flex",
-    flexDirection: "column",
-  };
-
   return (
-    <Box
-      sx={{
-        height: 500,
-        width: "100%",
-        "& .actions": {
-          color: "text.secondary",
-        },
-        "& .textPrimary": {
-          color: "text.primary",
-        },
-      }}
-    >
-      <div>
-        <Modal
-          open={modalOpen}
-          onClose={handleModalClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Are you sure you want to delete this user?
-            </Typography>
-            <Typography
-              id="modal-modal-description"
-              align="center"
-              sx={{ mt: 2 }}
-            >
-              {`${getRowData(currentUserId)?.email || ""}`}
-            </Typography>
-            <Box
-              sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}
-            >
-              <Button
-                sx={{ width: "100px" }}
-                onClick={handleModalClose}
-                variant="outlined"
-                color="primary"
-              >
-                Cancel
-              </Button>
-              <Button
-                sx={{ width: "200px" }}
-                onClick={handleConfirmDelete}
-                variant="outlined"
-                color="error"
-                startIcon={<DeleteIcon />}
-              >
-                Confirm Delete
-              </Button>
-            </Box>
-          </Box>
-        </Modal>
-      </div>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        columnVisibilityModel={{
-          // Hide columns listed here, the other columns will remain visible
-          id: false,
-        }}
-        editMode="row"
-        rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
-        onRowEditStart={handleRowEditStart}
-        onRowEditStop={handleRowEditStop}
-        processRowUpdate={processRowUpdate}
-        onProcessRowUpdateError={(error) => console.error(error)}
+    <>
+      <ConfirmDeleteModal
+        modalOpen={modalOpen}
+        handleModalClose={handleModalClose}
+        handleConfirmDelete={handleConfirmDelete}
+        email={`${getRowData(currentUserId)?.email || ""}`}
       />
-    </Box>
+      <TwoColGrid
+        sx={{
+          "& .actions": {
+            color: "text.secondary",
+          },
+          "& .textPrimary": {
+            color: "text.primary",
+          },
+        }}
+      >
+        <FullSpan sx={{ height: "600px" }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            columnVisibilityModel={{
+              // Hide columns listed here, the other columns will remain visible
+              id: false,
+            }}
+            editMode="row"
+            rowModesModel={rowModesModel}
+            onRowModesModelChange={handleRowModesModelChange}
+            onRowEditStart={handleRowEditStart}
+            onRowEditStop={handleRowEditStop}
+            processRowUpdate={processRowUpdate}
+            onProcessRowUpdateError={(error) => console.error(error)}
+          />
+        </FullSpan>
+      </TwoColGrid>
+    </>
   );
 }
