@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { default as SimpleCardForm } from "./forms/simpleCardForm";
 import { Box, Button, TextField, Typography } from "@mui/material";
+import { ThemeProvider } from "@mui/material";
 import { api_fetch } from "../utils/utils";
+import { staticTheme } from "../theme";
+import SimpleCardForm from "./forms/simpleCardForm";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -33,7 +35,7 @@ export default function Login() {
   function _renderFormFields() {
     let fieldDiv = Object.values(fields).map((formField) => {
       return (
-        <Box sx={{ width: "300" }}>
+        <Box key={formField.fieldID} sx={{ width: "300" }}>
           {
             <TextField
               {...register(formField.fieldID)}
@@ -81,65 +83,67 @@ export default function Login() {
   }
 
   return (
-    <SimpleCardForm>
-      <Typography variant="subtitle1" align="center">
-        Welcome to the Tacoma Watershed Insights Tool
-      </Typography>
-      <Typography variant="subtitle2" align="center">
-        Login or Register to get Started
-      </Typography>
-      <Box
-        sx={{
-          margin: "1em",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <form onSubmit={handleSubmit(_handleSubmit)}>
-          {_renderFormFields()}
-          <Box>
-            <Typography align="center" variant="body2">
-              <a
-                href="javascript:;"
-                onClick={() => {
-                  navigate("/app/forgot-password");
-                }}
-              >
-                Forgot your password?
-              </a>
-            </Typography>
-          </Box>
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              sx={{ margin: "1rem" }}
-            >
-              Login
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => navigate("/app/register")}
-              sx={{ margin: "1rem" }}
-            >
-              Register
-            </Button>
-          </Box>
-          {error && (
-            <Box sx={{ display: "flex", justifyContent: "center" }}>
-              <Typography
-                variant="caption"
-                align="center"
-                color={(theme) => theme.palette.warning.main}
-              >
-                Incorrect username/password - please try again
+    <ThemeProvider theme={staticTheme}>
+      <SimpleCardForm>
+        <Typography variant="subtitle1" align="center">
+          Welcome to the Tacoma Watershed Insights Tool
+        </Typography>
+        <Typography variant="subtitle2" align="center">
+          Login or Register to get Started
+        </Typography>
+        <Box
+          sx={{
+            margin: "1em",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <form onSubmit={handleSubmit(_handleSubmit)}>
+            {_renderFormFields()}
+            <Box>
+              <Typography align="center" variant="body2">
+                <a
+                  href="#"
+                  onClick={() => {
+                    navigate("/app/forgot-password");
+                  }}
+                >
+                  Forgot your password?
+                </a>
               </Typography>
             </Box>
-          )}
-        </form>
-      </Box>
-    </SimpleCardForm>
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                sx={{ margin: "1rem" }}
+              >
+                Login
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => navigate("/app/register")}
+                sx={{ margin: "1rem" }}
+              >
+                Register
+              </Button>
+            </Box>
+            {error && (
+              <Box sx={{ display: "flex", justifyContent: "center" }}>
+                <Typography
+                  variant="caption"
+                  align="center"
+                  color={(theme) => theme.palette.warning.main}
+                >
+                  Incorrect username/password - please try again
+                </Typography>
+              </Box>
+            )}
+          </form>
+        </Box>
+      </SimpleCardForm>
+    </ThemeProvider>
   );
 }

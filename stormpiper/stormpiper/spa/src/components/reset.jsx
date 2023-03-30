@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Typography, TextField, Button, Box } from "@mui/material";
+import { ThemeProvider } from "@mui/material";
 import { api_fetch } from "../utils/utils";
 import SimpleCardForm from "./forms/simpleCardForm";
+import { staticTheme } from "../theme";
 
 export default function Reset() {
   const navigate = useNavigate();
@@ -16,9 +18,9 @@ export default function Reset() {
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
   // const [resetContents, setResetContents] = useState(
-  //   <React.Fragment>
+  //   <>
   //     <Typography variant="subtitle1">Checking your reset link...</Typography>
-  //   </React.Fragment>
+  //   </>
   // );
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -114,114 +116,110 @@ export default function Reset() {
   }
 
   return (
-    <SimpleCardForm>
-      {now > expiryDateFormatted ? (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            flexDirection: "column ",
-          }}
-        >
-          <Typography align="center" variant="subtitle1">
-            Sorry, your password reset link has expired
-          </Typography>
-          <Typography align="center" variant="subtitle2">
-            Please return to login to request another link
-          </Typography>
-          <Button
-            sx={{ margin: "1rem" }}
-            color="primary"
-            variant="contained"
-            onClick={() => navigate("/app/login")}
-          >
-            Login
-          </Button>
-        </Box>
-      ) : (
-        <React.Fragment>
-          <Typography align="center" variant="subtitle1">
-            {" "}
-            Welcome to the Tacoma Watershed Insights Tool
-          </Typography>
-          <Typography align="center" variant="subtitle2">
-            {" "}
-            Enter your new password below
-          </Typography>
+    <ThemeProvider theme={staticTheme}>
+      <SimpleCardForm>
+        {now > expiryDateFormatted ? (
           <Box
             sx={{
-              margin: "1em",
               display: "flex",
               justifyContent: "center",
+              flexDirection: "column ",
             }}
           >
-            <form
-              sx={{ display: "flex", flexDirection: "column" }}
-              onSubmit={handleSubmit(_handleSubmit)}
+            <Typography align="center" variant="subtitle1">
+              Sorry, your password reset link has expired
+            </Typography>
+            <Typography align="center" variant="subtitle2">
+              Please return to login to request another link
+            </Typography>
+            <Button
+              sx={{ margin: "1rem" }}
+              color="primary"
+              variant="contained"
+              onClick={() => navigate("/app/login")}
             >
-              {_renderFormFields()}
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  padding: "10px 0px",
-                }}
-              >
-                <Button
-                  sx={{ margin: "1rem" }}
-                  variant="contained"
-                  type="submit"
-                  color="primary"
-                >
-                  Submit
-                </Button>
-                <Button
-                  sx={{ margin: "1rem" }}
-                  color="primary"
-                  variant="contained"
-                  onClick={() => navigate("/app/login")}
-                >
-                  Login
-                </Button>
-                {error && (
-                  <Box sx={{ display: "flex", justifyContent: "center" }}>
-                    <Typography
-                      variant="caption"
-                      color={(theme) => theme.palette.warning.main}
-                      align="center"
-                    >
-                      Password reset failed. Please return to{" "}
-                      <a
-                        href="javascript:;"
-                        onClick={() => navigate("/app/login")}
-                      >
-                        login and request a new reset link
-                      </a>
-                    </Typography>
-                  </Box>
-                )}
-                {success && (
-                  <Box sx={{ display: "flex", justifyContent: "center" }}>
-                    <Typography
-                      variant="caption"
-                      color={(theme) => theme.palette.success.main}
-                      align="center"
-                    >
-                      Your password was reset successfully. Please return to{" "}
-                      <a
-                        href="javascript:;"
-                        onClick={() => navigate("/app/login")}
-                      >
-                        login
-                      </a>
-                    </Typography>
-                  </Box>
-                )}
-              </Box>
-            </form>
+              Login
+            </Button>
           </Box>
-        </React.Fragment>
-      )}
-    </SimpleCardForm>
+        ) : (
+          <>
+            <Typography align="center" variant="subtitle1">
+              {" "}
+              Welcome to the Tacoma Watershed Insights Tool
+            </Typography>
+            <Typography align="center" variant="subtitle2">
+              {" "}
+              Enter your new password below
+            </Typography>
+            <Box
+              sx={{
+                margin: "1em",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <form
+                sx={{ display: "flex", flexDirection: "column" }}
+                onSubmit={handleSubmit(_handleSubmit)}
+              >
+                {_renderFormFields()}
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    padding: "10px 0px",
+                  }}
+                >
+                  <Button
+                    sx={{ margin: "1rem" }}
+                    variant="contained"
+                    type="submit"
+                    color="primary"
+                  >
+                    Submit
+                  </Button>
+                  <Button
+                    sx={{ margin: "1rem" }}
+                    color="primary"
+                    variant="contained"
+                    onClick={() => navigate("/app/login")}
+                  >
+                    Login
+                  </Button>
+                  {error && (
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                      <Typography
+                        variant="caption"
+                        color={(theme) => theme.palette.warning.main}
+                        align="center"
+                      >
+                        Password reset failed. Please return to{" "}
+                        <a href="#" onClick={() => navigate("/app/login")}>
+                          login and request a new reset link
+                        </a>
+                      </Typography>
+                    </Box>
+                  )}
+                  {success && (
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                      <Typography
+                        variant="caption"
+                        color={(theme) => theme.palette.success.main}
+                        align="center"
+                      >
+                        Your password was reset successfully. Please return to{" "}
+                        <a href="#" onClick={() => navigate("/app/login")}>
+                          login
+                        </a>
+                      </Typography>
+                    </Box>
+                  )}
+                </Box>
+              </form>
+            </Box>
+          </>
+        )}
+      </SimpleCardForm>
+    </ThemeProvider>
   );
 }

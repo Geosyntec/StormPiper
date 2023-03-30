@@ -1,7 +1,19 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 import { default as SimpleCardForm } from "./forms/simpleCardForm";
+
+const LandingButton = (props) => {
+  return (
+    <Button
+      sx={{ margin: "1rem" }}
+      variant="contained"
+      color="primary"
+      {...props}
+    >
+      {props.children}
+    </Button>
+  );
+};
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -13,22 +25,12 @@ export default function Landing() {
       </Typography>
       <Box sx={{ margin: "1em" }}>
         <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <Button
-            sx={{ margin: "1rem" }}
-            variant="contained"
-            color="primary"
-            onClick={() => navigate("/app/map")}
-          >
+          <LandingButton onClick={() => navigate("/app/map")}>
             View Existing System
-          </Button>
-          <Button
-            sx={{ margin: "1rem" }}
-            variant="contained"
-            color="primary"
-            onClick={() => navigate("/app/prioritization")}
-          >
+          </LandingButton>
+          <LandingButton onClick={() => navigate("/app/prioritization")}>
             Prioritize Watersheds
-          </Button>
+          </LandingButton>
         </Box>
       </Box>
     </SimpleCardForm>

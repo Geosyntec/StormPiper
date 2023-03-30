@@ -1,16 +1,14 @@
-import React from "react";
-import Button from "@material-ui/core/Button";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import AccountBoxIcon from "@material-ui/icons/AccountBox";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
-import ExitToApp from "@material-ui/icons/ExitToApp";
+import { useState } from "react";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import ExitToApp from "@mui/icons-material/ExitToApp";
 
 export default function UserAdminMenu() {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);

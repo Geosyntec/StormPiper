@@ -1,7 +1,7 @@
-import CancelIcon from "@material-ui/icons/Close";
-import DeleteIcon from "@material-ui/icons/DeleteOutlined";
-import EditIcon from "@material-ui/icons/Edit";
-import SaveIcon from "@material-ui/icons/Save";
+import CancelIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
 import { DataGrid, GridActionsCellItem, GridRowModes } from "@mui/x-data-grid";
 import { useState, useEffect } from "react";
 import { api_fetch } from "../../utils/utils";

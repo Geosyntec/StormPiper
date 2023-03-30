@@ -1,4 +1,3 @@
-import React from "react";
 import { Box, Card, CardContent } from "@mui/material";
 
 export default function SimpleCardForm(props) {

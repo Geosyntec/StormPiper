@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { styled } from "@mui/material/styles";
+import { useState, useEffect } from "react";
+import { useTheme, styled } from "@mui/material/styles";
 
 import MuiDrawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
@@ -8,28 +8,16 @@ import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import MenuIcon from "@mui/icons-material/Menu";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { useNavigate } from "react-router-dom";
 import { ListItem, Button } from "@mui/material";
 import WorkflowModal from "./workflowModal";
-
 import { api_fetch } from "../utils/utils";
 
-const useStyles = {
-  centeredMenuItem: {
-    justifyContent: "center",
-  },
-  alignStartMenuItem: {
-    justifyContent: "flex-start",
-  },
-};
-
-const drawerWidth = 240;
-
 const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
+  shouldForwardProp: (prop) => prop !== "open" && prop !== "drawerWidth",
+})(({ theme, open, drawerWidth }) => ({
   zIndex: theme.zIndex.drawer + 1,
   transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
@@ -56,8 +44,8 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
+  shouldForwardProp: (prop) => prop !== "open" && prop !== "drawerWidth",
+})(({ theme, open, drawerWidth }) => ({
   "& .MuiDrawer-paper": {
     position: "relative",
     whiteSpace: "nowrap",
@@ -82,9 +70,8 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 const MainBox = styled(Box, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
+  shouldForwardProp: (prop) => prop !== "open" && prop !== "drawerWidth",
+})(({ theme, open, drawerWidth }) => ({
   transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -94,7 +81,6 @@ const MainBox = styled(Box, {
       ? theme.palette.grey[100]
       : theme.palette.grey[900],
   ...(open && {
-    // marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
@@ -104,20 +90,16 @@ const MainBox = styled(Box, {
 }));
 
 export default function Dashboard(props) {
-  const classes = useStyles;
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
-  const toggleDrawer = () => {
-    setOpen(!open);
-  };
   const [selectedButton, setSelectedButton] = useState("");
-
   const [userProfile, setUserProfile] = useState({
     firstName: "User",
     email: "email@tacoma.watersheds.com",
     id: "",
     role: "",
   });
+
+  const theme = useTheme();
 
   useEffect(() => {
     api_fetch("/api/rest/users/me")
@@ -149,7 +131,11 @@ export default function Dashboard(props) {
   return (
     <Box sx={{ display: "flex" }}>
       {/* <CssBaseline /> */}
-      <AppBar position="absolute" open={open}>
+      <AppBar
+        position="absolute"
+        open={props.open}
+        drawerWidth={props.drawerWidth}
+      >
         <Toolbar
           sx={{
             pr: "24px", // keep right padding when drawer closed
@@ -159,10 +145,10 @@ export default function Dashboard(props) {
             edge="start"
             color="inherit"
             aria-label="open drawer"
-            onClick={toggleDrawer}
+            onClick={props.toggleDrawer}
             sx={{
               marginRight: "36px",
-              ...(open && { display: "none" }),
+              ...(props.open && { display: "none" }),
             }}
           >
             <MenuIcon />
@@ -178,7 +164,11 @@ export default function Dashboard(props) {
           </Typography>
         </Toolbar>
       </AppBar>
-      <Drawer variant="permanent" open={open}>
+      <Drawer
+        variant="permanent"
+        open={props.open}
+        drawerWidth={props.drawerWidth}
+      >
         <Toolbar
           sx={{
             display: "flex",
@@ -187,14 +177,14 @@ export default function Dashboard(props) {
             px: [1],
           }}
         >
-          <IconButton onClick={toggleDrawer}>
+          <IconButton onClick={props.toggleDrawer}>
             <ChevronLeftIcon />
           </IconButton>
         </Toolbar>
         <DrawerHeader sx={{ minHeight: 0 }}>
           <List>
-            {open ? (
-              <React.Fragment>
+            {props.open ? (
+              <>
                 <ListItem>
                   <Typography variant="subtitle1">
                     Hello {userProfile.firstName}
@@ -208,6 +198,10 @@ export default function Dashboard(props) {
                 <ListItem>
                   <Button
                     variant="contained"
+                    sx={{
+                      backgroundColor: theme.palette.grey[300],
+                      color: theme.palette.text.primary,
+                    }}
                     onClick={() => navigate("/app/manage-users/me")}
                   >
                     Manage My Profile
@@ -217,6 +211,10 @@ export default function Dashboard(props) {
                   <ListItem>
                     <Button
                       variant="contained"
+                      sx={{
+                        backgroundColor: theme.palette.grey[300],
+                        color: theme.palette.text.primary,
+                      }}
                       onClick={() => navigate("/app/manage-users")}
                     >
                       Manage All Users
@@ -224,11 +222,18 @@ export default function Dashboard(props) {
                   </ListItem>
                 )}
                 <ListItem>
-                  <Button variant="contained" onClick={_postLogout}>
+                  <Button
+                    sx={{
+                      backgroundColor: theme.palette.grey[300],
+                      color: theme.palette.text.primary,
+                    }}
+                    variant="contained"
+                    onClick={_postLogout}
+                  >
                     Logout
                   </Button>
                 </ListItem>
-              </React.Fragment>
+              </>
             ) : (
               <p></p>
             )}
@@ -239,14 +244,15 @@ export default function Dashboard(props) {
             const button = props.buttons[b];
             return (
               <ListItem
-                sx={
-                  open ? classes.alignStartMenuItem : classes.centeredMenuItem
-                }
+                key={button.label}
+                sx={{
+                  justifyContent: props.open ? "flex-start" : "center",
+                }}
               >
                 <WorkflowModal
                   workflowTitle={button.label}
                   iconComponent={button.icon}
-                  displayTitle={open}
+                  displayTitle={props.open}
                   clickHandler={() => {
                     console.log("button clicked: ", button);
                     setSelectedButton(button.label);
@@ -264,15 +270,16 @@ export default function Dashboard(props) {
       <MainBox
         component="main"
         id="main"
-        open={open}
+        open={props.open}
+        drawerWidth={props.drawerWidth}
         sx={{
           flexGrow: 1,
           mt: 8,
+          backgroundColor: theme.palette.grey[50],
+          minHeight: "calc(100vh - 66px)",
         }}
       >
-        {/* <Container disableGutters> */}
         {props?.viewComponent}
-        {/* </Container> */}
       </MainBox>
     </Box>
   );

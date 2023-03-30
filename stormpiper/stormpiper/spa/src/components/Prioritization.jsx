@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState, useRef } from "react";
+import { Suspense, useState, useRef, lazy } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { layerDict } from "../assets/geojson/subbasinLayer";
 import {
@@ -21,7 +21,7 @@ import { useForm } from "react-hook-form";
 import ColorRampLegend from "./colorRampLegend";
 import { api_fetch } from "../utils/utils";
 
-const DeckGLMap = React.lazy(() => import("./map"));
+const DeckGLMap = lazy(() => import("./map"));
 
 function Prioritization(props) {
   let firstRender = useRef(true);
@@ -429,7 +429,7 @@ function Prioritization(props) {
   }
 
   return (
-    <React.Fragment>
+    <>
       <Grid container columns={12}>
         <Grid item xs={4}>
           <Box
@@ -559,7 +559,7 @@ function Prioritization(props) {
             <Card sx={{ backgroundColor: (theme) => theme.palette.grey[100] }}>
               <CardContent>
                 {subbasinScores.length > 0 ? (
-                  <React.Fragment>
+                  <>
                     <Button
                       sx={{ margin: "1rem" }}
                       variant="contained"
@@ -598,7 +598,7 @@ function Prioritization(props) {
                       getRowId={(row) => row["subbasin"]}
                       density={"compact"}
                     />
-                  </React.Fragment>
+                  </>
                 ) : (
                   <Box>
                     <Typography variant="body1" align="center">
@@ -612,7 +612,7 @@ function Prioritization(props) {
           </Box>
         </Grid>
       </Grid>
-    </React.Fragment>
+    </>
   );
 }
 

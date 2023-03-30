@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { default as SimpleCardForm } from "./forms/simpleCardForm";
 import { Box, Typography, TextField, Button } from "@mui/material";
+import { ThemeProvider } from "@mui/material";
 import { api_fetch } from "../utils/utils";
+import { staticTheme } from "../theme";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -63,7 +65,7 @@ export default function Register() {
   function _renderFormFields() {
     let fieldBox = Object.values(fields).map((formField) => {
       return (
-        <Box sx={{ width: "300" }}>
+        <Box key={formField.name} sx={{ width: "300px", my: 1 }}>
           {
             <TextField
               {...register(formField.name, { ...formField })}
@@ -104,7 +106,6 @@ export default function Register() {
     }).then((resp) => {
       if (resp.status > 200 && resp.status < 300) {
         console.log("success", resp);
-        //   window.location.href = '/app';
         setSuccess(true);
         setError(false);
       } else {
@@ -116,61 +117,55 @@ export default function Register() {
   }
 
   return (
-    <SimpleCardForm>
-      <Typography align="center" variant="subtitle1">
-        Enter Your New Account Information
-      </Typography>
-      <Box
-        sx={{
-          margin: "1em",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <form onSubmit={handleSubmit(_handleSubmit)}>
-          {_renderFormFields()}
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Button
-              sx={{ margin: "1rem" }}
-              variant="contained"
-              color="primary"
-              type="submit"
+    <ThemeProvider theme={staticTheme}>
+      <SimpleCardForm>
+        <Typography align="center" variant="subtitle1">
+          Enter Your New Account Information
+        </Typography>
+        <Box
+          sx={{
+            margin: "1em",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <form onSubmit={handleSubmit(_handleSubmit)}>
+            {_renderFormFields()}
+            <Box
+              sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}
             >
-              Submit
-            </Button>
-            <Button
-              sx={{ margin: "1rem" }}
-              color="primary"
-              variant="contained"
-              onClick={() => navigate("/app/login")}
-            >
-              Return to Login
-            </Button>
-          </Box>
-          {error && (
-            <Typography
-              variant="caption"
-              color={(theme) => theme.palette.warning.main}
-              align="center"
-            >
-              User already exists
-            </Typography>
-          )}
-          {success && (
-            <Typography
-              variant="caption"
-              color={(theme) => theme.palette.success.main}
-              align="center"
-            >
-              Successfully registered - Check your email for a confirmation
-              link, and return to{" "}
-              <a href="javascript:;" onClick={() => navigate("/app/login")}>
-                Login
-              </a>
-            </Typography>
-          )}
-        </form>
-      </Box>
-    </SimpleCardForm>
+              <Button color="primary" onClick={() => navigate("/app/login")}>
+                Return to Login
+              </Button>
+              <Button variant="contained" color="primary" type="submit">
+                Submit
+              </Button>
+            </Box>
+            {error && (
+              <Typography
+                variant="caption"
+                color={(theme) => theme.palette.warning.main}
+                align="center"
+              >
+                User already exists
+              </Typography>
+            )}
+            {success && (
+              <Typography
+                variant="caption"
+                color={(theme) => theme.palette.success.main}
+                align="center"
+              >
+                Successfully registered - Check your email for a confirmation
+                link, and return to{" "}
+                <a href="#" onClick={() => navigate("/app/login")}>
+                  Login
+                </a>
+              </Typography>
+            )}
+          </form>
+        </Box>
+      </SimpleCardForm>
+    </ThemeProvider>
   );
 }
