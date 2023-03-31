@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthProvider from "./components/authProvider";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
@@ -6,20 +6,28 @@ import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import GridOnRoundedIcon from "@mui/icons-material/GridOnRounded";
 import ScatterPlotRoundedIcon from "@mui/icons-material/ScatterPlotRounded";
 import { Box } from "@mui/material";
-import SystemExplorer from "./components/systemExplorer";
-import Prioritization from "./components/Prioritization";
-import Landing from "./components/landing";
 import { themeOptions } from "./theme";
 import { createTheme } from "@mui/material";
 import { ThemeProvider } from "@mui/material";
 import Dashboard from "./components/dashboard";
-import { EditAllUsers, EditUser } from "./components/users";
-import { BMPDetailPage } from "./components/bmp-detail-page";
-import {
-  ScenarioReviewPage,
-  ScenarioDetailPage,
-  ScenarioCreatePage,
-} from "./components/scenario-module";
+
+const Landing = lazy(() => import("./components/landing"));
+const SystemExplorer = lazy(() => import("./components/systemExplorer"));
+const Prioritization = lazy(() => import("./components/Prioritization"));
+const EditAllUsers = lazy(() => import("./components/users/users-edit-all"));
+const EditUser = lazy(() => import("./components/users/edit_user"));
+const BMPDetailPage = lazy(() =>
+  import("./components/bmp-detail-page/bmp-detail-page")
+);
+const ScenarioReviewPage = lazy(() =>
+  import("./components/scenario-module/scenario-page")
+);
+const ScenarioDetailPage = lazy(() =>
+  import("./components/scenario-module/scenario-detail-page")
+);
+const ScenarioCreatePage = lazy(() =>
+  import("./components/scenario-module/scenario-create-page")
+);
 
 function App(props) {
   const [open, setOpen] = useState(false);
@@ -115,7 +123,9 @@ function App(props) {
     },
   };
 
-  const viewComponent = _getViewComponent();
+  const viewComponent = (
+    <Suspense fallback={<>...</>}>{_getViewComponent()}</Suspense>
+  );
 
   return (
     <AuthProvider>

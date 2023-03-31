@@ -1,65 +1,120 @@
-import React from "react";
+import { StrictMode, Suspense, lazy } from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
-import App from "./App";
-import Login from "./components/login";
-import Reset from "./components/reset";
-import Register from "./components/register";
-import Verify from "./components/verify";
-import Forgot from "./components/forgot";
+
+const Login = lazy(() => import("./components/login"));
+const Reset = lazy(() => import("./components/reset"));
+const Register = lazy(() => import("./components/register"));
+const Verify = lazy(() => import("./components/verify"));
+const Forgot = lazy(() => import("./components/forgot"));
+const App = lazy(() => import("./App"));
+
+function Sus({ children }) {
+  return <Suspense fallback={<>...</>}>{children}</Suspense>;
+}
+
+function SusApp({ viewComponent }) {
+  return (
+    <Sus>
+      <App viewComponent={viewComponent} />
+    </Sus>
+  );
+}
 
 ReactDOM.render(
-  <React.StrictMode>
+  <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/app/login/" element={<Login />}></Route>
-        <Route path="/app/register/" element={<Register />}></Route>
-        <Route path="/app/verify/" element={<Verify />}></Route>
-        <Route path="/app/reset/" element={<Reset />}></Route>
-        <Route path="/app/forgot-password/" element={<Forgot />}></Route>
-        <Route path="/app/" element={<App viewComponent="landing" />}></Route>
+        <Route path="/app" element={<SusApp viewComponent="landing" />}></Route>
+        <Route
+          path="/app/"
+          element={<SusApp viewComponent="landing" />}
+        ></Route>
+        <Route
+          path="/app/login/"
+          element={
+            <Sus>
+              <Login />
+            </Sus>
+          }
+        ></Route>
+        <Route
+          path="/app/register/"
+          element={
+            <Sus>
+              <Register />
+            </Sus>
+          }
+        ></Route>
+        <Route
+          path="/app/verify/"
+          element={
+            <Sus>
+              <Verify />
+            </Sus>
+          }
+        ></Route>
+        <Route
+          path="/app/reset/"
+          element={
+            <Sus>
+              <Reset />
+            </Sus>
+          }
+        ></Route>
+        <Route
+          path="/app/forgot-password/"
+          element={
+            <Sus>
+              <Forgot />
+            </Sus>
+          }
+        ></Route>
         <Route
           path="/app/map/"
-          element={<App viewComponent="systemExplorer" />}
+          element={<SusApp viewComponent="systemExplorer" />}
         >
-          <Route path="tmnt" element={<App viewComponent="systemExplorer" />}>
+          <Route
+            path="tmnt"
+            element={<SusApp viewComponent="systemExplorer" />}
+          >
             <Route
               path=":id"
-              element={<App viewComponent="systemExplorer" />}
+              element={<SusApp viewComponent="systemExplorer" />}
             ></Route>
           </Route>
         </Route>
         <Route
           path="/app/manage-users"
-          element={<App viewComponent="editAllUsers" />}
+          element={<SusApp viewComponent="editAllUsers" />}
         ></Route>
         <Route
           path="/app/manage-users/:id"
-          element={<App viewComponent="editMe" />}
+          element={<SusApp viewComponent="editMe" />}
         ></Route>
         <Route
           path="/app/prioritization/"
-          element={<App viewComponent="prioritization" />}
+          element={<SusApp viewComponent="prioritization" />}
         ></Route>
         <Route
           path="/app/bmp-detail/:id"
-          element={<App viewComponent="bmpDetail" />}
+          element={<SusApp viewComponent="bmpDetail" />}
         ></Route>
         <Route
           path="/app/scenario"
-          element={<App viewComponent="scenarioReview" />}
+          element={<SusApp viewComponent="scenarioReview" />}
         ></Route>
         <Route
           path="/app/create-scenario"
-          element={<App viewComponent="scenarioCreate" />}
+          element={<SusApp viewComponent="scenarioCreate" />}
         ></Route>
         <Route
           path="/app/scenario/:id"
-          element={<App viewComponent="scenarioDetail" />}
+          element={<SusApp viewComponent="scenarioDetail" />}
         ></Route>
       </Routes>
     </BrowserRouter>
-  </React.StrictMode>,
+  </StrictMode>,
   document.getElementById("root")
 );
