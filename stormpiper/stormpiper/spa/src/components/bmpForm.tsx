@@ -1,16 +1,18 @@
 import {
   Button,
+  Box,
   Dialog,
   DialogActions,
   FormControlLabel,
   MenuItem,
   Switch,
   TextField,
-} from "@material-ui/core";
+  Typography,
+} from "@mui/material";
 import React from "react";
 import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
-import "./bmpForm.css";
+// import "./bmpForm.css";
 import { api_fetch } from "../utils/utils";
 
 const hiddenFields: string[] = [
@@ -281,7 +283,7 @@ export function BMPForm(props: formProps) {
           value: string | number;
         }) => {
           return (
-            <div className="form-row">
+            <Box>
               {formField.fieldID === "facility_type" ? (
                 <TextField
                   id="simple-select"
@@ -322,13 +324,13 @@ export function BMPForm(props: formProps) {
                   disabled={formField.label === "Node Id"}
                 />
               )}
-            </div>
+            </Box>
           );
         }
       );
       if (props.simpleFields) {
         simpleCheckDiv = (
-          <div className="simple-checkbox">
+          <Box>
             <FormControlLabel
               control={
                 <Switch
@@ -339,25 +341,33 @@ export function BMPForm(props: formProps) {
               }
               label="Simple Facility?"
             />
-          </div>
+          </Box>
         );
       } else {
-        simpleCheckDiv = <div></div>;
+        simpleCheckDiv = <Box></Box>;
       }
       console.log("Form Values after building fields: ", getValues());
       return (
-        <div className="bmp-form">
+        <Box>
           {simpleCheckDiv}
-          <div className="form-body">{fieldDiv}</div>
-          <div className="button-bar">
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(2,1fr)",
+              padding: "0px 10px",
+            }}
+          >
+            {fieldDiv}
+          </Box>
+          <Box sx={{ padding: "10px 20px" }}>
             <Button variant="contained" type="submit">
               Submit
             </Button>
-          </div>
-        </div>
+          </Box>
+        </Box>
       );
     } else {
-      return <div></div>;
+      return <Box></Box>;
     }
   }
   return (
@@ -366,16 +376,26 @@ export function BMPForm(props: formProps) {
         {_renderFormFields()}
       </form>
       <Dialog open={resultSuccess} onClose={() => setResultSuccess(false)}>
-        <h4 className="result-header">Facility Details Submitted</h4>
+        <Box sx={{ padding: "15px" }}>
+          <Typography>
+            <strong>Facility Details Submitted</strong>
+          </Typography>
+        </Box>
         <DialogActions>
           <Button onClick={_handleRecalculate}>Recalculate WQ Results</Button>
           <Button onClick={() => setResultSuccess(false)}>Continue</Button>
         </DialogActions>
       </Dialog>
       <Dialog open={resultError} onClose={() => setResultError(false)}>
-        <h4 className="result-header">Submission Error</h4>
-        <p className="err-list-header">{_renderErrorHeader(errorMsg)}</p>
-        <ul>
+        <Box sx={{ padding: "15px" }}>
+          <Typography>
+            <strong>Submission Error</strong>
+          </Typography>
+        </Box>
+        <Typography variant="caption" sx={{ padding: "0em 1em" }}>
+          {_renderErrorHeader(errorMsg)}
+        </Typography>
+        <ul style={{ "margin-top": "none", "padding-right": "1em" }}>
           {_getErrorList(errorMsg).map((msg) => {
             return <li>{msg}</li>;
           })}

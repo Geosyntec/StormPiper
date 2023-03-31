@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { api_fetch } from "../utils/utils";
 
-export default function AuthProvider(props: any) {
+export default function AuthProvider(props) {
   const navigate = useNavigate();
 
   useEffect(() => {

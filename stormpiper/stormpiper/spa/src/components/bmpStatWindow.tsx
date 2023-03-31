@@ -1,18 +1,16 @@
 import React, { useRef } from "react";
 import { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import {
+  Box,
   Typography,
   Paper,
   Chip,
   Button,
   CircularProgress,
-  Box,
-} from "@material-ui/core";
+} from "@mui/material";
 import { BMPForm } from "./bmpForm";
 import { ListAltRounded } from "@material-ui/icons";
 import { api_fetch } from "../utils/utils";
-import "./bmpStatWindow.css";
 
 // TODO: Make Facility Type editable (for now, only allow user to toggle between simple and not simple). Look for endpoint that can retrieve all facility types, and their respective data models
 
@@ -85,50 +83,9 @@ type specState = {
   facilitySpec: any;
 };
 
-const useStyles = makeStyles((theme) => ({
-  panelTitle: {
-    color: "white",
-  },
-  formHeader: {
-    background: theme.palette.primary.main,
-    margin: "0px",
-    justifyContent: "center",
-    display: "flex",
-    borderRadius: "5px",
-  },
-  activeHeader: {
-    fontWeight: "bold",
-    padding: "10px 5px",
-    margin: "0",
-    background: theme.palette.grey[400],
-    borderRadius: "5px",
-  },
-  bold: {
-    fontWeight: "bold",
-  },
-  headerItem: { margin: theme.spacing(0.5) },
-  active: {
-    "&:focus": {
-      backgroundColor: theme.palette.warning.main,
-    },
-    "&:hover": {
-      backgroundColor: theme.palette.warning.main,
-    },
-    backgroundColor: theme.palette.warning.main,
-  },
-  listRoot: {
-    display: "flex",
-    justifyContent: "center",
-    flexWrap: "wrap",
-    listStyle: "none",
-    padding: theme.spacing(0.5),
-    margin: 0,
-  },
-}));
-
 function BMPStatWindow(props: statWindowProps) {
   let firstRender = useRef(true);
-  const classes = useStyles();
+  // const classes = useStyles();
 
   const [state, setState] = useState<bmpPanelState>({
     header: null,
@@ -268,12 +225,13 @@ function BMPStatWindow(props: statWindowProps) {
               justifyContent: "center",
             }}
           >
-            <Typography variant="body1">
+            <Typography variant="caption">
               Results Last Updated: {lastUpdatedStr}{" "}
               {props?.isDirty?.is_dirty && (
                 <a
                   href={props?.isDirty?.is_dirty ? "#" : undefined}
                   onClick={_recalculate}
+                  style={{ cursor: "pointer" }}
                 >
                   Refresh
                 </a>
@@ -287,7 +245,7 @@ function BMPStatWindow(props: statWindowProps) {
             )}
           </Box>
         ) : (
-          <div></div>
+          <Box></Box>
         )}
       </Box>
     );
@@ -298,9 +256,9 @@ function BMPStatWindow(props: statWindowProps) {
       return <Paper>Select a BMP Feature</Paper>;
     }
     if (state.error) {
-      return <div>Something went wrong on our end.</div>;
+      return <Box>Something went wrong on our end.</Box>;
     } else if (!loadingState) {
-      return <div>Loading...</div>;
+      return <Box>Loading...</Box>;
     } else {
       let statsList = Object.values(state.stats).map((stat: string) => {
         if (stat) {
@@ -311,27 +269,33 @@ function BMPStatWindow(props: statWindowProps) {
             }).format(renderedStat);
           }
           return (
-            <div className="stat">
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                padding: "5 5 5 15",
+              }}
+            >
               <body>
                 <strong>{fieldLabelDict[stat]}:&#8195;</strong>
               </body>
               <body>{renderedStat}</body>
-            </div>
+            </Box>
           );
         }
       });
       return (
         <React.Fragment>
           {_renderUpdateBox()}
-          <div>
+          <Box>
             {statsList.length > 0 ? (
               statsList
             ) : (
-              <Typography className={classes.bold} variant="h6">
-                Data Unavailable
+              <Typography variant="h6">
+                <strong>Data Unavailable</strong>
               </Typography>
             )}
-          </div>
+          </Box>
         </React.Fragment>
       );
     }
@@ -339,9 +303,9 @@ function BMPStatWindow(props: statWindowProps) {
 
   function _renderBMPForm(facilityType: string) {
     if (state.error) {
-      return <div>Something went wrong on our end.</div>;
+      return <Box>Something went wrong on our end.</Box>;
     } else if (!loadingState) {
-      return <div>Loading...</div>;
+      return <Box>Loading...</Box>;
     } else {
       let fType: string = facilityType;
       let fTypeRoot = fType.replace("_simple", "");
@@ -374,14 +338,28 @@ function BMPStatWindow(props: statWindowProps) {
 
   function _renderHeaderList() {
     return (
-      <ul className={classes.listRoot}>
+      <ul
+        style={{
+          display: "flex",
+          "justify-content": "center",
+          "flex-wrap": "wrap",
+          "list-style": "none",
+        }}
+      >
         {Object.values(statsDict).map((category, index) => {
           return (
             <li>
               <Chip
-                className={`${classes.headerItem} ${
-                  category.label === state.header && classes.active
-                }`}
+                sx={{
+                  margin: (theme) => theme.spacing(0.5),
+                  backgroundColor: (theme) =>
+                    category.label === state.header
+                      ? theme.palette.warning.main
+                      : theme.palette.grey[100],
+                }}
+                // className={`${classes.headerItem} ${
+                //   category.label === state.header && classes.active
+                // }`}
                 label={category.label}
                 onClick={() => {
                   switchStats(category.label);
@@ -395,16 +373,21 @@ function BMPStatWindow(props: statWindowProps) {
   }
 
   return props.displayStatus ? (
-    <div>
-      <div className={classes.formHeader}>
-        <div className="title-container">
-          <h4 className={classes.panelTitle}>
-            {props.feature} Facility Details
-          </h4>
-        </div>
-        <div className="cancel-container">
+    <Box>
+      <Box
+        sx={{
+          background: (theme) => theme.palette.primary.main,
+          display: "flex",
+          justifyContent: "center",
+          borderRadius: "5px",
+        }}
+      >
+        <Box>
+          <h4 style={{ color: "white" }}>{props.feature} Facility Details</h4>
+        </Box>
+        <Box sx={{ right: "12%", position: "absolute", cursor: "pointer" }}>
           <h4
-            id="cancel-icon"
+            // id="cancel-icon"
             onClick={() => {
               props.displayController();
               firstRender.current = true;
@@ -412,21 +395,28 @@ function BMPStatWindow(props: statWindowProps) {
           >
             &#10005;
           </h4>
-        </div>
-      </div>
-      <div className="stats-table">
-        <div className="table-header">{_renderHeaderList()}</div>
+        </Box>
+      </Box>
+      <Box>
+        <Box>{_renderHeaderList()}</Box>
         {props
           ? state.header != "Design Parameters"
             ? _renderStats()
             : _renderBMPForm(facilityType)
           : null}
-      </div>
-    </div>
+      </Box>
+    </Box>
   ) : (
-    <div id="bmp-panel-icon">
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100%",
+      }}
+    >
       <ListAltRounded onClick={props.displayController} />
-    </div>
+    </Box>
   );
 }
 

@@ -12,7 +12,6 @@ import Prioritization from "./components/Prioritization";
 import Landing from "./components/landing";
 import { theme } from "./theme";
 
-import "./App.css";
 import Dashboard from "./components/dashboard";
 import { EditAllUsers, EditUser } from "./components/users";
 

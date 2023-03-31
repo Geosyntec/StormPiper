@@ -1,13 +1,7 @@
-import {
-  Typography,
-  makeStyles,
-  Button,
-  CircularProgress,
-  Box,
-} from "@material-ui/core";
-import Chip from "@material-ui/core/Chip";
+import { Chip, Button, CircularProgress, Box, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
+import { api_fetch } from "../utils/utils";
 
 type TableHeader = {
   field: string;
@@ -35,45 +29,6 @@ type ResultsTableState = {
   headers: { [k: string]: TableHeader };
   loaded: Boolean;
 };
-
-const useStyles = makeStyles((theme) => ({
-  tableContainer: {
-    display: "flex",
-    height: "95%",
-    width: "100%",
-    flexGrow: 1,
-    flexDirection: "column",
-  },
-  tableHeader: { display: "flex" },
-  headerItem: { margin: theme.spacing(0.5) },
-  active: {
-    "&:focus": {
-      backgroundColor: theme.palette.warning.main,
-    },
-    "&:hover": {
-      backgroundColor: theme.palette.warning.main,
-    },
-    backgroundColor: theme.palette.warning.main,
-  },
-  listRoot: {
-    display: "flex",
-    justifyContent: "center",
-    flexWrap: "wrap",
-    listStyle: "none",
-    padding: theme.spacing(0.5),
-    margin: 0,
-  },
-  cancelContainer: {
-    position: "absolute",
-    justifyContent: "end",
-    right: "2%",
-    top: "0%",
-  },
-  cancelIcon: {
-    cursor: "pointer",
-    position: "relative",
-  },
-}));
 
 function convertToCSV(
   objArray: { [k: string]: string | number | undefined }[]
@@ -133,7 +88,6 @@ function exportCSVFile(items: any, fileTitle: string, headers: any) {
 }
 
 export default function ResultsTable(props: ResultsTableProps) {
-  const classes = useStyles();
   let allResults: any;
   let resSpec: any;
   let headers: { [k: string]: TableHeader };
@@ -219,7 +173,9 @@ export default function ResultsTable(props: ResultsTableProps) {
     if (!props.displayState) return;
 
     let resources = ["/openapi.json", "/api/rest/results"];
-    Promise.all(resources.map((url) => fetch(url).then((res) => res.json())))
+    Promise.all(
+      resources.map((url) => api_fetch(url).then((res) => res.json()))
+    )
       .then((resArray) => {
         resSpec = resArray[0].components.schemas.ResultView;
         allResults = resArray[1];
@@ -269,20 +225,44 @@ export default function ResultsTable(props: ResultsTableProps) {
   if (resultState.loaded) {
     console.log("Active Group: ", currentGroup);
     return (
-      <div>
-        <div className={classes.tableContainer}>
-          <div className={classes.tableHeader}>
-            <Typography className={classes.headerItem} variant="h5">
+      <Box>
+        <Box
+          sx={{
+            display: "flex",
+            height: "95%",
+            width: "100%",
+            flexGrow: 1,
+            flexDirection: "column",
+          }}
+        >
+          <Box sx={{ display: "flex" }}>
+            <Typography
+              sx={{ margin: (theme) => theme.spacing(0.5) }}
+              variant="h5"
+            >
               Water Quality Results
             </Typography>
-            <ul className={classes.listRoot}>
+            <ul
+              style={{
+                display: "flex",
+                "justify-content": "center",
+                "flex-wrapt": "wrap",
+                "list-style": "none",
+                padding: "0.5rem",
+                margin: 0,
+              }}
+            >
               {fieldGroups.map((group) => {
                 return (
                   <li>
                     <Chip
-                      className={`${classes.headerItem} ${
-                        group.groupName === currentGroup && classes.active
-                      }`}
+                      sx={{
+                        margin: (theme) => theme.spacing(0.5),
+                        backgroundColor: (theme) =>
+                          group.groupName === currentGroup
+                            ? theme.palette.warning.main
+                            : theme.palette.grey[100],
+                      }}
                       label={group.groupName}
                       onClick={() => {
                         setCurrentFields(group.fields);
@@ -305,15 +285,25 @@ export default function ResultsTable(props: ResultsTableProps) {
             >
               Download Results
             </Button>
-            <div className={classes.cancelContainer}>
+            <Box
+              sx={{
+                position: "absolute",
+                justifyContent: "end",
+                right: "2%",
+                top: "0%",
+              }}
+            >
               <h4
-                className={classes.cancelIcon}
+                style={{
+                  cursor: "pointer",
+                  position: "relative",
+                }}
                 onClick={props.displayController}
               >
                 &#10005;
               </h4>
-            </div>
-          </div>
+            </Box>
+          </Box>
           <DataGrid
             sx={{
               overflowX: "scroll",
@@ -338,8 +328,8 @@ export default function ResultsTable(props: ResultsTableProps) {
             // getRowHeight={() => 'auto'}
             // getEstimatedRowHeight={() => 200}
           />
-        </div>
-      </div>
+        </Box>
+      </Box>
     );
   } else {
     return (
