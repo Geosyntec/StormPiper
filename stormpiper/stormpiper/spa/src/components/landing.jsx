@@ -1,80 +1,36 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-// import "./login.css"
-import {
-  Box,
-  Card,
-  CardContent,
-  makeStyles,
-  Typography,
-} from "@material-ui/core";
-import { Button } from "@material-ui/core";
-
-const useStyles = makeStyles((theme) => ({
-  errorMsg: {
-    color: theme.palette.warning.main,
-    margin: "5px 20px",
-  },
-  mainCard: {
-    backgroundColor: theme.palette.grey[100],
-  },
-  mainButton: {
-    margin: "1rem",
-  },
-}));
+import { Box, Button, Typography } from "@mui/material";
+import { default as SimpleCardForm } from "./forms/simpleCardForm";
 
 export default function Landing() {
   const navigate = useNavigate();
-  const classes = useStyles();
 
   return (
-    <div className="flex-row">
-      <div className="flex lg-margin">
-        <Card className={classes.mainCard}>
-          <CardContent>
-            <Typography variant="subtitle1" align="center">
-              {" "}
-              Welcome to the Tacoma Watershed Insights Tool
-            </Typography>
-            <Box sx={{ margin: "1em" }}>
-              <div className="flex-row auth-button-bar">
-                <Button
-                  className={classes.mainButton}
-                  variant="contained"
-                  color="primary"
-                  onClick={() => navigate("/app/login")}
-                >
-                  Login
-                </Button>
-                <Button
-                  className={classes.mainButton}
-                  variant="contained"
-                  color="primary"
-                  onClick={() => navigate("/app/register")}
-                >
-                  Register
-                </Button>
-                <Button
-                  className={classes.mainButton}
-                  variant="contained"
-                  color="primary"
-                  onClick={() => navigate("/app/map")}
-                >
-                  View Existing System
-                </Button>
-                <Button
-                  className={classes.mainButton}
-                  variant="contained"
-                  color="primary"
-                  onClick={() => navigate("/app/prioritization")}
-                >
-                  Prioritize Watersheds
-                </Button>
-              </div>
-            </Box>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+    <SimpleCardForm>
+      <Typography variant="subtitle1" align="center">
+        Welcome to the Tacoma Watershed Insights Tool
+      </Typography>
+      <Box sx={{ margin: "1em" }}>
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Button
+            sx={{ margin: "1rem" }}
+            variant="contained"
+            color="primary"
+            onClick={() => navigate("/app/map")}
+          >
+            View Existing System
+          </Button>
+          <Button
+            sx={{ margin: "1rem" }}
+            variant="contained"
+            color="primary"
+            onClick={() => navigate("/app/prioritization")}
+          >
+            Prioritize Watersheds
+          </Button>
+        </Box>
+      </Box>
+    </SimpleCardForm>
   );
 }

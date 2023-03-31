@@ -1,80 +1,23 @@
-import { makeStyles } from "@material-ui/core/styles";
-import Checkbox from "@material-ui/core/Checkbox";
-import Typography from "@material-ui/core/Typography";
+import { Checkbox, Box, Typography } from "@mui/material";
 import LayersRoundedIcon from "@material-ui/icons/LayersRounded";
-import { useState } from "react";
-import "./layerSelector.css";
-
-const useStyles = makeStyles((theme) => ({
-  layerTogglerTitle: {
-    marginLeft: "5px",
-  },
-
-  nestedLayer: {
-    padding: "2px 0px",
-    // marginLeft: "20px",
-  },
-
-  nestedLayerTitle: {
-    marginLeft: "5px",
-    color: theme.palette.grey[700],
-  },
-  mainLayerTitle: {
-    // paddingBottom:"5px",
-    marginLeft: "5px",
-  },
-  mainLayer: {
-    padding: "5px 0px",
-    marginLeft: "5px",
-  },
-
-  testButtonClicked: {
-    transitionProperty: "width",
-    transitionDuration: "2s",
-    color: "red",
-    width: "100px",
-  },
-
-  testButtonUnClicked: {
-    transitionProperty: "width",
-    transitionDuration: "2s",
-    color: "black",
-    width: "50px",
-  },
-
-  controlPanel: {
-    position: "fixed",
-    zIndex: "9",
-    top: "20%",
-    right: "0%",
-    overflowX: "hidden",
-    overflowY: "auto",
-    height: "75%",
-    width: "100%",
-    background: "rgba(255,255,255,0.8)",
-  },
-}));
 
 function LayerSelector(props) {
-  const classes = useStyles();
-
   return (
-    <div className="layer-selector">
+    <Box>
       {props.displayStatus ? (
-        <div id="layer-toggler-title">
-          <Typography variant="h4" className={classes.layerTogglerTitle}>
-            Layers
-          </Typography>
-          <div className="cancel-container">
-            <h4 id="cancel-icon" onClick={props.displayController}>
-              &#10005;
-            </h4>
-          </div>
-        </div>
+        <Box sx={{ mb: "1rem", display: "flex", alignItems: "center" }}>
+          <Typography variant="h4">Layers</Typography>
+          <Box
+            sx={{ position: "absolute", right: "12%", cursor: "pointer" }}
+            onClick={props.displayController}
+          >
+            <Typography>&#10005;</Typography>
+          </Box>
+        </Box>
       ) : (
-        <div id="layer-toggler-title-hidden">
+        <Box sx={{ mt: 1 }}>
           <LayersRoundedIcon onClick={props.displayController} />
-        </div>
+        </Box>
       )}
 
       {_renderCategories(
@@ -83,7 +26,7 @@ function LayerSelector(props) {
         props.activeLayers,
         "mainLayer"
       )}
-    </div>
+    </Box>
   );
 }
 
@@ -93,59 +36,53 @@ function _renderCategories(
   activeLayers,
   layerLevel
 ) {
-  const classes = useStyles();
-
   return Object.keys(layerDict).map((layerCategory) => {
     const layers = layerDict[layerCategory];
     if (!layers.length) {
       return (
-        <div className="hihi">
-          <Typography variant="h6" className={classes.mainLayerTitle}>
-            {layerCategory}
-          </Typography>
-          {/* <h4 className = {classes[layerLevel]}>{layerCategory}</h4> */}
+        <Box
+          sx={{
+            borderBottom: "0.5px solid grey",
+            mb: "1rem",
+            "&:last-child": { borderBottom: "none" },
+          }}
+        >
+          <Typography variant="h6">{layerCategory}</Typography>
           {_renderCategories(
             layers,
             _onToggleLayer,
             activeLayers,
             "nestedLayer"
           )}
-        </div>
+        </Box>
       );
     } else {
       return (
-        <div>
-          <Typography variant="subtitle1" className={classes.nestedLayerTitle}>
-            {layerCategory}
-          </Typography>
+        <Box>
+          <Typography variant="subtitle1">{layerCategory}</Typography>
 
-          {/* <h5 className={classes[layerLevel]}>{layerCategory}</h5> */}
           {Object.values(layers).map((layer) => {
-            // console.log("Rendering ", layer.props)
             return (
-              <div id={layer.props.id}>
+              <Box id={layer.props.id}>
                 <LayerToggler
                   layerID={layer.props.id}
                   layerLabel={layer.props.label}
                   activeLayers={activeLayers}
                   _toggleLayer={_onToggleLayer}
-                  className={layerLevel}
                 ></LayerToggler>
-              </div>
+              </Box>
             );
           })}
-        </div>
+        </Box>
       );
     }
   });
 }
 
 function LayerToggler(props) {
-  const classes = useStyles();
-
   return (
-    <div className={classes[props.className]}>
-      <div className="checkbox">
+    <Box>
+      <Box>
         <Checkbox
           id={props.layerID}
           checked={props.activeLayers[props.layerID]}
@@ -155,8 +92,8 @@ function LayerToggler(props) {
         <label htmlFor={props.layerLabel}>
           <span>{props.layerLabel}</span>
         </label>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
 

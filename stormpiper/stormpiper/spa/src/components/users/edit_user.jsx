@@ -107,9 +107,12 @@ export default function EditUser() {
             ))}
           </TextField>
           {errors[formField.name] && (
-            <p className="form-label error-msg">
+            <Typography
+              variant="caption"
+              sx={{ color: (theme) => theme.palette.warning.main }}
+            >
               {errors[formField.name]?.message}
-            </p>
+            </Typography>
           )}
         </Box>
       );

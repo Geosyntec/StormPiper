@@ -2,29 +2,142 @@ import React, { Suspense, useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { layerDict } from "../assets/geojson/coreLayers";
 import LayerSelector from "./layerSelector";
-// import DeckGLMap from "./components/map";
 import BMPStatWindow from "./bmpStatWindow";
 import {
   Card,
   CardActions,
   CardContent,
+  Grid,
   Typography,
   Button,
   Box,
-} from "@material-ui/core";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import "./systemExplorer.css";
+  Tabs,
+  Tab,
+} from "@mui/material";
 import { api_fetch } from "../utils/utils";
 
 const DeckGLMap = React.lazy(() => import("./map"));
 const ResultsTable = React.lazy(() => import("./resultsTable"));
 
+const panelStyles = {
+  prjStatPanel: {
+    position: "fixed",
+    zIndex: 9,
+    top: "11%",
+    left: "55%",
+    overflowX: "hidden",
+    overflowY: "auto",
+    height: "auto",
+    width: "40%",
+    textAlign: "center",
+  },
+  prjStatPanelHidden: {
+    position: "fixed",
+    zIndex: 9,
+    top: "75",
+    left: "90%",
+    overflowX: "hidden",
+    overflowY: "auto",
+    height: "40px",
+    width: "40px",
+    textAlign: "center",
+    "&:hover": {
+      cursor: "pointer",
+    },
+  },
+  layerPanel: {
+    position: "relative",
+    zIndex: 9,
+    top: "2%",
+    left: "2%",
+    overflowX: "hidden",
+    overflowY: "auto",
+    height: "75%",
+    width: "25%",
+  },
+  layerPanelHidden: {
+    position: "relative",
+    zIndex: 9,
+    top: "2%",
+    left: "2%",
+    overflowX: "hidden",
+    overflowY: "auto",
+    height: "40px",
+    width: "40px",
+    textAlign: "center",
+    "&:hover": {
+      cursor: "pointer",
+    },
+  },
+  baseLayerPanel: {
+    position: "absolute",
+    zIndex: 9,
+    top: "80%",
+    left: "2%",
+    height: "auto",
+    width: "auto",
+    borderRadius: "2px",
+    background: "rgba(255, 255, 255, 1)",
+  },
+  verificationPanel: {
+    position: "fixed",
+    zIndex: 9,
+    top: "30%",
+    left: "25%",
+    height: "auto",
+    width: "50%",
+    borderRadius: "2px",
+    background: "rgba(255, 255, 255, 1)",
+  },
+  verificationPanelHidden: {
+    position: "fixed",
+    zIndex: 9,
+    top: "30%",
+    left: "-50%",
+    height: "auto",
+    width: "50%",
+    borderRadius: "2px",
+    background: "rgba(255, 255, 255, 1)",
+  },
+  resultsPanel: {
+    transitionProperty: "top",
+    transitionTimingFunction: "linear",
+    transitionDuration: "500ms",
+    position: "relative",
+    zIndex: 9,
+    top: "100%",
+    left: "0%",
+    overflowX: "hidden",
+    overflowY: "auto",
+    height: "91vh",
+    width: "100%",
+    textAlign: "center",
+  },
+
+  resultsPanelHidden: {
+    transitionProperty: "top",
+    transitionTimingFunction: "linear",
+    transitionDuration: "500ms",
+    position: "relative",
+    zIndex: 9,
+    top: "150%",
+    left: "-100%",
+    overflowX: "hidden",
+    overflowY: "auto",
+    height: "91%",
+    width: "94%",
+    textAlign: "center",
+  },
+};
+
 function SystemExplorer(props) {
-  let firstRender = useRef(true);
-  const [lyrSelectDisplayState, setlyrSelectDisplayState] = useState(false); // when true, control panel is displayed
+  const classes = panelStyles;
   let params = useParams();
   let navigate = useNavigate();
+
+  let firstRender = useRef(true);
+
+  const [lyrSelectDisplayState, setlyrSelectDisplayState] = useState(false); // when true, control panel is displayed
   const [userEmail, setUserEmail] = useState(null);
   const [prjStatDisplayState, setprjStatDisplayState] = useState(
     params?.id ? true : false
@@ -95,10 +208,6 @@ function SystemExplorer(props) {
     setInterval(_fetchIsDirty, 10000);
   }, []);
 
-  // if(focusFeature!=params?.id){
-  //   setFocusFeature(params.id)
-  // }
-
   function _toggleLayer(layerName, updateFunction = setActiveLayers) {
     var currentActiveLayers = { ...activeLayers };
     currentActiveLayers[layerName] = !currentActiveLayers[layerName];
@@ -140,7 +249,6 @@ function SystemExplorer(props) {
       }
       return false;
     });
-    // console.log('Layers to Render:',layersToRender)
     firstRender.current = false;
     return layersToRender;
   }
@@ -200,9 +308,9 @@ function SystemExplorer(props) {
       });
   }
   return (
-    <div className="explorer">
-      <div>
-        <Suspense fallback={<div>Loading Map...</div>}>
+    <Box>
+      <Box sx={{ position: "absolute", height: "100%", width: "100%" }}>
+        <Suspense fallback={<Box>Loading Map...</Box>}>
           <DeckGLMap
             id="main-map"
             context="existing-system"
@@ -213,53 +321,63 @@ function SystemExplorer(props) {
             style={{ width: "120%" }}
           ></DeckGLMap>
         </Suspense>
-      </div>
-      <Card
-        id={lyrSelectDisplayState ? "control-panel" : "control-panel-hidden"}
-      >
-        <CardContent className={lyrSelectDisplayState ? "" : "zero-padding"}>
-          <LayerSelector
-            layerDict={layerDict}
-            activeLayers={activeLayers}
-            _onToggleLayer={_toggleLayer}
-            displayStatus={lyrSelectDisplayState}
-            displayController={_togglelyrSelectDisplayState}
-          ></LayerSelector>
-        </CardContent>
-      </Card>
-      <Box id="base-layer-control-panel">
-        <Tabs
-          value={baseLayer}
-          onChange={(e, n) => {
-            setBaseLayer(n);
-          }}
-          indicatorColor="primary"
-          textColor="primary"
+        <Box sx={classes.baseLayerPanel}>
+          <Tabs
+            value={baseLayer}
+            onChange={(e, n) => {
+              setBaseLayer(n);
+            }}
+            indicatorColor="primary"
+            textColor="primary"
+          >
+            <Tab label="Streets" />
+            <Tab label="Satellite" />
+          </Tabs>
+        </Box>
+        <Card
+          sx={
+            lyrSelectDisplayState
+              ? classes.layerPanel
+              : classes.layerPanelHidden
+          }
         >
-          <Tab className="base-layer-tab" label="Streets" />
-          <Tab className="base-layer-tab" label="Satellite" />
-        </Tabs>
+          <CardContent sx={{ padding: lyrSelectDisplayState ? "1rem" : 0 }}>
+            <LayerSelector
+              layerDict={layerDict}
+              activeLayers={activeLayers}
+              _onToggleLayer={_toggleLayer}
+              displayStatus={lyrSelectDisplayState}
+              displayController={_togglelyrSelectDisplayState}
+            ></LayerSelector>
+          </CardContent>
+        </Card>
+
+        <Card
+          sx={
+            prjStatDisplayState
+              ? classes.prjStatPanel
+              : classes.prjStatPanelHidden
+          }
+        >
+          <CardContent sx={{ padding: prjStatDisplayState ? "1rem" : 0 }}>
+            <BMPStatWindow
+              displayStatus={prjStatDisplayState}
+              displayController={_toggleprjStatDisplayState}
+              feature={focusFeature}
+              isDirty={isDirty}
+            ></BMPStatWindow>
+          </CardContent>
+        </Card>
       </Box>
+
       <Card
-        id={prjStatDisplayState ? "prj-stat-panel" : "prj-stat-panel-hidden"}
-      >
-        <CardContent className={prjStatDisplayState ? "" : "zero-padding"}>
-          <BMPStatWindow
-            displayStatus={prjStatDisplayState}
-            displayController={_toggleprjStatDisplayState}
-            feature={focusFeature}
-            isDirty={isDirty}
-          ></BMPStatWindow>
-        </CardContent>
-      </Card>
-      <Card
-        id={
+        sx={
           verificationDisplayState
-            ? "verification-panel"
-            : "verification-panel-hidden"
+            ? classes.verificationPanel
+            : classes.verificationPanelHidden
         }
       >
-        <CardContent className={verificationDisplayState ? "" : "zero-padding"}>
+        <CardContent>
           <Typography variant="subtitle1">
             Your email has not been verified
           </Typography>
@@ -282,14 +400,16 @@ function SystemExplorer(props) {
         </CardContent>
       </Card>
       <Card
-        id={
-          props.resultsDisplayState ? "results-panel" : "results-panel-hidden"
+        sx={
+          props.resultsDisplayState
+            ? classes.resultsPanel
+            : classes.resultsPanelHidden
         }
       >
         <CardContent
           className={props.resultsDisplayState ? "" : "zero-padding"}
         >
-          <Suspense fallback={<div>Loading Table...</div>}>
+          <Suspense fallback={<Box>Loading Table...</Box>}>
             <ResultsTable
               nodes="all"
               currentNode={focusFeature}
@@ -299,7 +419,7 @@ function SystemExplorer(props) {
           </Suspense>
         </CardContent>
       </Card>
-    </div>
+    </Box>
   );
 }
 

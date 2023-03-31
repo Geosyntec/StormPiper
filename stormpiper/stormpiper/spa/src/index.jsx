@@ -10,17 +10,54 @@ import { Users, EditUser } from "./components/users";
 import Verify from "./components/verify";
 import Forgot from "./components/forgot";
 import Dashboard from "./components/dashboard";
+import { ThemeProvider } from "@material-ui/core";
+import { theme } from "./theme";
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
+        <Route
+          path="/app/login/"
+          element={
+            <ThemeProvider theme={theme}>
+              <Login />
+            </ThemeProvider>
+          }
+        ></Route>
+        <Route
+          path="/app/register/"
+          element={
+            <ThemeProvider theme={theme}>
+              <Register />
+            </ThemeProvider>
+          }
+        ></Route>
+        <Route
+          path="/app/verify/"
+          element={
+            <ThemeProvider theme={theme}>
+              <Verify />
+            </ThemeProvider>
+          }
+        ></Route>
+        <Route
+          path="/app/reset/"
+          element={
+            <ThemeProvider theme={theme}>
+              <Reset />
+            </ThemeProvider>
+          }
+        ></Route>
+        <Route
+          path="/app/forgot-password/"
+          element={
+            <ThemeProvider theme={theme}>
+              <Forgot />
+            </ThemeProvider>
+          }
+        ></Route>
         <Route path="/app/" element={<App viewComponent="landing" />}></Route>
-        <Route path="/app/login/" element={<Login />}></Route>
-        <Route path="/app/register/" element={<Register />}></Route>
-        <Route path="/app/verify/" element={<Verify />}></Route>
-        <Route path="/app/reset/" element={<Reset />}></Route>
-        <Route path="/app/forgot-password/" element={<Forgot />}></Route>
         <Route
           path="/app/map/"
           element={<App viewComponent="systemExplorer" />}

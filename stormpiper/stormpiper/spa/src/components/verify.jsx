@@ -1,20 +1,14 @@
 import { useSearchParams, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, makeStyles, Typography } from "@material-ui/core";
+import { Box, Typography } from "@mui/material";
 import { api_fetch } from "../utils/utils";
-
-const useStyles = makeStyles((theme) => ({
-  mainCard: {
-    backgroundColor: theme.palette.grey[100],
-  },
-}));
+import { default as SimpleCardForm } from "./forms/simpleCardForm";
 
 export default function Verify() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const classes = useStyles();
-  let token: string | null = searchParams.get("token");
-  let expiresAt: string | null = searchParams.get("expires_at");
+  let token = searchParams.get("token");
+  let expiresAt = searchParams.get("expires_at");
   let now = new Date();
   let expiryDateFormatted = new Date(expiresAt);
   console.log("Token:", token);
@@ -90,13 +84,5 @@ export default function Verify() {
     }
   }, []);
 
-  return (
-    <div className="flex-row">
-      <div className="lg-margin">
-        <Card className={classes.mainCard}>
-          <CardContent>{verifyResults}</CardContent>
-        </Card>
-      </div>
-    </div>
-  );
+  return <SimpleCardForm>{verifyResults}</SimpleCardForm>;
 }

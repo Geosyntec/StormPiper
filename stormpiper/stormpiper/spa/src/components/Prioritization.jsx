@@ -1,26 +1,18 @@
 import React, { Suspense, useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { layerDict } from "../assets/geojson/subbasinLayer";
-// import LayerSelector from "./layerSelector";
 import {
   Card,
-  CardActions,
   CardContent,
   Typography,
   Button,
   Box,
-  makeStyles,
   TextField,
   Select,
   MenuItem,
-  FormControlLabel,
   FormControl,
-  InputLabel,
-  Container,
   Grid,
-} from "@material-ui/core";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
+} from "@mui/material";
 import { interpolateViridis } from "d3-scale-chromatic";
 import { DataGrid } from "@mui/x-data-grid";
 
@@ -30,36 +22,6 @@ import ColorRampLegend from "./colorRampLegend";
 import { api_fetch } from "../utils/utils";
 
 const DeckGLMap = React.lazy(() => import("./map"));
-
-const useStyles = makeStyles((theme) => ({
-  mapCard: {
-    // top: "5%",
-    // left: "30%",
-    width: "100%",
-    height: "50vh",
-    border: "2 px solid grey",
-    position: "relative",
-    overflowY: "hidden",
-  },
-  mainButton: {
-    margin: "1rem",
-  },
-  formBody: {
-    display: "grid",
-    gridTemplateColumns: "repeat(1,1r)",
-    gap: "0em",
-    padding: "0px 10px",
-  },
-  formRow: {
-    display: "flex",
-    flexDirection: "column",
-    borderBottom: "0.5px solid grey",
-    marginBottom: "1rem",
-  },
-  paddedButton: {
-    margin: "1rem",
-  },
-}));
 
 function Prioritization(props) {
   let firstRender = useRef(true);
@@ -72,9 +34,6 @@ function Prioritization(props) {
     getValues,
     formState: { errors },
   } = useForm();
-  console.log("errors: ", errors);
-  // const {errors} = useFormState({control})
-  const classes = useStyles();
   const [lyrSelectDisplayState, setlyrSelectDisplayState] = useState(false); // when true, control panel is displayed
   const [subbasinScores, setSubbasinScores] = useState({});
   let params = useParams();
@@ -289,7 +248,14 @@ function Prioritization(props) {
       console.log("With fields:", formFields);
       let fieldDiv = Object.values(formFields).map((formField) => {
         return (
-          <Box className={classes.formRow}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              borderBottom: "0.5px solid grey",
+              mb: "1rem",
+            }}
+          >
             <TextField
               variant="outlined"
               margin="dense"
@@ -312,9 +278,22 @@ function Prioritization(props) {
         );
       });
       return (
-        <Box className="scoring-form">
-          <Box className={classes.formBody}>
-            <Box className={classes.formRow}>
+        <Box>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(1,1r)",
+              padding: "0px 10px",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                borderBottom: "0.5px solid grey",
+                mb: "1rem",
+              }}
+            >
               <Typography variant="body1">Set a project type</Typography>
               <Typography variant="caption">
                 Are you prioritizing preservation projects or retrofit projects?
@@ -329,7 +308,7 @@ function Prioritization(props) {
             <Typography variant="body1">Set Priority Weights</Typography>
             {fieldDiv}
           </Box>
-          <Box className="button-bar">
+          <Box>
             <Button variant="contained" type="submit">
               Submit
             </Button>
@@ -452,14 +431,14 @@ function Prioritization(props) {
   return (
     <React.Fragment>
       <Grid container columns={12}>
-        <Grid item lg={4} md={4} sm={4}>
+        <Grid item xs={4}>
           <Box
             sx={{
-              background: "white",
+              background: "none",
               padding: "2rem",
               pt: "2rem",
-              border: "1",
-              borderColor: "primary.main",
+              borderRight: "1px solid",
+              borderRightColor: "rgba(0,0,0,0.12)",
               height: "100vh",
             }}
           >
@@ -468,13 +447,33 @@ function Prioritization(props) {
                 {_renderFormFields()}
               </form>
             ) : (
-              <Box className={classes.formBody}>
-                <Box className={classes.formRow}>
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(1,1r)",
+                  padding: "0px 10px",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    borderBottom: "0.5px solid grey",
+                    mb: "1rem",
+                  }}
+                >
                   <Typography variant="body1">
                     About Subbasin Prioritization
                   </Typography>
                 </Box>
-                <Box className={classes.formRow}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    borderBottom: "0.5px solid grey",
+                    mb: "1rem",
+                  }}
+                >
                   <Typography variant="caption">
                     Use this tool to identify regions of the City of Tacoma
                     Watershed that are most in need of stormwater retrofit or
@@ -485,11 +484,38 @@ function Prioritization(props) {
             )}
           </Box>
         </Grid>
-        <Grid item sm={8}>
+        <Grid
+          item
+          xs={8}
+          sx={{
+            display: "flex",
+            justifyContent: "flex-start",
+            alignItems: "center",
+            flexDirection: "column",
+          }}
+        >
           <Suspense
-            fallback={<Box className={classes.mapCard}>Loading Map...</Box>}
+            fallback={
+              <Box
+                sx={{
+                  width: "100%",
+                  height: "50vh",
+                  position: "relative",
+                  overflowY: "hidden",
+                }}
+              >
+                Loading Map...
+              </Box>
+            }
           >
-            <Box className={classes.mapCard}>
+            <Box
+              sx={{
+                width: "100%",
+                height: "50vh",
+                position: "relative",
+                overflowY: "hidden",
+              }}
+            >
               <DeckGLMap
                 id="main-map"
                 context="prioritization"
@@ -510,8 +536,8 @@ function Prioritization(props) {
               <ColorRampLegend
                 style={{
                   position: "absolute",
-                  top: "40vh",
-                  left: "65vw",
+                  top: "50vh",
+                  left: "80vw",
                   width: "14vw",
                   minWidth: "200px",
                   height: "6%",
@@ -522,13 +548,20 @@ function Prioritization(props) {
               ></ColorRampLegend>
             )}
           </Suspense>
-          <Box id="priority-score-table" sx={{ margin: 24 }}>
-            <Card>
+          <Box
+            sx={{
+              position: "relative",
+              zIndex: 9,
+              height: "auto",
+              width: "50%",
+            }}
+          >
+            <Card sx={{ backgroundColor: (theme) => theme.palette.grey[100] }}>
               <CardContent>
                 {subbasinScores.length > 0 ? (
                   <React.Fragment>
                     <Button
-                      className={classes.paddedButton}
+                      sx={{ margin: "1rem" }}
                       variant="contained"
                       onClick={() => exportScoringResults()}
                     >
