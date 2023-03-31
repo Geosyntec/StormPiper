@@ -249,6 +249,7 @@ function Prioritization(props) {
       let fieldDiv = Object.values(formFields).map((formField) => {
         return (
           <Box
+            key={formField.fieldID}
             sx={{
               display: "flex",
               flexDirection: "column",
