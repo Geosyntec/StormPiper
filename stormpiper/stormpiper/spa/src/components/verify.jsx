@@ -62,7 +62,7 @@ export default function Verify() {
                 <a href="#" onClick={() => navigate("/app/login")}>
                   log in{" "}
                 </a>{" "}
-                with the credentials you created for your account
+                with the credentials you created for your account.
               </Typography>
             </>
           );
@@ -77,7 +77,7 @@ export default function Verify() {
                 <a href="#" onClick={() => navigate("/app/login")}>
                   log in{" "}
                 </a>{" "}
-                again to request another link
+                again to request another link.
               </Typography>
             </>
           );

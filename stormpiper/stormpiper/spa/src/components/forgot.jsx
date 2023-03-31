@@ -21,7 +21,7 @@ export default function Forgot() {
   const fields = [
     {
       name: "username",
-      label: "username",
+      label: "username/email",
       type: "email",
       required: true,
       defaultValue: "",
@@ -31,14 +31,13 @@ export default function Forgot() {
   function _renderFormFields() {
     let fieldDiv = Object.values(fields).map((formField) => {
       return (
-        <Box key={formField.name} sx={{ width: "300" }}>
+        <Box key={formField.name}>
           {
             <TextField
               {...register(formField.name, { ...formField })}
               label={formField.label}
               type={formField.type}
               required={formField.required}
-              margin="dense"
               fullWidth
             />
           }
@@ -98,39 +97,14 @@ export default function Forgot() {
             onSubmit={handleSubmit(_handleSubmit)}
             sx={{
               display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
+              width: "300px",
             }}
           >
             {_renderFormFields()}
-            <Box>
-              <Typography align="center" variant="body2">
-                <a
-                  href="#"
-                  onClick={() => {
-                    navigate("/app/forgot-password");
-                  }}
-                >
-                  Forgot your password?
-                </a>
-              </Typography>
-            </Box>
-            <Box sx={{ display: "flex", justifyContent: "center" }}>
-              <Button
-                sx={{ margin: "1rem" }}
-                color="primary"
-                variant="contained"
-                type="submit"
-              >
-                Submit
-              </Button>
-              <Button
-                sx={{ margin: "1rem" }}
-                color="primary"
-                variant="contained"
-                onClick={() => navigate("/app/login")}
-              >
-                Login
+
+            <Box sx={{ display: "flex", justifyContent: "right", my: 3 }}>
+              <Button color="primary" variant="contained" type="submit">
+                Send Reset Link
               </Button>
             </Box>
             {success && (
