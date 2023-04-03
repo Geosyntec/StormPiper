@@ -184,7 +184,7 @@ const landUseDesignations = {
   },
 };
 */
-const activeLocalSWFacility = {
+export const activeLocalSWFacility = {
   layer: GeoJsonLayer,
   props: {
     // data:"https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/21/query?where=1%3D1&outFields=*&returnGeometry=true&f=geojson&outSR=4326",
@@ -198,7 +198,7 @@ const activeLocalSWFacility = {
     },
     id: "activeSWFacility",
     label: "Active Surface Water Facilities",
-    getFillColor: [70, 170, 21, 0],
+    getFillColor: [70, 170, 21],
     defaultFillColor: [70, 170, 21],
     getLineColor: [160, 160, 180, 0],
     getLineWidth: (f) => 1,

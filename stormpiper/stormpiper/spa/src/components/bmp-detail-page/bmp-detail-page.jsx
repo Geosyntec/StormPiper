@@ -2,6 +2,7 @@ import { Card, Grid } from "@mui/material";
 
 import { BMPDetailResults } from "./bmp-results";
 import { TwoColGrid, FullSpan, HalfSpan } from "../base/two-col-grid";
+import BMPDetailMap from "./bmp-detail-map";
 
 export default function BMPDetailPage() {
   return (
@@ -46,7 +47,7 @@ export default function BMPDetailPage() {
               justifyContent: "center",
             }}
           >
-            map placeholder
+            <BMPDetailMap></BMPDetailMap>
           </Card>
         </HalfSpan>
       </FullSpan>

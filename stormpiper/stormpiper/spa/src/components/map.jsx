@@ -34,6 +34,9 @@ function DeckGLMap(props) {
         bearing: 0,
       };
       break;
+    case "inset-map":
+      INITIAL_VIEW_STATE = props.viewState;
+      break;
     default:
       INITIAL_VIEW_STATE = {
         longitude: -122.4,
@@ -65,6 +68,9 @@ function DeckGLMap(props) {
   useEffect(() => {
     zoomToCurrentFeature();
   }, [loc]);
+  useEffect(() => {
+    setViewState(props.viewState);
+  }, [props.viewState]);
 
   function zoomToCurrentFeature() {
     if (props.currentFeature) {
@@ -107,7 +113,6 @@ function DeckGLMap(props) {
       layers={props.layers}
       onClick={props.onClick}
       onViewStateChange={(state) => {
-        console.log("New View: ", state);
         debouncedSetZoom(state);
       }}
       getTooltip={(object) => {
@@ -117,9 +122,9 @@ function DeckGLMap(props) {
           ({ width, height } = object.viewport);
         }
         let closeToEdge = object.y > height * 0.8 || object.x > width * 0.85;
-        if (object?.object) {
-          console.log("Selected Object", object);
-        }
+        // if (object?.object) {
+        //   console.log("Selected Object", object);
+        // }
         return (
           object.object &&
           !closeToEdge && {
@@ -139,7 +144,11 @@ function DeckGLMap(props) {
     >
       <StaticMap
         mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
-        mapStyle={baseLayerStyles[props.baseLayer].styleURL}
+        // mapStyle={baseLayerStyles[0].styleURL}
+        mapStyle={
+          baseLayerStyles[props.baseLayer]?.styleURL ||
+          baseLayerStyles[0].styleURL
+        }
       />
     </DeckGL>
   );
