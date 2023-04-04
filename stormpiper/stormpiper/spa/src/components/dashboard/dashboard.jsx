@@ -1,4 +1,6 @@
-import { useState, lazy, Suspense } from "react";
+import { useState, lazy, Suspense, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+
 import Box from "@mui/material/Box";
 
 import MainBox from "./mainbox";
@@ -29,6 +31,12 @@ export default function Dashboard({
   toggleDrawer,
 }) {
   const [drawerButtonList, setDrawerButtonList] = useState([]);
+  let location = useLocation();
+
+  useEffect(() => {
+    setDrawerButtonList([]);
+  }, [location]);
+
   const hideDrawer =
     userProfile.role === "public" ||
     !userProfile.role ||
