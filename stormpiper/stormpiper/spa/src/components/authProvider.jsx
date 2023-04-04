@@ -1,25 +1,31 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState, cloneElement, Children } from "react";
 import { api_fetch } from "../utils/utils";
 
-export default function AuthProvider(props) {
-  const navigate = useNavigate();
+const defaultUserProfile = {
+  first_name: "",
+  email: "",
+  id: "",
+  role: "",
+};
 
-  useEffect(() => {
-    api_fetch("/api/rest/users/me")
-      .then((res) => {
-        return res.json();
-      })
-      .then((res) => {
-        if (res.detail === "Unauthorized") {
-          navigate("/app/login");
-          return null;
-        } else {
-          console.log("Trying to return app");
-          return props.children;
-        }
-      });
-  });
+export default function AuthProvider({ children }) {
+  const [userProfile, setUserProfile] = useState(defaultUserProfile);
 
-  return props.children;
+  const renderChildren = () => {
+    return Children.map(children, (child) => {
+      return cloneElement(child, { userProfile });
+    });
+  };
+
+  useEffect(async () => {
+    const res = await api_fetch("/api/rest/users/me");
+    const resjson = await res.json();
+    if (resjson.detail === "Unauthorized") {
+      console.log("ya basic");
+    } else {
+      setUserProfile({ ...resjson });
+    }
+  }, []);
+
+  return renderChildren();
 }

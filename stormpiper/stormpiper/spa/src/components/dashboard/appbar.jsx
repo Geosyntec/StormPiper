@@ -6,6 +6,8 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import AccountCircle from "@mui/icons-material/AccountCircle";
 
 import TopNavMenu from "./topNavMenu";
 import UserInfo from "./userInfoMenu";
@@ -29,15 +31,20 @@ const AppBarStyled = styled(MuiAppBar, {
   }),
 }));
 
-export default function AppBar(props) {
+export default function AppBar({
+  open,
+  drawerWidth,
+  toggleDrawer,
+  userProfile,
+  hideMenu,
+}) {
   const navigate = useNavigate();
 
+  const isUserLoggedIn = !!userProfile?.role;
+  const showNav = isUserLoggedIn && userProfile?.role !== "public";
+
   return (
-    <AppBarStyled
-      position="absolute"
-      open={props.open}
-      drawerWidth={props.drawerWidth}
-    >
+    <AppBarStyled position="absolute" open={open} drawerWidth={drawerWidth}>
       <Toolbar
         sx={{
           pr: "24px", // keep right padding when drawer closed
@@ -47,31 +54,41 @@ export default function AppBar(props) {
           edge="start"
           color="inherit"
           aria-label="open drawer"
-          onClick={props.toggleDrawer}
+          onClick={toggleDrawer}
           sx={{
             marginRight: "36px",
-            ...(props.open && { display: "none" }),
-            ...(props.hideMenu && { display: "none" }),
+            ...(open && { display: "none" }),
+            ...(hideMenu && { display: "none" }),
           }}
         >
           <MenuIcon />
         </IconButton>
-        <Typography
-          component="h1"
-          variant="h6"
-          color="inherit"
-          noWrap
-          sx={{ fontWeight: "bold" }}
-          onClick={() => navigate("/app")}
-        >
-          Tacoma Watershed Insights
-        </Typography>
-        <TopNavMenu sx={{ mt: 0.5 }} />
+        <Button sx={{ textTransform: "none" }} color="inherit">
+          <Typography
+            component="h1"
+            variant="h6"
+            noWrap
+            sx={{ fontWeight: "bold" }}
+            onClick={() => navigate("/app")}
+          >
+            Tacoma Watershed Insights
+          </Typography>
+        </Button>
+
+        {showNav ? <TopNavMenu sx={{ mt: 0.5 }} /> : <></>}
         <Box sx={{ flexGrow: 1 }} />
-        {props.userProfile.role ? (
-          <UserInfo userProfile={props.userProfile} />
+        {isUserLoggedIn ? (
+          <>
+            <UserInfo userProfile={userProfile} />
+          </>
         ) : (
-          <></>
+          <Button
+            sx={{ color: "white" }}
+            onClick={() => navigate("/app/login")}
+          >
+            <AccountCircle />
+            &nbsp;Log in
+          </Button>
         )}
       </Toolbar>
     </AppBarStyled>

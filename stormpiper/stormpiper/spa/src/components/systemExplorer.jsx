@@ -1,19 +1,21 @@
 import { Suspense, useEffect, useState, useRef, lazy } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { layerDict } from "../assets/geojson/coreLayers";
-import LayerSelector from "./layerSelector";
-import BMPStatWindow from "./bmpStatWindow";
 import {
   Card,
   CardActions,
   CardContent,
-  Grid,
   Typography,
   Button,
   Box,
   Tabs,
   Tab,
 } from "@mui/material";
+import GridOnRoundedIcon from "@mui/icons-material/GridOnRounded";
+import ScatterPlotRoundedIcon from "@mui/icons-material/ScatterPlotRounded";
+
+import { layerDict } from "../assets/geojson/coreLayers";
+import LayerSelector from "./layerSelector";
+import BMPStatWindow from "./bmpStatWindow";
 import { api_fetch } from "../utils/utils";
 
 const DeckGLMap = lazy(() => import("./map"));
@@ -130,7 +132,7 @@ const panelStyles = {
   },
 };
 
-function SystemExplorer(props) {
+function SystemExplorer({ setDrawerButtonList, userProfile }) {
   const classes = panelStyles;
   let params = useParams();
   let navigate = useNavigate();
@@ -179,33 +181,52 @@ function SystemExplorer(props) {
 
   function _fetchIsDirty() {
     // console.log("Checking isDirty")
-    api_fetch("/api/rest/results/is_dirty")
-      .then((res) => {
-        return res.json();
-      })
-      .then((res) => {
-        console.log("Parsed is_dirty results: ", res);
-        setIsDirty(res || null);
-        // setDBLastUpdated(res.last_updated||null)
-      });
+    if (userProfile?.is_verified) {
+      api_fetch("/api/rest/results/is_dirty")
+        .then((res) => {
+          return res.json();
+        })
+        .then((res) => {
+          console.log("Parsed is_dirty results: ", res);
+          setIsDirty(res || null);
+          // setDBLastUpdated(res.last_updated||null)
+        });
+    }
   }
 
   useEffect(() => {
     //Only perform these operations on initial render
     //Notify user if they haven't verified email
-    api_fetch("/api/rest/users/me")
-      .then((res) => {
-        return res.json();
-      })
-      .then((res) => {
-        setUserEmail(res.email);
-        if (!res["is_verified"]) {
-          setVerificationDisplayState(true);
-        }
-      });
+    if (!userProfile?.is_verified) {
+      setVerificationDisplayState(true);
+    }
+
     //Set up is_dirty polling request to check when new results need to be calculated
     _fetchIsDirty();
     setInterval(_fetchIsDirty, 10000);
+  }, []);
+
+  const [resultsDisplayState, setResultsDisplayState] = useState(false); //when true, results table is displayed
+
+  function _toggleSetResultsDisplayState() {
+    setResultsDisplayState(!resultsDisplayState);
+  }
+
+  const buttonList = [
+    {
+      label: "Evaluate Project",
+      icon: <GridOnRoundedIcon />,
+      clickHandler: _toggleSetResultsDisplayState,
+    },
+    {
+      label: "Prioritize Watersheds",
+      icon: <ScatterPlotRoundedIcon />,
+      clickHandler: () => navigate("/app/prioritization"),
+    },
+  ];
+
+  useEffect(() => {
+    setDrawerButtonList(buttonList);
   }, []);
 
   function _toggleLayer(layerName, updateFunction = setActiveLayers) {
@@ -401,20 +422,18 @@ function SystemExplorer(props) {
       </Card>
       <Card
         sx={
-          props.resultsDisplayState
+          resultsDisplayState
             ? classes.resultsPanel
             : classes.resultsPanelHidden
         }
       >
-        <CardContent
-          className={props.resultsDisplayState ? "" : "zero-padding"}
-        >
+        <CardContent className={resultsDisplayState ? "" : "zero-padding"}>
           <Suspense fallback={<Box>Loading Table...</Box>}>
             <ResultsTable
               nodes="all"
               currentNode={focusFeature}
-              displayController={props.resultsDisplayController}
-              displayState={props.resultsDisplayState}
+              displayController={_toggleSetResultsDisplayState}
+              displayState={resultsDisplayState}
             ></ResultsTable>
           </Suspense>
         </CardContent>

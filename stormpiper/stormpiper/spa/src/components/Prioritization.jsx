@@ -1,6 +1,6 @@
-import { Suspense, useState, useRef, lazy } from "react";
+import { Suspense, useState, useRef, useEffect, lazy } from "react";
+import { useForm } from "react-hook-form";
 import { useParams, useNavigate } from "react-router-dom";
-import { layerDict } from "../assets/geojson/subbasinLayer";
 import {
   Card,
   CardContent,
@@ -12,18 +12,19 @@ import {
   MenuItem,
   FormControl,
 } from "@mui/material";
+import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
+import GridOnRoundedIcon from "@mui/icons-material/GridOnRounded";
 import { interpolateViridis } from "d3-scale-chromatic";
 import { DataGrid } from "@mui/x-data-grid";
 
-import { useForm } from "react-hook-form";
-
+import { layerDict } from "../assets/geojson/subbasinLayer";
 import ColorRampLegend from "./colorRampLegend";
 import { api_fetch } from "../utils/utils";
 import { HalfSpan, TwoColGrid } from "./base/two-col-grid";
 
 const DeckGLMap = lazy(() => import("./map"));
 
-function Prioritization(props) {
+function Prioritization({ setDrawerButtonList }) {
   let firstRender = useRef(true);
   const {
     register,
@@ -34,6 +35,7 @@ function Prioritization(props) {
     getValues,
     formState: { errors },
   } = useForm();
+  const [priorityWorkflowState, setPriorityWorkflowState] = useState("scoring");
   const [lyrSelectDisplayState, setlyrSelectDisplayState] = useState(false); // when true, control panel is displayed
   const [subbasinScores, setSubbasinScores] = useState({});
   let params = useParams();
@@ -65,6 +67,23 @@ function Prioritization(props) {
     });
     return res;
   });
+
+  const buttonList = [
+    {
+      label: "About Prioritization",
+      icon: <InfoRoundedIcon />,
+      clickHandler: () => setPriorityWorkflowState("info"),
+    },
+    {
+      label: "Define Criteria Weights",
+      icon: <GridOnRoundedIcon />,
+      clickHandler: () => setPriorityWorkflowState("scoring"),
+    },
+  ];
+
+  useEffect(() => {
+    setDrawerButtonList(buttonList);
+  }, []);
 
   const formFields = [
     {
@@ -433,7 +452,7 @@ function Prioritization(props) {
     <TwoColGrid>
       <HalfSpan md={4}>
         <Card sx={{ p: 2 }}>
-          {props.workflowState == "scoring" ? (
+          {priorityWorkflowState == "scoring" ? (
             <form onSubmit={handleSubmit((data) => _handleSubmit(data))}>
               {_renderFormFields()}
             </form>
