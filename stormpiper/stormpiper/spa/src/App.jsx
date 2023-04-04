@@ -1,17 +1,18 @@
 import { useState, useMemo, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
-import AuthProvider from "./components/authProvider";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import GridOnRoundedIcon from "@mui/icons-material/GridOnRounded";
 import ScatterPlotRoundedIcon from "@mui/icons-material/ScatterPlotRounded";
 import { Box } from "@mui/material";
-import { themeOptions } from "./theme";
 import { createTheme } from "@mui/material";
 import { ThemeProvider } from "@mui/material";
-import Dashboard from "./components/dashboard";
 
-const Landing = lazy(() => import("./components/landing"));
+import AuthProvider from "./components/authProvider";
+import Dashboard from "./components/dashboard/dashboard";
+import Landing from "./components/landing";
+import { themeOptions } from "./theme";
+
 const SystemExplorer = lazy(() => import("./components/systemExplorer"));
 const Prioritization = lazy(() => import("./components/Prioritization"));
 const EditAllUsers = lazy(() => import("./components/users/users-edit-all"));
