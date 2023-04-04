@@ -3,11 +3,12 @@ import { styled } from "@mui/material/styles";
 import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Tooltip from "@mui/material/Tooltip";
 import AccountCircle from "@mui/icons-material/AccountCircle";
+import MenuIcon from "@mui/icons-material/Menu";
 
 import TopNavMenu from "./topNavMenu";
 import UserInfo from "./userInfoMenu";
@@ -50,45 +51,50 @@ export default function AppBar({
           pr: "24px", // keep right padding when drawer closed
         }}
       >
-        <IconButton
-          edge="start"
-          color="inherit"
-          aria-label="open drawer"
-          onClick={toggleDrawer}
-          sx={{
-            marginRight: "36px",
-            ...(open && { display: "none" }),
-            ...(hideMenu && { display: "none" }),
-          }}
-        >
-          <MenuIcon />
-        </IconButton>
-        <Button sx={{ textTransform: "none" }} color="inherit">
-          <Typography
-            component="h1"
-            variant="h6"
-            noWrap
-            sx={{ fontWeight: "bold" }}
-            onClick={() => navigate("/app")}
+        <Tooltip title="Expand">
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            onClick={toggleDrawer}
+            sx={{
+              marginRight: "36px",
+              ...(open && { display: "none" }),
+              ...(hideMenu && { display: "none" }),
+            }}
           >
-            Tacoma Watershed Insights
-          </Typography>
+            <MenuIcon />
+          </IconButton>
+        </Tooltip>
+
+        <Button sx={{ textTransform: "none" }} color="inherit">
+          <Tooltip title="Home">
+            <Typography
+              component="h1"
+              variant="h6"
+              noWrap
+              sx={{ fontWeight: "bold" }}
+              onClick={() => navigate("/app")}
+            >
+              Tacoma Watershed Insights
+            </Typography>
+          </Tooltip>
         </Button>
 
         {showNav ? <TopNavMenu sx={{ mt: 0.5 }} /> : <></>}
         <Box sx={{ flexGrow: 1 }} />
         {isUserLoggedIn ? (
-          <>
-            <UserInfo userProfile={userProfile} />
-          </>
+          <UserInfo userProfile={userProfile} />
         ) : (
-          <Button
-            sx={{ color: "white" }}
-            onClick={() => navigate("/app/login")}
-          >
-            <AccountCircle />
-            &nbsp;Log in
-          </Button>
+          <Tooltip title="Login">
+            <Button
+              sx={{ color: "white" }}
+              onClick={() => navigate("/app/login")}
+            >
+              <AccountCircle />
+              &nbsp;Log in
+            </Button>
+          </Tooltip>
         )}
       </Toolbar>
     </AppBarStyled>

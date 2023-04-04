@@ -1,23 +1,11 @@
 import { useState } from "react";
-
-import {
-  Button,
-  List,
-  ListItem,
-  Box,
-  Divider,
-  ListItemText,
-  Tooltip,
-} from "@mui/material";
-import ListItemIcon from "@mui/material/ListItemIcon";
-
 import { useNavigate } from "react-router-dom";
-import { useTheme } from "@mui/material/styles";
-
-import { api_fetch } from "../../utils/utils";
-
+import { Button, ListItem, Box, Divider, Tooltip } from "@mui/material";
+import ListItemIcon from "@mui/material/ListItemIcon";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
+import MenuItem from "@mui/material/MenuItem";
+import Menu from "@mui/material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
@@ -25,15 +13,13 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import GroupIcon from "@mui/icons-material/Group";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
+import { api_fetch } from "../../utils/utils";
 
 export default function UserInfo({ userProfile, ...props }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [verifyButtonDisabled, setVerifyButtonDisabled] = useState(false);
 
   const navigate = useNavigate();
-  const theme = useTheme();
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -57,16 +43,19 @@ export default function UserInfo({ userProfile, ...props }) {
 
   return (
     <Box {...props}>
-      <IconButton
-        size="large"
-        aria-label="account of current user"
-        aria-controls="menu-appbar"
-        aria-haspopup="true"
-        onClick={handleMenu}
-        color="inherit"
-      >
-        <AccountCircle />
-      </IconButton>
+      <Tooltip title="Profile">
+        <IconButton
+          size="large"
+          aria-label="account of current user"
+          aria-controls="menu-appbar"
+          aria-haspopup="true"
+          onClick={handleMenu}
+          color="inherit"
+        >
+          <AccountCircle />
+        </IconButton>
+      </Tooltip>
+
       <Menu
         id="menu-appbar"
         anchorEl={anchorEl}
