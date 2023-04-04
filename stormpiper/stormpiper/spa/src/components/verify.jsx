@@ -1,10 +1,9 @@
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Typography } from "@mui/material";
-import { ThemeProvider } from "@mui/material";
 import { api_fetch } from "../utils/utils";
 import { default as SimpleCardForm } from "./forms/simpleCardForm";
-import { staticTheme } from "../theme";
+import { staticTheme, ThemeProvider } from "../theme";
 
 export default function Verify() {
   const [searchParams, setSearchParams] = useSearchParams();

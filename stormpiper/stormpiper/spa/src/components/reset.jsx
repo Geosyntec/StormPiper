@@ -2,10 +2,9 @@ import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Typography, TextField, Button, Box } from "@mui/material";
-import { ThemeProvider } from "@mui/material";
 import { api_fetch } from "../utils/utils";
 import SimpleCardForm from "./forms/simpleCardForm";
-import { staticTheme } from "../theme";
+import { staticTheme, ThemeProvider } from "../theme";
 
 export default function Reset() {
   const navigate = useNavigate();

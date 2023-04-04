@@ -2,9 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Box, Button, TextField, Typography } from "@mui/material";
-import { ThemeProvider } from "@mui/material";
 import { api_fetch } from "../utils/utils";
-import { staticTheme } from "../theme";
+import { staticTheme, ThemeProvider } from "../theme";
 import SimpleCardForm from "./forms/simpleCardForm";
 
 export default function Login() {
@@ -71,8 +70,8 @@ export default function Login() {
     }).then((resp) => {
       if (resp.status == 200) {
         console.log("redirect on success");
-        window.location.href = "/";
         setError(false);
+        navigate("/app");
       } else {
         console.warn("login failure", resp);
         setError(true);
@@ -100,36 +99,21 @@ export default function Login() {
         >
           <form onSubmit={handleSubmit(_handleSubmit)}>
             {_renderFormFields()}
-            <Box>
-              <Typography align="center" variant="body2">
-                <a
-                  href="#"
-                  onClick={() => {
-                    navigate("/app/forgot-password");
-                  }}
+
+            <Box sx={{ mt: 3 }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <Button
+                  color="primary"
+                  onClick={() => navigate("/app/register")}
                 >
-                  Forgot your password?
-                </a>
-              </Typography>
+                  Register
+                </Button>
+                <Button variant="contained" color="primary" type="submit">
+                  Login
+                </Button>
+              </Box>
             </Box>
-            <Box sx={{ display: "flex", justifyContent: "center" }}>
-              <Button
-                variant="contained"
-                color="primary"
-                type="submit"
-                sx={{ margin: "1rem" }}
-              >
-                Login
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => navigate("/app/register")}
-                sx={{ margin: "1rem" }}
-              >
-                Register
-              </Button>
-            </Box>
+
             {error && (
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <Typography
@@ -142,6 +126,18 @@ export default function Login() {
               </Box>
             )}
           </form>
+        </Box>
+        <Box>
+          <Typography align="center" variant="body2">
+            <a
+              href="#"
+              onClick={() => {
+                navigate("/app/forgot-password");
+              }}
+            >
+              Forgot your password?
+            </a>
+          </Typography>
         </Box>
       </SimpleCardForm>
     </ThemeProvider>

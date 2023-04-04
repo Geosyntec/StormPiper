@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { default as SimpleCardForm } from "./forms/simpleCardForm";
+import SimpleCardForm from "./forms/simpleCardForm";
 import { Box, Typography, TextField, Button } from "@mui/material";
-import { ThemeProvider } from "@mui/material";
 import { api_fetch } from "../utils/utils";
-import { staticTheme } from "../theme";
+import { staticTheme, ThemeProvider } from "../theme";
 
 export default function Register() {
   const navigate = useNavigate();
