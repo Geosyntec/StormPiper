@@ -7,7 +7,7 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import Box from "@mui/material/Box";
-
+import Tooltip from "@mui/material/Tooltip";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import MapIcon from "@mui/icons-material/Map";
@@ -67,18 +67,20 @@ export default function TopNavMenu(props) {
   return (
     <Box {...props}>
       <List component="nav" aria-label="Top Nav">
-        <ListItemButton
-          sx={{ borderRadius: 2, mx: 3 }}
-          id="nav-button"
-          aria-haspopup="listbox"
-          aria-controls="nav-menu"
-          aria-label="top nav options"
-          aria-expanded={open ? "true" : undefined}
-          onClick={handleClickListItem}
-        >
-          <ListItemText primary={topNavItems[selectedIndex].label} />
-          <KeyboardArrowDownIcon />
-        </ListItemButton>
+        <Tooltip title="Navigate">
+          <ListItemButton
+            sx={{ borderRadius: 2, mx: 3 }}
+            id="nav-button"
+            aria-haspopup="listbox"
+            aria-controls="nav-menu"
+            aria-label="top nav options"
+            aria-expanded={open ? "true" : undefined}
+            onClick={handleClickListItem}
+          >
+            <ListItemText primary={topNavItems[selectedIndex].label} />
+            <KeyboardArrowDownIcon />
+          </ListItemButton>
+        </Tooltip>
       </List>
       <Menu
         id="nav-menu"
