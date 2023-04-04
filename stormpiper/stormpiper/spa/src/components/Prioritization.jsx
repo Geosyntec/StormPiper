@@ -11,7 +11,6 @@ import {
   Select,
   MenuItem,
   FormControl,
-  Grid,
 } from "@mui/material";
 import { interpolateViridis } from "d3-scale-chromatic";
 import { DataGrid } from "@mui/x-data-grid";
@@ -20,6 +19,7 @@ import { useForm } from "react-hook-form";
 
 import ColorRampLegend from "./colorRampLegend";
 import { api_fetch } from "../utils/utils";
+import { HalfSpan, TwoColGrid } from "./base/two-col-grid";
 
 const DeckGLMap = lazy(() => import("./map"));
 
@@ -430,190 +430,164 @@ function Prioritization(props) {
   }
 
   return (
-    <>
-      <Grid container columns={12}>
-        <Grid item xs={4}>
-          <Box
-            sx={{
-              background: "none",
-              padding: "2rem",
-              pt: "2rem",
-              borderRight: "1px solid",
-              borderRightColor: "rgba(0,0,0,0.12)",
-              height: "100vh",
-            }}
-          >
-            {props.workflowState == "scoring" ? (
-              <form onSubmit={handleSubmit((data) => _handleSubmit(data))}>
-                {_renderFormFields()}
-              </form>
-            ) : (
+    <TwoColGrid>
+      <HalfSpan md={4}>
+        <Card sx={{ p: 2 }}>
+          {props.workflowState == "scoring" ? (
+            <form onSubmit={handleSubmit((data) => _handleSubmit(data))}>
+              {_renderFormFields()}
+            </form>
+          ) : (
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "repeat(1,1r)",
+                padding: "0px 10px",
+              }}
+            >
               <Box
                 sx={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(1,1r)",
-                  padding: "0px 10px",
+                  display: "flex",
+                  flexDirection: "column",
+                  borderBottom: "0.5px solid grey",
+                  mb: "1rem",
                 }}
               >
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    borderBottom: "0.5px solid grey",
-                    mb: "1rem",
-                  }}
-                >
-                  <Typography variant="body1">
-                    About Subbasin Prioritization
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    borderBottom: "0.5px solid grey",
-                    mb: "1rem",
-                  }}
-                >
-                  <Typography variant="caption">
-                    Use this tool to identify regions of the City of Tacoma
-                    Watershed that are most in need of stormwater retrofit or
-                    preservation projects
-                  </Typography>
-                </Box>
+                <Typography variant="body1">
+                  About Subbasin Prioritization
+                </Typography>
               </Box>
-            )}
-          </Box>
-        </Grid>
-        <Grid
-          item
-          xs={8}
-          sx={{
-            display: "flex",
-            justifyContent: "flex-start",
-            alignItems: "center",
-            flexDirection: "column",
-          }}
-        >
-          <Suspense
-            fallback={
               <Box
                 sx={{
-                  width: "100%",
-                  height: "50vh",
-                  position: "relative",
-                  overflowY: "hidden",
+                  display: "flex",
+                  flexDirection: "column",
+                  borderBottom: "0.5px solid grey",
+                  mb: "1rem",
                 }}
               >
-                Loading Map...
+                <Typography variant="caption">
+                  Use this tool to identify regions of the City of Tacoma
+                  Watershed that are most in need of stormwater retrofit or
+                  preservation projects
+                </Typography>
               </Box>
-            }
-          >
+            </Box>
+          )}
+        </Card>
+      </HalfSpan>
+      <HalfSpan
+        md={8}
+        sx={{
+          display: "flex",
+          justifyContent: "flex-start",
+          alignItems: "center",
+          flexDirection: "column",
+        }}
+      >
+        <Suspense
+          fallback={
             <Box
               sx={{
                 width: "100%",
-                height: "50vh",
+                height: "500px",
                 position: "relative",
                 overflowY: "hidden",
               }}
             >
-              <DeckGLMap
-                id="main-map"
-                context="prioritization"
-                layers={_renderLayers(layerDict, activeLayers, firstRender)}
-                baseLayer={baseLayer}
-                currentFeature={focusFeature}
-                style={{
-                  position: "absolute",
-                  top: "2.5%",
-                  left: "2.5%",
-                  width: "95%",
-                  height: "95%",
-                  overflowY: "hidden",
-                }}
-              ></DeckGLMap>
+              Loading Map...
             </Box>
+          }
+        >
+          <Card
+            sx={{
+              width: "100%",
+              height: "500px",
+              position: "relative",
+            }}
+          >
+            <DeckGLMap
+              id="main-map"
+              context="prioritization"
+              layers={_renderLayers(layerDict, activeLayers, firstRender)}
+              baseLayer={baseLayer}
+              currentFeature={focusFeature}
+              sx={{
+                position: "absolute",
+              }}
+            />
             {subbasinScores.length > 0 && (
               <ColorRampLegend
-                style={{
+                sx={{
                   position: "absolute",
-                  top: "50vh",
-                  left: "80vw",
-                  width: "14vw",
-                  minWidth: "200px",
-                  height: "6%",
-                  border: "1px solid black",
-                  background: "white",
-                  overflow: "hidden",
+                  bottom: "25px",
+                  right: "15px",
+                  width: "200px",
+                  height: "30px",
+                  px: 2,
+                  py: 1,
+                  background: "rgba(255, 255, 255, 0.8)",
+                  borderRadius: 1,
                 }}
               ></ColorRampLegend>
             )}
-          </Suspense>
-          <Box
-            sx={{
-              position: "relative",
-              zIndex: 9,
-              height: "auto",
-              width: "50%",
-            }}
-          >
-            <Card sx={{ backgroundColor: (theme) => theme.palette.grey[100] }}>
-              <CardContent>
-                {subbasinScores.length > 0 ? (
-                  <>
-                    <Button
-                      sx={{ margin: "1rem" }}
-                      variant="contained"
-                      onClick={() => exportScoringResults()}
-                    >
-                      Download Results
-                    </Button>
-                    <DataGrid
-                      sx={{
-                        overflowX: "scroll",
-                        "& .MuiDataGrid-virtualScroller": {
-                          overflowX: "scroll",
-                        },
-                      }}
-                      autoHeight
-                      pageSize={10}
-                      initialState={{
-                        sorting: {
-                          sortModel: [{ field: "score", sort: "desc" }],
-                        },
-                        pagination: { paginationModel: { pageSize: 5 } },
-                      }}
-                      rows={subbasinScores}
-                      columns={[
-                        {
-                          field: "subbasin",
-                          headerName: "Subbasin ID",
-                        },
-                        {
-                          field: "score",
-                          headerName: "Priority",
-                        },
-                      ]}
-                      rowsPerPageOptions={[5, 25, 100]}
-                      // disableSelectionOnClick
-                      getRowId={(row) => row["subbasin"]}
-                      density={"compact"}
-                    />
-                  </>
-                ) : (
-                  <Box>
-                    <Typography variant="body1" align="center">
-                      Submit a set of priority weights to view and download the
-                      relative scores of each subbasin
-                    </Typography>
-                  </Box>
-                )}
-              </CardContent>
-            </Card>
-          </Box>
-        </Grid>
-      </Grid>
-    </>
+          </Card>
+        </Suspense>
+        <Box sx={{ pt: 2 }}>
+          <Card>
+            <CardContent>
+              {subbasinScores.length > 0 ? (
+                <Box sx={{ maxWidth: "300px" }}>
+                  <Button
+                    sx={{ mb: 2 }}
+                    variant="contained"
+                    onClick={() => exportScoringResults()}
+                  >
+                    Download Results
+                  </Button>
+                  <DataGrid
+                    autoHeight
+                    disableColumnMenu
+                    disableMultipleRowSelection={true}
+                    disableRowSelectionOnClick={true}
+                    rowSelection={false}
+                    initialState={{
+                      sorting: {
+                        sortModel: [{ field: "score", sort: "desc" }],
+                      },
+                      pagination: { paginationModel: { pageSize: 25 } },
+                    }}
+                    rows={subbasinScores}
+                    columns={[
+                      {
+                        field: "subbasin",
+                        headerName: "Subbasin ID",
+                        width: 150,
+                      },
+                      {
+                        field: "score",
+                        headerName: "Priority",
+                        width: 150,
+                      },
+                    ]}
+                    rowsPerPageOptions={[5, 25, 100]}
+                    disableSelectionOnClick
+                    getRowId={(row) => row["subbasin"]}
+                    density={"compact"}
+                  />
+                </Box>
+              ) : (
+                <Box>
+                  <Typography variant="body1" align="center">
+                    Submit a set of priority weights to view and download the
+                    relative scores of each subbasin
+                  </Typography>
+                </Box>
+              )}
+            </CardContent>
+          </Card>
+        </Box>
+      </HalfSpan>
+    </TwoColGrid>
   );
 }
 
