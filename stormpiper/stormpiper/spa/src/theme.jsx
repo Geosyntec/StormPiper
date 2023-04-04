@@ -1,4 +1,7 @@
 import { createTheme } from "@mui/material/styles";
+import { ThemeProvider as ThemeProviderMUI, CssBaseline } from "@mui/material";
+
+// https://mui.com/material-ui/customization/default-theme/
 
 export function themeOptions(open, drawerWidth) {
   return {
@@ -9,6 +12,9 @@ export function themeOptions(open, drawerWidth) {
       info: { main: "#4c5760ff" }, // --black-coral: #4c5760ff;
       // add a new color
       neutral: { main: "#eff9f0ff" }, // --mint-cream: #eff9f0ff;
+      background: {
+        default: "#f5f5f5", // #f5f5f5 === theme.palette.grey[100]
+      },
     },
     breakpoints: open
       ? {
@@ -25,3 +31,12 @@ export function themeOptions(open, drawerWidth) {
 }
 
 export const staticTheme = createTheme(themeOptions());
+
+export function ThemeProvider({ theme, children }) {
+  return (
+    <ThemeProviderMUI theme={theme}>
+      <CssBaseline />
+      {children}
+    </ThemeProviderMUI>
+  );
+}

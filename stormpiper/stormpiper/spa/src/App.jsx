@@ -2,11 +2,9 @@ import { useState, useMemo } from "react";
 
 import { Box } from "@mui/material";
 import { createTheme } from "@mui/material";
-import { ThemeProvider } from "@mui/material";
-
 import AuthProvider from "./components/authProvider";
 import Dashboard from "./components/dashboard/dashboard";
-import { themeOptions } from "./theme";
+import { themeOptions, ThemeProvider } from "./theme";
 
 function App({ viewComponent }) {
   const [open, setOpen] = useState(false);
