@@ -37,7 +37,7 @@ const DrawerStyled = styled(MuiDrawer, {
 
 export default function Drawer(props) {
   const [selectedButton, setSelectedButton] = useState("");
-  const buttons = props.buttons;
+  const buttons = props.drawerButtonList;
   return (
     <DrawerStyled
       variant="permanent"
@@ -57,8 +57,7 @@ export default function Drawer(props) {
         </IconButton>
       </Toolbar>
       <List>
-        {Object.keys(buttons).map((b) => {
-          const button = buttons[b];
+        {buttons.map((button) => {
           return (
             <ListItem
               key={button.label}

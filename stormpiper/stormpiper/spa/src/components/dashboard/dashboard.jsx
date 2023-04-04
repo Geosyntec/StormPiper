@@ -1,45 +1,93 @@
-import { useState, useEffect } from "react";
+import { useState, lazy, Suspense } from "react";
 import Box from "@mui/material/Box";
 
-import { api_fetch } from "../../utils/utils";
 import MainBox from "./mainbox";
 import Drawer from "./drawer";
 import AppBar from "./appbar";
+import Landing from "../landing";
 
-const defaultUserProfile = {
-  first_name: "User",
-  email: "email@tacoma.watersheds.com",
-  id: "",
-  role: "",
-};
+const SystemExplorer = lazy(() => import("../systemExplorer"));
+const Prioritization = lazy(() => import("../Prioritization"));
+const EditAllUsers = lazy(() => import("../users/users-edit-all"));
+const EditUser = lazy(() => import("../users/edit_user"));
+const BMPDetailPage = lazy(() => import("../bmp-detail-page/bmp-detail-page"));
+const ScenarioReviewPage = lazy(() =>
+  import("../scenario-module/scenario-page")
+);
+const ScenarioDetailPage = lazy(() =>
+  import("../scenario-module/scenario-detail-page")
+);
+const ScenarioCreatePage = lazy(() =>
+  import("../scenario-module/scenario-create-page")
+);
 
-export default function Dashboard({ viewComponent, ...props }) {
-  const [userProfile, setUserProfile] = useState(defaultUserProfile);
-  const hideDrawer = userProfile.role === "public" || !userProfile.role;
+export default function Dashboard({
+  open,
+  drawerWidth,
+  viewComponent,
+  userProfile,
+  toggleDrawer,
+}) {
+  const [drawerButtonList, setDrawerButtonList] = useState([]);
+  const hideDrawer =
+    userProfile.role === "public" ||
+    !userProfile.role ||
+    drawerButtonList.length === 0;
 
-  useEffect(() => {
-    api_fetch("/api/rest/users/me")
-      .then((res) => {
-        return res.json();
-      })
-      .then((res) => {
-        if (res.detail === "Unauthorized") {
-          //pass
-        } else {
-          console.log("Found user info:", res);
-          setUserProfile({ ...res });
-        }
-      });
-  }, []);
+  function _getViewComponent(viewComponent) {
+    switch (viewComponent) {
+      case "systemExplorer":
+        return (
+          <SystemExplorer
+            setDrawerButtonList={setDrawerButtonList}
+            userProfile={userProfile}
+          />
+        );
+      case "prioritization":
+        return <Prioritization setDrawerButtonList={setDrawerButtonList} />;
+      case "editMe":
+        return <EditUser />;
+      case "editAllUsers":
+        return <EditAllUsers />;
+      case "bmpDetail":
+        return <BMPDetailPage />;
+      case "scenarioDetail":
+        return <ScenarioDetailPage />;
+      case "scenarioReview":
+        return <ScenarioReviewPage />;
+      case "scenarioCreate":
+        return <ScenarioCreatePage setDrawerButtonList={setDrawerButtonList} />;
+      default:
+        return <Landing />;
+    }
+  }
 
   return (
     <Box sx={{ display: "flex" }}>
-      <AppBar hideMenu={hideDrawer} userProfile={userProfile} {...props} />
+      <AppBar
+        hideMenu={hideDrawer}
+        userProfile={userProfile}
+        open={open}
+        drawerWidth={drawerWidth}
+        toggleDrawer={toggleDrawer}
+      />
       {!hideDrawer && (
-        <Drawer buttons={props.buttons} userProfile={userProfile} {...props} />
+        <Drawer
+          drawerButtonList={drawerButtonList}
+          userProfile={userProfile}
+          open={open}
+          drawerWidth={drawerWidth}
+          toggleDrawer={toggleDrawer}
+        />
       )}
-      <MainBox userProfile={userProfile} {...props}>
-        {viewComponent}
+      <MainBox
+        viewComponent={viewComponent}
+        setDrawerButtonList={setDrawerButtonList}
+        userProfile={userProfile}
+      >
+        <Suspense fallback={<>...</>}>
+          {_getViewComponent(viewComponent)}
+        </Suspense>
       </MainBox>
     </Box>
   );

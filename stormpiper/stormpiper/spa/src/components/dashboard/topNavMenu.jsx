@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import List from "@mui/material/List";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -15,11 +15,6 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 const topNavItems = [
   {
-    label: "Home",
-    link: "/app",
-    icon: <HomeRoundedIcon />,
-  },
-  {
     label: "Prioritize Watersheds",
     link: "/app/prioritization",
     icon: <CompareArrowsIcon sx={{ transform: "rotate(90deg)" }} />,
@@ -29,20 +24,30 @@ const topNavItems = [
     link: "/app/map",
     icon: <MapIcon />,
   },
+  // fallback is last
+  {
+    label: "Home",
+    link: "/app",
+    icon: <HomeRoundedIcon />,
+  },
 ];
 
 const getTopNavItemIndexFromRoute = () => {
   const route = window.location.pathname;
   const ix = topNavItems.findIndex((opt) => route.includes(opt.link));
-  console.log("ix", ix);
   return ix;
 };
 
 export default function TopNavMenu(props) {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedIndex, setSelectedIndex] = useState(
-    getTopNavItemIndexFromRoute()
-  );
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  let location = useLocation();
+
+  useEffect(() => {
+    const ix = getTopNavItemIndexFromRoute();
+    setSelectedIndex(ix);
+  }, [location]);
+
   const navigate = useNavigate();
   const open = Boolean(anchorEl);
   const handleClickListItem = (event) => {
