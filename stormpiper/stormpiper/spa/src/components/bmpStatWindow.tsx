@@ -1,8 +1,14 @@
 import { ListAltRounded } from "@mui/icons-material";
 import {
-    Box, Chip, CircularProgress, Paper, Typography
+  Box,
+  Button,
+  Chip,
+  CircularProgress,
+  Paper,
+  Typography,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { api_fetch } from "../utils/utils";
 import { BMPForm } from "./bmpForm";
 
@@ -79,6 +85,7 @@ type specState = {
 
 function BMPStatWindow(props: statWindowProps) {
   let firstRender = useRef(true);
+  const navigate = useNavigate();
   // const classes = useStyles();
 
   const [state, setState] = useState<bmpPanelState>({
@@ -377,7 +384,7 @@ function BMPStatWindow(props: statWindowProps) {
         }}
       >
         <Box>
-          <h4 style={{ color: "white" }}>{props.feature} Facility Details</h4>
+          <h4 style={{ color: "white" }}>{props.feature} Facility Overview</h4>
         </Box>
         <Box sx={{ right: "12%", position: "absolute", cursor: "pointer" }}>
           <h4
@@ -392,12 +399,23 @@ function BMPStatWindow(props: statWindowProps) {
         </Box>
       </Box>
       <Box>
-        <Box>{_renderHeaderList()}</Box>
+        {/* <Box>{_renderHeaderList()}</Box> */}
         {props
           ? state.header != "Design Parameters"
             ? _renderStats()
             : _renderBMPForm(facilityType)
           : null}
+      </Box>
+      <Box sx={{ display: "flex" }}>
+        <Button
+          variant="contained"
+          sx={{ alignSelf: "flex-start", margin: "1rem" }}
+          onClick={() => {
+            navigate("/app/bmp-detail/" + props.feature);
+          }}
+        >
+          View Facility Details
+        </Button>
       </Box>
     </Box>
   ) : (

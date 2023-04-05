@@ -3,6 +3,7 @@ import { Card, Grid } from "@mui/material";
 import { BMPDetailResults } from "./bmp-results";
 import { TwoColGrid, FullSpan, HalfSpan } from "../base/two-col-grid";
 import BMPDetailMap from "./bmp-detail-map";
+import { BMPDetailForm } from "./bmp-detail-form";
 
 export default function BMPDetailPage() {
   return (
@@ -16,14 +17,14 @@ export default function BMPDetailPage() {
                 display: "flex",
                 height: "100%",
                 minHeight: "200px",
-                alignItems: "center",
+                alignItems: "start",
                 justifyContent: "center",
               }}
             >
-              form placeholder
+              <BMPDetailForm />
             </Card>
           </Grid>
-          <Grid item flexGrow={1}>
+          {/* <Grid item flexGrow={1}>
             <Card
               sx={{
                 // padding: 3,
@@ -36,7 +37,7 @@ export default function BMPDetailPage() {
             >
               delin editor placeholder
             </Card>
-          </Grid>
+          </Grid> */}
         </HalfSpan>
         <HalfSpan>
           <Card
@@ -50,6 +51,20 @@ export default function BMPDetailPage() {
             <BMPDetailMap></BMPDetailMap>
           </Card>
         </HalfSpan>
+      </FullSpan>
+      <FullSpan>
+        <Card
+          sx={{
+            // padding: 3,
+            display: "flex",
+            height: "100%",
+            minHeight: "200px",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          delin editor placeholder
+        </Card>
       </FullSpan>
       <FullSpan>
         <BMPDetailResults />

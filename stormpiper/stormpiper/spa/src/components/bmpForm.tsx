@@ -1,11 +1,13 @@
 import {
-    Box, Button, Dialog,
-    DialogActions,
-    FormControlLabel,
-    MenuItem,
-    Switch,
-    TextField,
-    Typography
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  FormControlLabel,
+  MenuItem,
+  Switch,
+  TextField,
+  Typography,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -212,6 +214,7 @@ export function BMPForm(props: formProps) {
       })
       .catch((err) => {
         console.log("Error patching tmnt:");
+        setResultError(true);
         console.log(err);
       });
     return response;
@@ -283,8 +286,9 @@ export function BMPForm(props: formProps) {
               {formField.fieldID === "facility_type" ? (
                 <TextField
                   id="simple-select"
+                  size="small"
                   variant="outlined"
-                  margin="dense"
+                  sx={{ margin: "1rem" }}
                   label={formField.label}
                   select
                   value={props.currentFacility.replace("_simple", "")}
@@ -308,7 +312,8 @@ export function BMPForm(props: formProps) {
               ) : (
                 <TextField
                   variant="outlined"
-                  margin="dense"
+                  size="small"
+                  sx={{ margin: "1rem" }}
                   {...register(formField.fieldID)}
                   type={formField.type}
                   defaultValue={formField.value}
@@ -326,7 +331,7 @@ export function BMPForm(props: formProps) {
       );
       if (props.simpleFields) {
         simpleCheckDiv = (
-          <Box>
+          <Box sx={{ px: "2rem" }}>
             <FormControlLabel
               control={
                 <Switch
@@ -348,8 +353,10 @@ export function BMPForm(props: formProps) {
           {simpleCheckDiv}
           <Box
             sx={{
-              display: "grid",
-              gridTemplateColumns: "repeat(2,1fr)",
+              // display: "grid",
+              // gridTemplateColumns: "repeat(2,2fr)",
+              display: "flex",
+              flexWrap: "wrap",
               padding: "0px 10px",
             }}
           >
@@ -367,7 +374,10 @@ export function BMPForm(props: formProps) {
     }
   }
   return (
-    <>
+    <Box>
+      <Typography variant="h6" sx={{ margin: "1rem" }}>
+        {props.values.altid} Facility Details
+      </Typography>
       <form onSubmit={handleSubmit((data) => _handleSubmit(data))}>
         {_renderFormFields()}
       </form>
@@ -387,6 +397,7 @@ export function BMPForm(props: formProps) {
           <Typography>
             <strong>Submission Error</strong>
           </Typography>
+          <Typography variant="caption">Please try again</Typography>
         </Box>
         <Typography variant="caption" sx={{ padding: "0em 1em" }}>
           {_renderErrorHeader(errorMsg)}
@@ -397,6 +408,6 @@ export function BMPForm(props: formProps) {
           })}
         </ul>
       </Dialog>
-    </>
+    </Box>
   );
 }
