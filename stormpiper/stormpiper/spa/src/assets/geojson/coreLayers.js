@@ -216,7 +216,7 @@ export const activeLocalSWFacility = {
   },
 };
 
-const delineations = {
+export const delineations = {
   layer: GeoJsonLayer,
   props: {
     // data:"https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/21/query?where=1%3D1&outFields=*&returnGeometry=true&f=geojson&outSR=4326",
