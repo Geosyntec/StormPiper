@@ -1,10 +1,16 @@
 import json
+import logging
 from functools import lru_cache
 
 import ee
 import pandas
 
+from stormpiper.core.config import settings
+
 from .ee import FeatureCollection, Image
+
+logging.basicConfig(level=settings.LOGLEVEL)
+logger = logging.getLogger(__name__)
 
 
 def _build_poc_loading_Image(
@@ -104,6 +110,7 @@ def zonal_stats(
 
     poc_dfs = []
     for epoch in ro_bands:
+        logger.info(f"Calculating zonal stats for the {epoch} epoch")
         loadingImage = get_poc_loading_Image(runoff_path, concentration_path, epoch)
         c_band = loadingImage.bandNames().getInfo()
         poc_dct = get_loading_zonal_stats(loadingImage, zones=zones_fc).getInfo()
