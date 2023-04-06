@@ -1,5 +1,4 @@
 import { useEffect, useState, createContext } from "react";
-import { useNavigate } from "react-router-dom";
 import { api_fetch } from "../utils/utils";
 
 const defaultUserProfile = {
@@ -12,7 +11,6 @@ const defaultUserProfile = {
 export const UserProfileContext = createContext(defaultUserProfile);
 
 export default function AuthProvider({ children }) {
-  const navigate = useNavigate();
   const [userProfile, setUserProfile] = useState(defaultUserProfile);
 
   const renderChildren = () => {
@@ -26,10 +24,7 @@ export default function AuthProvider({ children }) {
   useEffect(async () => {
     const res = await api_fetch("/api/rest/users/me");
     const resjson = await res.json();
-    if (resjson.detail === "Unauthorized") {
-      console.log("ya basic");
-      navigate("/app/login");
-    } else {
+    if (resjson?.email) {
       setUserProfile({ ...resjson });
     }
   }, []);
