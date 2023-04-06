@@ -1,4 +1,5 @@
-import { useEffect, useState, cloneElement, Children } from "react";
+import { useEffect, useState, createContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { api_fetch } from "../utils/utils";
 
 const defaultUserProfile = {
@@ -8,13 +9,18 @@ const defaultUserProfile = {
   role: "",
 };
 
+export const UserProfileContext = createContext(defaultUserProfile);
+
 export default function AuthProvider({ children }) {
+  const navigate = useNavigate();
   const [userProfile, setUserProfile] = useState(defaultUserProfile);
 
   const renderChildren = () => {
-    return Children.map(children, (child) => {
-      return cloneElement(child, { userProfile });
-    });
+    return (
+      <UserProfileContext.Provider value={userProfile}>
+        {children}
+      </UserProfileContext.Provider>
+    );
   };
 
   useEffect(async () => {
@@ -22,6 +28,7 @@ export default function AuthProvider({ children }) {
     const resjson = await res.json();
     if (resjson.detail === "Unauthorized") {
       console.log("ya basic");
+      navigate("/app/login");
     } else {
       setUserProfile({ ...resjson });
     }

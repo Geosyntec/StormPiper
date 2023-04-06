@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense, useEffect } from "react";
+import { useState, lazy, Suspense, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
 
 import Box from "@mui/material/Box";
@@ -7,6 +7,7 @@ import MainBox from "./mainbox";
 import Drawer from "./drawer";
 import AppBar from "./appbar";
 import Landing from "../landing";
+import { UserProfileContext } from "../authProvider";
 
 const SystemExplorer = lazy(() => import("../systemExplorer"));
 const Prioritization = lazy(() => import("../Prioritization"));
@@ -27,9 +28,9 @@ export default function Dashboard({
   open,
   drawerWidth,
   viewComponent,
-  userProfile,
   toggleDrawer,
 }) {
+  const userProfile = useContext(UserProfileContext);
   const [drawerButtonList, setDrawerButtonList] = useState([]);
   let location = useLocation();
 

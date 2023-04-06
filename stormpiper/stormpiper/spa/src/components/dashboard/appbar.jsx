@@ -12,6 +12,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 
 import TopNavMenu from "./topNavMenu";
 import UserInfo from "./userInfoMenu";
+import { useContext } from "react";
+import { UserProfileContext } from "../authProvider";
 
 const AppBarStyled = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open" && prop !== "drawerWidth",
@@ -32,14 +34,9 @@ const AppBarStyled = styled(MuiAppBar, {
   }),
 }));
 
-export default function AppBar({
-  open,
-  drawerWidth,
-  toggleDrawer,
-  userProfile,
-  hideMenu,
-}) {
+export default function AppBar({ open, drawerWidth, toggleDrawer, hideMenu }) {
   const navigate = useNavigate();
+  const userProfile = useContext(UserProfileContext);
 
   const isUserLoggedIn = !!userProfile?.role;
   const showNav = isUserLoggedIn && userProfile?.role !== "public";
