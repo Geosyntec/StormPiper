@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, ListItem, Box, Divider, Tooltip } from "@mui/material";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -12,10 +12,12 @@ import CloseIcon from "@mui/icons-material/Close";
 import LogoutIcon from "@mui/icons-material/Logout";
 import GroupIcon from "@mui/icons-material/Group";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import { UserProfileContext } from "../authProvider";
 
 import { api_fetch } from "../../utils/utils";
 
-export default function UserInfo({ userProfile, ...props }) {
+export default function UserInfo({ ...props }) {
+  const userProfile = useContext(UserProfileContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const [verifyButtonDisabled, setVerifyButtonDisabled] = useState(false);
 
