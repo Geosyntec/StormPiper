@@ -9,7 +9,7 @@ sr_cols = [
     k for k in SubbasinResult.__table__.columns.keys() if k not in ["id", "subbasin"]
 ]
 depth_col = "runoff_depth_inches"
-load_cols = [n for n in sr_cols if "_load_" in n]
+load_cols = [n for n in sr_cols if n.endswith("_load_lbs")]
 yield_cols = [n.replace("_load_lbs", "_yield_lbs_per_acre") for n in load_cols]
 conc_cols = [n.replace("_load_lbs", "_conc_mg/l") for n in load_cols]
 

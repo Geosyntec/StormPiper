@@ -99,7 +99,7 @@ LGU_BOUNDARY_FIELDS = orm_fields(LGUBoundary)
 def delete_and_refresh_lgu_boundary_table(*, engine=engine):  # pragma: no cover
     logger.info("Creating lgu_boundary with the overlay rodeo")
     gdf = (
-        spatial.overlay_rodeo_from_database(engine)
+        spatial.overlay_rodeo_from_database(engine)  # type: ignore
         .reset_index(drop=True)
         .assign(id=lambda df: df.index.values + 1)
         .rename_geometry("geom")

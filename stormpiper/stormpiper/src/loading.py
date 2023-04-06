@@ -36,24 +36,24 @@ def compute_loading_zonal_stats(
 ) -> pandas.DataFrame:
     """Calculate land surface loading in metric units."""
 
+    if not login():
+        logger.error("cannot log in to Earth Engine. Aborting loading calculation.")
+        return pandas.DataFrame([])
+
     runoff_path = runoff_path or settings.EE_RUNOFF_PATH
     coc_path = coc_path or settings.EE_COC_PATH
 
-    if login():
-        logger.info("Running zonal stats on earth engine...")
-        zones = lgu_boundary.to_crs(4326).to_json()  # type: ignore
+    logger.info("Running zonal stats on earth engine...")
+    zones = lgu_boundary.to_crs(4326).to_json()  # type: ignore
 
-        # this returns in metric units, L and mcg
-        df_wide = loading.zonal_stats(
-            runoff_path=runoff_path,
-            concentration_path=coc_path,
-            zones=zones,
-            join_id="node_id",
-        )
-        logger.info("Completed zonal stats on earth engine.")
-    else:
-        logger.error("cannot log in to Earth Engine. Aborting loading calculation.")
-        return pandas.DataFrame([])
+    # this returns in metric units, L and mcg
+    df_wide = loading.zonal_stats(
+        runoff_path=runoff_path,
+        concentration_path=coc_path,
+        zones=zones,
+        join_id="node_id",
+    )
+    logger.info("Completed zonal stats on earth engine.")
 
     return df_wide
 
@@ -292,6 +292,55 @@ def load_to_downstream_src_ctrls_from_db(*, engine=engine):
     return df
 
 
+def subbasin_load_generated_summary(
+    lgu_load: pandas.DataFrame, lgu_boundary: pandas.DataFrame
+) -> pandas.DataFrame:
+    subbasin_load_generated = (
+        lgu_load.merge(
+            lgu_boundary[["node_id", "subbasin", "basinname"]], on="node_id", how="left"
+        )
+        .assign(node_id=lambda df: df["subbasin"])
+        .groupby(["node_id", "epoch", "variable", "units"], as_index=False)
+        .sum(numeric_only=True)
+        .pipe(_prep_00_loading_tidy_to_wide)
+        .rename(
+            columns=lambda c: c.replace("_lbs", "_load_lbs_generated").replace(
+                "_cuft", "_volume_cuft_generated"
+            )
+        )
+        .rename(columns={"node_id": "subbasin"})
+    )
+
+    return subbasin_load_generated
+
+
+def subbasin_load_reduced_summary(
+    subbasin_result: pandas.DataFrame,
+) -> pandas.DataFrame:
+    load_cols = [c for c in subbasin_result.columns if c.endswith("_load_lbs")]
+    vol_cols = [c for c in subbasin_result.columns if c.endswith("_volume_cuft")]
+    df = subbasin_result.assign(
+        **{
+            c.replace("_volume_cuft", "_volume_cuft_reduced").replace(
+                "_load_lbs", "_load_lbs_reduced"
+            ): lambda df, col=c: df[col + "_generated"]
+            - df[col]
+            for c in vol_cols + load_cols
+        }
+    ).assign(
+        **{
+            c.replace("_volume_cuft", "_volume_pct_reduced")
+            .replace("_load_lbs", "_load_pct_reduced"): lambda df, col=c: (
+                100 * (df[col + "_reduced"] / df[col + "_generated"])
+            )
+            .round(2)
+            for c in vol_cols + load_cols
+        }
+    )
+
+    return df
+
+
 def subbasin_loading_summary_result(
     load: pandas.DataFrame, load_reduced: pandas.DataFrame
 ) -> pandas.DataFrame:
@@ -314,8 +363,21 @@ def subbasin_loading_summary_result_from_db(*, engine=engine):
     tmnt_source_control_ds_load_reduced = pandas.read_sql(
         "tmnt_source_control_downstream_load_reduced", con=engine
     )
-    df = subbasin_loading_summary_result(
+    subbasin_load_discharged = subbasin_loading_summary_result(
         load=load_to_ds_src_ctrl, load_reduced=tmnt_source_control_ds_load_reduced
     )
+
+    lgu_load = pandas.read_sql("lgu_load", con=engine)
+    lgu_boundary = pandas.read_sql("lgu_boundary", con=engine)
+
+    subbasin_load_generated = subbasin_load_generated_summary(
+        lgu_load=lgu_load, lgu_boundary=lgu_boundary
+    )
+
+    df = subbasin_load_discharged.merge(
+        subbasin_load_generated,
+        on=["subbasin", "epoch"],
+        how="left",
+    ).pipe(subbasin_load_reduced_summary)
 
     return df

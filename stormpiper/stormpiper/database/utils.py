@@ -109,13 +109,23 @@ def _delete_and_replace_db(
     method = getattr(df, method_name, df.to_sql)
 
     index = kwargs.pop("index", False)
+    chunksize = kwargs.pop("chunksize", 5000)
+
+    table_exists = sa.inspect(engine).has_table(table_name)
 
     Session = get_session(engine=engine)
     with engine.begin() as conn:
-        if engine.dialect.has_table(conn, table_name):  # pragma: no branch
+        if table_exists:  # pragma: no branch
             q = sa.text(f'delete from "{table_name}";')
             conn.execute(q)
-        method(table_name, con=conn, if_exists="append", index=index, **kwargs)
+        method(
+            table_name,
+            con=conn,
+            if_exists="append",
+            index=index,
+            chunksize=chunksize,
+            **kwargs,
+        )
 
         # same transaction scope to update the change log
         with Session.begin() as session:  # type: ignore

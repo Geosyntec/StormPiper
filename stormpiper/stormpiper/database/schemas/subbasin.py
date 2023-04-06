@@ -27,7 +27,7 @@ class Subbasin(Base):
     geom = Column(Geometry(srid=settings.TACOMA_EPSG))
 
 
-_result_cols = [
+load_cols = [
     "runoff_volume_cuft",
     "TCu_load_lbs",
     "TN_load_lbs",
@@ -38,6 +38,10 @@ _result_cols = [
     "PYR_load_lbs",
     "DEHP_load_lbs",
 ]
+
+_result_cols = [
+    n + suffix for n in load_cols for suffix in ["", "_generated", "_reduced"]
+] + [n.replace("_lbs", "_pct").replace("_cuft", "_pct") + "_reduced" for n in load_cols]
 
 
 class SubbasinResult(Base):
