@@ -1,4 +1,5 @@
 import { useEffect, useState, createContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { api_fetch } from "../utils/utils";
 
 const defaultUserProfile = {
@@ -12,6 +13,7 @@ export const UserProfileContext = createContext(defaultUserProfile);
 
 export default function AuthProvider({ children }) {
   const [userProfile, setUserProfile] = useState(defaultUserProfile);
+  const navigate = useNavigate();
 
   const renderChildren = () => {
     return (
@@ -26,6 +28,8 @@ export default function AuthProvider({ children }) {
     const resjson = await res.json();
     if (resjson?.email) {
       setUserProfile({ ...resjson });
+    } else {
+      navigate("/app");
     }
   }, []);
 
