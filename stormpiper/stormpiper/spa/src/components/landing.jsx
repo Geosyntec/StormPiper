@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -12,27 +13,50 @@ import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import MapIcon from "@mui/icons-material/Map";
 import TuneIcon from "@mui/icons-material/Tune";
 
-import { FullSpan } from "./base/two-col-grid";
+import { UserProfileContext } from "./authProvider";
 
 function ActionAreaCard({ img, header, content, ...props }) {
   return (
-    <Card sx={{ maxWidth: 345 }} {...props}>
+    <Card
+      sx={{
+        display: "flex-start",
+        alignItems: "stretch",
+        height: "100%",
+        maxWidth: { xs: "100%", md: 345 },
+      }}
+      {...props}
+    >
       <CardActionArea>
-        <Box
-          sx={{
-            pt: 3,
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          {img}
-        </Box>
+        <CardContent>
+          <Box
+            sx={{
+              display: { xs: "flex", md: "block" },
+              alignItems: { md: "center" },
+              verticalAlign: "center",
+            }}
+          >
+            <Box
+              sx={{
+                py: { xs: 0, md: 3 },
+                pr: { xs: 2, md: 0 },
+                display: { xs: "inline-block", md: "flex" },
+                justifyContent: { xs: "left", md: "center" },
+              }}
+            >
+              {img}
+            </Box>
+            <Box>
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="div"
+                color="primary"
+              >
+                {header}
+              </Typography>
+            </Box>
+          </Box>
 
-        <CardContent sx={{ height: 250 }}>
-          <Typography gutterBottom variant="h5" component="div">
-            {header}
-          </Typography>
           <Typography variant="body2" color="text.secondary">
             {content}
           </Typography>
@@ -44,102 +68,116 @@ function ActionAreaCard({ img, header, content, ...props }) {
 
 export default function Landing() {
   const navigate = useNavigate();
+  const userProfile = useContext(UserProfileContext);
+
+  const allowNav = userProfile?.role && userProfile.role !== "public";
 
   return (
-    <FullSpan>
-      <Box>
-        <Box
-          position={"relative"}
-          sx={{
-            backgroundColor: (theme) => theme.palette.grey[900],
-            backgroundImage: "url('./assets/img/hero-stormdrain.jpg')",
-
-            backgroundPosition: "center",
-            backgroundPositionY: "-100px",
-            alignSelf: "center",
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
-            backgroundAttachment: "fixed",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+    <Box
+      position={"relative"}
+      sx={{
+        backgroundColor: (theme) => theme.palette.grey[900],
+        backgroundImage: "url('/assets/img/hero-stormdrain.jpg')",
+        backgroundPosition: "center",
+        backgroundPositionY: "-100px",
+        alignSelf: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        backgroundAttachment: "fixed",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Box py={15}>
+        <Typography
+          variant="h2"
+          color="white"
+          textAlign="center"
+          fontWeight="bold"
         >
-          <Box py={15}>
-            <Typography
-              variant="h2"
-              color="white"
-              textAlign="center"
-              fontWeight="bold"
-            >
-              Tacoma Watershed Insights
-            </Typography>
-            <Typography variant="h4" color="white" textAlign="center" mt={5}>
-              Plan stormwater solutions for a cleaner, healthier Tacoma
-            </Typography>
-          </Box>
+          Tacoma Watershed Insights
+        </Typography>
+        <Typography variant="h4" color="white" textAlign="center" mt={5}>
+          Plan stormwater solutions for a cleaner, healthier Tacoma
+        </Typography>
+      </Box>
 
-          <Box
-            position={"absolute"}
-            sx={{
-              width: "100%",
-              height: "100%",
-              top: "85%",
-            }}
-          >
-            <Grid
-              container
-              direction={{ xs: "column", lg: "row" }}
-              rowSpacing={6}
-              columnSpacing={6}
-              alignItems={"center"}
-              justifyContent={"center"}
-            >
-              <Grid item>
-                <ActionAreaCard
-                  onClick={() => navigate("/app/map")}
-                  img={<MapIcon fontSize="large" />}
-                  header={"Map Explorer"}
-                  content={`
+      <Box
+        position={"absolute"}
+        sx={{
+          width: "90%",
+          top: "85%",
+          left: "5%",
+        }}
+      >
+        <Grid
+          container
+          rowSpacing={6}
+          columnSpacing={6}
+          alignItems="stretch"
+          justifyContent="center"
+        >
+          <Grid item xs={12} md={4}>
+            <ActionAreaCard
+              onClick={() => allowNav && navigate("/app/map")}
+              img={
+                <MapIcon
+                  color="primary"
+                  fontSize="large"
+                  sx={{ transform: "scale(1.5)" }}
+                />
+              }
+              header={"Map Explorer"}
+              content={`
                     Evaluate BMP performance, pinpoint potential retrofit
                     sites and, identify viable approaches to treat stormwater
                     and improve Tacoma’s receiving waters.
                     `}
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <ActionAreaCard
+              onClick={() => allowNav && navigate("/app/prioritization")}
+              img={
+                <CompareArrowsIcon
+                  fontSize="large"
+                  color="primary"
+                  sx={{
+                    transform: "rotate(90deg) scale(1.5)",
+                  }}
                 />
-              </Grid>
-              <Grid item>
-                <ActionAreaCard
-                  onClick={() => navigate("/app/prioritization")}
-                  img={
-                    <CompareArrowsIcon
-                      fontSize="large"
-                      sx={{ transform: "rotate(90deg)" }}
-                    />
-                  }
-                  header={"Cost-Effective Decision Making"}
-                  content={`
+              }
+              header={"Decision Support"}
+              content={`
                   Prioritize investments and allocate resources more effectively
                   through an understanding of life-cycle costs and project benefits.
-
-                    `}
+                  `}
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <ActionAreaCard
+              onClick={() => allowNav && navigate("/app/scenario")}
+              img={
+                <TuneIcon
+                  fontSize="large"
+                  color="primary"
+                  sx={{
+                    transform: "scale(1.5)",
+                  }}
                 />
-              </Grid>
-              <Grid item>
-                <ActionAreaCard
-                  onClick={() => navigate("/app/scenario")}
-                  img={<TuneIcon fontSize="large" />}
-                  header={"Incorporating Community Needs"}
-                  content={`
+              }
+              header={"Scenario Builder"}
+              content={`
                   Ensure decisions help improve watershed conditions for all
                   community members. Help promote equitable and sustainable
                   outcomes in stormwater project and enhance neighborhoods for everybody.
 
                     `}
-                />
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
+            />
+          </Grid>
+        </Grid>
+        <Box height="150px" />
       </Box>
-    </FullSpan>
+    </Box>
   );
 }

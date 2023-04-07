@@ -19,18 +19,24 @@ const AppBarStyled = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open" && prop !== "drawerWidth",
 })(({ theme, open, drawerWidth }) => ({
   zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(["width", "margin"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
+  transition: theme.transitions.create(
+    ["width", "margin-left", "margin-right"],
+    {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }
+  ),
   backgroundColor: theme.palette.primary.main,
   ...(open && {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
+    transition: theme.transitions.create(
+      ["width", "margin-left", "margin-right"],
+      {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+      }
+    ),
   }),
 }));
 
@@ -78,10 +84,10 @@ export default function AppBar({ open, drawerWidth, toggleDrawer, hideMenu }) {
           </Tooltip>
         </Button>
 
-        {showNav ? <TopNavMenu sx={{ mt: 0.5 }} /> : <></>}
+        {showNav && <TopNavMenu sx={{ mt: 0.5 }} />}
         <Box sx={{ flexGrow: 1 }} />
         {isUserLoggedIn ? (
-          <UserInfo userProfile={userProfile} />
+          <UserInfo />
         ) : (
           <Tooltip title="Login">
             <Button
@@ -89,7 +95,7 @@ export default function AppBar({ open, drawerWidth, toggleDrawer, hideMenu }) {
               onClick={() => navigate("/app/login")}
             >
               <AccountCircle />
-              &nbsp;Log in
+              &nbsp;Login
             </Button>
           </Tooltip>
         )}

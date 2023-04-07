@@ -4,20 +4,26 @@ import Box from "@mui/material/Box";
 const MainBoxStyled = styled(Box, {
   shouldForwardProp: (prop) => prop !== "open" && prop !== "drawerWidth",
 })(({ theme, open, drawerWidth }) => ({
-  transition: theme.transitions.create(["width", "margin"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
+  transition: theme.transitions.create(
+    ["width", "margin-left", "margin-right"],
+    {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }
+  ),
   backgroundColor: (theme) =>
     theme.palette.mode === "light"
       ? theme.palette.grey[100]
       : theme.palette.grey[900],
   ...(open && {
     width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
+    transition: theme.transitions.create(
+      ["width", "margin-left", "margin-right"],
+      {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+      }
+    ),
   }),
 }));
 
@@ -32,8 +38,7 @@ export default function MainBox(props) {
       drawerWidth={props.drawerWidth}
       sx={{
         flexGrow: 1,
-        mt: 8,
-        backgroundColor: theme.palette.grey[50],
+        mt: { xs: 6, sm: 8 },
         minHeight: "calc(100vh - 66px)",
       }}
     >
