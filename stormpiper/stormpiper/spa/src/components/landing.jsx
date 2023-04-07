@@ -15,6 +15,8 @@ import TuneIcon from "@mui/icons-material/Tune";
 
 import { UserProfileContext } from "./authProvider";
 
+import heroUrl from "../assets/img/hero-stormdrain.jpg";
+
 function ActionAreaCard({ img, header, content, ...props }) {
   return (
     <Card
@@ -77,7 +79,7 @@ export default function Landing() {
       position={"relative"}
       sx={{
         backgroundColor: (theme) => theme.palette.grey[900],
-        backgroundImage: "url('/assets/img/hero-stormdrain.jpg')",
+        backgroundImage: `url(${heroUrl})`,
         backgroundPosition: "center",
         backgroundPositionY: "-100px",
         alignSelf: "center",

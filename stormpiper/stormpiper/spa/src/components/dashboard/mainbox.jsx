@@ -1,4 +1,4 @@
-import { styled, useTheme } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 
 const MainBoxStyled = styled(Box, {
@@ -11,10 +11,6 @@ const MainBoxStyled = styled(Box, {
       duration: theme.transitions.duration.leavingScreen,
     }
   ),
-  backgroundColor: (theme) =>
-    theme.palette.mode === "light"
-      ? theme.palette.grey[100]
-      : theme.palette.grey[900],
   ...(open && {
     width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(
@@ -27,22 +23,19 @@ const MainBoxStyled = styled(Box, {
   }),
 }));
 
-export default function MainBox(props) {
-  const theme = useTheme();
-
+export default function MainBox({ children, ...props }) {
   return (
     <MainBoxStyled
       component="main"
       id="main"
-      open={props.open}
-      drawerWidth={props.drawerWidth}
       sx={{
         flexGrow: 1,
         mt: { xs: 6, sm: 8 },
         minHeight: "calc(100vh - 66px)",
       }}
+      {...props}
     >
-      {props?.children}
+      {children}
     </MainBoxStyled>
   );
 }

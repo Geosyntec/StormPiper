@@ -1,5 +1,5 @@
 import { Suspense, useEffect, useState, useRef, lazy } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
   Card,
   CardActions,
@@ -136,6 +136,7 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
   const classes = panelStyles;
   let params = useParams();
   let navigate = useNavigate();
+  let location = useLocation();
 
   let firstRender = useRef(true);
 
@@ -226,8 +227,10 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
   ];
 
   useEffect(() => {
-    setDrawerButtonList(buttonList);
-  }, []);
+    setTimeout(() => {
+      setDrawerButtonList(buttonList);
+    }, 50);
+  }, [location]);
 
   function _toggleLayer(layerName, updateFunction = setActiveLayers) {
     var currentActiveLayers = { ...activeLayers };

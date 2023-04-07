@@ -7,7 +7,6 @@ import MainBox from "./mainbox";
 import Drawer from "./drawer";
 import AppBar from "./appbar";
 import Landing from "../landing";
-import { UserProfileContext } from "../authProvider";
 
 const SystemExplorer = lazy(() => import("../systemExplorer"));
 const Prioritization = lazy(() => import("../Prioritization"));
@@ -29,42 +28,34 @@ export default function Dashboard({
   drawerWidth,
   viewComponent,
   toggleDrawer,
+  closeDrawer,
 }) {
-  const userProfile = useContext(UserProfileContext);
   const [drawerButtonList, setDrawerButtonList] = useState([]);
   let location = useLocation();
 
   useEffect(() => {
     setDrawerButtonList([]);
-  }, [location]);
+    closeDrawer();
+  }, [location.pathname]);
 
-  const hideDrawer =
-    userProfile.role === "public" ||
-    !userProfile.role ||
-    drawerButtonList.length === 0;
+  const hideDrawer = drawerButtonList.length === 0;
 
-  function _getViewComponent(viewComponent) {
-    switch (viewComponent) {
-      case "systemExplorer":
-        return <SystemExplorer setDrawerButtonList={setDrawerButtonList} />;
-      case "prioritization":
-        return <Prioritization setDrawerButtonList={setDrawerButtonList} />;
-      case "editMe":
-        return <EditUser />;
-      case "editAllUsers":
-        return <EditAllUsers />;
-      case "bmpDetail":
-        return <BMPDetailPage />;
-      case "scenarioDetail":
-        return <ScenarioDetailPage />;
-      case "scenarioReview":
-        return <ScenarioReviewPage />;
-      case "scenarioCreate":
-        return <ScenarioCreatePage setDrawerButtonList={setDrawerButtonList} />;
-      default:
-        return <Landing />;
-    }
-  }
+  const viewComponentRegistry = {
+    prioritization: (
+      <Prioritization setDrawerButtonList={setDrawerButtonList} />
+    ),
+    systemExplorer: (
+      <SystemExplorer setDrawerButtonList={setDrawerButtonList} />
+    ),
+    editMe: <EditUser />,
+    editAllUsers: <EditAllUsers />,
+    bmpDetail: <BMPDetailPage />,
+    scenarioDetail: <ScenarioDetailPage />,
+    scenarioReview: <ScenarioReviewPage />,
+    scenarioCreate: (
+      <ScenarioCreatePage setDrawerButtonList={setDrawerButtonList} />
+    ),
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -74,20 +65,16 @@ export default function Dashboard({
         drawerWidth={drawerWidth}
         toggleDrawer={toggleDrawer}
       />
-      {!hideDrawer && (
-        <Drawer
-          drawerButtonList={drawerButtonList}
-          open={open}
-          drawerWidth={drawerWidth}
-          toggleDrawer={toggleDrawer}
-        />
-      )}
-      <MainBox
-        viewComponent={viewComponent}
-        setDrawerButtonList={setDrawerButtonList}
-      >
+      <Drawer
+        drawerButtonList={drawerButtonList}
+        open={open}
+        drawerWidth={drawerWidth}
+        toggleDrawer={toggleDrawer}
+        sx={{ display: hideDrawer && "none" }}
+      />
+      <MainBox open={open} drawerWidth={drawerWidth}>
         <Suspense fallback={<>...</>}>
-          {_getViewComponent(viewComponent)}
+          {viewComponentRegistry?.[viewComponent] || <Landing />}
         </Suspense>
       </MainBox>
     </Box>
