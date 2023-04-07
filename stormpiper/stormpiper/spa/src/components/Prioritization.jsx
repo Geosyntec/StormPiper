@@ -1,6 +1,6 @@
 import { Suspense, useState, useRef, useEffect, lazy } from "react";
 import { useForm } from "react-hook-form";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -70,20 +70,24 @@ function Prioritization({ setDrawerButtonList }) {
 
   const buttonList = [
     {
-      label: "About Prioritization",
+      label: "About",
       icon: <InfoRoundedIcon />,
       clickHandler: () => setPriorityWorkflowState("info"),
     },
     {
-      label: "Define Criteria Weights",
+      label: "Define Weights",
       icon: <GridOnRoundedIcon />,
       clickHandler: () => setPriorityWorkflowState("scoring"),
     },
   ];
 
+  const location = useLocation();
+
   useEffect(() => {
-    setDrawerButtonList(buttonList);
-  }, []);
+    setTimeout(() => {
+      setDrawerButtonList(buttonList);
+    }, 50);
+  }, [location]);
 
   const formFields = [
     {

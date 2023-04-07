@@ -14,7 +14,6 @@ const DrawerStyled = styled(MuiDrawer, {
 })(({ theme, open, drawerWidth }) => ({
   "& .MuiDrawer-paper": {
     position: "relative",
-    whiteSpace: "nowrap",
     width: drawerWidth,
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
@@ -22,27 +21,30 @@ const DrawerStyled = styled(MuiDrawer, {
     }),
     boxSizing: "border-box",
     ...(!open && {
-      overflowX: "hidden",
       transition: theme.transitions.create("width", {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       }),
       width: theme.spacing(7),
-      [theme.breakpoints.up("sm")]: {
-        width: theme.spacing(8),
-      },
     }),
   },
 }));
 
-export default function Drawer(props) {
+export default function Drawer({
+  open,
+  toggleDrawer,
+  drawerWidth,
+  drawerButtonList,
+  ...props
+}) {
   const [selectedButton, setSelectedButton] = useState("");
-  const buttons = props.drawerButtonList;
+  const buttons = drawerButtonList;
   return (
     <DrawerStyled
       variant="permanent"
-      open={props.open}
-      drawerWidth={props.drawerWidth}
+      open={open}
+      drawerWidth={drawerWidth}
+      {...props}
     >
       <Toolbar
         sx={{
@@ -52,7 +54,7 @@ export default function Drawer(props) {
           px: [1],
         }}
       >
-        <IconButton onClick={props.toggleDrawer}>
+        <IconButton onClick={toggleDrawer}>
           <ChevronLeftIcon />
         </IconButton>
       </Toolbar>
@@ -61,14 +63,16 @@ export default function Drawer(props) {
           return (
             <ListItem
               key={button.label}
+              disableGutters
               sx={{
-                justifyContent: props.open ? "flex-start" : "center",
+                justifyContent: open ? "flex-start" : "center",
+                py: 1,
               }}
             >
               <WorkflowModal
                 workflowTitle={button.label}
                 iconComponent={button.icon}
-                displayTitle={props.open}
+                displayTitle={open}
                 clickHandler={() => {
                   console.log("button clicked: ", button);
                   setSelectedButton(button.label);

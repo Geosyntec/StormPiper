@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
 import { createTheme } from "@mui/material";
 import AuthProvider from "./components/authProvider";
 import Dashboard from "./components/dashboard/dashboard";
@@ -23,6 +23,7 @@ function App({ viewComponent }) {
         <AuthProvider>
           <Dashboard
             toggleDrawer={toggleOpen}
+            closeDrawer={() => setOpen(false)}
             open={open}
             drawerWidth={drawerWidth}
             viewComponent={viewComponent}
