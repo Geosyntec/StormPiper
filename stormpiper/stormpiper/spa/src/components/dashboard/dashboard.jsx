@@ -46,12 +46,7 @@ export default function Dashboard({
   function _getViewComponent(viewComponent) {
     switch (viewComponent) {
       case "systemExplorer":
-        return (
-          <SystemExplorer
-            setDrawerButtonList={setDrawerButtonList}
-            userProfile={userProfile}
-          />
-        );
+        return <SystemExplorer setDrawerButtonList={setDrawerButtonList} />;
       case "prioritization":
         return <Prioritization setDrawerButtonList={setDrawerButtonList} />;
       case "editMe":
@@ -75,7 +70,6 @@ export default function Dashboard({
     <Box sx={{ display: "flex" }}>
       <AppBar
         hideMenu={hideDrawer}
-        userProfile={userProfile}
         open={open}
         drawerWidth={drawerWidth}
         toggleDrawer={toggleDrawer}
@@ -83,7 +77,6 @@ export default function Dashboard({
       {!hideDrawer && (
         <Drawer
           drawerButtonList={drawerButtonList}
-          userProfile={userProfile}
           open={open}
           drawerWidth={drawerWidth}
           toggleDrawer={toggleDrawer}
@@ -92,7 +85,6 @@ export default function Dashboard({
       <MainBox
         viewComponent={viewComponent}
         setDrawerButtonList={setDrawerButtonList}
-        userProfile={userProfile}
       >
         <Suspense fallback={<>...</>}>
           {_getViewComponent(viewComponent)}
