@@ -2,7 +2,7 @@ import asyncio
 import base64
 import logging
 
-from starlette.concurrency import run_in_threadpool
+from fastapi.concurrency import run_in_threadpool
 from tenacity import retry
 from tenacity.after import after_log
 from tenacity.before import before_log
