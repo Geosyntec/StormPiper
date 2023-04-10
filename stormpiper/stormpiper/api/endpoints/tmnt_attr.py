@@ -1,6 +1,7 @@
 from typing import Any
 
 from fastapi import APIRouter, Body, Depends, Path, Query, Request, status
+from fastapi.concurrency import run_in_threadpool
 from fastapi.exceptions import HTTPException
 from nereid.api.api_v1.models.treatment_facility_models import STRUCTURAL_FACILITY_TYPE
 from pydantic import BaseModel
@@ -12,7 +13,7 @@ from stormpiper.database.schemas import tmnt_view as tmnt
 from stormpiper.models.tmnt_attr import TMNTFacilityPatch, TMNTUpdate
 from stormpiper.models.tmnt_attr_validator import tmnt_attr_validator
 from stormpiper.models.tmnt_view import TMNTView
-from stormpiper.src.npv import get_npv_settings_db
+from stormpiper.src.npv import get_pv_settings_db
 
 from ..depends import AsyncSessionDB, Editor
 
@@ -46,24 +47,16 @@ async def validate_tmnt_update(
     | STRUCTURAL_FACILITY_TYPE = Body(
         ...,
         example={  # example required since default example is empty dict
-            "facility_type": "string",
-            "hsg": "string",
-            "design_storm_depth_inches": 0,
-            "tributary_area_tc_min": 0,
-            "total_volume_cuft": 0,
-            "area_sqft": 0,
-            "inf_rate_inhr": 0,
-            "retention_volume_cuft": 0,
-            "media_filtration_rate_inhr": 0,
-            "minimum_retention_pct_override": 0,
-            "treatment_rate_cfs": 0,
-            "depth_ft": 0,
-            "captured_pct": 0,
-            "retained_pct": 0,
-            "capital_cost": 0,
-            "om_cost_per_yr": 0,
-            "lifespan_yrs": 0,
-            "replacement_cost": 0,
+            "facility_type": "bioretention_with_partial_infiltration_simple",
+            "captured_pct": 80,
+            "retained_pct": 20,
+            "capital_cost": 450_000,  # $
+            "capital_cost_basis_year": 2023,
+            "om_cost_per_yr": 6000,  # $
+            "om_cost_basis_year": 2023,
+            "install_year": 2027,  # future project
+            "replacement_cost": 450000 / 2,  # incurred at end of lifespan.
+            "lifespan_yrs": 15,
         },
     ),
 ) -> TMNTUpdate:
@@ -73,11 +66,12 @@ async def validate_tmnt_update(
     context = request.state.context
 
     try:
-        npv_global_settings = await get_npv_settings_db(db=db)
-        return tmnt_attr_validator(
+        pv_global_settings = await get_pv_settings_db(db=db)
+        return await run_in_threadpool(
+            tmnt_attr_validator,
             tmnt_patch=tmnt_patch,
             context=context,
-            npv_global_settings=npv_global_settings,
+            pv_global_settings=pv_global_settings,
         )
 
     except Exception as e:  # pragma no cover

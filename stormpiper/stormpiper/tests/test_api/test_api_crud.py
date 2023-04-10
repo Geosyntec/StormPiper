@@ -1,6 +1,14 @@
 import pytest
 
+from stormpiper.core.config import default_global_cost_settings
+
 from .. import utils as test_utils
+
+discount_rate = [
+    dct["value"]
+    for dct in default_global_cost_settings
+    if dct["variable"] == "discount_rate"
+].pop()
 
 
 @pytest.mark.parametrize(
@@ -12,9 +20,14 @@ from .. import utils as test_utils
             {"capital_cost": None},
         ),
         (
-            "/api/rest/global_setting/discount_rate",  # <- this one requires admin rights
+            "/api/rest/global_setting/test",  # <- this one requires admin rights
+            {"value": "testing"},
+            {"value": "test"},
+        ),
+        (
+            "/api/rest/global_setting/cost/discount_rate",  # <- this one requires admin rights
             {"value": "0.08"},
-            {"value": "0.05"},
+            {"value": discount_rate},
         ),
         (
             "/api/rest/tmnt_source_control/1",
@@ -60,7 +73,7 @@ def test_crud_patch(client, route, blob, cleanup_blob):
     [
         (
             "/api/rest/global_setting",  # <- this one requires admin rights
-            {"variable": "test", "value": "test"},
+            {"variable": "test2", "value": "test"},
             "variable",
         ),
         (
