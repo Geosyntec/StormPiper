@@ -28,11 +28,19 @@ class TMNTView(BaseORM):
     retained_pct: None | float
 
     # cost attrs
-    capital_cost: None | float
-    om_cost_per_yr: None | float
-    lifespan_yrs: None | float
-    replacement_cost: None | float
-    net_present_value: None | float
+    capital_cost: float | None
+    capital_cost_basis_year: int | float | None
+    om_cost_per_yr: float | None
+    om_cost_basis_year: int | float | None
+    install_year: int | float | None
+    replacement_cost: float | None
+    lifespan_yrs: float | int | None
+
+    # cost results
+    present_value_capital_cost: float | None
+    present_value_om_cost: float | None
+    present_value_total_cost: float | None
+    present_value_om_cost_table: list[dict] | None
 
     class Config:
         orm_mode = True

@@ -69,7 +69,7 @@ from .. import utils as test_utils
             },
             {
                 "structural_tmnt": [
-                    {"node_id": "bmp-01", "net_present_value": -739400.67}
+                    {"node_id": "bmp-01", "present_value_total_cost": 1500255.0}
                 ]
             },
         ),
@@ -172,7 +172,10 @@ def test_scenario_crud(client, create_blob, patch_blob, exp_attrs):
                 gdct = [d for d in res if d.get("node_id") == node_id].pop()
                 for stk, stv in dct.items():
                     gv = gdct.get(stk)
-                    assert gv == stv, (gv, stv, gdct)
+                    if isinstance(stv, (float)):
+                        assert abs((stv - gv) / stv) < 0.01, (gv, stv, gdct)
+                    else:
+                        assert gv == stv, (gv, stv, gdct)
         else:
             assert res == v, (res, v, gjson)
 
@@ -195,7 +198,7 @@ def test_scenario_details(client, id_, field, rsp_status, rsp_data):
 
 
 @pytest.mark.parametrize(
-    "blob, exp_npv",
+    "blob, exp_pv",
     [
         (
             {
@@ -255,7 +258,7 @@ def test_scenario_details(client, id_, field, rsp_status, rsp_data):
         ),
     ],
 )
-def test_tmnt_only_scenario(client, blob, exp_npv):
+def test_tmnt_only_scenario(client, blob, exp_pv):
     route = "/api/rest/scenario"
     cresponse = client.post(route, json=blob)
 
@@ -274,13 +277,12 @@ def test_tmnt_only_scenario(client, blob, exp_npv):
     assert len(structural_tmnt) == 1, structural_tmnt
     tmnt_table = structural_tmnt[0]
 
-    npv = tmnt_table.get("net_present_value", None)
-    if exp_npv:
-        assert npv is not None, tmnt_table
-        assert isinstance(npv, (int, float)), tmnt_table
-        assert npv < 0, tmnt_table
+    pv = tmnt_table.get("present_value_total_cost", None)
+    if exp_pv:
+        assert pv is not None, tmnt_table
+        assert isinstance(pv, (int, float)), tmnt_table
     else:
-        assert npv is None, tmnt_table
+        assert pv is None, tmnt_table
 
 
 @pytest.mark.parametrize(

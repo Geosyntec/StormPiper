@@ -2,6 +2,7 @@ import logging
 from typing import Any
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Query, Request, status
+from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import ORJSONResponse
 from pydantic import BaseModel
 from sqlalchemy import select
@@ -22,7 +23,7 @@ from stormpiper.models.scenario import (
     ScenarioUpdate,
 )
 from stormpiper.models.scenario_validator import scenario_validator
-from stormpiper.src.npv import get_npv_settings_db
+from stormpiper.src.npv import get_pv_settings_db
 
 from ..depends import AsyncSessionDB, Editor
 
@@ -46,9 +47,12 @@ async def validate_scenario(
     scenario["updated_by"] = user.email
 
     try:
-        npv_global_settings = await get_npv_settings_db(db=db)
-        return scenario_validator(
-            scenario=scenario, context=context, npv_global_settings=npv_global_settings
+        pv_global_settings = await get_pv_settings_db(db=db)
+        return await run_in_threadpool(
+            scenario_validator,
+            scenario=scenario,
+            context=context,
+            pv_global_settings=pv_global_settings,
         )
 
     except Exception as e:  # pragma: no cover
@@ -100,7 +104,7 @@ async def get_scenario_details(*, id: str, field: str, db: AsyncSessionDB):
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT, name="scenario:delete")
 async def delete_scenario(id: str, db: AsyncSessionDB):
     try:
-        attr = await crud.scenario.remove(db=db, id=id)
+        _ = await crud.scenario.remove(db=db, id=id)
     except Exception as e:  # pragma: no cover
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,

@@ -10,3 +10,12 @@ class GlobalSetting(Base, MutableTrackedTable):
 
     variable = Column(String, primary_key=True)
     value = Column(String)
+
+
+class GlobalCostSetting(Base, MutableTrackedTable):
+    """This table creates a set of user editable global settings"""
+
+    __tablename__ = "global_cost_setting"
+
+    variable = Column(String, primary_key=True)
+    value = Column(String)

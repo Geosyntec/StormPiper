@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 def main() -> None:
     startup.create_initial_users()
-    startup.create_default_globals(engine)
+    startup.create_default_cost_globals(engine)
 
 
 if __name__ == "__main__":
