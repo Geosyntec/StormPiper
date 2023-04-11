@@ -18,12 +18,7 @@ export function HalfSpan({ children, ...props }) {
 }
 
 export const DrawerAwareGrid = styled(Grid)(({ theme }) => {
-  console.log("styled theme", theme.breakpoints);
   return {
-    [theme.breakpoints.up("xs")]: {
-      width: "450px",
-      minWidth: "450px",
-    },
     [theme.breakpoints.up("sm")]: {
       // width: `calc(100% - 56px)`,
       width: "600px",
@@ -48,10 +43,11 @@ export function TwoColGrid({ children, ...props }) {
       justifyContent="flex-start"
       alignItems="flex-start"
       sx={{
-        padding: 3,
+        px: { sm: 3 },
+        py: 3,
       }}
     >
-      <Grid container item spacing={3} {...props}>
+      <Grid container item spacing={{ xs: 0, sm: 3 }} {...props}>
         {/*Create items with different breakpoints */}
         {/*For example,This item will be 12 units wide on extra small screens */}
         {children}
