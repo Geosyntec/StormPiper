@@ -4,9 +4,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import { DataGrid, GridActionsCellItem, GridRowModes } from "@mui/x-data-grid";
 import { useState, useEffect } from "react";
+import { Box, Card, Tooltip } from "@mui/material";
 import { api_fetch } from "../../utils/utils";
 import { FullSpan, TwoColGrid } from "../base/two-col-grid";
-import { Grid } from "@mui/material";
 import { ConfirmDeleteModal } from "./confirm-delete-modal";
 
 // https://mui.com/x/react-data-grid/editing/#FullFeaturedCrudGrid.js
@@ -139,19 +139,11 @@ export default function Users() {
         { label: "System Admin", value: "admin" },
       ],
     },
-    {
-      field: "first_name",
-      headerName: "First name",
-    },
-    {
-      field: "last_name",
-      headerName: "Last name",
-    },
+
     {
       field: "fullName",
       headerName: "Full name",
-      description: "This column has a value getter and is not sortable.",
-      sortable: false,
+      minWidth: 200,
       valueGetter: (params) =>
         `${params.row.first_name || ""} ${params.row.last_name || ""}`,
     },
@@ -172,35 +164,43 @@ export default function Users() {
 
         if (isInEditMode) {
           return [
-            <GridActionsCellItem
-              icon={<SaveIcon />}
-              label="Save"
-              onClick={handleSaveClick(id)}
-            />,
-            <GridActionsCellItem
-              icon={<CancelIcon />}
-              label="Cancel"
-              className="textPrimary"
-              onClick={handleCancelClick(id)}
-              color="inherit"
-            />,
+            <Tooltip title="Save Entry">
+              <GridActionsCellItem
+                icon={<SaveIcon />}
+                label="Save"
+                onClick={handleSaveClick(id)}
+              />
+            </Tooltip>,
+            <Tooltip title="Cancel">
+              <GridActionsCellItem
+                icon={<CancelIcon />}
+                label="Cancel"
+                className="textPrimary"
+                onClick={handleCancelClick(id)}
+                color="inherit"
+              />
+            </Tooltip>,
           ];
         }
 
         return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Edit"
-            className="textPrimary"
-            onClick={handleEditClick(id)}
-            color="inherit"
-          />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={handleDeleteClick(id)}
-            color="inherit"
-          />,
+          <Tooltip title="Edit Entry">
+            <GridActionsCellItem
+              icon={<EditIcon />}
+              label="Edit"
+              className="textPrimary"
+              onClick={handleEditClick(id)}
+              color="inherit"
+            />
+          </Tooltip>,
+          <Tooltip title="Delete Entry">
+            <GridActionsCellItem
+              icon={<DeleteIcon />}
+              label="Delete"
+              onClick={handleDeleteClick(id)}
+              color="inherit"
+            />
+          </Tooltip>,
         ];
       },
     },
@@ -223,34 +223,38 @@ export default function Users() {
         handleConfirmDelete={handleConfirmDelete}
         email={`${getRowData(currentUserId)?.email || ""}`}
       />
-      <TwoColGrid
-        sx={{
-          "& .actions": {
-            color: "text.secondary",
-          },
-          "& .textPrimary": {
-            color: "text.primary",
-          },
-        }}
-      >
-        <FullSpan sx={{ height: "600px" }}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            columnVisibilityModel={{
-              // Hide columns listed here, the other columns will remain visible
-              id: false,
-            }}
-            editMode="row"
-            rowModesModel={rowModesModel}
-            onRowModesModelChange={handleRowModesModelChange}
-            onRowEditStart={handleRowEditStart}
-            onRowEditStop={handleRowEditStop}
-            processRowUpdate={processRowUpdate}
-            onProcessRowUpdateError={(error) => console.error(error)}
-          />
-        </FullSpan>
-      </TwoColGrid>
+      <Box py={3} display="flex" justifyContent="center">
+        <TwoColGrid
+          sx={{
+            "& .actions": {
+              color: "text.secondary",
+            },
+            "& .textPrimary": {
+              color: "text.primary",
+            },
+          }}
+        >
+          <FullSpan sx={{ height: "600px", maxWidth: "100vw" }}>
+            <Card>
+              <DataGrid
+                rows={rows}
+                columns={columns}
+                columnVisibilityModel={{
+                  // Hide columns listed here, the other columns will remain visible
+                  id: false,
+                }}
+                editMode="row"
+                rowModesModel={rowModesModel}
+                onRowModesModelChange={handleRowModesModelChange}
+                onRowEditStart={handleRowEditStart}
+                onRowEditStop={handleRowEditStop}
+                processRowUpdate={processRowUpdate}
+                onProcessRowUpdateError={(error) => console.error(error)}
+              />
+            </Card>
+          </FullSpan>
+        </TwoColGrid>
+      </Box>
     </>
   );
 }
