@@ -81,14 +81,10 @@ export default function EditUser() {
   function _renderFormFields() {
     let fieldDiv = Object.values(fields).map((formField) => {
       return (
-        <Box
-          sx={{
-            mt: 4,
-          }}
-          key={formField.name}
-        >
+        <Box key={formField.name}>
           <TextField
             fullWidth
+            margin="normal"
             {...register(formField.name, { ...formField })}
             label={formField.label}
             type={formField?.type ?? "text"}
@@ -210,18 +206,11 @@ export default function EditUser() {
   ];
 
   return (
-    <Box>
-      <Card>
-        <CardContent
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
+    <Box display="flex" justifyContent="center" py={3}>
+      <Card sx={{ p: 2, width: { xs: "100%", sm: 400 } }}>
+        <CardContent>
           {/* TODO: check text and variant */}
-          <Typography align="center" variant="h4">
-            {" "}
+          <Typography align="center" variant="h5">
             Review and Edit User Information
           </Typography>
           {!userdata ? (
@@ -229,7 +218,6 @@ export default function EditUser() {
           ) : (
             // TODO: add loading spinner
             <Box
-              sx={{ width: { xs: "100%", sm: "60ch" } }}
               component="form"
               noValidate
               autoComplete="off"
