@@ -9,7 +9,7 @@ export default function AuthChecker({
   useNav,
   children,
 }) {
-  const [isBlocked, setIsBlocked] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(true);
   const userProfile = useContext(UserProfileContext);
   const navigate = useNavigate();
 
@@ -18,16 +18,21 @@ export default function AuthChecker({
   const _useNav = useNav || false; // default to false
 
   useEffect(() => {
+    if (!userProfile?.role) return;
     if (
-      _disallowedRoles.includes(userProfile.role) ||
-      !_allowedRoles.includes(userProfile.role)
+      (_disallowedRoles.length &&
+        _disallowedRoles.includes(userProfile.role)) ||
+      (_allowedRoles.length && !_allowedRoles.includes(userProfile.role))
     ) {
       if (_useNav) {
         navigate("/app");
-      } else setIsBlocked(true);
+        return;
+      } else return;
+    } else {
+      setIsBlocked(false);
     }
-  }, [children]);
+  }, [children, userProfile]);
 
-  if (isBlocked) return <></>;
+  if (isBlocked) return null;
   return <>{children}</>;
 }
