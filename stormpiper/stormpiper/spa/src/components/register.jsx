@@ -64,15 +64,14 @@ export default function Register() {
   function _renderFormFields() {
     let fieldBox = Object.values(fields).map((formField) => {
       return (
-        <Box key={formField.name} sx={{ width: "300px", my: 1 }}>
+        <Box key={formField.name} width={300}>
           {
             <TextField
               {...register(formField.name, { ...formField })}
               label={formField.label}
               type={formField.type}
               required={formField.required}
-              margin="dense"
-              size="small"
+              margin="normal"
               fullWidth
             />
           }

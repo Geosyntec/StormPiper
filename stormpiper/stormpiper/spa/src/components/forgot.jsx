@@ -30,7 +30,7 @@ export default function Forgot() {
   function _renderFormFields() {
     let fieldDiv = Object.values(fields).map((formField) => {
       return (
-        <Box key={formField.name}>
+        <Box key={formField.name} width={300}>
           {
             <TextField
               {...register(formField.name, { ...formField })}
@@ -38,6 +38,7 @@ export default function Forgot() {
               type={formField.type}
               required={formField.required}
               fullWidth
+              margin="normal"
             />
           }
           {errors[formField.name] && (

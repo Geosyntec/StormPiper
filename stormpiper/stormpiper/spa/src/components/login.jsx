@@ -34,7 +34,7 @@ export default function Login() {
   function _renderFormFields() {
     let fieldDiv = Object.values(fields).map((formField) => {
       return (
-        <Box key={formField.fieldID} sx={{ width: "300" }}>
+        <Box key={formField.fieldID} width={300}>
           {
             <TextField
               {...register(formField.fieldID)}
@@ -42,7 +42,7 @@ export default function Login() {
               type={formField.type}
               defaultValue={formField.value}
               required={formField.required}
-              margin="dense"
+              margin="normal"
               fullWidth
             />
           }

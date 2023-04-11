@@ -81,7 +81,7 @@ export default function Landing() {
         backgroundColor: (theme) => theme.palette.grey[900],
         backgroundImage: `url(${heroUrl})`,
         backgroundPosition: "center",
-        backgroundPositionY: "-100px",
+        backgroundPositionY: { sm: "-100px" },
         alignSelf: "center",
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
@@ -105,8 +105,8 @@ export default function Landing() {
       </Box>
 
       <Box
-        position={"absolute"}
         sx={{
+          position: "absolute",
           width: "90%",
           top: "85%",
           left: "5%",

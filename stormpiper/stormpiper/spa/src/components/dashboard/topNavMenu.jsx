@@ -77,7 +77,17 @@ export default function TopNavMenu(props) {
             aria-expanded={open ? "true" : undefined}
             onClick={handleClickListItem}
           >
-            <ListItemText primary={topNavItems[selectedIndex].label} />
+            <ListItemText
+              primary={topNavItems[selectedIndex].label}
+              primaryTypographyProps={{
+                variant: "subtitle2",
+                style: {
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                },
+              }}
+            />
             <KeyboardArrowDownIcon />
           </ListItemButton>
         </Tooltip>
