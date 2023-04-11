@@ -76,10 +76,10 @@ passlib==1.7.4
 Pillow==9.5.0
 Pint==0.19.2
 prompt-toolkit==3.0.38
-protobuf==4.23.0
-psycopg2-binary==2.9.6
-pyasn1==0.5.0
-pyasn1-modules==0.3.0
+protobuf==4.22.1
+psycopg2
+pyasn1==0.4.8
+pyasn1-modules==0.2.8
 pycparser==2.21
 pydantic==1.10.7
 pydot==1.4.2

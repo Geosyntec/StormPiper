@@ -16,6 +16,7 @@ RUN npm run build
 
 FROM python:3.11.3-slim-bullseye as core-runtime
 RUN apt-get update -y \
+    && apt-get install -y --no-install-recommends gcc g++ unixodbc-dev libpq-dev libspatialindex-dev libgdal-dev \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /stormpiper
 ENV PYTHONPATH=/stormpiper
@@ -34,6 +35,7 @@ RUN chmod +x /start.sh /start-pod.sh /start-reload.sh /start-test-container.sh
 
 FROM python:3.11.3-bullseye as base-builder
 RUN apt-get update -y \
+    && apt-get install -y --no-install-recommends gcc g++ unixodbc-dev libpq-dev libspatialindex-dev libgdal-dev \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean \
     && pip install -U pip wheel setuptools
