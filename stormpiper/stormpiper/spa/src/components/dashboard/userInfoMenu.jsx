@@ -12,9 +12,11 @@ import CloseIcon from "@mui/icons-material/Close";
 import LogoutIcon from "@mui/icons-material/Logout";
 import GroupIcon from "@mui/icons-material/Group";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { UserProfileContext } from "../authProvider";
 
 import { api_fetch } from "../../utils/utils";
+import AuthChecker from "../authChecker";
 
 export default function UserInfo({ ...props }) {
   const userProfile = useContext(UserProfileContext);
@@ -108,16 +110,30 @@ export default function UserInfo({ ...props }) {
           <ListItemIcon>
             <AccountBoxIcon />
           </ListItemIcon>
-          Edit Profile
+          Profile
         </MenuItem>
-        {["admin", "user_admin"].includes(userProfile.role) && (
-          <MenuItem onClick={() => navigate("/app/manage-users")}>
-            <ListItemIcon>
-              <GroupIcon />
-            </ListItemIcon>
-            Manage All Profiles
-          </MenuItem>
-        )}
+        <AuthChecker allowedRoles={["admin", "user_admin"]}>
+          {[
+            <MenuItem
+              key={"manage-users"}
+              onClick={() => navigate("/app/manage-users")}
+            >
+              <ListItemIcon>
+                <GroupIcon />
+              </ListItemIcon>
+              Manage Users
+            </MenuItem>,
+            <MenuItem
+              key={"settings"}
+              onClick={() => navigate("/app/settings")}
+            >
+              <ListItemIcon>
+                <SettingsIcon />
+              </ListItemIcon>
+              Settings
+            </MenuItem>,
+          ]}
+        </AuthChecker>
         <MenuItem onClick={_postLogout}>
           <ListItemIcon>
             <LogoutIcon />

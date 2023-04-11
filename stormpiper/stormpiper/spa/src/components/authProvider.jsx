@@ -15,14 +15,6 @@ export default function AuthProvider({ children }) {
   const [userProfile, setUserProfile] = useState(defaultUserProfile);
   const navigate = useNavigate();
 
-  const renderChildren = () => {
-    return (
-      <UserProfileContext.Provider value={userProfile}>
-        {children}
-      </UserProfileContext.Provider>
-    );
-  };
-
   useEffect(async () => {
     const res = await api_fetch("/api/rest/users/me");
     const resjson = await res.json();
@@ -33,5 +25,9 @@ export default function AuthProvider({ children }) {
     }
   }, []);
 
-  return renderChildren();
+  return (
+    <UserProfileContext.Provider value={userProfile}>
+      {children}
+    </UserProfileContext.Provider>
+  );
 }
