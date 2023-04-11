@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense, useEffect, useContext } from "react";
+import { useState, lazy, Suspense, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 import Box from "@mui/material/Box";
@@ -21,6 +21,9 @@ const ScenarioDetailPage = lazy(() =>
 );
 const ScenarioCreatePage = lazy(() =>
   import("../scenario-module/scenario-create-page")
+);
+const EditGlobalSettings = lazy(() =>
+  import("../global-settings/edit-settings-page")
 );
 
 export default function Dashboard({
@@ -55,6 +58,7 @@ export default function Dashboard({
     scenarioCreate: (
       <ScenarioCreatePage setDrawerButtonList={setDrawerButtonList} />
     ),
+    editGlobalSettings: <EditGlobalSettings />,
   };
 
   return (
@@ -73,7 +77,7 @@ export default function Dashboard({
         sx={{ display: hideDrawer && "none" }}
       />
       <MainBox open={open} drawerWidth={drawerWidth}>
-        <Suspense fallback={<>...</>}>
+        <Suspense fallback={<></>}>
           {viewComponentRegistry?.[viewComponent] || <Landing />}
         </Suspense>
       </MainBox>

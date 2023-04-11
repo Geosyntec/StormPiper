@@ -60,6 +60,10 @@ ReactDOM.render(
           path="/app/scenario/:id"
           element={<App viewComponent="scenarioDetail" />}
         ></Route>
+        <Route
+          path="/app/settings"
+          element={<App viewComponent="editGlobalSettings" />}
+        ></Route>
       </Routes>
     </BrowserRouter>
   </StrictMode>,
