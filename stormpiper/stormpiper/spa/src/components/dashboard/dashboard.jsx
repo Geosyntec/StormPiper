@@ -7,6 +7,7 @@ import MainBox from "./mainbox";
 import Drawer from "./drawer";
 import AppBar from "./appbar";
 import Landing from "../landing";
+import AuthChecker from "../authChecker";
 
 const SystemExplorer = lazy(() => import("../systemExplorer"));
 const Prioritization = lazy(() => import("../Prioritization"));
@@ -45,20 +46,46 @@ export default function Dashboard({
 
   const viewComponentRegistry = {
     prioritization: (
-      <Prioritization setDrawerButtonList={setDrawerButtonList} />
+      <AuthChecker useNav={true} disallowedRoles={["public"]}>
+        <Prioritization setDrawerButtonList={setDrawerButtonList} />
+      </AuthChecker>
     ),
     systemExplorer: (
-      <SystemExplorer setDrawerButtonList={setDrawerButtonList} />
+      <AuthChecker useNav={true} disallowedRoles={["public"]}>
+        <SystemExplorer setDrawerButtonList={setDrawerButtonList} />
+      </AuthChecker>
     ),
     editMe: <EditUser />,
-    editAllUsers: <EditAllUsers />,
-    bmpDetail: <BMPDetailPage />,
-    scenarioDetail: <ScenarioDetailPage />,
-    scenarioReview: <ScenarioReviewPage />,
-    scenarioCreate: (
-      <ScenarioCreatePage setDrawerButtonList={setDrawerButtonList} />
+    editAllUsers: (
+      <AuthChecker useNav={true} allowedRoles={["user_admin", "admin"]}>
+        <EditAllUsers />
+      </AuthChecker>
     ),
-    editGlobalSettings: <EditGlobalSettings />,
+    bmpDetail: (
+      <AuthChecker useNav={true} disallowedRoles={["public"]}>
+        <BMPDetailPage />
+      </AuthChecker>
+    ),
+    scenarioDetail: (
+      <AuthChecker useNav={true} disallowedRoles={["public"]}>
+        <ScenarioDetailPage />
+      </AuthChecker>
+    ),
+    scenarioReview: (
+      <AuthChecker useNav={true} disallowedRoles={["public"]}>
+        <ScenarioReviewPage />
+      </AuthChecker>
+    ),
+    scenarioCreate: (
+      <AuthChecker useNav={true} disallowedRoles={["public"]}>
+        <ScenarioCreatePage setDrawerButtonList={setDrawerButtonList} />
+      </AuthChecker>
+    ),
+    editGlobalSettings: (
+      <AuthChecker useNav={true} allowedRoles={["user_admin", "admin"]}>
+        <EditGlobalSettings />
+      </AuthChecker>
+    ),
   };
 
   return (
