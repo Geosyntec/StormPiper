@@ -32,7 +32,7 @@ async def get_cost_global(
 ):
     attr = await crud.global_cost_setting.get(db=db, id=variable)
 
-    if not attr:
+    if not attr:  # pragma: no cover
         raise HTTPException(
             status_code=404, detail=f"Record not found for variable={variable}"
         )
@@ -93,7 +93,7 @@ async def get_global(
 ):
     attr = await crud.global_setting.get(db=db, id=variable)
 
-    if not attr:
+    if not attr:  # pragma: no cover
         raise HTTPException(
             status_code=404, detail=f"Record not found for variable={variable}"
         )
@@ -165,7 +165,7 @@ async def delete_global_setting(
     db: AsyncSessionDB,
 ):
     try:
-        attr = await crud.global_setting.remove(db=db, id=variable)
+        _ = await crud.global_setting.remove(db=db, id=variable)
     except Exception as e:  # pragma: no cover
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
