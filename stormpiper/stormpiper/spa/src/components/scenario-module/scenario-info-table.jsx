@@ -4,9 +4,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import Box from "@mui/material/Box";
 import { DataGrid, GridActionsCellItem, GridRowModes } from "@mui/x-data-grid";
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Link, Modal, Typography } from "@mui/material";
+import { Button, Link, Modal, Typography, Tooltip } from "@mui/material";
 import { api_fetch } from "../../utils/utils";
 
 // https://mui.com/x/react-data-grid/row-height/#dynamic-row-height
@@ -215,35 +215,43 @@ export function ScenarioInfoTable() {
 
         if (isInEditMode) {
           return [
-            <GridActionsCellItem
-              icon={<SaveIcon />}
-              label="Save"
-              onClick={handleSaveClick(id)}
-            />,
-            <GridActionsCellItem
-              icon={<CancelIcon />}
-              label="Cancel"
-              className="textPrimary"
-              onClick={handleCancelClick(id)}
-              color="inherit"
-            />,
+            <Tooltip title="Save Entry">
+              <GridActionsCellItem
+                icon={<SaveIcon />}
+                label="Save"
+                onClick={handleSaveClick(id)}
+              />
+            </Tooltip>,
+            <Tooltip title="Cancel">
+              <GridActionsCellItem
+                icon={<CancelIcon />}
+                label="Cancel"
+                className="textPrimary"
+                onClick={handleCancelClick(id)}
+                color="inherit"
+              />
+            </Tooltip>,
           ];
         }
 
         return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Edit"
-            className="textPrimary"
-            onClick={handleEditClick(id)}
-            color="inherit"
-          />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={handleDeleteClick(id)}
-            color="inherit"
-          />,
+          <Tooltip title="Edit Entry">
+            <GridActionsCellItem
+              icon={<EditIcon />}
+              label="Edit"
+              className="textPrimary"
+              onClick={handleEditClick(id)}
+              color="inherit"
+            />
+          </Tooltip>,
+          <Tooltip title="Delete Entry">
+            <GridActionsCellItem
+              icon={<DeleteIcon />}
+              label="Delete"
+              onClick={handleDeleteClick(id)}
+              color="inherit"
+            />
+          </Tooltip>,
         ];
       },
     },
