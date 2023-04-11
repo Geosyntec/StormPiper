@@ -147,6 +147,7 @@ def test_crud_create_and_delete(client, route, blob, idvar):
         "/api/rest/tmnt_attr",
         "/api/rest/tmnt_delineation",
         "/api/rest/global_setting",
+        "/api/rest/global_setting/cost",
     ],
 )
 def test_crud_get_all(admin_client, route):

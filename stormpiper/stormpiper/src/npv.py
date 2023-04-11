@@ -2,7 +2,6 @@ import json
 from typing import Any
 
 import numpy
-import numpy_financial as nf
 import pandas
 from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -21,7 +20,7 @@ def compute_bmp_npv_deprecated(
     discount_rate: float,  # globals
     planning_horizon_yrs: float,  # globals
     replacement_cost: float | None = None,  # default is zero
-) -> tuple[float, list]:
+) -> tuple[float, list]:  # pragma: no cover
     # planning_horizon_yrs = 50 # years
     # discount_rate = 0.05 # avg interest rate 0.08 - 0.03 for inflation
 
@@ -29,6 +28,8 @@ def compute_bmp_npv_deprecated(
     # om_cost_per_yr = 6000  # $
     # replacement_cost = capital_cost / 2  # incurred at end of lifespan. refurbishment cost
     # lifespan_yrs = 15
+
+    raise DeprecationWarning()
 
     costs = numpy.zeros(int(planning_horizon_yrs))
     costs -= om_cost_per_yr
@@ -43,7 +44,7 @@ def compute_bmp_npv_deprecated(
         ix = [i for i, _ in enumerate(costs) if i % int(lifespan_yrs) == 0 and i > 0]
         costs[ix] = -replacement_cost  # assume no OM these years, so we overwrite
 
-    net_present_value = nf.npv(discount_rate, costs)
+    # net_present_value = nf.npv(discount_rate, costs)
 
     return round(net_present_value, 2), list(costs.round(2))
 
