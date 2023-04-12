@@ -12,7 +12,7 @@ from fastapi.templating import Jinja2Templates
 from ratelimit import RateLimitMiddleware, Rule
 from ratelimit.backends.redis import RedisBackend
 from redis.asyncio import StrictRedis
-from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
+from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware
 
 from stormpiper.api import api_router, rpc_router
 from stormpiper.api.docs import get_swagger_ui_html
@@ -23,6 +23,9 @@ from stormpiper.core.config import settings
 from stormpiper.core.context import get_context
 from stormpiper.earth_engine import ee_continuous_login
 from stormpiper.site import site_router
+
+# from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
+
 
 ss_router = ss.create_router()
 
@@ -82,11 +85,11 @@ def create_app(
         allow_methods=["GET", "OPTIONS", "POST", "PATCH", "DELETE"],
         allow_headers=["*"],
     )
-    if "prod" in _settings.ENVIRONMENT.lower():
-        app.add_middleware(
-            ProxyHeadersMiddleware, trusted_hosts=_settings.TRUSTED_HOSTS
-        )
-        # app.add_middleware(HTTPSRedirectMiddleware)
+    if "deploy" in _settings.ENVIRONMENT.lower():
+        # app.add_middleware(
+        #     ProxyHeadersMiddleware, trusted_hosts=_settings.TRUSTED_HOSTS
+        # )
+        app.add_middleware(HTTPSRedirectMiddleware)
 
     app.add_middleware(
         RateLimitMiddleware,
@@ -106,12 +109,10 @@ def create_app(
     @app.get("/ping", name="ping")
     async def ping(
         request: Request,
-        user: ss.users.CurrentUserOrNone,
     ) -> dict:
         msg = {
             "message": "welcome home.",
             "version": _settings.VERSION,
-            "user": user,
             "redirect_url_path_for": request.scope["router"].url_path_for(
                 "login:get_login"
             ),
