@@ -113,6 +113,7 @@ def create_app(
         msg = {
             "message": "welcome home.",
             "version": _settings.VERSION,
+            "environment": _settings.ENVIRONMENT,
             "redirect_url_path_for": request.scope["router"].url_path_for(
                 "login:get_login"
             ),
