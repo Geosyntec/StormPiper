@@ -1,0 +1,29 @@
+name: Health Check
+
+on:
+  workflow_run:
+    workflows: ["Deploy to dev", "Deploy to production"]
+    types:
+      - completed
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Check Deployment
+        env:
+          STP_EMAIL_API_KEY: ${{ secrets.STP_EMAIL_API_KEY }}
+          STP_EMAIL_API_SECRET: ${{ secrets.STP_EMAIL_API_SECRET }}
+          STP_EMAIL_SEND_URL: ${{ secrets.STP_EMAIL_SEND_URL }}
+          STP_MAINTAINER_EMAIL_LIST: ${{ secrets.STP_MAINTAINER_EMAIL_LIST }}
+        run: |-
+          echo "Checking Deployment to development Application"
+          sleep 15m
+          bash ./scripts/health_check.sh

@@ -46,14 +46,3 @@ jobs:
         run: |-
           echo "Deploying to development Application"
           kubectl rollout restart deploy --selector=app=stormpiper-dev
-
-      - name: Check Deployment
-        env:
-          STP_EMAIL_API_KEY: ${{ secrets.STP_EMAIL_API_KEY }}
-          STP_EMAIL_API_SECRET: ${{ secrets.STP_EMAIL_API_SECRET }}
-          STP_EMAIL_SEND_URL: ${{ secrets.STP_EMAIL_SEND_URL }}
-          STP_MAINTAINER_EMAIL_LIST: ${{ secrets.STP_MAINTAINER_EMAIL_LIST }}
-        run: |-
-          echo "Checking Deployment to development Application"
-          sleep 15m
-          bash ./scripts/health_check.sh
