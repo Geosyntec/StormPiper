@@ -9,11 +9,21 @@ spec:
     - "dev.tacomawatersheds.com"
 
 ---
+apiVersion: networking.gke.io/v1beta1
+kind: FrontendConfig
+metadata:
+  name: frontend-config
+spec:
+  redirectToHttps:
+    enabled: true
+
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: basic-ingress
   annotations:
+    networking.gke.io/v1beta1.FrontendConfig: frontend-config
     kubernetes.io/ingress.global-static-ip-name: "traefik-ip"
     networking.gke.io/managed-certificates: managed-cert
     kubernetes.io/ingress.class: "gce"
@@ -69,7 +79,7 @@ spec:
 #             port:
 #               number: 80
 
-          
+
 
 
 
