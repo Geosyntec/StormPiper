@@ -6,10 +6,10 @@ commonLabels:
 images:
   - name: gcr.io/tacoma-app/stormpiper-pod
     newName: gcr.io/tacoma-app/stormpiper-pod
-    newTag: d-02
+    newTag: latest
   - name: gcr.io/tacoma-app/bg_worker
     newName: gcr.io/tacoma-app/bg_worker
-    newTag: d-01
+    newTag: latest
   - name: gcr.io/tacoma-app/redis
     newName: gcr.io/tacoma-app/redis
-    newTag: d-01
+    newTag: latest
