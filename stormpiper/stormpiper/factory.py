@@ -12,7 +12,6 @@ from fastapi.templating import Jinja2Templates
 from ratelimit import RateLimitMiddleware, Rule
 from ratelimit.backends.redis import RedisBackend
 from redis.asyncio import StrictRedis
-from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware
 
 from stormpiper.api import api_router, rpc_router
 from stormpiper.api.docs import get_swagger_ui_html
@@ -24,6 +23,7 @@ from stormpiper.core.context import get_context
 from stormpiper.earth_engine import ee_continuous_login
 from stormpiper.site import site_router
 
+# from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware
 # from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 
@@ -89,7 +89,8 @@ def create_app(
         # app.add_middleware(
         #     ProxyHeadersMiddleware, trusted_hosts=_settings.TRUSTED_HOSTS
         # )
-        app.add_middleware(HTTPSRedirectMiddleware)
+        # app.add_middleware(HTTPSRedirectMiddleware)
+        pass
 
     app.add_middleware(
         RateLimitMiddleware,
