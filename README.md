@@ -11,7 +11,7 @@
 2. build & activate an environment
 
     ```shell
-    conda create -n stormpiper python=3.8
+    conda create -n stormpiper python=3.11
     conda activate stormpiper
     ```
 
