@@ -1,5 +1,4 @@
 resources:
-  # - ../crd
   - ../prod
   - ../dev
-  - ../traefik
+  - ../ingress
