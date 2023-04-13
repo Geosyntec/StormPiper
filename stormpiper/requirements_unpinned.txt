@@ -30,7 +30,7 @@ networkx
 
 scipy
 numpy
-pandas
+pandas<2.0.0
 matplotlib
 
 passlib[bcrypt]
