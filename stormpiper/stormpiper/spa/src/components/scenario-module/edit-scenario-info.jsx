@@ -175,68 +175,54 @@ export function EditScenarioBasics({ data }) {
   ];
 
   return (
-    <Box>
-      <Card>
-        <CardContent
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
+    <Box sx={{ width: "90%" }}>
+      {/* TODO: check text and variant */}
+      <Typography align="center" variant="h5">
+        Basic Scenario Information
+      </Typography>
+      {!data ? (
+        <Box>loading...</Box>
+      ) : (
+        // TODO: add loading spinner
+        <Box
+          sx={{ width: "100%" }}
+          component="form"
+          noValidate
+          autoComplete="off"
+          onSubmit={handleSubmit(_handleSubmit)}
         >
-          {/* TODO: check text and variant */}
-          <Typography align="center" variant="h5">
-            Basic Scenario Information
-          </Typography>
-          {!data ? (
-            <Box>loading...</Box>
-          ) : (
-            // TODO: add loading spinner
-            <Box
-              sx={{ width: "100%" }}
-              component="form"
-              noValidate
-              autoComplete="off"
-              onSubmit={handleSubmit(_handleSubmit)}
-            >
-              {_renderFormFields()}
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "flex-end",
-                  flexDirection: "column",
-                  mt: 4,
-                }}
-              >
-                <Button variant="contained" color="primary" type="submit">
-                  Submit
-                </Button>
-                <Box>
-                  {!error && !success && (
-                    <Typography variant="caption" align="center">
-                      &nbsp;
-                    </Typography>
-                  )}
-                  {error && (
-                    <Typography variant="caption" color="error" align="center">
-                      Edits not stored.
-                    </Typography>
-                  )}
-                  {success && (
-                    <Typography
-                      variant="caption"
-                      color="primary"
-                      align="center"
-                    >
-                      Success
-                    </Typography>
-                  )}
-                </Box>
-              </Box>
+          {_renderFormFields()}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "flex-end",
+              flexDirection: "column",
+              mt: 4,
+            }}
+          >
+            <Button variant="contained" color="primary" type="submit">
+              Submit
+            </Button>
+            <Box>
+              {!error && !success && (
+                <Typography variant="caption" align="center">
+                  &nbsp;
+                </Typography>
+              )}
+              {error && (
+                <Typography variant="caption" color="error" align="center">
+                  Edits not stored.
+                </Typography>
+              )}
+              {success && (
+                <Typography variant="caption" color="primary" align="center">
+                  Success
+                </Typography>
+              )}
             </Box>
-          )}
-        </CardContent>
-      </Card>
+          </Box>
+        </Box>
+      )}
     </Box>
   );
 }

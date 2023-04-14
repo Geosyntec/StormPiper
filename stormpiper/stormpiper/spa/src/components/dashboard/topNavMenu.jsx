@@ -12,6 +12,7 @@ import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import MapIcon from "@mui/icons-material/Map";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import HubIcon from "@mui/icons-material/Hub";
 
 const topNavItems = [
   {
@@ -23,6 +24,11 @@ const topNavItems = [
     label: "Map Explorer",
     link: "/app/map",
     icon: <MapIcon />,
+  },
+  {
+    label: "Scenario Designer",
+    link: "/app/create-scenario",
+    icon: <HubIcon />,
   },
   // fallback is last
   {
