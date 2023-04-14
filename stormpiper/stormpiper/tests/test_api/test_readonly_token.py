@@ -9,6 +9,7 @@ import pytest
         "/api/rest/subbasin/token/",
         "/api/rest/tmnt_facility/token/",
         "/api/rest/tmnt_delineation/token/",
+        "/api/rest/results/token/",
     ],
 )
 def test_get_many_data_with_readonly_token(
@@ -33,6 +34,7 @@ def test_get_many_data_with_readonly_token(
         "/api/rest/tmnt_facility/SWFA-100018/token/{token}",
         "/api/rest/tmnt_delineation/SWFC-100067/token/{token}",
         "/api/rest/tmnt_delineation/SWFC-100067/token/{token}?f=geojson",
+        "/api/rest/results/SWFA-100018/token/{token}",
     ],
 )
 def test_get_data_with_readonly_token(public_client, readonly_token, route):

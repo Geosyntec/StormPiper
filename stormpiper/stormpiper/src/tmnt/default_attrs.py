@@ -109,7 +109,7 @@ def update_tmnt_attributes(engine, overwrite=False):
         if not df.empty:
             subs = geopandas.read_postgis("subbasin", con=engine)
             df = (
-                df.sjoin(subs, how="left")
+                df.sjoin(subs, how="left")  # type: ignore
                 .reindex(
                     columns=[
                         "altid",
