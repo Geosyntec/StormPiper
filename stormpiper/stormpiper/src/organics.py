@@ -35,7 +35,9 @@ def add_virtual_pocs_to_tidy_load_summary(
     return df
 
 
-def add_virtual_pocs_to_wide_load_summary(results):
+def add_virtual_pocs_to_wide_load_summary(
+    results: pandas.DataFrame,
+) -> pandas.DataFrame:
     tss_cols = [c for c in results.columns if "tss" in c.lower()]
 
     for poc in VIRTUAL_POCS:

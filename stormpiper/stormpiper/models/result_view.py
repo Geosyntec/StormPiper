@@ -47,3 +47,8 @@ Epoch = StrEnum(
         "2080s": "2080s",
     },
 )
+
+NType = StrEnum(
+    "NType",
+    {"land_surface": "land_surface", "tmnt_facility": "tmnt_facility"},
+)

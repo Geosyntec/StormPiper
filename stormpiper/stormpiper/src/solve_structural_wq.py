@@ -92,12 +92,22 @@ def solve_wq(
     )
 
     _r = response_dict["results"] + response_dict["leaf_results"]
-    result = json.loads(
-        add_virtual_pocs_to_wide_load_summary(pandas.DataFrame(_r))
+    _r_df = (
+        pandas.DataFrame(_r)
+        .drop(columns=["source", "ntype"], errors="ignore")
+        .merge(
+            edge_list[["source", "ntype"]],
+            right_on="source",
+            left_on="node_id",
+            how="left",
+        )
+        .assign(node_type=lambda df: df["ntype"])
+        .pipe(add_virtual_pocs_to_wide_load_summary)
         .fillna(value=pandas.NA)
         .replace({pandas.NA: None})
-        .to_json(orient="records")
     )
+
+    result = json.loads(_r_df.to_json(orient="records"))
 
     res_df = pandas.DataFrame(
         [
@@ -147,8 +157,6 @@ def solve_wq_epochs(
             tmnt_facilities=tmnt_facilities_df,
             context=context,
         ).assign(epoch=epoch)
-
-        # TODO: compute virtual pollutant values (sediment-bound organics)
 
         results_per_epoch_dfs.append(res_df)
 

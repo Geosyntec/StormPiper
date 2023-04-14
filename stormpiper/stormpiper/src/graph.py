@@ -12,7 +12,7 @@ def build_edge_list(lgu_boundary, tmnt_v: None | pandas.DataFrame):
 
     if tmnt_v is not None:
         tmnt_to_subbasin = (
-            tmnt_v.assign(ntype="tmnt_structural")
+            tmnt_v.assign(ntype="tmnt_facility")
             .assign(source=lambda df: df["node_id"])
             .assign(target=lambda df: "SB_" + df["subbasin"])
         )
