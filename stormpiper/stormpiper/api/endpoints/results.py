@@ -25,7 +25,7 @@ router = APIRouter()
 )
 async def get_all_results(
     db: AsyncSessionDB,
-    node_type: NType | None,  # type: ignore
+    node_type: NType | None = None,  # type: ignore
     limit: int | None = Query(int(1e6)),
     offset: int | None = Query(0),
     epoch: Epoch = Query("1980s", example="1980s"),  # type: ignore
@@ -69,7 +69,7 @@ async def get_result_is_dirty(db: AsyncSessionDB):
 async def get_result(
     db: AsyncSessionDB,
     node_id: str = Path(..., title="node id or altid", example="SWFA-100002"),
-    epoch: Epoch = Query(Epoch.all, example="1980s"),  # type: ignore
+    epoch: Epoch = Query("1980s", example="1980s"),  # type: ignore
 ):
     q = select(results.ResultBlob).where(results.ResultBlob.node_id == node_id)
 
