@@ -6,6 +6,7 @@ import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useCallback } from "react";
 import debounce from "lodash.debounce";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoiYWNhbmctZ3MiLCJhIjoiY2w0NGl1YWwyMDE0YzNpb2hhbzN3dzcxdiJ9.3V1BdATyCSerixms7Er3Rw";
@@ -109,7 +110,7 @@ function DeckGLMap(props) {
   return (
     <DeckGL
       initialViewState={viewState}
-      controller={true}
+      controller={{ doubleClickZoom: false }}
       layers={props.layers}
       onClick={props.onClick}
       onViewStateChange={(state) => {

@@ -331,6 +331,7 @@ function BMPStatWindow(props: statWindowProps) {
             allFacilities={specs.context}
             currentFacility={facilityType}
             facilityChangeHandler={setFacilityType}
+            context="existing-system"
           ></BMPForm>
         </>
       );

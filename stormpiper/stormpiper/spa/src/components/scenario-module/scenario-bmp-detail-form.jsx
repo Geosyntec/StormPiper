@@ -1,32 +1,78 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useState,
+  forwardRef,
+  useRef,
+  useImperativeHandle,
+} from "react";
 import { api_fetch } from "../../utils/utils";
 import { BMPForm } from "../bmpForm";
-import { useParams } from "react-router-dom";
 import { Box, Dialog, DialogActions, Typography, Button } from "@mui/material";
 
-export function BMPDetailForm() {
-  const params = useParams();
+export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
+  { facilitySetter, facility },
+  ref
+) {
   const [specs, setSpecs] = useState({
     context: {},
     facilitySpec: {},
   });
-  const [facilityType, setFacilityType] = useState("");
+  const [facilityType, setFacilityType] = useState(() => {
+    let res;
+    if (facility.features?.length > 0) {
+      res = facility.features[0].properties["facility_type"] || "no_treatment";
+    } else {
+      res = "no_treatment";
+    }
+    console.log("Setting initial facility type: ", res);
+
+    return res;
+  });
   const [loadingState, setLoadingState] = useState(true);
-  const [TMNTAttrs, setTMNTAttrs] = useState({});
   const [resultSuccess, setResultSuccess] = useState(false);
   const [resultError, setResultError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("error!");
+  const childRef = useRef(null);
+
+  // console.log("Facility within detail form: ", facility);
+  // Allows parent components to perform form functions
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        async triggerValidation(facility) {
+          console.log("Validating facility:", facility);
+          const isFormValid = await childRef.current.triggerValidation();
+          console.log("BMP form valid?: ", isFormValid);
+          const isFeatureDrawn =
+            facility.features.length > 0 && facility.features[0].geometry;
+          console.log("BMP drawn?:", isFeatureDrawn);
+          return isFormValid && isFeatureDrawn;
+        },
+
+        async resetForm() {
+          childRef.current.resetForm();
+          facilitySetter({
+            type: "FeatureCollection",
+            features: [],
+          });
+        },
+
+        handleSubmit(facility) {
+          console.log("Facility within the bmp form ref: ", facility);
+          const formData = childRef.current._getValues();
+          // const isSimple = childRef.current.getIsSimple();
+          _handleSubmit(formData, facility);
+        },
+      };
+    },
+    []
+  );
 
   useEffect(() => {
-    if (!params.id) return;
-
     // OpenAPI spec holds the base facility types used by nereid
     // Context endpoint holds mapping between project-specific names and base types
-    let resources = [
-      "/openapi.json",
-      "/api/rest/reference/context",
-      "/api/rest/tmnt_facility/" + params.id,
-    ];
+    let resources = ["/openapi.json", "/api/rest/reference/context"];
 
     setLoadingState(true);
 
@@ -38,51 +84,32 @@ export function BMPDetailForm() {
           facilitySpec: resArray[0].components.schemas,
           context: resArray[1].api_recognize.treatment_facility.facility_type,
         });
-        setFacilityType(resArray[2].facility_type);
-        setTMNTAttrs(resArray[2]);
       })
       .then(() => {
-        console.log("tmnt: ", TMNTAttrs);
         setLoadingState(false);
       });
   }, []);
 
-  async function _handleSubmit(data, isSimple) {
-    if (isSimple && !data["facility_type"].match("_simple")) {
+  function _handleSubmit(data, facility) {
+    console.log("Submitting bmp data: ", data);
+    console.log("Existing facility:", facility);
+    if (
+      facilityType.match("_simple") &&
+      !data["facility_type"].match("_simple")
+    ) {
       console.log("Appending simple");
       data["facility_type"] = data["facility_type"] + "_simple";
     }
 
-    console.log("Submitting Patch Request: ", data);
-    const response = await api_fetch("/api/rest/tmnt_attr/" + params.id, {
-      credentials: "same-origin",
-      headers: {
-        accept: "application/json",
-        "Content-type": "application/json",
-      },
-      method: "PATCH",
-      body: JSON.stringify(data),
-    })
-      .then((resp) => {
-        if (resp.status === 200) {
-          setResultSuccess(true);
-        } else if (resp.status === 422) {
-          setResultError(true);
-        }
-        return resp.json();
-      })
-      .then((r) => {
-        //assume that only error responses have a detail object
-        if (r.detail) {
-          setErrorMsg(r.detail);
-        }
-      })
-      .catch((err) => {
-        console.log("Error patching tmnt:");
-        setResultError(true);
-        console.log(err);
-      });
-    return response;
+    facilitySetter({
+      type: "FeatureCollection",
+      features: [
+        {
+          ...facility?.features[0],
+          properties: data,
+        },
+      ],
+    });
   }
   function _handleRecalculate() {
     api_fetch("/api/rpc/solve_watershed")
@@ -120,7 +147,6 @@ export function BMPDetailForm() {
     msg = msg.replaceAll(beginningText, "");
 
     let err = msg.match(/([\w\s.;=_]*)\([\w.=;\s]+\)/g);
-    console.log("Found errors:", err);
     if (err) {
       err.map((e) => {
         errorList.push(e.replace(/\([\w.=;\s]+\)/g, "")); //remove the error type in parantheses
@@ -133,8 +159,8 @@ export function BMPDetailForm() {
     if (loadingState) {
       return <p>loading...</p>;
     } else {
-      let fType = facilityType;
-      let fTypeRoot = fType.replace("_simple", "");
+      let fType = facilityType || "drywell";
+      let fTypeRoot = fType.replaceAll("_simple", "");
 
       let simpleBaseType;
       if (fType === "no_treatment") {
@@ -151,12 +177,17 @@ export function BMPDetailForm() {
           <BMPForm
             allFields={facilityFields}
             simpleFields={simpleFacilityFields}
-            values={TMNTAttrs}
+            values={
+              facility.features.length > 0
+                ? facility.features[0].properties
+                : {}
+            }
             allFacilities={specs.context}
             currentFacility={facilityType}
             facilityChangeHandler={setFacilityType}
             handleFormSubmit={_handleSubmit}
-            context="existing-system"
+            ref={childRef}
+            context="scenario"
           ></BMPForm>
           <Dialog open={resultSuccess} onClose={() => setResultSuccess(false)}>
             <Box sx={{ padding: "15px" }}>
@@ -192,10 +223,5 @@ export function BMPDetailForm() {
     }
   }
 
-  return (
-    <>
-      {/* {_renderUpdateBox()} */}
-      {!loadingState && renderForm()}
-    </>
-  );
-}
+  return <>{!loadingState && renderForm()}</>;
+});

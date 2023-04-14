@@ -60,18 +60,20 @@ export function ScenarioDelineationDetailResults({ data }) {
     "DEHP",
   ];
 
-  for (let id of altids) {
-    for (let e of epochs) {
-      let d = { altid: id, epoch: e };
-      const d_list = delinLoadResultsAll.filter(
-        (x) => x.altid === id && x.epoch === e
-      );
-      for (let poc of pocs) {
-        const poc_data = d_list.find((x) => x.variable === poc);
-        const col = `${poc}_${poc_data.units}`;
-        d[col] = poc_data.value;
+  if (data?.delin_load) {
+    for (let id of altids) {
+      for (let e of epochs) {
+        let d = { altid: id, epoch: e };
+        const d_list = delinLoadResultsAll.filter(
+          (x) => x.altid === id && x.epoch === e
+        );
+        for (let poc of pocs) {
+          const poc_data = d_list.find((x) => x.variable === poc);
+          const col = `${poc}_${poc_data.units}`;
+          d[col] = poc_data.value;
+        }
+        delinLoadResultWide.push(d);
       }
-      delinLoadResultWide.push(d);
     }
   }
 
