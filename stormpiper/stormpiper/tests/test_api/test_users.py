@@ -90,10 +90,16 @@ def test_user_mods(client, route, method, blob, authorized):
 @pytest.mark.parametrize(
     "client_name,route,method,blob,authorized",
     [
-        ("client", "/api/rest/users/readonly_token", "get", {}, True),
-        ("client", "/api/rest/users/rotate_readonly_token", "post", {}, True),
-        ("public_client", "/api/rest/users/readonly_token", "get", {}, False),
-        ("public_client", "/api/rest/users/rotate_readonly_token", "post", {}, False),
+        ("client", "/api/rest/users/me/readonly_token", "get", {}, True),
+        ("client", "/api/rest/users/me/rotate_readonly_token", "post", {}, True),
+        ("public_client", "/api/rest/users/me/readonly_token", "get", {}, False),
+        (
+            "public_client",
+            "/api/rest/users/me/rotate_readonly_token",
+            "post",
+            {},
+            False,
+        ),
     ],
 )
 def test_user_mods_readonly_token(

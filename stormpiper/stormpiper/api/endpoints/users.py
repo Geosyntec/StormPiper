@@ -24,7 +24,7 @@ router = APIRouter()
 
 
 @router.get(
-    "/readonly_token",
+    "/me/readonly_token",
     name="users:get_readonly_token",
     dependencies=[Depends(user_role_ge_reader)],
     response_model=UserResponse,
@@ -41,7 +41,7 @@ async def get_readonly_token(
 
 
 @router.post(
-    "/rotate_readonly_token",
+    "/me/rotate_readonly_token",
     name="users:rotate_readonly_token",
     dependencies=[Depends(user_role_ge_reader)],
     response_model=UserResponse,
