@@ -9,7 +9,6 @@ import pytest
         "/api/rest/subbasin/token/",
         "/api/rest/tmnt_facility/token/",
         "/api/rest/tmnt_delineation/token/",
-        "/api/rest/results/token/",
     ],
 )
 def test_get_many_data_with_readonly_token(
@@ -35,6 +34,7 @@ def test_get_many_data_with_readonly_token(
         "/api/rest/tmnt_delineation/SWFC-100067/token/{token}",
         "/api/rest/tmnt_delineation/SWFC-100067/token/{token}?f=geojson",
         "/api/rest/results/SWFA-100018/token/{token}",
+        "/api/rest/results/token/{token}?limit=1",
     ],
 )
 def test_get_data_with_readonly_token(public_client, readonly_token, route):
@@ -46,5 +46,7 @@ def test_get_data_with_readonly_token(public_client, readonly_token, route):
     rsp_json = response.json()
     if "geojson" in route:
         assert len(rsp_json["features"]) == 1, rsp_json
-    else:
+    elif isinstance(rsp_json, list):
+        assert "node_id" in rsp_json[0], rsp_json
+    elif isinstance(rsp_json, dict):
         assert "node_id" in rsp_json, rsp_json
