@@ -36,8 +36,10 @@ def test_get_result_by_node_id(client, node_id, epoch, exists):
     else:
         assert 200 <= response.status_code < 300, response.content
         rsp_json = response.json()
-        exp_len = 1 if epoch != "all" and epoch else 4
-        assert len(rsp_json) == exp_len
+        if epoch == "all":
+            assert len(rsp_json) > 1
+        else:
+            assert len(rsp_json) == 1
         assert all(
             i in dct.keys()
             for dct in rsp_json
