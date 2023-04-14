@@ -1,17 +1,23 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { api_fetch } from "../../utils/utils";
-
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import AutorenewIcon from "@mui/icons-material/Autorenew";
 import {
   Box,
   Button,
+  IconButton,
   Card,
   CardContent,
   MenuItem,
   TextField,
   Typography,
+  Tooltip,
+  Stack,
 } from "@mui/material";
+
+import { api_fetch } from "../../utils/utils";
+import TokenRouteTable from "./data-access";
 
 const defaultFormValues = {
   first_name: "fname",
@@ -24,6 +30,13 @@ const defaultFormValues = {
 
 async function getUser(id) {
   const response = await api_fetch(`/api/rest/users/${id}`);
+  return response.json();
+}
+
+async function rotateToken() {
+  const response = await api_fetch("/api/rest/users/me/rotate_readonly_token", {
+    method: "POST",
+  });
   return response.json();
 }
 
@@ -146,6 +159,36 @@ export default function EditUser() {
   const isMeAdmin = ["admin", "user_admin"].includes(medata?.role);
   const userIsMe = medata?.id === userdata?.id;
 
+  const CopyToClipboardButton = ({ data }) => {
+    const handleClick = () => {
+      navigator.clipboard.writeText(data);
+      console.log(data);
+    };
+
+    return (
+      <Tooltip title="Copy to Clipboard">
+        <IconButton onClick={handleClick}>
+          <ContentCopyIcon />
+        </IconButton>
+      </Tooltip>
+    );
+  };
+
+  const RotateTokenButton = () => {
+    const handleClick = async () => {
+      const _ = await rotateToken();
+      await userDataSetter();
+    };
+
+    return (
+      <Tooltip title="Rotate Token">
+        <IconButton onClick={handleClick}>
+          <AutorenewIcon />
+        </IconButton>
+      </Tooltip>
+    );
+  };
+
   const fields = [
     {
       name: "first_name",
@@ -201,66 +244,88 @@ export default function EditUser() {
       disabled: true,
       InputProps: {
         readOnly: true,
+        endAdornment: (
+          <>
+            <CopyToClipboardButton data={medata?.readonly_token} />
+            <RotateTokenButton />
+          </>
+        ),
       },
     },
   ];
 
   return (
-    <Box display="flex" justifyContent="center" py={3}>
-      <Card sx={{ p: 2, width: { xs: "100%", sm: 400 } }}>
-        <CardContent>
-          {/* TODO: check text and variant */}
-          <Typography align="center" variant="h5">
-            Review and Edit User Information
-          </Typography>
-          {!userdata ? (
-            <Box>loading...</Box>
-          ) : (
-            // TODO: add loading spinner
-            <Box
-              component="form"
-              noValidate
-              autoComplete="off"
-              onSubmit={handleSubmit(_handleSubmit)}
-            >
-              {_renderFormFields()}
+    <Stack spacing={3} mt={3} mb={6}>
+      <Box display="flex" justifyContent="center">
+        <Card sx={{ p: 2, width: { xs: "100%", sm: 500 } }}>
+          <CardContent>
+            {/* TODO: check text and variant */}
+            <Typography align="center" variant="h5">
+              Review and Edit User Information
+            </Typography>
+            {!userdata ? (
+              <Box>loading...</Box>
+            ) : (
+              // TODO: add loading spinner
               <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "flex-end",
-                  flexDirection: "column",
-                  mt: 4,
-                }}
+                component="form"
+                noValidate
+                autoComplete="off"
+                onSubmit={handleSubmit(_handleSubmit)}
               >
-                <Button variant="contained" color="primary" type="submit">
-                  Submit
-                </Button>
-                <Box>
-                  {!error && !success && (
-                    <Typography variant="caption" align="center">
-                      &nbsp;
-                    </Typography>
-                  )}
-                  {error && (
-                    <Typography variant="caption" color="error" align="center">
-                      Edits not stored.
-                    </Typography>
-                  )}
-                  {success && (
-                    <Typography
-                      variant="caption"
-                      color="primary"
-                      align="center"
-                    >
-                      Success
-                    </Typography>
-                  )}
+                {_renderFormFields()}
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "flex-end",
+                    flexDirection: "column",
+                    mt: 4,
+                  }}
+                >
+                  <Button variant="contained" color="primary" type="submit">
+                    Submit
+                  </Button>
+                  <Box>
+                    {!error && !success && (
+                      <Typography variant="caption" align="center">
+                        &nbsp;
+                      </Typography>
+                    )}
+                    {error && (
+                      <Typography
+                        variant="caption"
+                        color="error"
+                        align="center"
+                      >
+                        Edits not stored.
+                      </Typography>
+                    )}
+                    {success && (
+                      <Typography
+                        variant="caption"
+                        color="primary"
+                        align="center"
+                      >
+                        Success
+                      </Typography>
+                    )}
+                  </Box>
                 </Box>
               </Box>
-            </Box>
-          )}
-        </CardContent>
-      </Card>
-    </Box>
+            )}
+          </CardContent>
+        </Card>
+      </Box>
+      <Box display="flex" justifyContent="center">
+        <Card
+          sx={{
+            p: 2,
+            // width: { xs: "100%", sm: 500 }
+          }}
+        >
+          <TokenRouteTable token={medata?.readonly_token} />
+        </Card>
+      </Box>
+    </Stack>
   );
 }
