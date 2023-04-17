@@ -48,11 +48,12 @@ def compute_loading_zonal_stats(
     logger.info("Running zonal stats on earth engine...")
 
     zones_gdb = lgu_boundary.to_crs(4326)
+    n_chunks = max(1, len(lgu_boundary))
 
     zones_json = [
         {"zones": gdf.to_json(sort_keys=True)}  # type: ignore
         for gdf in numpy.array_split(
-            zones_gdb.sort_values("subbasin"), 10  # type: ignore
+            zones_gdb.sort_values("subbasin"), min(10, n_chunks)  # type: ignore
         )
     ]
 
