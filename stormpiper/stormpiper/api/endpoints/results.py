@@ -25,7 +25,7 @@ router = APIRouter()
 )
 async def get_all_results(
     db: AsyncSessionDB,
-    node_type: NType | None = None,  # type: ignore
+    ntype: NType | None = None,  # type: ignore
     limit: int | None = Query(int(1e6)),
     offset: int | None = Query(0),
     epoch: Epoch = Query("1980s", example="1980s"),  # type: ignore
@@ -33,8 +33,8 @@ async def get_all_results(
     q = select(results.ResultBlob).offset(offset).limit(limit)
     if epoch != "all":
         q = q.where(results.ResultBlob.epoch == epoch)
-    if node_type is not None:
-        q = q.where(results.ResultBlob.node_type == node_type)
+    if ntype is not None:
+        q = q.where(results.ResultBlob.ntype == ntype)
 
     result = await db.execute(q)
     scalars = result.scalars().all()
