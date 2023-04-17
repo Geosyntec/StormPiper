@@ -1,4 +1,6 @@
 import logging
+from concurrent.futures import ThreadPoolExecutor
+from functools import partial
 
 import geopandas
 import numpy
@@ -44,15 +46,28 @@ def compute_loading_zonal_stats(
     coc_path = coc_path or settings.EE_COC_PATH
 
     logger.info("Running zonal stats on earth engine...")
-    zones = lgu_boundary.to_crs(4326).to_json()  # type: ignore
 
-    # this returns in metric units, L and mcg
-    df_wide = loading.zonal_stats(
+    zones_gdb = lgu_boundary.to_crs(4326)
+
+    zones_json = [
+        {"zones": gdf.to_json(sort_keys=True)}  # type: ignore
+        for gdf in numpy.array_split(
+            zones_gdb.sort_values("subbasin"), 10  # type: ignore
+        )
+    ]
+
+    zstats = partial(
+        loading.zonal_stats,
         runoff_path=runoff_path,
         concentration_path=coc_path,
-        zones=zones,
         join_id="node_id",
     )
+
+    with ThreadPoolExecutor(max_workers=len(zones_json)) as executor:
+        results = executor.map(lambda kwargs: zstats(**kwargs), zones_json)
+
+    # this returns in metric units, L and mcg
+    df_wide = pandas.concat(results)
     logger.info("Completed zonal stats on earth engine.")
 
     return df_wide
