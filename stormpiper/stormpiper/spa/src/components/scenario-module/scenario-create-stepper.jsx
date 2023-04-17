@@ -20,10 +20,10 @@ export function ScenarioCreateStepper({
   scenarioSetter,
   delineation,
   delineationSetter,
-  delineationEditToggler,
+  delineationDrawToggler,
   facility,
   facilitySetter,
-  facilityEditToggler,
+  facilityDrawToggler,
   viewModeToggler,
 }) {
   console.log("facility within stepper: ", facility);
@@ -42,7 +42,7 @@ export function ScenarioCreateStepper({
       ),
       optional: false,
       stepRef: infoRef,
-      nextEventHandler: delineationEditToggler,
+      nextEventHandler: delineationDrawToggler,
       validationObject: scenarioObject,
       errMsg: "Enter a Scenario Name",
     },
@@ -57,11 +57,14 @@ export function ScenarioCreateStepper({
       ),
       optional: true,
       stepRef: delinRef,
-      nextEventHandler: facilityEditToggler,
+      nextEventHandler: () => {
+        delinRef?.current?.setName(delineation);
+        facilityDrawToggler();
+      },
       backEventHandler: viewModeToggler,
       skipEventHandler: () => {
         delinRef?.current?.resetForm();
-        facilityEditToggler();
+        facilityDrawToggler();
       },
       validationObject: delineation,
       errMsg: "Draw Your Delineation and Enter a Name",
@@ -80,11 +83,11 @@ export function ScenarioCreateStepper({
       nextEventHandler: () => facilityRef?.current?.handleSubmit(facility),
       backEventHandler: () => {
         facilityRef?.current?.handleSubmit(facility);
-        delineationEditToggler();
+        delineationDrawToggler();
       },
       skipEventHandler: () => {
         facilityRef?.current?.resetForm();
-        facilitySetter({ type: "FeatureCollection", features: [] });
+        // facilitySetter({ type: "FeatureCollection", features: [] });
       },
       validationObject: facility,
       errMsg: "Set a BMP Location and Fill Out All Required Fields",

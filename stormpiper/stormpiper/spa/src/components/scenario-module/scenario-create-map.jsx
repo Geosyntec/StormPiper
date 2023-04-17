@@ -1,21 +1,31 @@
 import DeckGLMap from "../map";
 import { EditableGeoJsonLayer } from "nebula.gl";
-import { Box } from "@mui/material";
+import { Box, Card } from "@mui/material";
 import {
   activeLocalSWFacility as tmnt,
   delineations,
 } from "../../assets/geojson/coreLayers";
+import { useState } from "react";
+import ScenarioFeatureEditTab from "./scenario-feature-edit-tab";
+import { lte } from "lodash";
 
 export default function ScenarioCreateMap({
   facilityEditMode,
   delineationEditMode,
   facility,
   facilitySetter,
+  facilityEditToggler,
   delineation,
   delineationSetter,
+  delineationEditToggler,
+  delineationDrawToggler,
 }) {
   console.log("Rendering facility layer: ", facility);
   console.log("Rendering delineation layer: ", delineation);
+  const [delineationFeatureIndexes, setDelineationFeatureIndexes] = useState(
+    []
+  );
+
   const facilityLayer = new EditableGeoJsonLayer({
     ...tmnt.props,
     id: "userPoints",
@@ -46,9 +56,12 @@ export default function ScenarioCreateMap({
     id: "userDelineations",
     label: "User Delineations",
     data: delineation,
-    selectedFeatureIndexes: [],
+    selectedFeatureIndexes: delineation.features.length > 0 ? [0] : [],
     mode: delineationEditMode,
-    onEdit: ({ updatedData, editType }) => {
+    pickable: true,
+    onEdit: ({ updatedData, editType, editContext }) => {
+      console.log("Edit Type:", editType);
+      console.log("Edit Context: ", editContext);
       if (editType === "addFeature") {
         //When there are no existing features, simply update
         //When there is an existing feature, that must mean that the user entered a delineation name,
@@ -62,22 +75,15 @@ export default function ScenarioCreateMap({
               {
                 geometry: { ...updatedData.features[1].geometry },
                 properties: { ...updatedData.features[0].properties },
+                type: "Polygon",
               },
             ],
           });
         }
+        const { featureIndexes } = editContext; //extracting indexes of current features selected
+        setDelineationFeatureIndexes([...featureIndexes]);
       } else {
-        console.log("hello: ", delineation);
-        delineationSetter({
-          type: "FeatureCollection",
-          // features: [],
-          features: [
-            {
-              properties: { ...delineation.features[0].properties },
-              geometry: {},
-            },
-          ],
-        });
+        delineationSetter(updatedData);
       }
     },
   });
@@ -91,6 +97,27 @@ export default function ScenarioCreateMap({
         overflowY: "hidden",
       }}
     >
+      {["DrawPolygonMode2", "ModifyMode2"].includes(
+        delineationEditMode.name
+      ) && (
+        <Box
+          sx={{
+            position: "absolute",
+            zIndex: 9,
+            top: "80%",
+            left: "2%",
+            borderRadius: "2px",
+            background: "rgba(255, 255, 255, 1)",
+          }}
+        >
+          <ScenarioFeatureEditTab
+            editModeToggler={delineationEditToggler}
+            drawModeToggler={delineationDrawToggler}
+            featureSetter={delineationSetter}
+            feature={delineation.features[0]}
+          />
+        </Box>
+      )}
       <DeckGLMap
         id="scenario-map"
         context="default"
