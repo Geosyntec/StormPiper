@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from sqlalchemy import select
 
 import stormpiper.bg_worker as bg
-from stormpiper.apps.supersafe.users import user_role_ge_editor
+from stormpiper.apps.supersafe.users import user_role_ge_admin, user_role_ge_editor
 from stormpiper.core.config import settings
 from stormpiper.core.utils import generate_task_response
 from stormpiper.database import crud, utils
@@ -24,6 +24,7 @@ from stormpiper.models.scenario import (
 )
 from stormpiper.models.scenario_validator import scenario_validator
 from stormpiper.src.npv import get_pv_settings_db
+from stormpiper.src.scenario import solve_scenario_data
 
 from ..depends import AsyncSessionDB, Editor
 
@@ -264,3 +265,18 @@ async def solve_scenario(
     data = scenario.dict(exclude_unset=True)
     task = bg.compute_scenario_results.apply_async(kwargs={"data": data})
     return await generate_task_response(task=task)
+
+
+@rpc_router.post(
+    "/solve_scenario_foreground",
+    name="scenario:solve",
+    response_model=ScenarioUpdate,
+    dependencies=[Depends(user_role_ge_admin)],
+)
+async def solve_scenario_foreground(
+    scenario: ScenarioCreate = Depends(validate_scenario),
+):
+    """Stateless solves of scenarios with identical logic as the stateful variant."""
+    data = scenario.dict(exclude_unset=True)
+    response = solve_scenario_data(data=data)
+    return response
