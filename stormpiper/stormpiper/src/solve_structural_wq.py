@@ -55,7 +55,12 @@ def init_land_surface_loading_node_data_from_df(
 def init_treatment_facilities_from_df(
     *, df: pandas.DataFrame
 ) -> list[dict[Hashable, Any]]:
-    treatment_facilities_list = [row.dropna().to_dict() for _, row in df.iterrows()]
+    rows = [row.dropna().to_dict() for _, row in df.iterrows()]
+    treatment_facilities_list = [
+        {k: v for k, v in fac.items() if not isinstance(v, (list, dict))}
+        for fac in rows
+    ]
+
     return treatment_facilities_list
 
 
