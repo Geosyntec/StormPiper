@@ -10,6 +10,7 @@ strings = [
     "node_id",
     "epoch",
     "node_type",
+    "ntype",
     "facility_type",
     "valid_model",
     "subbasin",

@@ -94,6 +94,7 @@ def zonal_stats(
     runoff = Image(runoff_path)
     ro_bands = get_runoff_bands(runoff_path)
     ro_units = runoff.toDictionary().get("units").getInfo()
+    logger.info(f"Calculating zonal stats for the runoff")
     ro_dct = get_loading_zonal_stats(
         runoff.multiply(Image.pixelArea()), zones=zones_fc
     ).getInfo()

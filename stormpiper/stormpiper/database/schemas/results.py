@@ -11,6 +11,7 @@ POC_PARAMS = get_pocs(get_context())
 INFO_COLS = [
     "_version",
     "_config_version",
+    "ntype",
     "node_type",
 ]
 

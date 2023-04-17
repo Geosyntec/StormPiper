@@ -149,6 +149,9 @@ def calculate_src_ctrl_percent_reduction(
 
         df2.append(_df)
 
+    if not len(df2):
+        return pandas.DataFrame([])
+
     df = (
         pandas.concat(df2)
         .sort_values(["node_id", "epoch", "variable", "order"])

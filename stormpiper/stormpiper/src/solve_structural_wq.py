@@ -101,7 +101,6 @@ def solve_wq(
             left_on="node_id",
             how="left",
         )
-        .assign(node_type=lambda df: df["ntype"])
         .pipe(add_virtual_pocs_to_wide_load_summary)
         .fillna(value=pandas.NA)
         .replace({pandas.NA: None})
