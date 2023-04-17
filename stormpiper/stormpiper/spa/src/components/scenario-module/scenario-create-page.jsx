@@ -2,32 +2,32 @@ import { Card, Button, Typography } from "@mui/material";
 
 import { TwoColGrid, FullSpan, HalfSpan } from "../base/two-col-grid";
 import ScenarioCreateMap from "./scenario-create-map";
-import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import { DrawPolygonMode, DrawPointMode, ViewMode } from "nebula.gl";
+import {
+  DrawPolygonMode,
+  DrawPointMode,
+  ViewMode,
+  ModifyMode,
+  TranslateMode,
+  Editor,
+} from "nebula.gl";
 import { useEffect, useState, useRef } from "react";
-import { ScenarioBMPForm } from "./scenario-bmp-detail-form";
-import { ScenarioDelineationForm } from "./scenario-create-delineation-form";
-import { ScenarioInfoForm } from "./scenario-create-info-form";
 import { ScenarioCreateStepper } from "./scenario-create-stepper";
 import { useNavigate } from "react-router-dom";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import { api_fetch } from "../../utils/utils";
 
 export default function ScenarioCreatePage({ setDrawerButtonList }) {
-  const childRef = useRef(null);
-
   const navigate = useNavigate();
   const buttonList = [
     // {
     //   label: "Create a BMP",
     //   icon: <RadioButtonCheckedIcon />,
-    //   clickHandler: toggleFacilityEditMode,
+    //   clickHandler: toggleFacilityDrawMode,
     // },
     // {
     //   label: "Create a Delineation",
     //   icon: <DashboardIcon />,
-    //   clickHandler: toggleDelineationEditMode,
+    //   clickHandler: toggleDelineationDrawMode,
     // },
     {
       label: "View All Scenarios",
@@ -65,30 +65,39 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
     },
   });
 
+  console.log("Current Scenario: ", scenarioObject);
+
   function toggleViewMode() {
     setFacilityEditMode(() => ViewMode);
     setDelineationEditMode(() => ViewMode);
   }
-  function toggleFacilityEditMode() {
+  function toggleFacilityDrawMode() {
     console.log("Toggling facility edit mode");
     setFacilityEditMode(() => DrawPointMode);
     setDelineationEditMode(() => ViewMode);
   }
-  function toggleDelineationEditMode() {
-    console.log("Toggling delineation edit mode");
+  function toggleDelineationDrawMode() {
+    console.log("Toggling delineation draw mode");
     setFacilityEditMode(() => ViewMode);
     setDelineationEditMode(() => DrawPolygonMode);
+  }
+  function toggleDelineationEditMode() {
+    console.log("Toggling delineation edit mode");
+
+    setFacilityEditMode(() => ViewMode);
+    setDelineationEditMode(() => ModifyMode);
+  }
+  function toggleFacilityEditMode() {
+    setFacilityEditMode(() => new ModifyMode());
+    setDelineationEditMode(() => ViewMode);
   }
 
   function updateFacility(facility) {
     console.log("Trying to update facility: ", facility);
-    let delineationToUpdate = null;
-    if (facility.features[0]) {
-      if (delineation?.features.length > 0) {
-        delineationToUpdate = { ...delineation };
-        delineation.features[0].properties["relid"] =
-          facility.features[0].properties["node_id"];
-      }
+    let delineationToUpdate = { ...delineation };
+    if (facility.features[0] && delineation?.features.length > 0) {
+      delineation.features[0].properties["relid"] =
+        facility.features[0].properties["node_id"];
     }
     setFacility(facility);
     setScenarioObject({
@@ -100,6 +109,7 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
     });
   }
   function updateDelineation(delineation) {
+    console.log("Updating delineation:", delineation);
     setDelineation(delineation);
     setScenarioObject({
       ...scenarioObject,
@@ -167,10 +177,10 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
             scenarioSetter={updateScenario}
             delineation={delineation}
             delineationSetter={updateDelineation}
-            delineationEditToggler={toggleDelineationEditMode}
+            delineationDrawToggler={toggleDelineationDrawMode}
             facility={facility}
             facilitySetter={updateFacility}
-            facilityEditToggler={toggleFacilityEditMode}
+            facilityDrawToggler={toggleFacilityDrawMode}
             viewModeToggler={toggleViewMode}
             handleSubmit={_handleSubmit}
           />
@@ -190,53 +200,14 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
             delineationEditMode={delineationEditMode}
             facility={facility}
             facilitySetter={updateFacility}
+            facilityEditToggler={toggleFacilityEditMode}
             delineation={delineation}
             delineationSetter={updateDelineation}
+            delineationEditToggler={toggleDelineationEditMode}
+            delineationDrawToggler={toggleDelineationDrawMode}
           />
         </Card>
       </HalfSpan>
-      {/* <HalfSpan>
-        <Card
-          sx={{
-            display: "flex",
-            height: "100%",
-            minHeight: "200px",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {facility?.features?.length > 0 ? (
-            <ScenarioBMPForm
-              facility={facility}
-              facilityPropSetter={updateFacility}
-            />
-          ) : (
-            <Typography variant="body1">Place a facility on the map</Typography>
-          )}
-        </Card>
-      </HalfSpan>
-      <HalfSpan>
-        <Card
-          sx={{
-            display: "flex",
-            height: "100%",
-            minHeight: "200px",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {delineation?.features?.length > 0 ? (
-            <ScenarioDelineationForm
-              delineationPropSetter={updateDelineation}
-              delineation={delineation}
-            />
-          ) : (
-            <Typography variant="body1">
-              Place a delineation on the map
-            </Typography>
-          )}
-        </Card>
-      </HalfSpan> */}
     </TwoColGrid>
   );
 }

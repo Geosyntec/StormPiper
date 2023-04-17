@@ -95,7 +95,6 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
         },
 
         async resetForm() {
-          console.log("Herro");
           reset(_createDefaults(isSimple, false));
         },
 

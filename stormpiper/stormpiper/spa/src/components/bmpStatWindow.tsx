@@ -312,7 +312,7 @@ function BMPStatWindow(props: statWindowProps) {
       let fTypeRoot = fType.replace("_simple", "");
 
       let simpleBaseType;
-      if (fType === "no_treatment") {
+      if (fTypeRoot === "no_treatment") {
         simpleBaseType = specs.context[fTypeRoot].validator; //no_treatment has no simple equivalent
       } else {
         simpleBaseType = specs.context[fTypeRoot + "_simple"].validator;

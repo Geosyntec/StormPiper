@@ -11,6 +11,7 @@ export const ScenarioDelineationForm = forwardRef(
       handleSubmit,
       formState: { errors },
       trigger,
+      getValues,
     } = useForm();
     // const delineation = scenarioObject?.input?.delineation_collection || null;
     console.log("Inside delineation form, delineation = ", delineation);
@@ -47,10 +48,43 @@ export const ScenarioDelineationForm = forwardRef(
               features: [],
             });
           },
+
+          setName(delineation) {
+            delineationSetter({
+              type: "FeatureCollection",
+              features: [
+                {
+                  ...delineation.features[0],
+                  properties: { name: getValues("delinName") },
+                },
+              ],
+            });
+          },
         };
       },
       []
     );
+
+    function setDelineationName(e) {
+      delineation?.features?.length > 0
+        ? delineationSetter({
+            type: "FeatureCollection",
+            features: [
+              {
+                ...delineation.features[0],
+                properties: { name: e.target.value },
+              },
+            ],
+          })
+        : delineationSetter({
+            type: "FeatureCollection",
+            features: [
+              {
+                properties: { name: e.target.value },
+              },
+            ],
+          });
+    }
 
     function _renderFormFields() {
       let fieldDiv = Object.values(fields).map((formField) => {
@@ -68,24 +102,7 @@ export const ScenarioDelineationForm = forwardRef(
                 margin="dense"
                 onChange={(e) => {
                   console.log("Updating delineation from form: ", delineation);
-                  delineation?.features?.length > 0
-                    ? delineationSetter({
-                        type: "FeatureCollection",
-                        features: [
-                          {
-                            ...delineation.features[0],
-                            properties: { name: e.target.value },
-                          },
-                        ],
-                      })
-                    : delineationSetter({
-                        type: "FeatureCollection",
-                        features: [
-                          {
-                            properties: { name: e.target.value },
-                          },
-                        ],
-                      });
+                  setDelineationName(e);
                 }}
                 fullWidth
               />
