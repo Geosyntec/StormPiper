@@ -104,8 +104,6 @@ def _delete_and_replace_db(
     Overwrites contents of `table_name` with contents of df.
     df schema must match destination table if the table already exists.
     """
-    if len(df) == 0:  # pragma: no cover
-        raise ValueError(f"No data provided to replace table {table_name}. Aborting.")
     method = getattr(df, method_name, df.to_sql)
 
     index = kwargs.pop("index", False)
