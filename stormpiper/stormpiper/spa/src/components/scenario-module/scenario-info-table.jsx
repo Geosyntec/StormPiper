@@ -6,8 +6,9 @@ import Box from "@mui/material/Box";
 import { DataGrid, GridActionsCellItem, GridRowModes } from "@mui/x-data-grid";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Link, Modal, Typography, Tooltip } from "@mui/material";
+import { Link, Tooltip } from "@mui/material";
 import { api_fetch } from "../../utils/utils";
+import { ConfirmDeleteModal } from "../base/confirm-delete-modal";
 
 // https://mui.com/x/react-data-grid/row-height/#dynamic-row-height
 // https://mui.com/x/react-data-grid/row-height/#ExpandableCells.js
@@ -20,7 +21,7 @@ function ExpandableCell({ formattedValue, value }) {
 
   return (
     <Box>
-      {cellExpanded ? str : str.slice(0, maxChars)}&nbsp;
+      {cellExpanded ? str : str.slice(0, maxChars) + "..."}&nbsp;
       {str.length > maxChars && (
         // eslint-disable-next-line jsx-a11y/anchor-is-valid
         <Link
@@ -269,63 +270,6 @@ export function ScenarioInfoTable() {
 
   const getRowData = (id) => rows.find((x) => x.id == id);
 
-  const ModalConfirmDelete = () => {
-    const style = {
-      position: "absolute",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      width: { xs: "300px", sm: "60ch" },
-      maxWidth: 450,
-      bgcolor: "background.paper",
-      border: "2px solid #000",
-      boxShadow: 24,
-      p: 4,
-      display: "flex",
-      flexDirection: "column",
-    };
-    return (
-      <Modal
-        open={modalOpen}
-        onClose={handleModalClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Are you sure you want to delete this user?
-          </Typography>
-          <Typography
-            id="modal-modal-description"
-            align="center"
-            sx={{ mt: 2 }}
-          >
-            {`${getRowData(currentScenarioId)?.name || ""}`}
-          </Typography>
-          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}>
-            <Button
-              sx={{ width: "100px" }}
-              onClick={handleModalClose}
-              variant="outlined"
-              color="primary"
-            >
-              Cancel
-            </Button>
-            <Button
-              sx={{ width: "200px" }}
-              onClick={handleConfirmDelete}
-              variant="outlined"
-              color="error"
-              startIcon={<DeleteIcon />}
-            >
-              Confirm Delete
-            </Button>
-          </Box>
-        </Box>
-      </Modal>
-    );
-  };
-
   return (
     <Box
       sx={{
@@ -357,7 +301,7 @@ export function ScenarioInfoTable() {
           columns: {
             columnVisibilityModel: {
               // Hide columns status and traderName, the other columns will remain visible
-          id: false,
+              id: false,
               time_updated: false,
               created_by: false,
               time_created: false,
@@ -375,7 +319,13 @@ export function ScenarioInfoTable() {
         getRowHeight={() => "auto"}
         getEstimatedRowHeight={() => 200}
       />
-      <ModalConfirmDelete />
+      <ConfirmDeleteModal
+        modalOpen={modalOpen}
+        handleModalClose={handleModalClose}
+        handleConfirmDelete={handleConfirmDelete}
+        confirmationMessage={"Are you sure you want to delete this scenario?"}
+        dataIdentifier={`${getRowData(currentScenarioId)?.name || ""}`}
+      />
     </Box>
   );
 }

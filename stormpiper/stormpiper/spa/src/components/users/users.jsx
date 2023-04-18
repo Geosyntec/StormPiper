@@ -6,8 +6,9 @@ import Box from "@mui/material/Box";
 import { DataGrid, GridActionsCellItem, GridRowModes } from "@mui/x-data-grid";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Modal, Typography, Tooltip } from "@mui/material";
+import { Tooltip } from "@mui/material";
 import { api_fetch } from "../../utils/utils";
+import { ConfirmDeleteModal } from "../base/confirm-delete-modal";
 
 // https://mui.com/x/react-data-grid/editing/#FullFeaturedCrudGrid.js
 
@@ -241,79 +242,46 @@ export default function Users() {
   };
 
   return (
-    <Box
-      sx={{
-        height: 500,
-        width: "100%",
-        "& .actions": {
-          color: "text.secondary",
-        },
-        "& .textPrimary": {
-          color: "text.primary",
-        },
-      }}
-    >
-      <div>
-        <Modal
-          open={modalOpen}
-          onClose={handleModalClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Are you sure you want to delete this user?
-            </Typography>
-            <Typography
-              id="modal-modal-description"
-              align="center"
-              sx={{ mt: 2 }}
-            >
-              {`${getRowData(currentUserId)?.email || ""}`}
-            </Typography>
-            <Box
-              sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}
-            >
-              <Button
-                sx={{ width: "100px" }}
-                onClick={handleModalClose}
-                variant="outlined"
-                color="primary"
-              >
-                Cancel
-              </Button>
-              <Button
-                sx={{ width: "200px" }}
-                onClick={handleConfirmDelete}
-                variant="outlined"
-                color="error"
-                startIcon={<DeleteIcon />}
-              >
-                Confirm Delete
-              </Button>
-            </Box>
-          </Box>
-        </Modal>
-      </div>
-      <DataGrid
-        rows={rows}
-        columns={columns}
+    <>
+      <Box
+        sx={{
+          height: 500,
+          width: "100%",
+          "& .actions": {
+            color: "text.secondary",
+          },
+          "& .textPrimary": {
+            color: "text.primary",
+          },
+        }}
+      >
+        <DataGrid
+          rows={rows}
+          columns={columns}
           initialState={{
             columns: {
               columnVisibilityModel: {
                 // Hide columns status and traderName, the other columns will remain visible
-          id: false,
+                id: false,
               },
             },
-        }}
-        editMode="row"
-        rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
-        onRowEditStart={handleRowEditStart}
-        onRowEditStop={handleRowEditStop}
-        processRowUpdate={processRowUpdate}
-        onProcessRowUpdateError={(error) => console.error(error)}
+          }}
+          editMode="row"
+          rowModesModel={rowModesModel}
+          onRowModesModelChange={handleRowModesModelChange}
+          onRowEditStart={handleRowEditStart}
+          onRowEditStop={handleRowEditStop}
+          processRowUpdate={processRowUpdate}
+          onProcessRowUpdateError={(error) => console.error(error)}
+        />
+      </Box>
+      <ConfirmDeleteModal
+        modalOpen={modalOpen}
+        handleModalClose={handleModalClose}
+        handleConfirmDelete={handleConfirmDelete}
+        confirmationMessage={"Are you sure you want to delete this user?"}
+        dataIdentifier={`${getRowData(currentUserId)?.email || ""}`}
       />
-    </Box>
+    </>
   );
 }
