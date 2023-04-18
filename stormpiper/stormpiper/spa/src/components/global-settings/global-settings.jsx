@@ -14,7 +14,7 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 
 import { api_fetch } from "../../utils/utils";
-import { ConfirmDeleteModal } from "../users/confirm-delete-modal";
+import { ConfirmDeleteModal } from "../base/confirm-delete-modal";
 
 // https://mui.com/x/react-data-grid/editing/#FullFeaturedCrudGrid.js
 
@@ -269,7 +269,8 @@ export default function CostSettingsDataGrid() {
         modalOpen={modalOpen}
         handleModalClose={handleModalClose}
         handleConfirmDelete={handleConfirmDelete}
-        email={`${getRowData(currentDataId)?.email || ""}`}
+        confirmationMessage={"Are you sure you want to delete this variable?"}
+        dataIdentifier={`${getRowData(currentDataId)?.variable || ""}`}
       />
       <DataGrid
         autoheight
@@ -283,7 +284,7 @@ export default function CostSettingsDataGrid() {
           columns: {
             columnVisibilityModel: {
               // Hide columns status and traderName, the other columns will remain visible
-          id: false,
+              id: false,
             },
           },
         }}

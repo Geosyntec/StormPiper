@@ -5,7 +5,8 @@ export function ConfirmDeleteModal({
   modalOpen,
   handleModalClose,
   handleConfirmDelete,
-  email,
+  confirmationMessage,
+  dataIdentifier,
 }) {
   const style = {
     position: "absolute",
@@ -15,11 +16,11 @@ export function ConfirmDeleteModal({
     width: { xs: "300px", sm: "60ch" },
     maxWidth: 450,
     bgcolor: "background.paper",
-    border: "2px solid #000",
     boxShadow: 24,
     p: 4,
     display: "flex",
     flexDirection: "column",
+    borderRadius: 2,
   };
 
   return (
@@ -30,11 +31,16 @@ export function ConfirmDeleteModal({
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <Typography id="modal-modal-title" variant="h6" component="h2">
-          Are you sure you want to delete this user?
+        <Typography
+          id="modal-modal-title"
+          align="center"
+          variant="h6"
+          component="h2"
+        >
+          {confirmationMessage}
         </Typography>
         <Typography id="modal-modal-description" align="center" sx={{ mt: 2 }}>
-          {email}
+          {dataIdentifier}
         </Typography>
         <Box sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}>
           <Button

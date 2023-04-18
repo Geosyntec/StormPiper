@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { Box, Card, Tooltip } from "@mui/material";
 import { api_fetch } from "../../utils/utils";
 import { FullSpan, TwoColGrid } from "../base/two-col-grid";
-import { ConfirmDeleteModal } from "./confirm-delete-modal";
+import { ConfirmDeleteModal } from "../base/confirm-delete-modal";
 
 // https://mui.com/x/react-data-grid/editing/#FullFeaturedCrudGrid.js
 
@@ -221,7 +221,8 @@ export default function Users() {
         modalOpen={modalOpen}
         handleModalClose={handleModalClose}
         handleConfirmDelete={handleConfirmDelete}
-        email={`${getRowData(currentUserId)?.email || ""}`}
+        confirmationMessage={"Are you sure you want to delete this user?"}
+        dataIdentifier={`${getRowData(currentUserId)?.email || ""}`}
       />
       <Box py={3} display="flex" justifyContent="center">
         <TwoColGrid
@@ -243,7 +244,7 @@ export default function Users() {
                   columns: {
                     columnVisibilityModel: {
                       // Hide columns status and traderName, the other columns will remain visible
-                  id: false,
+                      id: false,
                     },
                   },
                 }}
