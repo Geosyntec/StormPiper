@@ -173,9 +173,13 @@ export default function CostSettingsDataGrid() {
       rowSelection={false}
       rows={rows}
       columns={columns}
-      columnVisibilityModel={{
-        // Hide columns listed here, the other columns will remain visible
-        id: false,
+      initialState={{
+        columns: {
+          columnVisibilityModel: {
+            // Hide columns status and traderName, the other columns will remain visible
+            id: false,
+          },
+        },
       }}
       editMode="row"
       rowModesModel={rowModesModel}

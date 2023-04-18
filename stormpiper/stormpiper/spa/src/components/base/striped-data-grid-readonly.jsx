@@ -20,9 +20,13 @@ export function ReadonlyStripedDataGrid(props) {
           lineHeight: "1.35rem",
         },
       }}
-      columnVisibilityModel={{
-        // Hide columns listed here, the other columns will remain visible
-        id: false,
+      initialState={{
+        columns: {
+          columnVisibilityModel: {
+            // Hide columns status and traderName, the other columns will remain visible
+            id: false,
+          },
+        },
       }}
       {...props}
     />
