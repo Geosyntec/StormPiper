@@ -10,8 +10,8 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 const f =
   "f: str (optional, default=json, [json, geojson]) Format of response data";
-const node_type =
-  "node_type: string (optional, default=null, [land_surface, tmnt_facility]) Node type filter";
+const ntype =
+  "ntype: string (optional, default=null, [land_surface, tmnt_facility]) Node type filter";
 const limit = "limit: int (optional, default=1e6) Number of records to return";
 const offset = "offset: int (optional, default=0) Start from index";
 const epoch =
@@ -60,9 +60,9 @@ const routesWithToken = [
       `,
   },
   {
-    url: "/api/rest/results/token/{token}?node_type=null&limit=1000000&offset=0&epoch=1980s",
+    url: "/api/rest/results/token/{token}?ntype=null&limit=1000000&offset=0&epoch=1980s",
     description: `Get attributes or geojson for all subbasins.
-      ${node_type}
+      ${ntype}
       ${limit}
       ${offset}
       ${epoch}
