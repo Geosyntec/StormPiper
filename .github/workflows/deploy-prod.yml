@@ -54,3 +54,14 @@ jobs:
           kubectl set image deployment/worker-prod worker=gcr.io/tacoma-app/bg_worker:$PRODUCTION_TAG
           kubectl set image deployment/redis-prod redis=gcr.io/tacoma-app/redis:$PRODUCTION_TAG
           kubectl rollout restart deploy --selector=app=stormpiper-prod
+
+      - name: Check Deployment
+        env:
+          STP_EMAIL_API_KEY: ${{ secrets.STP_EMAIL_API_KEY }}
+          STP_EMAIL_API_SECRET: ${{ secrets.STP_EMAIL_API_SECRET }}
+          STP_EMAIL_SEND_URL: ${{ secrets.STP_EMAIL_SEND_URL }}
+          STP_MAINTAINER_EMAIL_LIST: ${{ secrets.STP_MAINTAINER_EMAIL_LIST }}
+        run: |-
+          echo "Checking Deployment to production Application"
+          sleep 15m
+          bash ./scripts/health_check.sh

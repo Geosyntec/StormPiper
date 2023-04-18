@@ -11,10 +11,10 @@ from pydantic import ValidationError
 
 from stormpiper.core.config import settings
 from stormpiper.core.context import get_context
-from stormpiper.src.npv import compute_bmp_pv, get_pv_settings
+from stormpiper.src.npv import compute_bmp_npv, get_npv_settings
 
 from .base import BASE, BaseModel
-from .npv import PVRequest
+from .npv import NPVRequest
 from .tmnt_attr import (
     InvalidModel,
     TMNTFacilityAttrPatch,
@@ -74,35 +74,28 @@ def validate_tmnt_modeling_params(
     return TMNTFacilityAttrUpdate(**unvalidated_data)
 
 
-def maybe_update_pv_params(
-    unvalidated_data: dict, pv_global_settings: dict
+def maybe_update_npv_params(
+    unvalidated_data: dict, npv_global_settings: dict
 ) -> None | TMNTFacilityCostUpdate:
     # check if the patch changes an npv field. If not, pass. if so, validate it,
     # and if it doesn't validate then set npv calc to None so that it's not out of date.
-    pv_fields = PVRequest.get_fields()
-    modifies_pv_fields = any((k in pv_fields for k in unvalidated_data.keys()))
+    npv_fields = NPVRequest.get_fields()
+    modifies_npv_fields = any((k in npv_fields for k in unvalidated_data.keys()))
 
-    if not modifies_pv_fields:
+    if not modifies_npv_fields:
         return None
 
-    cost_results = {
-        "present_value_capital_cost": None,
-        "present_value_om_cost": None,
-        "present_value_total_cost": None,
-        "present_value_cost_table": None,
-        "present_value_chart_table": None,
-    }
-
-    unvalidated_data.update(**cost_results)
+    unvalidated_data["net_present_value"] = None
 
     try:
-        pv_req = PVRequest(**{**unvalidated_data, **pv_global_settings})
+        npv_req = NPVRequest(**unvalidated_data, **npv_global_settings)
 
     except ValidationError as _:
         logger.info("Validation Error", _)
         return TMNTFacilityCostUpdate(**unvalidated_data)
-    cost_results = compute_bmp_pv(**pv_req.dict())
-    unvalidated_data.update(**cost_results)
+
+    result, _ = compute_bmp_npv(**npv_req.dict())
+    unvalidated_data["net_present_value"] = result
 
     return TMNTFacilityCostUpdate(**unvalidated_data)
 
@@ -110,7 +103,7 @@ def maybe_update_pv_params(
 def tmnt_attr_validator(
     tmnt_patch: dict[str, Any] | TMNTFacilityPatch | STRUCTURAL_FACILITY_TYPE,
     context: dict[str, Any] | None = None,
-    pv_global_settings: dict[str, Any] | None = None,
+    npv_global_settings: dict[str, Any] | None = None,
 ) -> TMNTUpdate:
     unvalidated_data = deepcopy(tmnt_patch)
 
@@ -119,8 +112,8 @@ def tmnt_attr_validator(
 
     tmnt_attr = validate_tmnt_modeling_params(unvalidated_data, context=context)
 
-    if pv_global_settings is None:
-        pv_global_settings = get_pv_settings()
-    tmnt_cost = maybe_update_pv_params(unvalidated_data, pv_global_settings)
+    if npv_global_settings is None:
+        npv_global_settings = get_npv_settings()
+    tmnt_cost = maybe_update_npv_params(unvalidated_data, npv_global_settings)
 
     return TMNTUpdate(tmnt_attr=tmnt_attr, tmnt_cost=tmnt_cost)

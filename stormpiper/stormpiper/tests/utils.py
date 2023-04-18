@@ -12,12 +12,11 @@ from stormpiper.core.config import settings
 from stormpiper.database import utils
 from stormpiper.database.connection import get_session
 from stormpiper.database.schemas.base import Base, User
-from stormpiper.database.schemas.globals import GlobalSetting
 from stormpiper.database.schemas.scenario import Scenario
 from stormpiper.database.schemas.views import initialize_views
 from stormpiper.earth_engine.login import base_login
 from stormpiper.src import tasks
-from stormpiper.startup import create_default_cost_globals
+from stormpiper.startup import create_default_globals
 from stormpiper.tests.data import _base
 
 hasher = CryptContext(schemes=["bcrypt"], deprecated="auto").hash
@@ -234,15 +233,10 @@ def seed_db(engine):
     clear_db(engine)
     initialize_views(engine)
     seed_users(engine)
-    create_default_cost_globals(engine)
+    create_default_globals(engine)
     seed_tacoma_table_dependencies(engine)
     seed_tacoma_derived_tables(engine)
     seed_tacoma_scenarios(engine)
-
-    Session = get_session(engine)
-
-    with Session.begin() as session:  # type: ignore
-        session.add(GlobalSetting(**{"variable": "test", "value": "test"}))
 
 
 def poll_testclient_url(testclient, url, timeout=5, verbose=False):  # pragma: no cover

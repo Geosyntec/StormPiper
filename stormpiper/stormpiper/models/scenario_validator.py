@@ -47,7 +47,7 @@ def validate_delineation_collection(delineation_collection_geojson: str) -> str:
 def scenario_validator(
     scenario: dict[str, Any],
     context: dict[str, Any] | None = None,
-    pv_global_settings: dict[str, Any] | None = None,
+    npv_global_settings: dict[str, Any] | None = None,
 ) -> ScenarioUpdate:
     input_ = scenario.get("input", None)
 
@@ -73,7 +73,7 @@ def scenario_validator(
                     tmnt_update = tmnt_attr_validator(
                         tmnt_patch=props,
                         context=context,
-                        pv_global_settings=pv_global_settings,
+                        npv_global_settings=npv_global_settings,
                     )
                     new_props = deepcopy(props)
                     if tmnt_update.tmnt_attr:

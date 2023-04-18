@@ -2,15 +2,14 @@ import logging
 from typing import Any
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Query, Request, status
-from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import ORJSONResponse
 from pydantic import BaseModel
 from sqlalchemy import select
 
 import stormpiper.bg_worker as bg
-from stormpiper.apps.supersafe.users import user_role_ge_admin, user_role_ge_editor
+from stormpiper.apps.supersafe.users import user_role_ge_editor
 from stormpiper.core.config import settings
-from stormpiper.core.utils import datetime_now, generate_task_response
+from stormpiper.core.utils import generate_task_response
 from stormpiper.database import crud, utils
 from stormpiper.database.schemas.scenario import Scenario
 from stormpiper.models.bg import TaskModel
@@ -23,8 +22,7 @@ from stormpiper.models.scenario import (
     ScenarioUpdate,
 )
 from stormpiper.models.scenario_validator import scenario_validator
-from stormpiper.src.npv import get_pv_settings_db
-from stormpiper.src.scenario import solve_scenario_data
+from stormpiper.src.npv import get_npv_settings_db
 
 from ..depends import AsyncSessionDB, Editor
 
@@ -48,12 +46,9 @@ async def validate_scenario(
     scenario["updated_by"] = user.email
 
     try:
-        pv_global_settings = await get_pv_settings_db(db=db)
-        return await run_in_threadpool(
-            scenario_validator,
-            scenario=scenario,
-            context=context,
-            pv_global_settings=pv_global_settings,
+        npv_global_settings = await get_npv_settings_db(db=db)
+        return scenario_validator(
+            scenario=scenario, context=context, npv_global_settings=npv_global_settings
         )
 
     except Exception as e:  # pragma: no cover
@@ -105,7 +100,7 @@ async def get_scenario_details(*, id: str, field: str, db: AsyncSessionDB):
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT, name="scenario:delete")
 async def delete_scenario(id: str, db: AsyncSessionDB):
     try:
-        _ = await crud.scenario.remove(db=db, id=id)
+        attr = await crud.scenario.remove(db=db, id=id)
     except Exception as e:  # pragma: no cover
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -148,7 +143,7 @@ async def update_scenario(
             logger.info("SCENARIO: Clearing scenario wq results")
             data["graph_edge"] = None
             data["structural_tmnt_result"] = None
-            data["input_time_updated"] = datetime_now()
+            data.pop("input_time_updated", None)
 
         else:
             logger.info("SCENARIO: Inputs are unchanged. Updating changelog only.")
@@ -193,6 +188,7 @@ async def create_scenario(
     data: ScenarioUpdate = Depends(validate_scenario),
 ):
     scenario = ScenarioCreate(**data.dict(exclude_unset=True), created_by=user.email)
+    logger.info(scenario.json())
     try:
         attr = await crud.scenario.create(db=db, new_obj=scenario)
     except Exception as e:  # pragma: no cover
@@ -217,7 +213,7 @@ async def solve_single_scenario(
     """implement solve-all in the frontend."""
     attr = await crud.scenario.get(db=db, id=id)
 
-    if not attr:  # pragma: no cover
+    if not attr:
         raise HTTPException(status_code=404, detail=f"Record not found for id={id}")
 
     data = ScenarioSolve(**utils.orm_to_dict(attr)).dict(exclude_unset=True)
@@ -264,18 +260,3 @@ async def solve_scenario(
     data = scenario.dict(exclude_unset=True)
     task = bg.compute_scenario_results.apply_async(kwargs={"data": data})
     return await generate_task_response(task=task)
-
-
-@rpc_router.post(
-    "/solve_scenario_foreground",
-    name="scenario:solve",
-    response_model=ScenarioUpdate,
-    dependencies=[Depends(user_role_ge_admin)],
-)
-async def solve_scenario_foreground(
-    scenario: ScenarioCreate = Depends(validate_scenario),
-):
-    """Stateless solves of scenarios with identical logic as the stateful variant."""
-    data = scenario.dict(exclude_unset=True)
-    response = solve_scenario_data(data=data)
-    return response

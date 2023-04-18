@@ -7,8 +7,10 @@ from pydantic import BaseModel
 
 
 class Role(str, Enum):
-    public = "public"  # default, alias for none;
+    public = "public"  # alias for none;
+    none = "none"
     reader = "reader"  # auth user; read only
+    user = "user"  # auth user; read only; alias for reader; deprecated
     editor = "editor"  # auth user; read/write
     user_admin = "user_admin"  # grant rw or user_admin to other users
     admin = "admin"  # systems admin; dev use only.

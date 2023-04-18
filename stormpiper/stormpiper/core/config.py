@@ -114,11 +114,9 @@ external_resources = json.loads(
 )
 
 
-default_global_cost_settings = [
-    {"variable": "discount_rate", "value": "0.042"},
-    {"variable": "inflation_rate", "value": "0.022"},
+default_global_settings = [
+    {"variable": "discount_rate", "value": "0.05"},
     {"variable": "planning_horizon_yrs", "value": "50"},
-    {"variable": "cost_basis_year", "value": "2023"},
 ]
 
 

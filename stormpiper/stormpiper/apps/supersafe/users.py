@@ -227,10 +227,10 @@ def check_protected_user_patch(field: str, min_role: Role = Role.admin):
 
         changing_self = True  # assume update is for current user
 
-        other_user_current_role = Role.public
+        other_user_current_role = Role.none
         if id:
             other_user = await user_db.get(id)
-            other_user_current_role = getattr(other_user, "role", Role.public)
+            other_user_current_role = getattr(other_user, "role", Role.none)
             changing_self = str(id) == str(current_user.id)
 
         new_role = user_update.role

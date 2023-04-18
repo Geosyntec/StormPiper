@@ -1,31 +1,31 @@
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.concurrency import run_in_threadpool
 from pydantic import ValidationError
 
 from stormpiper.apps.supersafe.users import user_role_ge_editor
 from stormpiper.core.exceptions import RecordNotFound
 from stormpiper.database import crud
-from stormpiper.models.npv import PVRequest
+from stormpiper.models.npv import NPVRequest
 from stormpiper.models.tmnt_attr import TMNTFacilityCost
-from stormpiper.src.npv import calculate_pv_for_existing_tmnt_in_db, compute_bmp_pv
+from stormpiper.src.npv import calculate_npv_for_existing_tmnt_in_db, compute_bmp_npv
 
 from ..depends import AsyncSessionDB
 
 rpc_router = APIRouter(dependencies=[Depends(user_role_ge_editor)])
 
 
-@rpc_router.post("/calculate_present_cost", tags=["rpc"])
-async def calculate_npv(pv: PVRequest):
-    cost_results = await run_in_threadpool(compute_bmp_pv, **pv.dict())
-    return cost_results
+@rpc_router.post("/calculate_net_present_value", tags=["rpc"])
+async def calculate_npv(npv: NPVRequest):
+    result, costs = compute_bmp_npv(**npv.dict())
+
+    return {"net_present_value": result, "annual_costs": costs}
 
 
 @rpc_router.post(
-    "/calculate_present_cost/{node_id}",
+    "/calculate_net_present_value/{node_id}",
     response_model=TMNTFacilityCost,
     tags=["rpc"],
 )
-async def calculate_pv_for_existing_tmnt(
+async def calculate_npv_for_existing_tmnt(
     node_id: str,
     db: AsyncSessionDB,
 ):
@@ -35,7 +35,7 @@ async def calculate_pv_for_existing_tmnt(
     """
 
     try:
-        attr = await calculate_pv_for_existing_tmnt_in_db(db=db, node_id=node_id)
+        attr = await calculate_npv_for_existing_tmnt_in_db(db=db, node_id=node_id)
 
     except RecordNotFound as e:
         raise HTTPException(status_code=404, detail=f"{e}")
@@ -46,8 +46,8 @@ async def calculate_pv_for_existing_tmnt(
     return attr
 
 
-@rpc_router.post("/refresh_pv_for_all_existing_tmnt", tags=["rpc"])
-async def refresh_pv_for_all_existing_tmnt(db: AsyncSessionDB):
+@rpc_router.post("/refresh_npv_for_all_existing_tmnt", tags=["rpc"])
+async def refresh_npv_for_all_existing_tmnt(db: AsyncSessionDB):
     """Calculates the net present value of an existing structural bmp facility"""
 
     attrs = await crud.tmnt_cost.get_all(db=db)

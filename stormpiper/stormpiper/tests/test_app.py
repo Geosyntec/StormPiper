@@ -25,4 +25,4 @@ def test_ping(client_lookup, client_name):
     )
     data = response.json()
     # make sure api doesn't retutn an error json response
-    assert "version" in data, data
+    assert "user" in data, data

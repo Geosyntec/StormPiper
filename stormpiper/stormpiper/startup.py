@@ -71,25 +71,25 @@ def create_initial_users() -> None:
     logger.info("Initial data created")
 
 
-def create_default_cost_globals(engine):
-    from stormpiper.core.config import default_global_cost_settings
+def create_default_globals(engine):
+    from stormpiper.core.config import default_global_settings
     from stormpiper.database.connection import get_session
-    from stormpiper.database.schemas.globals import GlobalCostSetting
+    from stormpiper.database.schemas.globals import GlobalSetting
 
     Session = get_session(engine)
 
     with Session.begin() as session:  # type: ignore
         batch = []
-        for dct in default_global_cost_settings:
+        for dct in default_global_settings:
             variable = dct["variable"]
             s = (
-                session.query(GlobalCostSetting)
-                .filter(GlobalCostSetting.variable == variable)
+                session.query(GlobalSetting)
+                .filter(GlobalSetting.variable == variable)
                 .first()
             )
             if s is None:
                 dct["updated_by"] = "system_default"
-                batch.append(GlobalCostSetting(**dct))
+                batch.append(GlobalSetting(**dct))
         session.add_all(batch)
 
 

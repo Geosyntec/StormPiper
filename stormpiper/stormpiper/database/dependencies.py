@@ -24,8 +24,8 @@ tmnt_facility_delineation
 subbasin
 tmnt_source_control
 tmnt_facility_attribute
-tmnt_facility_cost                              global_cost_setting
-scenario                                        global_cost_setting
+tmnt_facility_cost                              global_setting
+scenario                                        global_setting
 tmnt_v                                          tmnt_facility_attribute    tmnt_facility    tmnt_facility_cost
 lgu_boundary                                    subbasin        tmnt_facility_delineation
 graph_edge                                      lgu_boundary    tmnt_facility_attribute     tmnt_facility

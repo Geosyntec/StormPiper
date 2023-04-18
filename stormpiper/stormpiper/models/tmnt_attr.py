@@ -68,13 +68,10 @@ class TMNTFacilityAttrInDB(TMNTFacilityAttrInDBBase):
 # Shared properties
 class TMNTFacilityCostBase(BaseModel):
     # cost attrs
-    capital_cost: float | None = None
-    capital_cost_basis_year: int | float | None = None
-    om_cost_per_yr: float | None = None
-    om_cost_basis_year: int | float | None = None
-    install_year: int | float | None = None
+    capital_cost: None | float = None
+    om_cost_per_yr: None | float = None
+    lifespan_yrs: None | float = None
     replacement_cost: None | float = None
-    lifespan_yrs: float | int | None = None
 
 
 # Properties to receive on update
@@ -85,19 +82,7 @@ class TMNTFacilityCostPatch(TMNTFacilityCostBase):
 # Properties to send to DB on update
 class TMNTFacilityCostUpdate(TMNTFacilityCostPatch):
     updated_by: None | str = None
-
-    # globals
-    discount_rate: float | None = None
-    inflation_rate: float | None = None
-    planning_horizon_yrs: float | int | None = None
-    cost_basis_year: float | int | None = None
-
-    # cost results
-    present_value_capital_cost: float | None = None
-    present_value_om_cost: float | None = None
-    present_value_total_cost: float | None = None
-    present_value_cost_table: list[dict] | None = None
-    present_value_chart_table: list[dict] | None = None
+    net_present_value: None | float = None
 
 
 # Properties to receive on creation
@@ -108,19 +93,7 @@ class TMNTFacilityCostCreate(TMNTFacilityCostUpdate):
 # Properties shared by models stored in DB
 class TMNTFacilityCostInDBBase(BaseORM, TMNTFacilityCostBase):
     node_id: str
-
-    # globals
-    discount_rate: float | None = None
-    inflation_rate: float | None = None
-    planning_horizon_yrs: float | int | None = None
-    cost_basis_year: float | int | None = None
-
-    # cost results
-    present_value_capital_cost: float | None = None
-    present_value_om_cost: float | None = None
-    present_value_total_cost: float | None = None
-    present_value_cost_table: list[dict] | None = None
-    present_value_chart_table: list[dict] | None = None
+    net_present_value: None | float = None
 
 
 # Properties to return to client

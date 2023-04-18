@@ -4,9 +4,9 @@ from .. import utils as test_utils
 
 
 @pytest.mark.parametrize(
-    "node_id, blob, exp_pv",
+    "node_id, blob, exp_npv",
     [
-        # complete pv patch
+        # complete npv patch
         (
             "SWFA-100018",
             {
@@ -15,7 +15,7 @@ from .. import utils as test_utils
                 "replacement_cost": 225000,
                 "lifespan_yrs": 15,
             },
-            1500255,
+            -739400.67,
         ),
         # incomplete patch
         ("SWFA-100018", {"capital_cost": 450001}, None),
@@ -28,11 +28,11 @@ from .. import utils as test_utils
                 "replacement_cost": 225000,
                 "lifespan_yrs": 15,
             },
-            1500255,
+            -739400.67,
         ),
     ],
 )
-def test_pv_api_response_node_id(client, node_id, blob, exp_pv):
+def test_npv_api_response_node_id(client, node_id, blob, exp_npv):
     user_token = test_utils.user_token(client)
 
     route = f"/api/rest/tmnt_attr/{node_id}"
@@ -63,10 +63,10 @@ def test_pv_api_response_node_id(client, node_id, blob, exp_pv):
     exp = blob.get("capital_cost")
 
     assert response.status_code < 400, response.content
-    assert abs(exp - res) < 1, (res, exp)
+    assert (abs(exp - res) / exp) < 1e-6, (res, exp)
 
-    pv = rjson.get("present_value_total_cost")
-    if exp_pv is None:
-        assert pv is None
+    npv = rjson.get("net_present_value")
+    if exp_npv is None:
+        assert npv is None
     else:
-        assert abs(exp_pv - pv) < 1, (pv, exp_pv)
+        assert (abs(exp_npv - npv) / exp_npv) < 1e-6, (npv, exp_npv)
