@@ -116,6 +116,7 @@ def _delete_and_replace_db(
         if table_exists:  # pragma: no branch
             q = sa.text(f'delete from "{table_name}";')
             conn.execute(q)
+        logger.info(f"Updating table {table_name}")
         method(
             table_name,
             con=conn,

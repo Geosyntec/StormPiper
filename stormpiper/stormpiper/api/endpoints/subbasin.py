@@ -28,9 +28,10 @@ router = APIRouter()
 async def get_subbasin(
     subbasin_id: str,
     db: AsyncSessionDB,
-    epoch: Epoch = Query("1980s", example="1980s"),  # type: ignore
+    epoch: Epoch | None = Query("1980s", example="1980s"),  # type: ignore
 ):
     q = select(SubbasinResult_View).where(SubbasinResult_View.subbasin == subbasin_id)
+    epoch = epoch or "1980s"
     if epoch != "all":
         q = q.where(SubbasinResult_View.epoch == epoch)
     result = await db.execute(q)
@@ -56,14 +57,19 @@ async def get_subbasin(
 )
 async def get_all_subbasins(
     db: AsyncSessionDB,
-    f: str = Query("json"),
-    limit: None | int = Query(int(1e6)),
-    offset: int = Query(0),
-    epoch: Epoch = Query("1980s", example="1980s"),  # type: ignore
+    f: str | None = Query("json"),
+    limit: int | None = Query(int(1e6)),
+    offset: int | None = Query(0),
+    epoch: Epoch | None = Query("1980s", example="1980s"),  # type: ignore
 ):
-    q = select(SubbasinResult_View).offset(offset).limit(limit)
+    q = select(SubbasinResult_View)
+
+    epoch = epoch or "1980s"
     if epoch != "all":
         q = q.where(SubbasinResult_View.epoch == epoch)
+
+    q = q.offset(offset).limit(limit)
+
     result = await db.execute(q)
     scalars = result.scalars().all()
 

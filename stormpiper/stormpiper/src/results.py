@@ -149,7 +149,7 @@ def calculate_src_ctrl_percent_reduction(
 
         df2.append(_df)
 
-    if not len(df2):
+    if not len(df2):  # pragma: no cover
         return pandas.DataFrame([])
 
     df = (

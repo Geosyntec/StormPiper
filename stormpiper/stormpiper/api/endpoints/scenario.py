@@ -218,7 +218,7 @@ async def solve_single_scenario(
     """implement solve-all in the frontend."""
     attr = await crud.scenario.get(db=db, id=id)
 
-    if not attr:
+    if not attr:  # pragma: no cover
         raise HTTPException(status_code=404, detail=f"Record not found for id={id}")
 
     data = ScenarioSolve(**utils.orm_to_dict(attr)).dict(exclude_unset=True)
