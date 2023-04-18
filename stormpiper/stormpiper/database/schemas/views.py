@@ -73,16 +73,19 @@ def build_tmnt_v():
         if k not in ["node_id"] + t_cols + ta_cols + ts_cols
     ]
 
-    tcols = [f"""\tt."{s}", """ for s in t_cols]
+    tcols = [f"""\tt."{s}" """ for s in t_cols]
 
-    tatscols = [f"""\tta."{s}" as "modeling_attr_{s}", """ for s in ts_cols]
-    tacols = [f"""\tta."{s}", """ for s in ta_cols]
+    tatscols = [f"""\tta."{s}" as "modeling_attr_{s}" """ for s in ts_cols]
+    tacols = [f"""\tta."{s}" """ for s in ta_cols]
 
-    tctscols = [f"""\ttc."{s}" as "cost_attr_{s}", """ for s in ts_cols]
-    tccols = [f"""\ttc."{s}", """ for s in tc_cols]
-    tccols[-1] = tccols[-1].replace(", ", " ")
+    tctscols = [f"""\ttc."{s}" as "cost_attr_{s}" """ for s in ts_cols]
+    tccols = [f"""\ttc."{s}" """ for s in tc_cols]
+    costploadclos = [
+        f"""tc.present_value_total_cost / nullif(COALESCE(nullif(sign(r."{poc}_removed"),-1),0)*r."{poc}_removed", 0) AS "{poc.split("_")[0]}_total_cost_dollars/load_lbs_removed" """
+        for poc in load_cols
+    ]
 
-    block = "\n".join(tcols + tatscols + tacols + tctscols + tccols)
+    block = ",\n".join(tcols + tatscols + tacols + tctscols + tccols + costploadclos)
 
     view_template = f"""
 DROP VIEW IF EXISTS tmnt_v;
@@ -92,6 +95,8 @@ select
 from tmnt_facility as t
     JOIN tmnt_facility_attribute as ta on t.node_id = ta.node_id
     FULL OUTER JOIN tmnt_facility_cost as tc on t.node_id = tc.node_id
+    LEFT JOIN result_blob r ON t.node_id = r.node_id where r.epoch = '1980s'
+
 """
     return view_template
 
