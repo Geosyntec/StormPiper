@@ -5,8 +5,15 @@ from stormpiper.src import tasks
 
 
 @pytest.mark.parametrize("limit", [3, 5])
-def test_get_all_results(client, limit):
-    response = client.get(f"/api/rest/results?limit={limit}")
+@pytest.mark.parametrize("ntype", ["tmnt_facility", "land_surface", None])
+@pytest.mark.parametrize("epoch", ["all", "1980s", None])
+def test_get_all_results(client, limit, ntype, epoch):
+    route = f"/api/rest/results?limit={limit}"
+    if ntype is not None:
+        route += f"&ntype={ntype}"
+    if epoch is not None:
+        route += f"&epoch={epoch}"
+    response = client.get(route)
     assert 200 <= response.status_code < 300, response.content
     rsp_json = response.json()
     assert len(rsp_json) == limit

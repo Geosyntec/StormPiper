@@ -44,7 +44,7 @@ def clear_db(engine):
             if table.endswith("_v"):
                 continue
             else:
-                conn.execute(sa.text(f'delete from "{table}";'))
+                conn.execute(sa.text(f'truncate "{table}";'))
 
 
 def get_token(app, username, password):

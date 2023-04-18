@@ -28,13 +28,17 @@ async def get_all_results(
     ntype: NType | None = None,  # type: ignore
     limit: int | None = Query(int(1e6)),
     offset: int | None = Query(0),
-    epoch: Epoch = Query("1980s", example="1980s"),  # type: ignore
+    epoch: Epoch | None = Query("1980s", example="1980s"),  # type: ignore
 ):
-    q = select(results.ResultBlob).offset(offset).limit(limit)
+    q = select(results.ResultBlob)
+
+    epoch = epoch or "1980s"
     if epoch != "all":
         q = q.where(results.ResultBlob.epoch == epoch)
     if ntype is not None:
         q = q.where(results.ResultBlob.ntype == ntype)
+
+    q = q.offset(offset).limit(limit)
 
     result = await db.execute(q)
     scalars = result.scalars().all()
@@ -69,10 +73,11 @@ async def get_result_is_dirty(db: AsyncSessionDB):
 async def get_result(
     db: AsyncSessionDB,
     node_id: str = Path(..., title="node id or altid", example="SWFA-100002"),
-    epoch: Epoch = Query("1980s", example="1980s"),  # type: ignore
+    epoch: Epoch | None = Query("1980s", example="1980s"),  # type: ignore
 ):
     q = select(results.ResultBlob).where(results.ResultBlob.node_id == node_id)
 
+    epoch = epoch or "1980s"
     if epoch != "all":
         q = q.where(results.ResultBlob.epoch == epoch)
 

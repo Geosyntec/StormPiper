@@ -79,12 +79,7 @@ def test_scenario_solve_data_wq(client):
 @pytest.mark.integration
 @test_utils.with_ee_login
 @pytest.mark.parametrize(
-    "blob",
-    [
-        DELIN_ONLY_SCENARIO,
-        TMNT_ONLY_SCENARIO,
-        TMNT_SCENARIO,
-    ],
+    "blob", [DELIN_ONLY_SCENARIO, TMNT_ONLY_SCENARIO, TMNT_SCENARIO]
 )
 def test_solve_new_scenario(client, blob):
     route = "/api/rest/scenario"
@@ -113,4 +108,14 @@ def test_solve_new_scenario(client, blob):
             )
     finally:
         ## cleanup
-        dresponse = client.delete(route_id)
+        _ = client.delete(route_id)
+
+
+@pytest.mark.integration
+@test_utils.with_ee_login
+@pytest.mark.parametrize(
+    "blob", [DELIN_ONLY_SCENARIO, TMNT_ONLY_SCENARIO, TMNT_SCENARIO]
+)
+def test_solve_scenario_foreground(admin_client, blob):
+    response = admin_client.post("/api/rpc/solve_scenario_foreground", json=blob)
+    assert response.status_code < 300, response.content

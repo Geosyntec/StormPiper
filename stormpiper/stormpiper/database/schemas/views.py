@@ -93,10 +93,9 @@ CREATE OR REPLACE VIEW tmnt_v AS
 select
 {block}
 from tmnt_facility as t
-    JOIN tmnt_facility_attribute as ta on t.node_id = ta.node_id
-    FULL OUTER JOIN tmnt_facility_cost as tc on t.node_id = tc.node_id
-    LEFT JOIN result_blob r ON t.node_id = r.node_id where r.epoch = '1980s'
-
+    LEFT JOIN tmnt_facility_attribute as ta on t.node_id = ta.node_id
+    LEFT JOIN tmnt_facility_cost as tc on t.node_id = tc.node_id
+    LEFT JOIN (SELECT * from result_blob where epoch = '1980s') as r ON t.node_id = r.node_id
 """
     return view_template
 
