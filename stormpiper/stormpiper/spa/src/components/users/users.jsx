@@ -298,9 +298,13 @@ export default function Users() {
       <DataGrid
         rows={rows}
         columns={columns}
-        columnVisibilityModel={{
-          // Hide columns listed here, the other columns will remain visible
+          initialState={{
+            columns: {
+              columnVisibilityModel: {
+                // Hide columns status and traderName, the other columns will remain visible
           id: false,
+              },
+            },
         }}
         editMode="row"
         rowModesModel={rowModesModel}
