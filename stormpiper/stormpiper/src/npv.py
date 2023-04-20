@@ -194,6 +194,9 @@ def compute_bmp_pv(
     planning_horizon_yrs: int | float,
     cost_basis_year: int | float,
 ) -> dict[str, Any]:
+    if install_year is None:
+        install_year = cost_basis_year
+
     present_value_capital_cost = compute_pv_capital_cost(
         capital_cost=capital_cost,
         capital_cost_basis_year=capital_cost_basis_year,
@@ -215,6 +218,48 @@ def compute_bmp_pv(
         cost_basis_year=cost_basis_year,
     )
 
+    cap_df = pandas.DataFrame(
+        [
+            {
+                "year": install_year,
+                "pv_capital_cost": present_value_capital_cost,
+            }
+        ]
+    )
+
+    pv_cost_table = (
+        present_value_om_cost_table.merge(
+            cap_df,
+            on="year",
+            how="left",
+        )
+        .fillna({"pv_capital_cost": 0})
+        .assign(pv_total_cost_sum=lambda df: df["pv_om_cost"] + df["pv_capital_cost"])
+        .assign(pv_om_cost_cumsum=lambda df: df["pv_om_cost"].cumsum())
+        .assign(pv_total_cost_cumsum=lambda df: df["pv_total_cost_sum"].cumsum())
+    )
+
+    pv_chart_table = pv_cost_table.melt(
+        id_vars="year",
+        value_vars=[
+            "pv_om_cost",
+            "pv_capital_cost",
+            "pv_total_cost_sum",
+            "pv_om_cost_cumsum",
+            "pv_total_cost_cumsum",
+        ],
+    ).assign(
+        title=lambda df: df["variable"].replace(
+            {
+                "pv_om_cost": "Present Value OM Cost (annual)",
+                "pv_capital_cost": "Present Value Capital Cost",
+                "pv_total_cost_sum": "Present Value Total Cost (annual)",
+                "pv_om_cost_cumsum": "Present Value OM Cost (cumulative)",
+                "pv_total_cost_cumsum": "Present Value Total Cost (cumulative)",
+            }
+        )
+    )
+
     present_value_om_cost = round(present_value_om_cost_table["pv_om_cost"].sum(), 2)
 
     present_value_total_cost = round(
@@ -225,8 +270,9 @@ def compute_bmp_pv(
         "present_value_total_cost": present_value_total_cost,
         "present_value_capital_cost": present_value_capital_cost,
         "present_value_om_cost": present_value_om_cost,
-        "present_value_om_cost_table": json.loads(
-            present_value_om_cost_table.to_json(orient="records")
+        "present_value_cost_table": json.loads(pv_cost_table.to_json(orient="records")),
+        "present_value_chart_table": json.loads(
+            pv_chart_table.to_json(orient="records")
         ),
     }
 
@@ -262,7 +308,8 @@ async def calculate_pv_for_existing_tmnt_in_db(node_id: str, db: AsyncSession):
         "present_value_capital_cost": None,
         "present_value_om_cost": None,
         "present_value_total_cost": None,
-        "present_value_om_cost_table": None,
+        "present_value_cost_table": None,
+        "present_value_chart_table": None,
     }
 
     try:

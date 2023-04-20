@@ -90,7 +90,8 @@ class TMNTFacilityCostUpdate(TMNTFacilityCostPatch):
     present_value_capital_cost: float | None = None
     present_value_om_cost: float | None = None
     present_value_total_cost: float | None = None
-    present_value_om_cost_table: list[dict] | None = None
+    present_value_cost_table: list[dict] | None = None
+    present_value_chart_table: list[dict] | None = None
 
 
 # Properties to receive on creation
@@ -106,7 +107,8 @@ class TMNTFacilityCostInDBBase(BaseORM, TMNTFacilityCostBase):
     present_value_capital_cost: float | None = None
     present_value_om_cost: float | None = None
     present_value_total_cost: float | None = None
-    present_value_om_cost_table: list[dict] | None = None
+    present_value_cost_table: list[dict] | None = None
+    present_value_chart_table: list[dict] | None = None
 
 
 # Properties to return to client

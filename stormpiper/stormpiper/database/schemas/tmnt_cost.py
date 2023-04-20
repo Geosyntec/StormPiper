@@ -22,4 +22,5 @@ class TMNTFacilityCost(Base, MutableTrackedTable):
     present_value_capital_cost = Column(Float)
     present_value_om_cost = Column(Float)
     present_value_total_cost = Column(Float)
-    present_value_om_cost_table = Column(JSONB)
+    present_value_cost_table = Column(JSONB)
+    present_value_chart_table = Column(JSONB)
