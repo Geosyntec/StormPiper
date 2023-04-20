@@ -43,5 +43,15 @@ class TMNTView(BaseORM):
     present_value_cost_table: list[dict] | None = None
     present_value_chart_table: list[dict] | None = None
 
+    # cost effectiveness
+    TCu_total_cost_dollars_per_load_lbs_removed: float | None
+    TN_total_cost_dollars_per_load_lbs_removed: float | None
+    TP_total_cost_dollars_per_load_lbs_removed: float | None
+    TSS_total_cost_dollars_per_load_lbs_removed: float | None
+    TZn_total_cost_dollars_per_load_lbs_removed: float | None
+    PHE_total_cost_dollars_per_load_lbs_removed: float | None
+    PYR_total_cost_dollars_per_load_lbs_removed: float | None
+    DEHP_total_cost_dollars_per_load_lbs_removed: float | None
+
     class Config:
         orm_mode = True
