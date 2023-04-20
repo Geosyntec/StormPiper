@@ -2,6 +2,7 @@ from fastapi import APIRouter
 
 from stormpiper.api.endpoints import (
     bg_worker,
+    chart,
     globals,
     npv,
     prom,
@@ -46,6 +47,8 @@ api_router.include_router(reference.router, prefix="/reference", tags=["referenc
 api_router.include_router(bg_worker.router, prefix="/tasks", tags=["bg"])
 api_router.include_router(tileserver.router, prefix="/tileserver", tags=["spatial"])
 api_router.include_router(spatial.router, prefix="/spatial", tags=["spatial"])
+api_router.include_router(chart.router, prefix="/chart", tags=["chart"])
+
 
 rpc_router = APIRouter(prefix="/api/rpc")
 rpc_router.include_router(bg_worker.rpc_router, tags=["bg"])
