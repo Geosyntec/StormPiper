@@ -43,10 +43,11 @@ export const ScenarioDelineationForm = forwardRef(
           },
 
           async resetForm() {
-            delineationSetter({
-              type: "FeatureCollection",
-              features: [],
-            });
+            delineationSetter(null);
+            // delineationSetter({
+            //   type: "FeatureCollection",
+            //   features: [],
+            // });
           },
 
           setName(delineation) {
