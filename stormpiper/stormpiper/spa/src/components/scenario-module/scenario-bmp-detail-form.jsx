@@ -19,7 +19,7 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
   });
   const [facilityType, setFacilityType] = useState(() => {
     let res;
-    if (facility.features?.length > 0) {
+    if (facility?.features?.length > 0) {
       res = facility.features[0].properties["facility_type"] || "no_treatment";
     } else {
       res = "no_treatment";
@@ -45,17 +45,18 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
           const isFormValid = await childRef.current.triggerValidation();
           console.log("BMP form valid?: ", isFormValid);
           const isFeatureDrawn =
-            facility.features.length > 0 && facility.features[0].geometry;
+            facility?.features.length > 0 && facility?.features[0].geometry;
           console.log("BMP drawn?:", isFeatureDrawn);
           return isFormValid && isFeatureDrawn;
         },
 
         async resetForm() {
           childRef.current.resetForm();
-          facilitySetter({
-            type: "FeatureCollection",
-            features: [],
-          });
+          facilitySetter(null);
+          // facilitySetter({
+          //   type: "FeatureCollection",
+          //   features: [],
+          // });
         },
 
         handleSubmit(facility) {
@@ -178,7 +179,7 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
             allFields={facilityFields}
             simpleFields={simpleFacilityFields}
             values={
-              facility.features.length > 0
+              facility?.features.length > 0
                 ? facility.features[0].properties
                 : {}
             }

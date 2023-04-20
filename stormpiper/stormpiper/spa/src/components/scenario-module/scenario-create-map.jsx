@@ -56,7 +56,7 @@ export default function ScenarioCreateMap({
     id: "userDelineations",
     label: "User Delineations",
     data: delineation,
-    selectedFeatureIndexes: delineation.features.length > 0 ? [0] : [],
+    selectedFeatureIndexes: delineation?.features?.length > 0 ? [0] : [],
     mode: delineationEditMode,
     pickable: true,
     onEdit: ({ updatedData, editType, editContext }) => {
@@ -66,7 +66,7 @@ export default function ScenarioCreateMap({
         //When there are no existing features, simply update
         //When there is an existing feature, that must mean that the user entered a delineation name,
         //  so we need to merge that with the new feature's geometry
-        if (delineation.features.length === 0) {
+        if (delineation?.features?.length === 0) {
           delineationSetter(updatedData);
         } else {
           delineationSetter({
@@ -114,7 +114,7 @@ export default function ScenarioCreateMap({
             editModeToggler={delineationEditToggler}
             drawModeToggler={delineationDrawToggler}
             featureSetter={delineationSetter}
-            feature={delineation.features[0]}
+            feature={delineation?.features[0]}
           />
         </Box>
       )}

@@ -94,10 +94,10 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
 
   function updateFacility(facility) {
     console.log("Trying to update facility: ", facility);
-    let delineationToUpdate = { ...delineation };
-    if (facility.features[0] && delineation?.features.length > 0) {
+    let delineationToUpdate = delineation ? { ...delineation } : null;
+    if (facility?.features[0] && delineation?.features.length > 0) {
       delineation.features[0].properties["relid"] =
-        facility.features[0].properties["node_id"];
+        facility?.features[0].properties["node_id"];
     }
     setFacility(facility);
     setScenarioObject({
