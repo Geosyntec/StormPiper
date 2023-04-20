@@ -89,7 +89,8 @@ def maybe_update_pv_params(
         "present_value_capital_cost": None,
         "present_value_om_cost": None,
         "present_value_total_cost": None,
-        "present_value_om_cost_table": None,
+        "present_value_cost_table": None,
+        "present_value_chart_table": None,
     }
 
     unvalidated_data.update(**cost_results)

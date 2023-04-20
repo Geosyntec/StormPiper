@@ -40,7 +40,8 @@ class TMNTView(BaseORM):
     present_value_capital_cost: float | None
     present_value_om_cost: float | None
     present_value_total_cost: float | None
-    present_value_om_cost_table: list[dict] | None
+    present_value_cost_table: list[dict] | None = None
+    present_value_chart_table: list[dict] | None = None
 
     class Config:
         orm_mode = True
