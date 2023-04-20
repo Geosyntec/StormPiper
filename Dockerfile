@@ -56,8 +56,7 @@ COPY ./stormpiper/requirements.txt /requirements.txt
 RUN python -m venv /opt/venv
 # Make sure we use the virtualenv:
 ENV PATH=/opt/venv/bin:$PATH
-RUN pip install --upgrade pip \
-    && pip install \
+RUN pip install \
     --no-index \
     --no-cache-dir \
     --find-links=/core \
