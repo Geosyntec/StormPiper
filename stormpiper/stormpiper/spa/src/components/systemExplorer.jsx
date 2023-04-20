@@ -204,7 +204,8 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
 
     //Set up is_dirty polling request to check when new results need to be calculated
     _fetchIsDirty();
-    setInterval(_fetchIsDirty, 10000);
+    const poll = setInterval(_fetchIsDirty, 10000);
+    return () => clearInterval(poll);
   }, []);
 
   const [resultsDisplayState, setResultsDisplayState] = useState(false); //when true, results table is displayed
