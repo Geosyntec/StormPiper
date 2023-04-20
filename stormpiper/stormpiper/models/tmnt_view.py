@@ -4,28 +4,28 @@ from .base import BaseORM
 class TMNTView(BaseORM):
     node_id: str
     altid: str
-    facilitytype: None | str
-    commonname: None | str
-    facilitydetail: None | str
-    flowcontrol: None | str
-    infiltrated: None | str
-    waterquality: None | str
-    flowcontroltype: None | str
-    waterqualitytype: None | str
-    facility_type: None | str
-    design_storm_depth_inches: None | float
-    tributary_area_tc_min: None | float
-    total_volume_cuft: None | float
-    area_sqft: None | float
-    inf_rate_inhr: None | float
-    retention_volume_cuft: None | float
-    media_filtration_rate_inhr: None | float
-    hsg: None | str
-    minimum_retention_pct_override: None | float
-    treatment_rate_cfs: None | float
-    depth_ft: None | float
-    captured_pct: None | float
-    retained_pct: None | float
+    facilitytype: str | None
+    commonname: str | None
+    facilitydetail: str | None
+    flowcontrol: str | None
+    infiltrated: str | None
+    waterquality: str | None
+    flowcontroltype: str | None
+    waterqualitytype: str | None
+    facility_type: str | None
+    design_storm_depth_inches: float | None
+    tributary_area_tc_min: float | None
+    total_volume_cuft: float | None
+    area_sqft: float | None
+    inf_rate_inhr: float | None
+    retention_volume_cuft: float | None
+    media_filtration_rate_inhr: float | None
+    hsg: str | None
+    minimum_retention_pct_override: float | None
+    treatment_rate_cfs: float | None
+    depth_ft: float | None
+    captured_pct: float | None
+    retained_pct: float | None
 
     # cost attrs
     capital_cost: float | None
