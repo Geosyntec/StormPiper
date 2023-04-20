@@ -81,7 +81,7 @@ def build_tmnt_v():
     tctscols = [f"""\ttc."{s}" as "cost_attr_{s}" """ for s in ts_cols]
     tccols = [f"""\ttc."{s}" """ for s in tc_cols]
     costploadclos = [
-        f"""tc.present_value_total_cost / nullif(COALESCE(nullif(sign(r."{poc}_removed"),-1),0)*r."{poc}_removed", 0) AS "{poc.split("_")[0]}_total_cost_dollars/load_lbs_removed" """
+        f"""tc.present_value_total_cost / nullif(COALESCE(nullif(sign(r."{poc}_removed"),-1),0)*r."{poc}_removed", 0) AS "{poc.split("_")[0]}_total_cost_dollars_per_load_lbs_removed" """
         for poc in load_cols
     ]
 
