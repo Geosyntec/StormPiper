@@ -45,11 +45,12 @@ type formProps = {
     [x: string]: { [x: string]: string };
   };
   handleFormSubmit: Function;
-  context: string;
+  showSubmit: boolean;
 };
 
 export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
   console.log("BMP Form props:", Object.keys(props));
+  const showSubmit = props?.showSubmit ?? true;
   const firstRender = useRef(true);
   const {
     register,
@@ -417,12 +418,12 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
               display: "grid",
               py: 2,
               gridTemplateColumns: { md: "1fr 50%" },
-              "grid-gap": "2rem",
+              gap: 2,
             }}
           >
             {fieldDiv}
           </Box>
-          {props.context === "existing-system" && (
+          {showSubmit && (
             <Box display="flex" justifyContent="right">
               <Button variant="contained" type="submit">
                 Submit
@@ -436,7 +437,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
     }
   }
   return (
-    <Box>
+    <Box sx={{ width: "100%" }}>
       <Typography variant="h6">
         {props.values?.altid} Facility Details
       </Typography>

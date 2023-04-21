@@ -188,7 +188,7 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
             facilityChangeHandler={setFacilityType}
             handleFormSubmit={_handleSubmit}
             ref={childRef}
-            context="scenario"
+            showSubmit={false}
           ></BMPForm>
           <Dialog open={resultSuccess} onClose={() => setResultSuccess(false)}>
             <Box sx={{ padding: "15px" }}>
