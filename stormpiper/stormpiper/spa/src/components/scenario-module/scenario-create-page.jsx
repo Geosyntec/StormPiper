@@ -1,6 +1,6 @@
-import { Card, Button, Typography } from "@mui/material";
+import { Card } from "@mui/material";
 
-import { TwoColGrid, FullSpan, HalfSpan } from "../base/two-col-grid";
+import { TwoColGrid, HalfSpan } from "../base/two-col-grid";
 import ScenarioCreateMap from "./scenario-create-map";
 import {
   DrawPolygonMode,
@@ -12,7 +12,7 @@ import {
 } from "nebula.gl";
 import { useEffect, useState, useRef } from "react";
 import { ScenarioCreateStepper } from "./scenario-create-stepper";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import { api_fetch } from "../../utils/utils";
 
@@ -36,9 +36,13 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
     },
   ];
 
+  const location = useLocation();
+
   useEffect(() => {
-    setDrawerButtonList(buttonList);
-  }, []);
+    setTimeout(() => {
+      setDrawerButtonList(buttonList);
+    }, 50);
+  }, [location]);
 
   const [facilityEditMode, setFacilityEditMode] = useState(() => ViewMode);
   const [delineationEditMode, setDelineationEditMode] = useState(
@@ -167,9 +171,10 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
         <Card
           sx={{
             display: "flex",
-            height: "85vh",
+            height: "100%",
             alignItems: "start",
             justifyContent: "center",
+            p: 3,
           }}
         >
           <ScenarioCreateStepper
@@ -190,7 +195,7 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
         <Card
           sx={{
             display: "flex",
-            height: "85vh",
+            height: { xs: 500, md: "calc(100vh - 150px)" },
             alignItems: "center",
             justifyContent: "center",
           }}

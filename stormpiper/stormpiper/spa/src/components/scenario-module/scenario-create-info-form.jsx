@@ -130,10 +130,9 @@ export const ScenarioInfoForm = forwardRef(function ScenarioInfoForm(
   return (
     <Box
       sx={{
-        margin: "1em",
         display: "flex",
         justifyContent: "center",
-        width: "90%",
+        px: 2,
       }}
     >
       <Box

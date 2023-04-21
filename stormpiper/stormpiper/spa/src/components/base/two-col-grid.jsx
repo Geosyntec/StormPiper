@@ -29,6 +29,9 @@ export const DrawerAwareGrid = styled(Grid)(({ theme }) => {
     [theme.breakpoints.up("lg")]: {
       width: `calc(1200px - 56px)`,
     },
+    [theme.breakpoints.up("xl")]: {
+      width: `calc(1536px - 56px)`,
+    },
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -47,7 +50,7 @@ export function TwoColGrid({ children, ...props }) {
         py: 3,
       }}
     >
-      <Grid container item spacing={{ xs: 0, sm: 3 }} {...props}>
+      <Grid container item spacing={2} {...props}>
         {/*Create items with different breakpoints */}
         {/*For example,This item will be 12 units wide on extra small screens */}
         {children}
