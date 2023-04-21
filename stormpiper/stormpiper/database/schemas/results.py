@@ -1,7 +1,7 @@
 from sqlalchemy import JSON, Column, Float, String, Table
 
+from stormpiper.core.config import VIRTUAL_POCS
 from stormpiper.core.context import get_context, get_pocs
-from stormpiper.src.organics import VIRTUAL_POCS
 
 from .base_class import Base
 

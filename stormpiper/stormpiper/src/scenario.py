@@ -6,7 +6,7 @@ import orjson
 import pandas
 import sqlalchemy as sa
 
-from stormpiper.core.config import settings
+from stormpiper.core.config import POCS, settings
 from stormpiper.database.connection import engine, get_session
 from stormpiper.database.schemas.scenario import Scenario
 from stormpiper.database.utils import orm_to_dict
@@ -41,6 +41,47 @@ def build_scenario_edge_list(lgu_boundary: str, tmnt_json: str, engine=engine):
     edge_list = build_edge_list(lgu_b, tmnt_v)
 
     return edge_list
+
+
+def maybe_include_cost_effectiveness(data: dict) -> dict:
+    struct_tmnt_list = data.get("structural_tmnt", [])
+    results_raw = data.get("structural_tmnt_result", [])
+    tmnt_results = list(
+        filter(
+            lambda dct: (
+                dct.get("ntype", None) == "tmnt_facility"
+                and dct.get("epoch", None) == "1980s"
+            ),
+            results_raw,
+        )
+    )
+
+    if not struct_tmnt_list or not tmnt_results:
+        return data
+
+    for fac in struct_tmnt_list:
+        for poc in POCS:
+            fac[f"{poc}_total_cost_dollars_per_load_lbs_removed"] = None
+
+        node_id = fac["node_id"]
+        pvtc = fac.get("present_value_total_cost", None)
+        if pvtc is None:
+            continue
+
+        fac_result_dct = next(
+            (dct for dct in tmnt_results if dct["node_id"] == node_id), None
+        )
+        if fac_result_dct is None:
+            continue
+
+        for poc in POCS:
+            load_reduced = fac_result_dct.get(f"{poc}_load_lbs_removed", 0)
+            if load_reduced > 0:
+                fac[f"{poc}_total_cost_dollars_per_load_lbs_removed"] = (
+                    pvtc / load_reduced
+                )
+
+    return data
 
 
 def solve_scenario_data(data: dict, force=False, engine=None) -> dict:
@@ -112,6 +153,8 @@ def solve_scenario_data(data: dict, force=False, engine=None) -> dict:
         result_blob = json.loads(result.to_json(orient="records"))
 
         data["structural_tmnt_result"] = result_blob
+
+    data = maybe_include_cost_effectiveness(data)
 
     if recalculate_loading or recalculate_wq:
         data.pop("result_time_updated", None)

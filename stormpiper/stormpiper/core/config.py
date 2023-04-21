@@ -120,3 +120,15 @@ default_global_cost_settings = [
     {"variable": "planning_horizon_yrs", "value": "50"},
     {"variable": "cost_basis_year", "value": "2023"},
 ]
+
+
+VIRTUAL_POLLUTANT_MAPPER = {
+    "PHE": lambda tss: tss * 1e-6 * 1 * 1,
+    "PYR": lambda tss: tss * 1e-6 * 1.9 * 1,
+    "DEHP": lambda tss: tss * 1e-6 * 19.3 * 2.3,
+}
+
+VIRTUAL_POCS = list(VIRTUAL_POLLUTANT_MAPPER.keys())
+STANDARD_POCS = ["TSS", "TN", "TP", "TCu", "TZn"]
+
+POCS = STANDARD_POCS + VIRTUAL_POCS
