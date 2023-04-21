@@ -119,7 +119,6 @@ const all_cols = new Set([
 ]);
 
 export default function BMPVolumeBalance({ rows }) {
-  console.log("volume rows", rows);
   let volume_data = rows.map((x) => pick(x, ...all_cols));
   let data = [];
 
@@ -134,8 +133,6 @@ export default function BMPVolumeBalance({ rows }) {
     }
     data.push(d);
   }
-
-  console.log("volume data", data);
 
   return (
     <ReadonlyStripedDataGrid
