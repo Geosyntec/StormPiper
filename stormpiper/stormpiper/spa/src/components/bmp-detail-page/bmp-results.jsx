@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Card } from "@mui/material";
+import { Box, Card, Stack, Typography } from "@mui/material";
 
 import { api_fetch } from "../../utils/utils";
 import BMPVolumeBalance from "./bmp-results-volume";
 import BMPLoadReduction from "./bmp-results-load";
 import BMPConcReduction from "./bmp-results-conc";
+import CostSummary from "../cost-analysis/cost-summary";
 
 const prepLoadPctRemovedData = (x) => {
   const pocs = ["TSS", "TN", "TP", "TCu", "TZn", "PYR", "PHE", "DEHP"];
@@ -43,45 +44,67 @@ const prepConcPctRemovedData = (x) => {
   return x;
 };
 
-async function getDataByID(id) {
-  const response = await api_fetch(`/api/rest/results/${id}`);
-  return response.json();
+async function getResultsDataByID(id) {
+  return await api_fetch(`/api/rest/results/${id}?epoch=all`);
+}
+
+async function getFacilityDataByID(id) {
+  return await api_fetch(`/api/rest/tmnt_facility/${id}`);
 }
 
 export function BMPDetailResults() {
   const params = useParams();
   const [rows, setRows] = useState([]);
+  const [tmntDetails, setTmntDetails] = useState(null);
 
-  useEffect(() => {
-    getDataByID(params.id).then((res) => {
+  const updateFacilityData = async () => {
+    const det_response = await getFacilityDataByID(params.id);
+    if (det_response.status <= 400) {
+      const details = await det_response.json();
+      setTmntDetails(details);
+    }
+  };
+
+  useEffect(async () => {
+    const res_response = await getResultsDataByID(params.id);
+    if (res_response.status <= 400) {
+      const res = await res_response.json();
       res.forEach((r) => {
         prepLoadRemovedData(r);
         prepLoadPctRemovedData(r);
         prepConcPctRemovedData(r);
       });
       setRows(res);
-    });
+    }
+
+    updateFacilityData();
   }, [params.id]);
 
   return (
-    <Card>
+    <Box>
+      <Box pb={3}>
+        <Card sx={{ p: 2 }}>
+          <CostSummary
+            tmntDetails={tmntDetails}
+            updateFacilityData={updateFacilityData}
+          />
+        </Card>
+      </Box>
       <Box>
         {!rows.length ? (
-          "loading..."
+          <Card sx={{ p: 2 }}>
+            <Typography variant="h6" fontWeight="bold" textAlign="center">
+              BMP Water Quality Results Are Unavailable for This Facility
+            </Typography>
+          </Card>
         ) : (
-          <>
-            <Box>
-              <BMPVolumeBalance rows={rows} />
-            </Box>
-            <Box sx={{ mt: 4 }}>
-              <BMPLoadReduction rows={rows} />
-            </Box>
-            <Box sx={{ mt: 4 }}>
-              <BMPConcReduction rows={rows} />
-            </Box>
-          </>
+          <Stack spacing={3}>
+            <Card sx={{ p: 2 }}>{<BMPVolumeBalance rows={rows} />}</Card>
+            <Card sx={{ p: 2 }}>{<BMPLoadReduction rows={rows} />}</Card>
+            <Card sx={{ p: 2 }}>{<BMPConcReduction rows={rows} />}</Card>
+          </Stack>
         )}
       </Box>
-    </Card>
+    </Box>
   );
 }
