@@ -44,8 +44,8 @@ def build_scenario_edge_list(lgu_boundary: str, tmnt_json: str, engine=engine):
 
 
 def maybe_include_cost_effectiveness(data: dict) -> dict:
-    struct_tmnt_list = data.get("structural_tmnt", [])
-    results_raw = data.get("structural_tmnt_result", [])
+    struct_tmnt_list = data.get("structural_tmnt", None) or []
+    results_raw = data.get("structural_tmnt_result", None) or []
     tmnt_results = list(
         filter(
             lambda dct: (
