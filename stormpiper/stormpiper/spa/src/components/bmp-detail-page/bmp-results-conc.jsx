@@ -120,7 +120,6 @@ const all_cols = new Set([
 
 export default function BMPConcReduction({ rows }) {
   let slim_data = rows.map((x) => pick(x, ...all_cols));
-  // console.log(slim_data);
   let data = [];
 
   for (let field of field_def) {
