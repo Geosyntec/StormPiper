@@ -32,6 +32,7 @@ export default function MainBox({ children, ...props }) {
         flexGrow: 1,
         mt: { xs: 6, sm: 8 },
         minHeight: "calc(100vh - 66px)",
+        maxWidth: "calc(100vw - (100vw - 100%))",
       }}
       {...props}
     >

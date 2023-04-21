@@ -108,6 +108,15 @@ export default function TopNavMenu(props) {
           "aria-labelledby": "nav-button",
           role: "listbox",
         }}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: "visible",
+            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+          },
+        }}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         {topNavItems.map((option, index) => (
           <MenuItem
