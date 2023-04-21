@@ -1,13 +1,6 @@
 import pandas
 
-VIRTUAL_POLLUTANT_MAPPER = {
-    "PHE": lambda tss: tss * 1e-6 * 1 * 1,
-    "PYR": lambda tss: tss * 1e-6 * 1.9 * 1,
-    "DEHP": lambda tss: tss * 1e-6 * 19.3 * 2.3,
-}
-
-
-VIRTUAL_POCS = VIRTUAL_POLLUTANT_MAPPER.keys()
+from stormpiper.core.config import VIRTUAL_POCS, VIRTUAL_POLLUTANT_MAPPER
 
 
 def add_virtual_pocs_to_tidy_load_summary(
