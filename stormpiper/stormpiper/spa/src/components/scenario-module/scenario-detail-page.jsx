@@ -13,6 +13,7 @@ import { ScenarioBMPForm } from "./scenario-bmp-detail-form";
 
 import { api_fetch } from "../../utils/utils";
 import { ScenarioInfoForm } from "./scenario-create-info-form";
+import CostSummary from "../cost-analysis/cost-summary";
 
 async function getDataByID(id) {
   const response = await api_fetch(`/api/rest/scenario/${id}`);
@@ -108,102 +109,106 @@ export default function ScenarioDetailPage() {
     });
   }
 
-  // if (!scenarioObject) {
-  //   return (
-  //     <TwoColGrid>
-  //       <FullSpan>
-  //         <Card padding={20}>"loading..."</Card>
-  //       </FullSpan>
-  //     </TwoColGrid>
-  //   );
-  // }
-
   return (
-    <TwoColGrid>
-      <HalfSpan>
-        <Card
-          sx={{
-            display: "flex",
-            height: "100%",
-          }}
-        >
-          <Box sx={{ width: "100%", p: 3 }}>
-            <Typography align="left" variant="h6">
-              Scenario Review
-            </Typography>
-            <ScenarioInfoForm
-              scenario={scenarioObject}
-              scenarioSetter={updateScenario}
-            />
-            {/* <EditScenarioBasics data={scenarioObject} /> */}
-          </Box>
-        </Card>
-      </HalfSpan>
-      <HalfSpan>
-        <Card
-          sx={{
-            display: "flex",
-            height: "500px",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <ScenarioCreateMap
-            facilityEditMode={facilityEditMode}
-            delineationEditMode={delineationEditMode}
-            facility={facility}
-            facilitySetter={updateFacility}
-            delineation={delineation}
-            delineationSetter={updateDelineation}
-          />
-        </Card>
-      </HalfSpan>
-      <HalfSpan>
-        <Card
-          sx={{
-            display: "flex",
-            height: "100%",
-            minHeight: "200px",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {facility?.features?.length > 0 ? (
-            <ScenarioBMPForm
-              facility={facility.features.length > 0 && facility}
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
+      <TwoColGrid>
+        <HalfSpan>
+          <Card
+            sx={{
+              display: "flex",
+              height: "100%",
+            }}
+          >
+            <Box sx={{ width: "100%", p: 3 }}>
+              <Typography align="left" variant="h6">
+                Scenario Review
+              </Typography>
+              <ScenarioInfoForm
+                scenario={scenarioObject}
+                scenarioSetter={updateScenario}
+              />
+              {/* <EditScenarioBasics data={scenarioObject} /> */}
+            </Box>
+          </Card>
+        </HalfSpan>
+        <HalfSpan>
+          <Card
+            sx={{
+              display: "flex",
+              height: "500px",
+            }}
+          >
+            <ScenarioCreateMap
+              facilityEditMode={facilityEditMode}
+              delineationEditMode={delineationEditMode}
+              facility={facility}
               facilitySetter={updateFacility}
-            />
-          ) : (
-            <Typography variant="body1">No Facility to Update</Typography>
-          )}
-        </Card>
-      </HalfSpan>
-      <HalfSpan>
-        <Card
-          sx={{
-            display: "flex",
-            height: "100%",
-            minHeight: "200px",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {delineation?.features?.length > 0 ? (
-            <ScenarioDelineationForm
-              delineationPropSetter={updateDelineation}
               delineation={delineation}
+              delineationSetter={updateDelineation}
             />
-          ) : (
-            <Typography variant="body1">No Delineation to Update</Typography>
-          )}
-        </Card>
-      </HalfSpan>
-      <FullSpan>
-        <ScenarioBMPDetailResults data={scenarioObject} />
-      </FullSpan>
-      <FullSpan>
-        <ScenarioDelineationDetailResults data={scenarioObject} />
-      </FullSpan>
-    </TwoColGrid>
+          </Card>
+        </HalfSpan>
+        <HalfSpan>
+          <Card
+            sx={{
+              display: "flex",
+              p: 3,
+            }}
+          >
+            {facility?.features?.length > 0 ? (
+              <ScenarioBMPForm
+                facility={facility.features.length > 0 && facility}
+                facilitySetter={updateFacility}
+              />
+            ) : (
+              <Typography variant="body1">No Facility to Update</Typography>
+            )}
+          </Card>
+        </HalfSpan>
+        <HalfSpan>
+          <Card
+            sx={{
+              display: "flex",
+              height: "100%",
+              minHeight: "200px",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {delineation?.features?.length > 0 ? (
+              <ScenarioDelineationForm
+                delineationPropSetter={updateDelineation}
+                delineation={delineation}
+              />
+            ) : (
+              <Typography variant="body1">No Delineation to Update</Typography>
+            )}
+          </Card>
+        </HalfSpan>
+        <FullSpan>
+          <Box pb={3}>
+            <Card sx={{ p: 2 }}>
+              <CostSummary
+                tmntDetails={scenarioObject?.structural_tmnt?.[0]}
+                updateFacilityData={() => {
+                  console.log("attempted cost refresh. no op.");
+                }}
+              />
+            </Card>
+          </Box>
+        </FullSpan>
+        <FullSpan>
+          <ScenarioBMPDetailResults data={scenarioObject} />
+        </FullSpan>
+        <FullSpan>
+          <ScenarioDelineationDetailResults data={scenarioObject} />
+        </FullSpan>
+      </TwoColGrid>
+    </Box>
   );
 }

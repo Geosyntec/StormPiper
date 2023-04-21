@@ -21,17 +21,20 @@ function ExpandableCell({ formattedValue, value }) {
 
   return (
     <Box>
-      {cellExpanded ? str : str.slice(0, maxChars) + "..."}&nbsp;
+      {cellExpanded ? str : str.slice(0, maxChars)}
       {str.length > maxChars && (
         // eslint-disable-next-line jsx-a11y/anchor-is-valid
-        <Link
-          type="button"
-          component="button"
-          sx={{ fontSize: "inherit" }}
-          onClick={() => setCellExpanded(!cellExpanded)}
-        >
-          {cellExpanded ? "view less" : "view more"}
-        </Link>
+        <>
+          {cellExpanded ? "" : "..."}&nbsp;
+          <Link
+            type="button"
+            component="button"
+            sx={{ fontSize: "inherit" }}
+            onClick={() => setCellExpanded(!cellExpanded)}
+          >
+            {cellExpanded ? "view less" : "view more"}
+          </Link>
+        </>
       )}
     </Box>
   );
