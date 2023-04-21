@@ -1,4 +1,4 @@
-import { Card, Typography } from "@mui/material";
+import { Box, Card, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -120,30 +120,23 @@ export default function ScenarioDetailPage() {
 
   return (
     <TwoColGrid>
-      {/* <FullSpan>
-        <Typography align="center" variant="h4">
-          Scenario Review
-        </Typography>
-      </FullSpan> */}
       <HalfSpan>
         <Card
           sx={{
             display: "flex",
-            flexDirection: "column",
-            height: "75vh",
-            alignItems: "start",
-            justifyContent: "start",
-            padding: "1rem",
+            height: "100%",
           }}
         >
-          {/* <EditScenarioBasics data={scenarioObject} /> */}
-          <Typography align="left" variant="h6">
-            Scenario Review
-          </Typography>
-          <ScenarioInfoForm
-            scenario={scenarioObject}
-            scenarioSetter={updateScenario}
-          />
+          <Box sx={{ width: "100%", p: 3 }}>
+            <Typography align="left" variant="h6">
+              Scenario Review
+            </Typography>
+            <ScenarioInfoForm
+              scenario={scenarioObject}
+              scenarioSetter={updateScenario}
+            />
+            {/* <EditScenarioBasics data={scenarioObject} /> */}
+          </Box>
         </Card>
       </HalfSpan>
       <HalfSpan>
