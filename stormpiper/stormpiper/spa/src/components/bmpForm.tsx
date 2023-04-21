@@ -1,8 +1,6 @@
 import {
   Box,
   Button,
-  Dialog,
-  DialogActions,
   FormControlLabel,
   MenuItem,
   Switch,
@@ -10,11 +8,11 @@ import {
   Typography,
 } from "@mui/material";
 import React, {
+  forwardRef,
   useEffect,
+  useImperativeHandle,
   useRef,
   useState,
-  forwardRef,
-  useImperativeHandle,
 } from "react";
 import { useForm } from "react-hook-form";
 import { api_fetch } from "../utils/utils";
@@ -331,10 +329,9 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
             <Box key={formField.fieldID}>
               {formField.fieldID === "facility_type" ? (
                 <TextField
+                  fullWidth
                   key={formField.fieldID}
-                  size="small"
                   variant="outlined"
-                  sx={{ margin: "0.5rem" }}
                   label={formField.label}
                   select
                   value={props.currentFacility.replace("_simple", "")}
@@ -351,6 +348,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
                         <MenuItem
                           key={props.allFacilities[fType].label}
                           value={fType}
+                          sx={{ overflow: "hidden" }}
                         >
                           {props.allFacilities[fType].label}
                         </MenuItem>
@@ -360,10 +358,9 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
                 </TextField>
               ) : (
                 <TextField
+                  fullWidth
                   id={formField.fieldID}
                   variant="outlined"
-                  size="small"
-                  sx={{ margin: "0.5rem" }}
                   {...register(formField.fieldID, {
                     required: formField.required,
                   })}
@@ -385,7 +382,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
       );
       if (props.simpleFields) {
         simpleCheckDiv = (
-          <Box key="simpleCheckBox" sx={{ px: "2rem" }}>
+          <Box key="simpleCheckBox">
             <FormControlLabel
               control={
                 <Switch
@@ -417,17 +414,16 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
           {simpleCheckDiv}
           <Box
             sx={{
-              // display: "grid",
-              // gridTemplateColumns: "repeat(2,2fr)",
-              display: "flex",
-              flexWrap: "wrap",
-              padding: "0px 10px",
+              display: "grid",
+              py: 2,
+              gridTemplateColumns: { md: "1fr 50%" },
+              "grid-gap": "2rem",
             }}
           >
             {fieldDiv}
           </Box>
           {props.context === "existing-system" && (
-            <Box sx={{ padding: "10px 20px" }}>
+            <Box display="flex" justifyContent="right">
               <Button variant="contained" type="submit">
                 Submit
               </Button>
@@ -441,7 +437,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
   }
   return (
     <Box>
-      <Typography variant="h6" sx={{ margin: "1rem" }}>
+      <Typography variant="h6">
         {props.values?.altid} Facility Details
       </Typography>
       <form
