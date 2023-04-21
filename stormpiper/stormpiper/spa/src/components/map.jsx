@@ -122,21 +122,25 @@ function DeckGLMap(props) {
         if (object.viewport) {
           ({ width, height } = object.viewport);
         }
-        let closeToEdge = object.y > height * 0.8 || object.x > width * 0.85;
-        // if (object?.object) {
-        //   console.log("Selected Object", object);
-        // }
+        const maxx = 175,
+          maxy = 175;
+        if (object.y > height - maxy || object.x > width - maxx) {
+          object.y -= maxy;
+          object.x -= maxx;
+        }
         return (
-          object.object &&
-          !closeToEdge && {
+          object.object && {
             html: getTooltipContents(
               object.object,
               object?.layer?.id,
               object?.layer?.props?.label
             ),
             style: {
+              position: "absolute",
+              overflow: "hidden",
               borderRadius: "6px",
-              maxWidth: "175px",
+              maxWidth: `${maxx}px`,
+              maxHeight: `${maxy}px`,
             },
           }
         );
