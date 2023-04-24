@@ -36,7 +36,7 @@ async def get_chart_cost_timeseries(
 
 
 @router.get(
-    "/{node_id}/cost/timeseries/data",
+    "/{node_id}/cost_timeseries/data",
     name="chart:get_chart_cost_timeseries_data",
 )
 async def get_chart_cost_timeseries_data(node_id: str, db: AsyncSessionDB):
