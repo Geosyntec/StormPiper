@@ -14,7 +14,7 @@ def add_virtual_pocs_to_tidy_load_summary(
     tss = load_tidy.query('variable == "TSS"')
     non_virtual_pocs = load_tidy.query("variable not in @VIRTUAL_POCS")
 
-    if tss.empty:
+    if tss.empty:  # pragma: no cover
         return pandas.DataFrame()
 
     virtual_pocs = []

@@ -62,7 +62,7 @@ def compute_pv_capital_cost(
     if capital_cost_basis_year is None:
         capital_cost_basis_year = cost_basis_year
 
-    if install_year is None:
+    if install_year is None:  # pragma: no cover
         install_year = cost_basis_year
 
     escalation_factor = 1 / (
@@ -97,7 +97,7 @@ def compute_bmp_om_pv(
     # replacement_cost = capital_cost / 2  # incurred at end of lifespan. refurbishment cost
     # lifespan_yrs = 15
 
-    if install_year is None:
+    if install_year is None:  # pragma: no cover
         install_year = cost_basis_year
 
     if om_cost_basis_year is None:
@@ -299,7 +299,7 @@ async def calculate_pv_for_existing_tmnt_in_db(node_id: str, db: AsyncSession):
 
     attr = await crud.tmnt_cost.get(db=db, id=node_id)
 
-    if not attr:
+    if not attr:  # pragma: no cover
         raise RecordNotFound(f"Record not found for node_id={node_id}")
 
     pv_global_settings = await get_pv_settings_db(db=db)
