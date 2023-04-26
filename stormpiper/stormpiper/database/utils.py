@@ -58,7 +58,7 @@ def scalars_to_gdf(
 def scalars_to_gdf_to_geojson(scalars: list):
     gdf = scalars_to_gdf(scalars, crs=settings.TACOMA_EPSG, geometry="geom")
     gdf.to_crs(epsg=4326, inplace=True)
-    content = gdf.to_json()
+    content = gdf.to_json(show_bbox=True)
 
     return content
 

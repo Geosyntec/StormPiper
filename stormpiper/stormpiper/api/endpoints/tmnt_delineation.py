@@ -67,8 +67,14 @@ async def get_all_tmnt_delineations(
     f: str = Query("json"),
     limit: int | None = Query(int(1e6)),
     offset: int = Query(0),
+    altid: str | None = None,
+    relid: str | None = None,
 ):
     q = select(tmnt.TMNTFacilityDelineation).offset(offset).limit(limit)
+    if altid is not None:
+        q = q.where(tmnt.TMNTFacilityDelineation.altid == altid)
+    if relid is not None:
+        q = q.where(tmnt.TMNTFacilityDelineation.relid == relid)
     result = await db.execute(q)
     scalars = result.scalars().all()
 
