@@ -30,8 +30,16 @@ async def get_all_tmnt(
     f: str = Query("json"),
     limit: int | None = Query(int(1e6)),
     offset: int = Query(0),
+    altid: str | None = None,
+    node_id: str | None = None,
 ):
-    result = await db.execute(select(tmnt.TMNT_View).offset(offset).limit(limit))
+    q = select(tmnt.TMNT_View).offset(offset).limit(limit)
+    if altid is not None:
+        q = q.where(tmnt.TMNT_View.altid == altid)
+    if node_id is not None:
+        q = q.where(tmnt.TMNT_View.node_id == node_id)
+
+    result = await db.execute(q)
     scalars = result.scalars().all()
 
     if f == "geojson":
