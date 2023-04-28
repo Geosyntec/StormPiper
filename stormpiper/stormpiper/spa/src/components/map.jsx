@@ -1,63 +1,39 @@
 import DeckGL from "@deck.gl/react";
-import { FlyToInterpolator } from "@deck.gl/core";
 import StaticMap from "react-map-gl";
 import getTooltipContents from "./tooltip.jsx";
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { useCallback } from "react";
-import debounce from "lodash.debounce";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { getLayerData, zoomToFeature } from "../utils/map_utils.js";
 
 const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoiYWNhbmctZ3MiLCJhIjoiY2w0NGl1YWwyMDE0YzNpb2hhbzN3dzcxdiJ9.3V1BdATyCSerixms7Er3Rw";
 
 // DeckGL react component
-function DeckGLMap(props) {
+function DeckGLMap({
+  initialViewState,
+  currentFeatureID,
+  zoomID,
+  zoomFeature,
+  ...props
+}) {
   // Viewport settings
-  let INITIAL_VIEW_STATE;
+  let INITIAL_VIEW_STATE = {
+    longitude: -122.44,
+    latitude: 47.25,
+    zoom: 11,
+    pitch: 0,
+    bearing: 0,
+  };
 
-  switch (props.context) {
-    case "existing-system":
-      INITIAL_VIEW_STATE = {
-        longitude: -122.4,
-        latitude: 47.2494237,
-        zoom: 11,
-        pitch: 0,
-        bearing: 0,
-      };
-      break;
-    case "prioritization":
-      INITIAL_VIEW_STATE = {
-        longitude: -122.44003833897366,
-        latitude: 47.24303278783214,
-        zoom: 9.6,
-        pitch: 0,
-        bearing: 0,
-      };
-      break;
-    case "inset-map":
-      INITIAL_VIEW_STATE = props.viewState;
-      break;
-    default:
-      INITIAL_VIEW_STATE = {
-        longitude: -122.4,
-        latitude: 47.2494237,
-        zoom: 11,
-        pitch: 0,
-        bearing: 0,
-      };
+  if (initialViewState != null) {
+    INITIAL_VIEW_STATE = { ...INITIAL_VIEW_STATE, ...initialViewState };
   }
-
-  console.log(
-    "Initial view state for context",
-    props.context,
-    ": ",
-    INITIAL_VIEW_STATE
-  );
-
+  const layers = props?.layers || [];
   const loc = useLocation();
   const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
-  const [currentZoom, setCurrentZoom] = useState(11);
+  const [zoomDataIsLoaded, setZoomDataIsLoaded] = useState(false);
+
   const baseLayerStyles = [
     {
       styleURL: "mapbox://styles/mapbox/streets-v12",
@@ -66,46 +42,41 @@ function DeckGLMap(props) {
       styleURL: "mapbox://styles/mapbox/satellite-streets-v12",
     },
   ];
-  useEffect(() => {
-    zoomToCurrentFeature();
-  }, [loc]);
-  useEffect(() => {
-    setViewState(props.viewState);
-  }, [props.viewState]);
 
-  function zoomToCurrentFeature() {
-    if (props.currentFeature) {
+  function doZoomID({ layerID, featureID, featureIDField }) {
+    const layer = layers.find((layer) => layer.props.id === layerID);
+    layer?.state ??
       setTimeout(() => {
-        let zoomFeature;
-
-        props.layers?.filter((layer) => {
-          if (layer.id === "activeSWFacility" && layer.state) {
-            const feats = layer.state.layerProps.points.data;
-            zoomFeature = feats.filter((feat) => {
-              const ID = feat.__source.object.properties.altid;
-              return ID === props.currentFeature;
-            });
-            console.log("Target Feature Found: ", zoomFeature);
-          }
-        });
-        if (zoomFeature && zoomFeature.length > 0) {
-          setViewState({
-            ...viewState,
-            longitude: zoomFeature[0].geometry.coordinates[0],
-            latitude: zoomFeature[0].geometry.coordinates[1],
-            zoom: currentZoom,
-            transitionDuration: 1000,
-            transitionInterpolator: new FlyToInterpolator(),
-          });
-        }
+        layer?.state && setZoomDataIsLoaded(true);
       }, 500);
-    }
+
+    zoomDataIsLoaded &&
+      layer?.state &&
+      featureID &&
+      setTimeout(() => {
+        const feature = getLayerData({
+          layer,
+          value: featureID,
+          field: featureIDField,
+        });
+        const view = zoomToFeature({ feature });
+        setViewState({ ...view });
+      }, 5);
   }
 
-  const debouncedSetZoom = useCallback(
-    debounce((state) => setCurrentZoom(state.viewState.zoom), 300),
-    []
-  );
+  function doZoomFeature({ feature, ...props }) {
+    const view = zoomToFeature({ feature, ...props });
+    setViewState({ ...view });
+  }
+
+  useEffect(() => {
+    zoomID?.featureID && doZoomID(zoomID);
+    zoomFeature?.feature && doZoomFeature(zoomFeature);
+  }, [loc, zoomID?.featureID, zoomDataIsLoaded, zoomFeature?.feature]);
+
+  useEffect(() => {
+    props?.viewState && setViewState(props.viewState);
+  }, [props?.viewState]);
 
   return (
     <DeckGL
@@ -113,9 +84,6 @@ function DeckGLMap(props) {
       controller={{ doubleClickZoom: false }}
       layers={props.layers}
       onClick={props.onClick}
-      onViewStateChange={(state) => {
-        debouncedSetZoom(state);
-      }}
       getTooltip={(object) => {
         let width = 0;
         let height = 0;
