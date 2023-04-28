@@ -1,6 +1,6 @@
 import { Suspense, useState, useRef, useEffect, lazy } from "react";
 import { useForm } from "react-hook-form";
-import { useParams, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -19,7 +19,7 @@ import { DataGrid } from "@mui/x-data-grid";
 
 import { layerDict } from "../assets/geojson/subbasinLayer";
 import ColorRampLegend from "./colorRampLegend";
-import { api_fetch } from "../utils/utils";
+import { api_fetch, colorToList } from "../utils/utils";
 import { HalfSpan, TwoColGrid } from "./base/two-col-grid";
 
 const DeckGLMap = lazy(() => import("./map"));
@@ -38,8 +38,6 @@ function Prioritization({ setDrawerButtonList }) {
   const [priorityWorkflowState, setPriorityWorkflowState] = useState("scoring");
   const [lyrSelectDisplayState, setlyrSelectDisplayState] = useState(false); // when true, control panel is displayed
   const [subbasinScores, setSubbasinScores] = useState({});
-  let params = useParams();
-  const [focusFeature, setFocusFeature] = useState(params?.id || null);
   const [baseLayer, setBaseLayer] = useState(0);
   const [activeLayers, setActiveLayers] = useState(() => {
     var res = {};
@@ -157,41 +155,23 @@ function Prioritization({ setDrawerButtonList }) {
       }
       return false;
     });
-    // console.log('Layers to Render:',layersToRender)
     firstRender.current = false;
     return layersToRender;
-  }
-
-  function hexToRgbA(hex) {
-    var c;
-    if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
-      c = hex.substring(1).split("");
-      if (c.length == 3) {
-        c = [c[0], c[0], c[1], c[1], c[2], c[2]];
-      }
-      c = "0x" + c.join("");
-      return [(c >> 16) & 255, (c >> 8) & 255, c & 255];
-    }
-    throw new Error("Bad Hex");
   }
 
   function _injectLayerAccessors(props) {
     props.getFillColor = (d) => {
       if (subbasinScores.length > 0) {
-        console.log("Setting score for : ", d.properties.subbasin);
         let score = subbasinScores.filter((s) => {
           return (
             s.subbasin.replace(" ", "") ===
             d.properties.subbasin.replace(" ", "")
           );
         })[0].score;
-        console.log("score found: ", score);
-        console.log("color: ", hexToRgbA(interpolateViridis(score / 100)));
-        return hexToRgbA(interpolateViridis(score / 100));
-        // return [score/100*25,score/100*122,score/100*99]
+
+        return colorToList(interpolateViridis(score / 100));
       } else {
         return props.defaultFillColor || [70, 170, 21, 200];
-        // return interpolateViridis(0.1)
       }
     };
     props.updateTriggers = {
@@ -227,15 +207,7 @@ function Prioritization({ setDrawerButtonList }) {
   }
 
   async function _handleSubmit(data) {
-    let baseURL;
-    if (process.env.NODE_ENV === "development") {
-      baseURL = "http://localhost:8080/";
-    } else {
-      baseURL = "/";
-    }
-
     const parsedFormData = formatFormData(data);
-    console.log("Submitting Patch Request: ", parsedFormData);
     const response = await api_fetch(
       "/api/rpc/calculate_subbasin_promethee_prioritization",
       {
@@ -260,14 +232,12 @@ function Prioritization({ setDrawerButtonList }) {
         setSubbasinScores(resp["result"]);
       })
       .catch((err) => {
-        console.log("Error:");
-        console.log(err);
+        console.log("Error:", err);
       });
     return response;
   }
   function _renderFormFields() {
     if (formFields) {
-      console.log("With fields:", formFields);
       let fieldDiv = Object.values(formFields).map((formField) => {
         return (
           <Box
@@ -410,8 +380,7 @@ function Prioritization({ setDrawerButtonList }) {
         return resp.json();
       })
       .catch((err) => {
-        console.log("Error:");
-        console.log(err);
+        console.log("Error:", err);
       });
     let basinFields = [];
     formFields.map((f) => {
@@ -532,7 +501,6 @@ function Prioritization({ setDrawerButtonList }) {
               context="prioritization"
               layers={_renderLayers(layerDict, activeLayers, firstRender)}
               baseLayer={baseLayer}
-              currentFeature={focusFeature}
               initialViewState={{
                 zoom: 9.6,
               }}
