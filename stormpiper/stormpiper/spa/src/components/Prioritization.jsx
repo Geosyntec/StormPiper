@@ -1,6 +1,6 @@
 import { Suspense, useState, useRef, useEffect, lazy } from "react";
 import { useForm } from "react-hook-form";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -39,7 +39,6 @@ function Prioritization({ setDrawerButtonList }) {
   const [lyrSelectDisplayState, setlyrSelectDisplayState] = useState(false); // when true, control panel is displayed
   const [subbasinScores, setSubbasinScores] = useState({});
   let params = useParams();
-  let navigate = useNavigate();
   const [focusFeature, setFocusFeature] = useState(params?.id || null);
   const [baseLayer, setBaseLayer] = useState(0);
   const [activeLayers, setActiveLayers] = useState(() => {
@@ -534,6 +533,9 @@ function Prioritization({ setDrawerButtonList }) {
               layers={_renderLayers(layerDict, activeLayers, firstRender)}
               baseLayer={baseLayer}
               currentFeature={focusFeature}
+              initialViewState={{
+                zoom: 9.6,
+              }}
               sx={{
                 position: "absolute",
               }}

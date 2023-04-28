@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import List from "@mui/material/List";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -54,16 +54,9 @@ export default function TopNavMenu(props) {
     setSelectedIndex(ix);
   }, [location]);
 
-  const navigate = useNavigate();
   const open = Boolean(anchorEl);
   const handleClickListItem = (event) => {
     setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuItemClick = (event, index) => {
-    setSelectedIndex(index);
-    setAnchorEl(null);
-    navigate(topNavItems[index].link);
   };
 
   const handleClose = () => {
@@ -120,9 +113,10 @@ export default function TopNavMenu(props) {
       >
         {topNavItems.map((option, index) => (
           <MenuItem
+            component={Link}
+            to={option.link}
             key={option.label}
             selected={index === selectedIndex}
-            onClick={(event) => handleMenuItemClick(event, index)}
           >
             {option?.icon && <ListItemIcon>{option.icon}</ListItemIcon>}
             <ListItemText>{option.label}</ListItemText>

@@ -1,8 +1,6 @@
 import { forwardRef, useImperativeHandle, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { Box, Button, TextField, Typography } from "@mui/material";
-import { api_fetch } from "../../utils/utils";
+import { Box, TextField, Typography } from "@mui/material";
 
 export const ScenarioInfoForm = forwardRef(function ScenarioInfoForm(
   { scenario, scenarioSetter },

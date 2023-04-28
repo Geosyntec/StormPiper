@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { api_fetch } from "../utils/utils";
 import { BMPForm } from "./bmpForm";
 
@@ -85,7 +85,6 @@ type specState = {
 
 function BMPStatWindow(props: statWindowProps) {
   let firstRender = useRef(true);
-  const navigate = useNavigate();
   // const classes = useStyles();
 
   const [state, setState] = useState<bmpPanelState>({
@@ -261,30 +260,31 @@ function BMPStatWindow(props: statWindowProps) {
     } else if (!loadingState) {
       return <Box>Loading...</Box>;
     } else {
-      let statsList = Object.values(state.stats).map((stat: string) => {
-        if (stat) {
-          let renderedStat = state.items[stat] || state.results[stat];
-          if (typeof renderedStat === "number") {
-            renderedStat = new Intl.NumberFormat("en-US", {
-              maximumSignificantDigits: 6,
-            }).format(renderedStat);
-          }
-          return (
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                padding: "5 5 5 15",
-              }}
-            >
-              <body>
+      let statsList = Object.values(state.stats).map(
+        (stat: string, i: number) => {
+          if (stat) {
+            let renderedStat = state.items[stat] || state.results[stat];
+            if (typeof renderedStat === "number") {
+              renderedStat = new Intl.NumberFormat("en-US", {
+                maximumSignificantDigits: 6,
+              }).format(renderedStat);
+            }
+            return (
+              <Box
+                key={i}
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  padding: "5 5 5 15",
+                }}
+              >
                 <strong>{fieldLabelDict[stat]}:&#8195;</strong>
-              </body>
-              <body>{renderedStat}</body>
-            </Box>
-          );
+                {renderedStat}
+              </Box>
+            );
+          }
         }
-      });
+      );
       return (
         <>
           {_renderUpdateBox()}
@@ -407,13 +407,11 @@ function BMPStatWindow(props: statWindowProps) {
             : _renderBMPForm(facilityType)
           : null}
       </Box>
-      <Box sx={{ display: "flex" }}>
+      <Box sx={{ display: "flex", p: 2 }}>
         <Button
+          component={Link}
+          to={"/app/bmp-detail/" + props.feature}
           variant="contained"
-          sx={{ alignSelf: "flex-start", margin: "1rem" }}
-          onClick={() => {
-            navigate("/app/bmp-detail/" + props.feature);
-          }}
         >
           View Facility Details
         </Button>

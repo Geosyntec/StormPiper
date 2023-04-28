@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -41,7 +41,6 @@ const AppBarStyled = styled(MuiAppBar, {
 }));
 
 export default function AppBar({ open, drawerWidth, toggleDrawer, hideMenu }) {
-  const navigate = useNavigate();
   const userProfile = useContext(UserProfileContext);
 
   const isUserLoggedIn = !!userProfile?.role;
@@ -70,14 +69,18 @@ export default function AppBar({ open, drawerWidth, toggleDrawer, hideMenu }) {
           </IconButton>
         </Tooltip>
 
-        <Button sx={{ textTransform: "none" }} color="inherit">
+        <Button
+          component={Link}
+          to={"/app"}
+          sx={{ textTransform: "none" }}
+          color="inherit"
+        >
           <Tooltip title="Home">
             <Typography
               component="h1"
               variant="h6"
               noWrap
               sx={{ fontWeight: "bold" }}
-              onClick={() => navigate("/app")}
             >
               Tacoma Watershed Insights
             </Typography>
@@ -90,10 +93,7 @@ export default function AppBar({ open, drawerWidth, toggleDrawer, hideMenu }) {
           <UserInfo />
         ) : (
           <Tooltip title="Login">
-            <Button
-              sx={{ color: "white" }}
-              onClick={() => navigate("/app/login")}
-            >
+            <Button component={Link} to={"/app/login"} sx={{ color: "white" }}>
               <AccountCircle />
               &nbsp;Login
             </Button>

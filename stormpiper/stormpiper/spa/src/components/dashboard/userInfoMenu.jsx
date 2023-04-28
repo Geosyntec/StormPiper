@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button, ListItem, Box, Divider, Tooltip } from "@mui/material";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Typography from "@mui/material/Typography";
@@ -106,7 +106,7 @@ export default function UserInfo({ ...props }) {
           </ListItem>
         )}
         <Divider sx={{ my: 3 }} />
-        <MenuItem onClick={() => navigate("/app/manage-users/me")}>
+        <MenuItem component={Link} to={"/app/manage-users/me"}>
           <ListItemIcon>
             <AccountBoxIcon />
           </ListItemIcon>
@@ -115,18 +115,16 @@ export default function UserInfo({ ...props }) {
         <AuthChecker allowedRoles={["admin", "user_admin"]}>
           {[
             <MenuItem
+              component={Link}
+              to={"/app/manage-users"}
               key={"manage-users"}
-              onClick={() => navigate("/app/manage-users")}
             >
               <ListItemIcon>
                 <GroupIcon />
               </ListItemIcon>
               Manage Users
             </MenuItem>,
-            <MenuItem
-              key={"settings"}
-              onClick={() => navigate("/app/settings")}
-            >
+            <MenuItem key={"settings"} component={Link} to={"/app/settings"}>
               <ListItemIcon>
                 <SettingsIcon />
               </ListItemIcon>
