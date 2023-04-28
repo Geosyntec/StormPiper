@@ -1,15 +1,6 @@
 import { Suspense, useEffect, useState, useRef, lazy } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import {
-  Card,
-  CardActions,
-  CardContent,
-  Typography,
-  Button,
-  Box,
-  Tabs,
-  Tab,
-} from "@mui/material";
+import { Card, CardContent, Box, Tabs, Tab } from "@mui/material";
 import GridOnRoundedIcon from "@mui/icons-material/GridOnRounded";
 import ScatterPlotRoundedIcon from "@mui/icons-material/ScatterPlotRounded";
 
@@ -39,7 +30,7 @@ const panelStyles = {
     top: "75",
     left: "90%",
     overflowX: "hidden",
-    overflowY: "auto",
+    overflowY: "hidden",
     height: "40px",
     width: "40px",
     textAlign: "center",
@@ -63,7 +54,7 @@ const panelStyles = {
     top: "2%",
     left: "2%",
     overflowX: "hidden",
-    overflowY: "auto",
+    overflowY: "hidden",
     height: "40px",
     width: "40px",
     textAlign: "center",
@@ -141,18 +132,15 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
   let firstRender = useRef(true);
 
   const [lyrSelectDisplayState, setlyrSelectDisplayState] = useState(false); // when true, control panel is displayed
-  const [userEmail, setUserEmail] = useState(null);
   const [prjStatDisplayState, setprjStatDisplayState] = useState(
     params?.id ? true : false
   ); // when true, project stats panel is displayed
-  // const [resultsDisplayState,setResultsDisplayState] = useState(false) //when true, results table is displayed
-  // const [verificationDisplayState, setVerificationDisplayState] =
-  //   useState(false); //when true, tell the user that they need to verify their email
-  const [focusFeature, setFocusFeature] = useState(params?.id || null);
+  const [focusFeatureID, setFocusFeatureID] = useState(params?.id || null);
   const [isDirty, setIsDirty] = useState({
     is_dirty: false,
     last_updated: Date.now(),
   });
+  const [layers, setLayers] = useState(false);
   const [baseLayer, setBaseLayer] = useState(0);
   const [activeLayers, setActiveLayers] = useState(() => {
     var res = {};
@@ -180,27 +168,28 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
     return res;
   });
 
+  useEffect(async () => {
+    setFocusFeatureID(params?.id);
+  }, [location, params?.id]);
+
+  useEffect(async () => {
+    setLayers(_renderLayers(layerDict, activeLayers));
+  }, [focusFeatureID, activeLayers]);
+
   function _fetchIsDirty() {
-    // console.log("Checking isDirty")
     if (userProfile?.is_verified) {
       api_fetch("/api/rest/results/is_dirty")
         .then((res) => {
           return res.json();
         })
         .then((res) => {
-          console.log("Parsed is_dirty results: ", res);
           setIsDirty(res || null);
-          // setDBLastUpdated(res.last_updated||null)
         });
     }
   }
 
   useEffect(() => {
     //Only perform these operations on initial render
-    //Notify user if they haven't verified email
-    // if (!userProfile?.is_verified) {
-    //   setVerificationDisplayState(true);
-    // }
 
     //Set up is_dirty polling request to check when new results need to be calculated
     _fetchIsDirty();
@@ -235,12 +224,7 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
     updateFunction(currentActiveLayers);
   }
 
-  function _renderLayers(
-    layerDict,
-    visState,
-    isFirstRender,
-    layersToRender = []
-  ) {
+  function _renderLayers(layerDict, visState, layersToRender = []) {
     Object.keys(layerDict).map((category) => {
       const layerGroup = layerDict[category];
       if (layerGroup.length) {
@@ -249,23 +233,17 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
           if (getData && !props.data) {
             props.data = getData();
           }
-
           if (
             visState[props.id] ||
             (firstRender.current && props.onByDefault)
           ) {
-            props = _injectLayerAccessors(props);
+            props = _injectLayerAccessors(props, focusFeatureID);
             layersToRender.push(new Layer(props));
           }
           return false;
         });
       } else {
-        layersToRender = _renderLayers(
-          layerGroup,
-          visState,
-          isFirstRender,
-          layersToRender
-        );
+        layersToRender = _renderLayers(layerGroup, visState, layersToRender);
       }
       return false;
     });
@@ -280,7 +258,7 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
   function _toggleprjStatDisplayState() {
     if (prjStatDisplayState) {
       console.log("Clearing Focused Feature");
-      setFocusFeature(null);
+      setFocusFeatureID(null);
       navigate("/app/map");
     }
     setprjStatDisplayState(!prjStatDisplayState);
@@ -293,19 +271,19 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
         //users can click on another facility without hiding the panel
         _toggleprjStatDisplayState();
       }
-      setFocusFeature(objInfo.object.properties.altid);
-      navigate("/app/map/tmnt/" + objInfo.object.properties.altid);
+      setFocusFeatureID(objInfo.object.properties.node_id);
+      navigate("/app/map/tmnt/" + objInfo.object.properties.node_id);
     }
   }
 
-  function _injectLayerAccessors(props) {
+  function _injectLayerAccessors(props, focusFeatureID) {
     props.getFillColor = (d) => {
-      return d.properties.altid === focusFeature
+      return d.properties.altid === focusFeatureID
         ? props.highlightColor || [52, 222, 235]
         : props.defaultFillColor || [70, 170, 21, 200];
     };
     props.updateTriggers = {
-      getFillColor: [focusFeature || null],
+      getFillColor: [focusFeatureID || null],
     };
     return props;
   }
@@ -329,16 +307,25 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
   // }
   return (
     <Box>
-      <Box sx={{ position: "absolute", height: "100%", width: "100%" }}>
+      <Box
+        sx={{
+          position: "absolute",
+          height: "calc(100vh - 66px)",
+          left: (theme) => theme.spacing(7),
+          width: (theme) => `calc(100% - ${theme.spacing(7)})`,
+        }}
+      >
         <Suspense fallback={<Box>Loading Map...</Box>}>
           <DeckGLMap
             id="main-map"
-            context="existing-system"
-            layers={_renderLayers(layerDict, activeLayers, firstRender)}
+            layers={layers}
             baseLayer={baseLayer}
             onClick={_lyrClickHandlers.bind(this)}
-            currentFeature={focusFeature}
-            style={{ width: "120%" }}
+            zoomID={{
+              layerID: "activeSWFacility",
+              featureID: focusFeatureID,
+              featureIDField: "node_id",
+            }}
           ></DeckGLMap>
         </Suspense>
         <Box sx={classes.baseLayerPanel}>
@@ -361,7 +348,7 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
               : classes.layerPanelHidden
           }
         >
-          <CardContent sx={{ padding: lyrSelectDisplayState ? "1rem" : 0 }}>
+          <CardContent sx={{ p: lyrSelectDisplayState ? 2 : 0 }}>
             <LayerSelector
               layerDict={layerDict}
               activeLayers={activeLayers}
@@ -379,46 +366,16 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
               : classes.prjStatPanelHidden
           }
         >
-          <CardContent sx={{ padding: prjStatDisplayState ? "1rem" : 0 }}>
+          <CardContent sx={{ p: prjStatDisplayState ? 2 : 0 }}>
             <BMPStatWindow
               displayStatus={prjStatDisplayState}
               displayController={_toggleprjStatDisplayState}
-              feature={focusFeature}
+              feature={focusFeatureID}
               isDirty={isDirty}
             ></BMPStatWindow>
           </CardContent>
         </Card>
       </Box>
-
-      {/* <Card
-        sx={
-          verificationDisplayState
-            ? classes.verificationPanel
-            : classes.verificationPanelHidden
-        }
-      >
-        <CardContent>
-          <Typography variant="subtitle1">
-            Your email has not been verified
-          </Typography>
-          <Typography variant="subtitle2">
-            If you have recently registered, please check your email for your
-            verification link
-          </Typography>
-          <Typography variant="subtitle2">
-            If not, click{" "}
-            <a href="#" onClick={_sendVerificationEmail}>
-              here{" "}
-            </a>{" "}
-            to resend the verification email
-          </Typography>
-          <CardActions>
-            <Button onClick={() => setVerificationDisplayState(false)}>
-              Close
-            </Button>
-          </CardActions>
-        </CardContent>
-      </Card> */}
       <Card
         sx={
           resultsDisplayState
@@ -430,7 +387,7 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
           <Suspense fallback={<Box>Loading Table...</Box>}>
             <ResultsTable
               nodes="all"
-              currentNode={focusFeature}
+              currentNode={focusFeatureID}
               displayController={_toggleSetResultsDisplayState}
               displayState={resultsDisplayState}
             ></ResultsTable>
