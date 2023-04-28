@@ -282,29 +282,18 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
         ? props.highlightColor || [52, 222, 235]
         : props.defaultFillColor || [70, 170, 21, 200];
     };
+    props.getIconColor = (d) => {
+      return d.properties.altid === focusFeatureID
+        ? props.highlightColor || [52, 222, 235]
+        : props.defaultFillColor || [70, 170, 21, 200];
+    };
     props.updateTriggers = {
       getFillColor: [focusFeatureID || null],
+      getIconColor: [focusFeatureID || null],
     };
     return props;
   }
 
-  // function _sendVerificationEmail() {
-  //   api_fetch("/auth/request-verify-token", {
-  //     method: "POST",
-  //     headers: {
-  //       Accept: "application/json",
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({ email: userEmail }),
-  //   })
-  //     .then((res) => {
-  //       return res.json();
-  //     })
-  //     .then((res) => {
-  //       console.log("Resend request result: ", res);
-  //       setVerificationDisplayState(false);
-  //     });
-  // }
   return (
     <Box>
       <Box

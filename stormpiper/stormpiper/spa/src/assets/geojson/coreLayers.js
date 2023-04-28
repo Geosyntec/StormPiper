@@ -1,7 +1,9 @@
 // import { COORDINATE_SYSTEM } from "@deck.gl/core";
 import { GeoJsonLayer, BitmapLayer } from "@deck.gl/layers";
 import { TileLayer } from "@deck.gl/geo-layers";
-import { urlPrefix, Authorization } from "../../utils/utils";
+
+import { locationIconUrl } from "../icons";
+import { urlPrefix, Authorization, colorToList } from "../../utils/utils";
 
 // import { Matrix4 } from "math.gl";
 /*
@@ -198,20 +200,42 @@ export const activeLocalSWFacility = {
     },
     id: "activeSWFacility",
     label: "Active Surface Water Facilities",
-    getFillColor: [70, 170, 21],
-    defaultFillColor: [70, 170, 21],
-    getLineColor: [160, 160, 180, 0],
-    getLineWidth: (f) => 1,
-    getElevation: (f) => 500,
+    featureType: "points",
+
+    // --- icon attrs
+    pointType: "icon",
+    iconAtlas: locationIconUrl,
+    iconMapping: {
+      marker: {
+        x: 0,
+        y: 0,
+        width: 240,
+        height: 240,
+        anchorY: 200,
+        anchorX: 120,
+        mask: true,
+      },
+    },
+    getIcon: (d) => "marker",
+    iconSizeScale: 1,
+    getIconSize: (d) => 24,
+    defaultFillColor: colorToList("steelblue"),
+    highlightColor: colorToList("orange"),
+    getIconColor: colorToList("steelblue"),
+
+    // --- point attrs
+
+    // getFillColor: [70, 170, 21],
+    // getLineColor: [160, 160, 180, 0],
+    // getLineWidth: (f) => 1,
+    // getPointRadius: 6,
+    // pointRadiusMaxPixels: 20,
+    // pointRadiusMinPixels: 6,
+    // dashJustified: true,
+    // dashGapPickable: true,
+
+    // --- shared attrs ---
     pickable: true,
-    getPointRadius: 6,
-    // pointRadiusUnits: "pixels",
-    pointRadiusMaxPixels: 20,
-    pointRadiusMinPixels: 6,
-    // onClick:(info,event)=>console.log(info,event),
-    highlightColor: [42, 213, 232],
-    dashJustified: true,
-    dashGapPickable: true,
     onByDefault: true,
   },
 };
@@ -230,9 +254,9 @@ export const delineations = {
     },
     id: "tmnt_delineations",
     label: "Active Treatment Facility Upstream Delineations",
-    getFillColor: [1, 1, 28, 1],
-    defaultFillColor: [1, 1, 28, 1],
-    getLineColor: [150, 130, 248, 200],
+    getFillColor: colorToList("steelblue", 0.2),
+    defaultFillColor: colorToList("steelblue", 0.2),
+    getLineColor: colorToList("steelblue", 0.9),
     getDashArray: (f) => [20, 0],
     getLineWidth: (f) => 1,
     getElevation: (f) => 500,
