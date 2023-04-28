@@ -5,8 +5,8 @@ import SaveIcon from "@mui/icons-material/Save";
 import Box from "@mui/material/Box";
 import { DataGrid, GridActionsCellItem, GridRowModes } from "@mui/x-data-grid";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link, Tooltip } from "@mui/material";
+import { Link } from "react-router-dom";
+import { Tooltip, Typography, Link as ATag } from "@mui/material";
 import { api_fetch } from "../../utils/utils";
 import { ConfirmDeleteModal } from "../base/confirm-delete-modal";
 
@@ -26,14 +26,16 @@ function ExpandableCell({ formattedValue, value }) {
         // eslint-disable-next-line jsx-a11y/anchor-is-valid
         <>
           {cellExpanded ? "" : "..."}&nbsp;
-          <Link
-            type="button"
+          <ATag
             component="button"
-            sx={{ fontSize: "inherit" }}
+            sx={{
+              fontSize: "inherit",
+              textDecoration: "none",
+            }}
             onClick={() => setCellExpanded(!cellExpanded)}
           >
             {cellExpanded ? "view less" : "view more"}
-          </Link>
+          </ATag>
         </>
       )}
     </Box>
@@ -63,8 +65,6 @@ export function ScenarioInfoTable() {
   const [currentScenarioId, setCurrentScenarioId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  let navigate = useNavigate();
-
   useEffect(() => {
     getAllScenarios().then((res) => setRows(res));
   }, [getAllScenarios]);
@@ -75,11 +75,6 @@ export function ScenarioInfoTable() {
 
   const handleRowEditStop = (params, event) => {
     event.defaultMuiPrevented = true;
-  };
-
-  const handleEditClick = (id) => () => {
-    setCurrentScenarioId(id);
-    navigate(`/app/scenario/${id}`);
   };
 
   const handleSaveClick = (id) => () => {
@@ -153,6 +148,20 @@ export function ScenarioInfoTable() {
       headerName: "Name",
       flex: 1,
       minWidth: 200,
+      renderCell: (params) => (
+        <Typography
+          component={Link}
+          to={`/app/scenario/${params.id}`}
+          sx={{
+            textDecoration: "none",
+            color: "inherit",
+            fontWeight: "bold",
+            fontSize: "inherit",
+          }}
+        >
+          {params.value}
+        </Typography>
+      ),
     },
     {
       field: "info",
@@ -241,10 +250,12 @@ export function ScenarioInfoTable() {
         return [
           <Tooltip title="Edit Entry">
             <GridActionsCellItem
+              component={Link}
+              to={`/app/scenario/${id}`}
               icon={<EditIcon />}
               label="Edit"
               className="textPrimary"
-              onClick={handleEditClick(id)}
+              // onClick={handleEditClick(id)}
               color="inherit"
             />
           </Tooltip>,

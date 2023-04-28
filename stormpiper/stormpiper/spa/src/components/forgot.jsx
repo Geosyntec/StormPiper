@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Typography, TextField, Button, Box } from "@mui/material";
 import SimpleCardForm from "./forms/simpleCardForm";
@@ -7,7 +6,6 @@ import { api_fetch } from "../utils/utils";
 import { staticTheme, ThemeProvider } from "../theme";
 
 export default function Forgot() {
-  const navigate = useNavigate();
   const {
     register,
     handleSubmit,

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -69,7 +69,6 @@ function ActionAreaCard({ img, header, content, ...props }) {
 }
 
 export default function Landing() {
-  const navigate = useNavigate();
   const userProfile = useContext(UserProfileContext);
 
   const allowNav = userProfile?.role && userProfile.role !== "public";
@@ -119,9 +118,15 @@ export default function Landing() {
           alignItems="stretch"
           justifyContent="center"
         >
-          <Grid item xs={12} md={4}>
+          <Grid
+            item
+            xs={12}
+            md={4}
+            component={Link}
+            to={allowNav && "/app/map"}
+            sx={{ textDecoration: "none" }}
+          >
             <ActionAreaCard
-              onClick={() => allowNav && navigate("/app/map")}
               img={
                 <MapIcon
                   color="primary"
@@ -137,9 +142,15 @@ export default function Landing() {
                     `}
             />
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid
+            item
+            xs={12}
+            md={4}
+            component={Link}
+            to={allowNav && "/app/prioritization"}
+            sx={{ textDecoration: "none" }}
+          >
             <ActionAreaCard
-              onClick={() => allowNav && navigate("/app/prioritization")}
               img={
                 <CompareArrowsIcon
                   fontSize="large"
@@ -156,9 +167,15 @@ export default function Landing() {
                   `}
             />
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid
+            item
+            xs={12}
+            md={4}
+            component={Link}
+            to={allowNav && "/app/scenario"}
+            sx={{ textDecoration: "none" }}
+          >
             <ActionAreaCard
-              onClick={() => allowNav && navigate("/app/scenario")}
               img={
                 <TuneIcon
                   fontSize="large"
