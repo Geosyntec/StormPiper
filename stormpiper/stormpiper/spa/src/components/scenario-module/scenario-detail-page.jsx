@@ -21,6 +21,7 @@ import { ScenarioBMPForm } from "./scenario-bmp-detail-form";
 import { api_fetch } from "../../utils/utils";
 import { ScenarioInfoForm } from "./scenario-create-info-form";
 import CostSummary from "../cost-analysis/cost-summary";
+import { zoomToFeature } from "../../utils/map_utils";
 
 async function getDataByID(id) {
   const response = await api_fetch(`/api/rest/scenario/${id}`);
@@ -200,6 +201,95 @@ export default function ScenarioDetailPage() {
     setResultsPollInterval(resultsPoll);
   }
 
+  async function saveScenario() {
+    let errMsg = null;
+    if (
+      (await infoRef.current?.triggerValidation()) === false ||
+      (await facilityRef.current?.triggerValidation(facility)) === false ||
+      (await delinRef.current?.triggerValidation(delineation)) === false
+    ) {
+      errMsg = "Errors Present in Scenario Details";
+    }
+    if (errMsg) {
+      setResultsLoadingDisplay({
+        status: true,
+        msg: errMsg,
+      });
+    } else {
+      submitScenario();
+    }
+  }
+
+  function submitScenario() {
+    const scenarioToSubmit = {
+      name: scenarioObject.name,
+      info: scenarioObject.info,
+      input: scenarioObject.input,
+    };
+    console.log("Submitting scenario: ", scenarioToSubmit);
+    api_fetch(`/api/rest/scenario/${params.id}`, {
+      credentials: "same-origin",
+      headers: {
+        accept: "application/json",
+        "Content-type": "application/json",
+      },
+      method: "PATCH",
+      body: JSON.stringify(scenarioToSubmit),
+    }).then((res) => {
+      if (res.status === 200) {
+        setResultsSuccessDisplay({
+          status: true,
+          msg: "Scenario Updated Successfully",
+        });
+      }
+    });
+  }
+
+  async function initiateScenarioSolve() {
+    setResultsLoadingDisplay({
+      status: true,
+      msg: "Scenario Solve Started",
+    });
+    const taskID = await api_fetch(`/api/rpc/solve_scenario/${params.id}`, {
+      method: "POST",
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (!["STARTED", "SUCCESS"].includes(res.status)) {
+          throw new Error("Scenario will not solve");
+        }
+        return res.task_id;
+      });
+    const resultsPoll = setInterval(async () => {
+      const taskResult = await api_fetch(`/api/rest/tasks/${taskID}`)
+        .then((res) => res.json())
+        .then((res) => {
+          return res.status;
+        });
+      if (taskResult === "SUCCESS") {
+        setResultsSuccessDisplay({ status: true, msg: "Results Calculated" });
+      }
+    }, 5000);
+    setResultsPollInterval(resultsPoll);
+  }
+
+  let zoomFeature = null;
+  let viewState = null;
+
+  if (delineation?.features?.length > 0) {
+    zoomFeature = delineation;
+  } else if (facility?.features?.length > 0) {
+    zoomFeature = facility;
+  }
+
+  viewState =
+    zoomFeature &&
+    zoomToFeature({
+      feature: zoomFeature,
+      transitionInterpolator: null,
+      transitionDuration: 0,
+    });
+
   return (
     <Box
       sx={{
@@ -317,6 +407,7 @@ export default function ScenarioDetailPage() {
               delineationSetter={updateDelineation}
               showDelinEditTabs={showDelinEditTabs}
               showFacilityEditTabs={showFacilityEditTabs}
+              viewState={viewState}
             />
           </Card>
         </HalfSpan>

@@ -223,16 +223,16 @@ export const activeLocalSWFacility = {
     highlightColor: colorToList("orange"),
     getIconColor: colorToList("steelblue"),
 
-    // --- point attrs
+    // --- point attrs -- keep for nebula.gl which cannot show icons apparently
 
-    // getFillColor: [70, 170, 21],
-    // getLineColor: [160, 160, 180, 0],
+    getFillColor: colorToList("steelblue"),
+    getLineColor: [51, 51, 51, 200],
     // getLineWidth: (f) => 1,
-    // getPointRadius: 6,
-    // pointRadiusMaxPixels: 20,
-    // pointRadiusMinPixels: 6,
-    // dashJustified: true,
-    // dashGapPickable: true,
+    getPointRadius: 6,
+    pointRadiusMaxPixels: 20,
+    pointRadiusMinPixels: 6,
+    dashJustified: true,
+    dashGapPickable: true,
 
     // --- shared attrs ---
     pickable: true,
