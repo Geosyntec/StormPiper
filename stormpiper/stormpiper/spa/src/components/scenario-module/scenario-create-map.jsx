@@ -14,7 +14,6 @@ import {
 import { useState } from "react";
 import ScenarioFeatureEditTab from "./scenario-feature-edit-tab";
 import { useEffect } from "react";
-import { zoomToFeature } from "../../utils/map_utils";
 
 export default function ScenarioCreateMap({
   // facilityEditMode,
@@ -30,6 +29,7 @@ export default function ScenarioCreateMap({
   // delineationDrawToggler,
   showDelinEditTabs,
   showFacilityEditTabs,
+  ...props
 }) {
   console.log("Rendering facility layer: ", facility);
   console.log("Rendering delineation layer: ", delineation);
@@ -186,22 +186,89 @@ export default function ScenarioCreateMap({
     setDelineationEditMode(() => ViewMode);
   }
 
-  let zoomFeature = null;
-  let viewState = null;
+  useEffect(() => {
+    console.log("Setting mapMode:", mapMode);
+    switch (mapMode) {
+      case "drawFacility":
+        toggleFacilityDrawMode();
+        break;
+      case "editFacility":
+        toggleFacilityEditMode();
+        break;
+      case "drawDelineation":
+        toggleDelineationDrawMode();
+        break;
+      case "editDelineation":
+        toggleDelineationEditMode();
+        break;
+      default:
+        toggleViewMode();
+        break;
+    }
+  }, [mapMode]);
 
-  if (delineation?.features?.length > 0) {
-    zoomFeature = delineation;
-  } else if (facility?.features?.length > 0) {
-    zoomFeature = facility;
+  function toggleViewMode() {
+    setFacilityEditMode(() => ViewMode);
+    setDelineationEditMode(() => ViewMode);
+  }
+  function toggleFacilityDrawMode() {
+    setFacilityEditMode(() => DrawPointMode);
+    setDelineationEditMode(() => ViewMode);
+  }
+  function toggleDelineationDrawMode() {
+    setFacilityEditMode(() => ViewMode);
+    setDelineationEditMode(() => DrawPolygonMode);
+  }
+  function toggleDelineationEditMode() {
+    setFacilityEditMode(() => ViewMode);
+    setDelineationEditMode(() => ModifyMode);
+  }
+  function toggleFacilityEditMode() {
+    setFacilityEditMode(() => ModifyMode);
+    setDelineationEditMode(() => ViewMode);
   }
 
-  viewState =
-    zoomFeature &&
-    zoomToFeature({
-      feature: zoomFeature,
-      transitionInterpolator: null,
-      transitionDuration: 0,
-    });
+  useEffect(() => {
+    console.log("Setting mapMode:", mapMode);
+    switch (mapMode) {
+      case "drawFacility":
+        toggleFacilityDrawMode();
+        break;
+      case "editFacility":
+        toggleFacilityEditMode();
+        break;
+      case "drawDelineation":
+        toggleDelineationDrawMode();
+        break;
+      case "editDelineation":
+        toggleDelineationEditMode();
+        break;
+      default:
+        toggleViewMode();
+        break;
+    }
+  }, [mapMode]);
+
+  function toggleViewMode() {
+    setFacilityEditMode(() => ViewMode);
+    setDelineationEditMode(() => ViewMode);
+  }
+  function toggleFacilityDrawMode() {
+    setFacilityEditMode(() => DrawPointMode);
+    setDelineationEditMode(() => ViewMode);
+  }
+  function toggleDelineationDrawMode() {
+    setFacilityEditMode(() => ViewMode);
+    setDelineationEditMode(() => DrawPolygonMode);
+  }
+  function toggleDelineationEditMode() {
+    setFacilityEditMode(() => ViewMode);
+    setDelineationEditMode(() => ModifyMode);
+  }
+  function toggleFacilityEditMode() {
+    setFacilityEditMode(() => ModifyMode);
+    setDelineationEditMode(() => ViewMode);
+  }
 
   return (
     <Box
@@ -258,9 +325,8 @@ export default function ScenarioCreateMap({
       )}
       <DeckGLMap
         id="scenario-map"
-        context="default"
         layers={[delineationLayer, facilityLayer]}
-        viewState={viewState}
+        {...props}
       ></DeckGLMap>
     </Box>
   );
