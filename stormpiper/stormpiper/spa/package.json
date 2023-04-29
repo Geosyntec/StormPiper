@@ -26,6 +26,7 @@
     "@deck.gl/react": "^8.8.12",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
+    "@esbuild/darwin-x64": "^0.17.18",
     "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.15",
     "@mui/x-data-grid": "^6.0.4",
