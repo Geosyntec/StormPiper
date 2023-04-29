@@ -156,6 +156,10 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
     return errorList;
   }
 
+  function formOnChangeHandler(data) {
+    _handleSubmit(data, facility);
+  }
+
   function renderForm() {
     if (loadingState) {
       return <p>loading...</p>;
@@ -189,6 +193,7 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
             handleFormSubmit={_handleSubmit}
             ref={childRef}
             showSubmit={false}
+            formDataEmitter={formOnChangeHandler}
           ></BMPForm>
           <Dialog open={resultSuccess} onClose={() => setResultSuccess(false)}>
             <Box sx={{ padding: "15px" }}>

@@ -47,6 +47,24 @@ export function BMPDetailForm() {
       });
   }, []);
 
+  function removeEdits() {
+    let resources = ["/api/rest/tmnt_facility/" + params.id];
+
+    setLoadingState(true);
+
+    Promise.all(
+      resources.map((url) => api_fetch(url).then((res) => res.json()))
+    )
+      .then((resArray) => {
+        setTMNTAttrs(resArray[0]);
+        setFacilityType(resArray[0].facility_type);
+      })
+      .then(() => {
+        console.log("tmnt: ", TMNTAttrs);
+        setLoadingState(false);
+      });
+  }
+
   async function _handleSubmit(data, isSimple) {
     if (isSimple && !data["facility_type"].match("_simple")) {
       console.log("Appending simple");
@@ -156,6 +174,7 @@ export function BMPDetailForm() {
             currentFacility={facilityType}
             facilityChangeHandler={setFacilityType}
             handleFormSubmit={_handleSubmit}
+            handleEditReset={removeEdits}
             context="existing-system"
           ></BMPForm>
           <Dialog open={resultSuccess} onClose={() => setResultSuccess(false)}>
@@ -193,9 +212,10 @@ export function BMPDetailForm() {
   }
 
   return (
-    <>
+    <Box>
       {/* {_renderUpdateBox()} */}
       {!loadingState && renderForm()}
-    </>
+      {/* <Button onClick={removeEdits}>Reset</Button> */}
+    </Box>
   );
 }

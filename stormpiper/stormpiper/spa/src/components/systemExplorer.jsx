@@ -146,8 +146,8 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
     params?.id ? true : false
   ); // when true, project stats panel is displayed
   // const [resultsDisplayState,setResultsDisplayState] = useState(false) //when true, results table is displayed
-  const [verificationDisplayState, setVerificationDisplayState] =
-    useState(false); //when true, tell the user that they need to verify their email
+  // const [verificationDisplayState, setVerificationDisplayState] =
+  //   useState(false); //when true, tell the user that they need to verify their email
   const [focusFeature, setFocusFeature] = useState(params?.id || null);
   const [isDirty, setIsDirty] = useState({
     is_dirty: false,
@@ -198,9 +198,9 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
   useEffect(() => {
     //Only perform these operations on initial render
     //Notify user if they haven't verified email
-    if (!userProfile?.is_verified) {
-      setVerificationDisplayState(true);
-    }
+    // if (!userProfile?.is_verified) {
+    //   setVerificationDisplayState(true);
+    // }
 
     //Set up is_dirty polling request to check when new results need to be calculated
     _fetchIsDirty();
@@ -219,11 +219,6 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
       label: "Evaluate Project",
       icon: <GridOnRoundedIcon />,
       clickHandler: _toggleSetResultsDisplayState,
-    },
-    {
-      label: "Prioritize Watersheds",
-      icon: <ScatterPlotRoundedIcon />,
-      clickHandler: () => navigate("/app/prioritization"),
     },
   ];
 
@@ -315,23 +310,23 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
     return props;
   }
 
-  function _sendVerificationEmail() {
-    api_fetch("/auth/request-verify-token", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email: userEmail }),
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((res) => {
-        console.log("Resend request result: ", res);
-        setVerificationDisplayState(false);
-      });
-  }
+  // function _sendVerificationEmail() {
+  //   api_fetch("/auth/request-verify-token", {
+  //     method: "POST",
+  //     headers: {
+  //       Accept: "application/json",
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({ email: userEmail }),
+  //   })
+  //     .then((res) => {
+  //       return res.json();
+  //     })
+  //     .then((res) => {
+  //       console.log("Resend request result: ", res);
+  //       setVerificationDisplayState(false);
+  //     });
+  // }
   return (
     <Box>
       <Box sx={{ position: "absolute", height: "100%", width: "100%" }}>
@@ -395,7 +390,7 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
         </Card>
       </Box>
 
-      <Card
+      {/* <Card
         sx={
           verificationDisplayState
             ? classes.verificationPanel
@@ -423,7 +418,7 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
             </Button>
           </CardActions>
         </CardContent>
-      </Card>
+      </Card> */}
       <Card
         sx={
           resultsDisplayState

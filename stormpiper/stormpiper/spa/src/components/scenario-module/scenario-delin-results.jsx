@@ -60,7 +60,7 @@ export function ScenarioDelineationDetailResults({ data }) {
     "DEHP",
   ];
 
-  if (data?.delin_load) {
+  if (data?.delin_load && altids[0]) {
     for (let id of altids) {
       for (let e of epochs) {
         let d = { altid: id, epoch: e };
@@ -111,6 +111,10 @@ export function ScenarioDelineationDetailResults({ data }) {
                 <Typography>
                   Performance Results for Treatment Facility:{" "}
                   <b>{node_id || "--"}</b>
+                </Typography>
+                <Typography>
+                  Results Last Generated:{" "}
+                  <b>{formattedLastCalculatedAt || "--"}</b>
                 </Typography>
                 <Box sx={{ mt: 4 }}>
                   <DelineationLoadGenerated rows={rows} />

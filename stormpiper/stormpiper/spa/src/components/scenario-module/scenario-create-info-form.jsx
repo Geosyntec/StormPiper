@@ -13,6 +13,7 @@ export const ScenarioInfoForm = forwardRef(function ScenarioInfoForm(
     handleSubmit,
     formState: { errors, isValid },
     trigger,
+    getValues,
   } = useForm();
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -22,6 +23,7 @@ export const ScenarioInfoForm = forwardRef(function ScenarioInfoForm(
       label: "Scenario Name",
       type: "text",
       required: true,
+      minLength: 1,
       defaultValue: scenario?.name || "",
     },
     {
@@ -48,9 +50,21 @@ export const ScenarioInfoForm = forwardRef(function ScenarioInfoForm(
     ref,
     () => {
       return {
-        async triggerValidation(scenarioObject) {
+        async triggerValidation() {
+          console.log("Scenario info values: ", getValues());
           const formValidation = await trigger();
-          return formValidation;
+          console.log("Scenario info form isValid: ", formValidation);
+          console.log("Scenario info form errors: ", errors);
+          const noErrors = () => {
+            if (Object.keys(errors).length) {
+              return Object.keys(errors).length === 0;
+            } else {
+              return true;
+            }
+          };
+          // const noErrors= Object.keys(errors).length === 0;
+          const formValid = formValidation;
+          return noErrors() || formValid;
         },
       };
     },
