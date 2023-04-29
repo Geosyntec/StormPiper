@@ -45,8 +45,7 @@ type formProps = {
     [x: string]: { [x: string]: string };
   };
   handleFormSubmit: Function;
-  showSubmit?: boolean;
-  formDataEmitter?: Function;
+  showSubmit: boolean;
 };
 
 export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
@@ -61,7 +60,6 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
     reset,
     getValues,
     trigger,
-    formState: { isDirty },
   } = useForm();
   const [isSimple, setIsSimple] = useState(() => {
     if (typeof props.values?.facility_type === "string") {
@@ -121,7 +119,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
     }
     isSimple ? setFields(props.simpleFields) : setFields(props.allFields);
     firstRender.current = false;
-  }, [isSimple, props.currentFacility, props.facilityType]);
+  }, [isSimple, props.currentFacility]);
 
   useEffect(() => {
     console.log("Building form fields with values: ", props.values);
@@ -146,7 +144,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
     Object.keys(fields.properties).map((k: string) => {
       let v: any = fields.properties[k];
       if (!hiddenFields.includes(k)) {
-        let fieldObj = {
+        res.push({
           fieldID: k,
           label: v.title,
           type: v.type,
@@ -163,8 +161,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
             : v.type === "string"
             ? ""
             : 0,
-        };
-        res.push(fieldObj);
+        });
       }
     });
     setValue("node_id", props.values?.node_id);
@@ -190,9 +187,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
         let resetValue;
         if (includeExistingValues) {
           resetValue =
-            props.values && fieldSet.properties[k]
-              ? props.values[k]
-              : fieldSet.properties[k].default
+            props.values && fieldSet.properties[k].default
               ? fieldSet.properties[k].default
               : fieldSet.properties[k].type === "string"
               ? ""
@@ -223,12 +218,55 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
       ? (fieldSet = props.simpleFields)
       : (fieldSet = props.allFields);
     Object.keys(fieldSet.properties).map((k) => {
-      if (!hiddenFields.includes(k) || !["node_id"].includes(k)) {
+      if (
+        !hiddenFields.includes(k) ||
+        !["node_id", "facility_type"].includes(k)
+      ) {
         unregister(k, { keepValue: false });
       }
     });
     console.log("Form should be clear: ", getValues());
   }
+  // async function _handleSubmit(data: any) {
+  //   if (isSimple && !data["facility_type"].match("_simple")) {
+  //     console.log("Appending simple");
+  //     data["facility_type"] = data["facility_type"] + "_simple";
+  //   }
+
+  //   console.log("Submitting Patch Request: ", data);
+  //   const response = await api_fetch(
+  //     "/api/rest/tmnt_attr/" + props.values.node_id,
+  //     {
+  //       credentials: "same-origin",
+  //       headers: {
+  //         accept: "application/json",
+  //         "Content-type": "application/json",
+  //       },
+  //       method: "PATCH",
+  //       body: JSON.stringify(data),
+  //     }
+  //   )
+  //     .then((resp) => {
+  //       if (resp.status === 200) {
+  //         setResultSuccess(true);
+  //       } else if (resp.status === 422) {
+  //         setResultError(true);
+  //       }
+  //       return resp.json();
+  //     })
+  //     .then((r) => {
+  //       //assume that only error responses have a detail object
+  //       if (r.detail) {
+  //         setErrorMsg(r.detail);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log("Error patching tmnt:");
+  //       setResultError(true);
+  //       console.log(err);
+  //     });
+  //   return response;
+  // }
 
   function _handleRecalculate() {
     api_fetch("/api/rpc/solve_watershed")
@@ -295,14 +333,11 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
                   fullWidth
                   key={formField.fieldID}
                   variant="outlined"
-                  {...register(formField.fieldID, {
-                    required: formField.required,
-                  })}
                   label={formField.label}
                   select
                   value={props.currentFacility.replace("_simple", "")}
                   onChange={(e) => {
-                    reset(_createDefaults(isSimple, false));
+                    reset(_createDefaults(isSimple));
                     props.facilityChangeHandler(
                       e.target.value + (isSimple ? "_simple" : "")
                     );
@@ -389,18 +424,9 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
             {fieldDiv}
           </Box>
           {showSubmit && (
-            <Box
-              sx={{
-                padding: "10px 20px",
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <Button variant="contained" type="submit" disabled={!isDirty}>
-                Save
-              </Button>
-              <Button onClick={props.handleEditReset} disabled={!isDirty}>
-                Cancel
+            <Box display="flex" justifyContent="right">
+              <Button variant="contained" type="submit">
+                Submit
               </Button>
             </Box>
           )}
@@ -411,7 +437,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
     }
   }
   return (
-    <Box>
+    <Box sx={{ width: "100%" }}>
       <Typography variant="h6">
         {props.values?.altid} Facility Details
       </Typography>
@@ -419,11 +445,6 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
         onSubmit={handleSubmit((data) =>
           props.handleFormSubmit(data, isSimple)
         )}
-        onChange={() => {
-          if (props.formDataEmitter) {
-            props.formDataEmitter(getValues());
-          }
-        }}
       >
         {_renderFormFields()}
       </form>

@@ -1,12 +1,5 @@
-import {
-  Box,
-  Card,
-  Typography,
-  Button,
-  Snackbar,
-  CircularProgress,
-} from "@mui/material";
-import { useState, useEffect, Fragment, useRef } from "react";
+import { Box, Card, Typography } from "@mui/material";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import { EditScenarioBasics } from "./edit-scenario-info";
@@ -30,28 +23,9 @@ async function getDataByID(id) {
 export default function ScenarioDetailPage() {
   const params = useParams();
   const [scenarioObject, setScenarioObject] = useState(null);
-  const [resultsPollInterval, setResultsPollInterval] = useState(null);
-  const [resultsSuccessDisplay, setResultsSuccessDisplay] = useState({
-    status: false,
-    msg: "",
-  });
-  const [resultsLoadingDisplay, setResultsLoadingDisplay] = useState({
-    status: false,
-    msg: "",
-  });
-  const [showDelinEditTabs, setShowDelinEditTabs] = useState(false);
-  const [showFacilityEditTabs, setShowFacilityEditTabs] = useState(false);
-  const infoRef = useRef(null);
-  const delinRef = useRef(null);
-  const facilityRef = useRef(null);
 
   useEffect(() => {
     getDataByID(params.id).then((res) => {
-      // setScenarioObject({
-      //   name: res.name,
-      //   input: res.input,
-      //   info: res.info,
-      // });
       setScenarioObject(res);
       if (res.input.delineation_collection) {
         console.log("Found delineation");
@@ -62,13 +36,15 @@ export default function ScenarioDetailPage() {
         setFacility(res.input.tmnt_facility_collection);
       }
     });
-  }, [params.id, resultsSuccessDisplay]);
+  }, [params.id]);
+
+  const [facilityEditMode, setFacilityEditMode] = useState(() => ViewMode);
+  const [delineationEditMode, setDelineationEditMode] = useState(
+    () => ViewMode
+  );
 
   function updateScenario(field, value) {
     let scenarioToUpdate = { ...scenarioObject };
-    if (!scenarioToUpdate.info) {
-      scenarioToUpdate["info"] = {};
-    }
     switch (field) {
       case "purpose":
       case "description":
@@ -89,9 +65,25 @@ export default function ScenarioDetailPage() {
     type: "FeatureCollection",
     features: [],
   });
+  // const [scenarioObject, setscenarioData] = useState({
+  //   name: "",
+  //   input: {
+  //     delineation_collection: null,
+  //     tmnt_facility_collection: null,
+  //   },
+  // });
+
+  function toggleFacilityEditMode() {
+    setFacilityEditMode(() => DrawPointMode);
+    setDelineationEditMode(() => ViewMode);
+  }
+  function toggleDelineationEditMode() {
+    setFacilityEditMode(() => ViewMode);
+    setDelineationEditMode(() => DrawPolygonMode);
+  }
 
   function updateFacility(facility) {
-    if (facility.features[0] && delineation.features[0]) {
+    if (facility.features[0]) {
       let delineationToUpdate = { ...delineation };
       delineation.features[0].properties["relid"] =
         facility.features[0].properties["node_id"];
@@ -104,19 +96,9 @@ export default function ScenarioDetailPage() {
           tmnt_facility_collection: facility,
         },
       });
-    } else {
-      setFacility(facility);
-      setScenarioObject({
-        ...scenarioObject,
-        input: {
-          delineation_collection: null,
-          tmnt_facility_collection: facility,
-        },
-      });
     }
   }
   function updateDelineation(delineation) {
-    console.log("updating delin: ", delineation);
     setDelineation(delineation);
     setScenarioObject({
       ...scenarioObject,
@@ -127,78 +109,6 @@ export default function ScenarioDetailPage() {
     });
   }
 
-  async function saveScenario() {
-    let errMsg = null;
-    if (
-      (await infoRef.current?.triggerValidation()) === false ||
-      (await facilityRef.current?.triggerValidation(facility)) === false ||
-      (await delinRef.current?.triggerValidation(delineation)) === false
-    ) {
-      errMsg = "Errors Present in Scenario Details";
-    }
-    if (errMsg) {
-      setResultsLoadingDisplay({
-        status: true,
-        msg: errMsg,
-      });
-    } else {
-      submitScenario();
-    }
-  }
-
-  function submitScenario() {
-    const scenarioToSubmit = {
-      name: scenarioObject.name,
-      info: scenarioObject.info,
-      input: scenarioObject.input,
-    };
-    console.log("Submitting scenario: ", scenarioToSubmit);
-    api_fetch(`/api/rest/scenario/${params.id}`, {
-      credentials: "same-origin",
-      headers: {
-        accept: "application/json",
-        "Content-type": "application/json",
-      },
-      method: "PATCH",
-      body: JSON.stringify(scenarioToSubmit),
-    }).then((res) => {
-      if (res.status === 200) {
-        setResultsSuccessDisplay({
-          status: true,
-          msg: "Scenario Updated Successfully",
-        });
-      }
-    });
-  }
-
-  async function initiateScenarioSolve() {
-    setResultsLoadingDisplay({
-      status: true,
-      msg: "Scenario Solve Started",
-    });
-    const taskID = await api_fetch(`/api/rpc/solve_scenario/${params.id}`, {
-      method: "POST",
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (!["STARTED", "SUCCESS"].includes(res.status)) {
-          throw new Error("Scenario will not solve");
-        }
-        return res.task_id;
-      });
-    const resultsPoll = setInterval(async () => {
-      const taskResult = await api_fetch(`/api/rest/tasks/${taskID}`)
-        .then((res) => res.json())
-        .then((res) => {
-          return res.status;
-        });
-      if (taskResult === "SUCCESS") {
-        setResultsSuccessDisplay({ status: true, msg: "Results Calculated" });
-      }
-    }, 5000);
-    setResultsPollInterval(resultsPoll);
-  }
-
   return (
     <Box
       sx={{
@@ -206,103 +116,23 @@ export default function ScenarioDetailPage() {
         justifyContent: "center",
       }}
     >
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        open={resultsSuccessDisplay.status}
-        autoHideDuration={3000}
-        onClose={() => {
-          setResultsSuccessDisplay({ status: false, msg: "" });
-          clearInterval(resultsPollInterval);
-          setResultsPollInterval(null);
-        }}
-        message={resultsSuccessDisplay.msg}
-      />
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        open={resultsLoadingDisplay.status}
-        autoHideDuration={1000}
-        onClose={() => setResultsLoadingDisplay({ status: false, msg: "" })}
-        message={resultsLoadingDisplay.msg}
-      />
       <TwoColGrid>
         <HalfSpan>
           <Card
             sx={{
-              // display: "flex",
-              // flexDirection: "column",
-              // height: "500px",
-              // alignItems: "start",
-              // justifyContent: "start",
-              // padding: "1rem",
               display: "flex",
-              maxHeight: "500px",
-              overflow: "auto",
+              height: "100%",
             }}
           >
-            <Box sx={{ width: "100%", height: "100%", p: 3 }}>
+            <Box sx={{ width: "100%", p: 3 }}>
               <Typography align="left" variant="h6">
                 Scenario Review
               </Typography>
               <ScenarioInfoForm
                 scenario={scenarioObject}
                 scenarioSetter={updateScenario}
-                ref={infoRef}
               />
-              {facility?.features?.length > 0 && (
-                <Box>
-                  <ScenarioBMPForm
-                    facility={facility.features.length > 0 && facility}
-                    facilitySetter={updateFacility}
-                    ref={facilityRef}
-                  />
-                </Box>
-              )}
-              <Button
-                sx={{ alignSelf: "flex-start", paddingLeft: 0 }}
-                onClick={() => {
-                  setShowDelinEditTabs(false);
-                  setShowFacilityEditTabs(true);
-                }}
-              >
-                Add/Edit Facility
-              </Button>
-              <br></br>
-              {delineation?.features?.length > 0 && (
-                <Box>
-                  <ScenarioDelineationForm
-                    delineationSetter={updateDelineation}
-                    delineation={delineation}
-                    ref={delinRef}
-                  />
-                </Box>
-              )}
-              <Button
-                sx={{ alignSelf: "flex-start", paddingLeft: 0 }}
-                onClick={() => {
-                  setShowFacilityEditTabs(false);
-                  setShowDelinEditTabs(true);
-                }}
-              >
-                Add/Edit Delineation
-              </Button>
-              <br></br>
-              <Button
-                onClick={initiateScenarioSolve}
-                sx={{ alignSelf: "flex-start", paddingLeft: 0 }}
-                disabled={resultsPollInterval}
-              >
-                Calculate Scenario WQ Results
-                {resultsPollInterval && (
-                  <CircularProgress
-                    style={{ margin: "0.1em", alignSelf: "center" }}
-                    size="1em"
-                  />
-                )}
-              </Button>
-              <br></br>
-              <Button variant="contained" onClick={() => saveScenario()}>
-                Save
-              </Button>
+              {/* <EditScenarioBasics data={scenarioObject} /> */}
             </Box>
           </Card>
         </HalfSpan>
@@ -314,15 +144,64 @@ export default function ScenarioDetailPage() {
             }}
           >
             <ScenarioCreateMap
+              facilityEditMode={facilityEditMode}
+              delineationEditMode={delineationEditMode}
               facility={facility}
               facilitySetter={updateFacility}
               delineation={delineation}
               delineationSetter={updateDelineation}
-              showDelinEditTabs={showDelinEditTabs}
-              showFacilityEditTabs={showFacilityEditTabs}
             />
           </Card>
         </HalfSpan>
+        <HalfSpan>
+          <Card
+            sx={{
+              display: "flex",
+              p: 3,
+            }}
+          >
+            {facility?.features?.length > 0 ? (
+              <ScenarioBMPForm
+                facility={facility.features.length > 0 && facility}
+                facilitySetter={updateFacility}
+              />
+            ) : (
+              <Typography variant="body1">No Facility to Update</Typography>
+            )}
+          </Card>
+        </HalfSpan>
+        <HalfSpan>
+          <Card
+            sx={{
+              display: "flex",
+              height: "100%",
+              minHeight: "200px",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {delineation?.features?.length > 0 ? (
+              <ScenarioDelineationForm
+                delineationPropSetter={updateDelineation}
+                delineation={delineation}
+              />
+            ) : (
+              <Typography variant="body1">No Delineation to Update</Typography>
+            )}
+          </Card>
+        </HalfSpan>
+        <FullSpan>
+          <Box pb={3}>
+            <Card sx={{ p: 2 }}>
+              <CostSummary
+                tmntDetails={scenarioObject?.structural_tmnt?.[0]}
+                updateFacilityData={() => {
+                  console.log("attempted cost refresh. no op.");
+                }}
+              />
+            </Card>
+          </Box>
+        </FullSpan>
         <FullSpan>
           <ScenarioBMPDetailResults data={scenarioObject} />
         </FullSpan>
