@@ -36,9 +36,6 @@ export const ScenarioDelineationForm = forwardRef(
             const doesPolygonExist =
               delineation?.features.length > 0 &&
               delineation.features[0].geometry;
-            console.log("Validating delineation: ", delineation);
-            console.log("Delineation form valid?: ", isFormValid);
-            console.log("Delineation drawn?", doesPolygonExist);
             return isFormValid && doesPolygonExist;
           },
 
@@ -102,7 +99,6 @@ export const ScenarioDelineationForm = forwardRef(
                 required={formField.required}
                 margin="dense"
                 onChange={(e) => {
-                  console.log("Updating delineation from form: ", delineation);
                   setDelineationName(e);
                 }}
                 fullWidth
@@ -133,14 +129,11 @@ export const ScenarioDelineationForm = forwardRef(
 
     return (
       <Box>
-        {/* <Typography variant="subtitle1" align="left">
-          Delineation Editor
-        </Typography> */}
+        <Typography variant="h6">Delineation Details</Typography>
         <Box
           sx={{
-            margin: "1em",
             display: "flex",
-            justifyContent: "center",
+            justifyContent: "flex-start",
           }}
         >
           <form onSubmit={handleSubmit(_handleSubmit)}>

@@ -130,7 +130,7 @@ function BMPStatWindow(props: statWindowProps) {
 
   useEffect(() => {
     if (!props?.feature) return;
-
+    console.log("Fetching tmnt attributes");
     let tmnt_results = [
       "/api/rest/results/" + props.feature,
       "/api/rest/tmnt_facility/" + props.feature,
@@ -166,7 +166,7 @@ function BMPStatWindow(props: statWindowProps) {
           error: true,
         });
       });
-  }, [props?.feature, recalculationState]);
+  }, [props?.feature, recalculationState, facilityType]);
 
   function switchStats(headerName: string) {
     setState(() => {

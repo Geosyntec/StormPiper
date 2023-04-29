@@ -1,5 +1,11 @@
 import DeckGLMap from "../map";
-import { EditableGeoJsonLayer } from "nebula.gl";
+import {
+  EditableGeoJsonLayer,
+  DrawPolygonMode,
+  DrawPointMode,
+  ViewMode,
+  ModifyMode,
+} from "nebula.gl";
 import { Box, Card } from "@mui/material";
 import {
   activeLocalSWFacility as tmnt,
@@ -7,23 +13,30 @@ import {
 } from "../../assets/geojson/coreLayers";
 import { useState } from "react";
 import ScenarioFeatureEditTab from "./scenario-feature-edit-tab";
-import { lte } from "lodash";
+import { useEffect } from "react";
 
 export default function ScenarioCreateMap({
-  facilityEditMode,
-  delineationEditMode,
+  // facilityEditMode,
+  // delineationEditMode,
+  mapMode,
   facility,
   facilitySetter,
-  facilityEditToggler,
+  // facilityEditToggler,
   delineation,
   delineationSetter,
-  delineationEditToggler,
-  delineationDrawToggler,
+  // delineationEditToggler,
+  // delineationDrawToggler,
+  showDelinEditTabs,
+  showFacilityEditTabs,
 }) {
   console.log("Rendering facility layer: ", facility);
   console.log("Rendering delineation layer: ", delineation);
   const [delineationFeatureIndexes, setDelineationFeatureIndexes] = useState(
     []
+  );
+  const [facilityEditMode, setFacilityEditMode] = useState(() => ViewMode);
+  const [delineationEditMode, setDelineationEditMode] = useState(
+    () => ViewMode
   );
 
   const facilityLayer = new EditableGeoJsonLayer({
@@ -31,7 +44,7 @@ export default function ScenarioCreateMap({
     id: "userPoints",
     label: "User Points",
     data: facility,
-    selectedFeatureIndexes: [],
+    selectedFeatureIndexes: facility?.features?.length > 0 ? [0] : [],
     mode: facilityEditMode,
     onEdit: ({ updatedData, editType }) => {
       console.log("update: ", updatedData);
@@ -60,7 +73,6 @@ export default function ScenarioCreateMap({
     mode: delineationEditMode,
     pickable: true,
     onEdit: ({ updatedData, editType, editContext }) => {
-      console.log("Edit Type:", editType);
       console.log("Edit Context: ", editContext);
       if (editType === "addFeature") {
         //When there are no existing features, simply update
@@ -88,6 +100,48 @@ export default function ScenarioCreateMap({
     },
   });
 
+  useEffect(() => {
+    console.log("Setting map Mode:", mapMode);
+    switch (mapMode) {
+      case "drawFacility":
+        toggleFacilityDrawMode();
+        break;
+      case "editFacility":
+        toggleFacilityEditMode();
+        break;
+      case "drawDelineation":
+        toggleDelineationDrawMode();
+        break;
+      case "editDelineation":
+        toggleDelineationEditMode();
+        break;
+      default:
+        toggleViewMode();
+        break;
+    }
+  }, [mapMode]);
+
+  function toggleViewMode() {
+    setFacilityEditMode(() => ViewMode);
+    setDelineationEditMode(() => ViewMode);
+  }
+  function toggleFacilityDrawMode() {
+    setFacilityEditMode(() => DrawPointMode);
+    setDelineationEditMode(() => ViewMode);
+  }
+  function toggleDelineationDrawMode() {
+    setFacilityEditMode(() => ViewMode);
+    setDelineationEditMode(() => DrawPolygonMode);
+  }
+  function toggleDelineationEditMode() {
+    setFacilityEditMode(() => ViewMode);
+    setDelineationEditMode(() => ModifyMode);
+  }
+  function toggleFacilityEditMode() {
+    setFacilityEditMode(() => ModifyMode);
+    setDelineationEditMode(() => ViewMode);
+  }
+
   return (
     <Box
       sx={{
@@ -97,24 +151,47 @@ export default function ScenarioCreateMap({
         overflowY: "hidden",
       }}
     >
-      {["DrawPolygonMode2", "ModifyMode2"].includes(
+      {(["DrawPolygonMode2", "ModifyMode2"].includes(
         delineationEditMode.name
-      ) && (
+      ) ||
+        showDelinEditTabs) && (
         <Box
           sx={{
             position: "absolute",
             zIndex: 9,
-            top: "80%",
-            left: "2%",
+            top: "1%",
+            left: "1%",
             borderRadius: "2px",
             background: "rgba(255, 255, 255, 1)",
           }}
         >
           <ScenarioFeatureEditTab
-            editModeToggler={delineationEditToggler}
-            drawModeToggler={delineationDrawToggler}
+            editModeToggler={toggleDelineationEditMode}
+            drawModeToggler={toggleDelineationDrawMode}
+            viewModeToggler={toggleViewMode}
             featureSetter={delineationSetter}
             feature={delineation?.features[0]}
+          />
+        </Box>
+      )}
+      {(["DrawPolygonMode2", "ModifyMode2"].includes(facilityEditMode.name) ||
+        showFacilityEditTabs) && (
+        <Box
+          sx={{
+            position: "absolute",
+            zIndex: 9,
+            top: "1%",
+            left: "1%",
+            borderRadius: "2px",
+            background: "rgba(255, 255, 255, 1)",
+          }}
+        >
+          <ScenarioFeatureEditTab
+            editModeToggler={toggleFacilityEditMode}
+            drawModeToggler={toggleFacilityDrawMode}
+            viewModeToggler={toggleViewMode}
+            featureSetter={facilitySetter}
+            feature={facility?.features[0]}
           />
         </Box>
       )}

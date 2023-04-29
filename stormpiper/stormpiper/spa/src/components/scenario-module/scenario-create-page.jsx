@@ -7,8 +7,6 @@ import {
   DrawPointMode,
   ViewMode,
   ModifyMode,
-  TranslateMode,
-  Editor,
 } from "nebula.gl";
 import { useEffect, useState, useRef } from "react";
 import { ScenarioCreateStepper } from "./scenario-create-stepper";
@@ -19,16 +17,6 @@ import { api_fetch } from "../../utils/utils";
 export default function ScenarioCreatePage({ setDrawerButtonList }) {
   const navigate = useNavigate();
   const buttonList = [
-    // {
-    //   label: "Create a BMP",
-    //   icon: <RadioButtonCheckedIcon />,
-    //   clickHandler: toggleFacilityDrawMode,
-    // },
-    // {
-    //   label: "Create a Delineation",
-    //   icon: <DashboardIcon />,
-    //   clickHandler: toggleDelineationDrawMode,
-    // },
     {
       label: "View All Scenarios",
       icon: <ListAltIcon />,
@@ -44,10 +32,8 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
     }, 50);
   }, [location]);
 
-  const [facilityEditMode, setFacilityEditMode] = useState(() => ViewMode);
-  const [delineationEditMode, setDelineationEditMode] = useState(
-    () => ViewMode
-  );
+  const [showFacilityEditTabs, setShowFacilityEditTabs] = useState(false);
+  const [showdelineationEditTabs, setShowDelineationEditTabs] = useState(false);
 
   const [facility, setFacility] = useState({
     type: "FeatureCollection",
@@ -57,6 +43,7 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
     type: "FeatureCollection",
     features: [],
   });
+  const [mapMode, setMapMode] = useState("default");
   const [scenarioObject, setScenarioObject] = useState({
     name: "",
     info: {
@@ -68,33 +55,6 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
       tmnt_facility_collection: null,
     },
   });
-
-  console.log("Current Scenario: ", scenarioObject);
-
-  function toggleViewMode() {
-    setFacilityEditMode(() => ViewMode);
-    setDelineationEditMode(() => ViewMode);
-  }
-  function toggleFacilityDrawMode() {
-    console.log("Toggling facility edit mode");
-    setFacilityEditMode(() => DrawPointMode);
-    setDelineationEditMode(() => ViewMode);
-  }
-  function toggleDelineationDrawMode() {
-    console.log("Toggling delineation draw mode");
-    setFacilityEditMode(() => ViewMode);
-    setDelineationEditMode(() => DrawPolygonMode);
-  }
-  function toggleDelineationEditMode() {
-    console.log("Toggling delineation edit mode");
-
-    setFacilityEditMode(() => ViewMode);
-    setDelineationEditMode(() => ModifyMode);
-  }
-  function toggleFacilityEditMode() {
-    setFacilityEditMode(() => new ModifyMode());
-    setDelineationEditMode(() => ViewMode);
-  }
 
   function updateFacility(facility) {
     console.log("Trying to update facility: ", facility);
@@ -115,6 +75,13 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
   function updateDelineation(delineation) {
     console.log("Updating delineation:", delineation);
     setDelineation(delineation);
+    // if (!delineation) {
+    //   //Currently we're not able to clear the delineation without setting it to null, so we need to null it and then set it to an empty Feature Collection
+    //   setDelineation({
+    //     type: "FeatureCollection",
+    //     features: [],
+    //   });
+    // }
     setScenarioObject({
       ...scenarioObject,
       input: {
@@ -182,11 +149,17 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
             scenarioSetter={updateScenario}
             delineation={delineation}
             delineationSetter={updateDelineation}
-            delineationDrawToggler={toggleDelineationDrawMode}
+            delineationDrawToggler={() => {
+              setShowDelineationEditTabs(true);
+              setShowFacilityEditTabs(false);
+            }}
             facility={facility}
             facilitySetter={updateFacility}
-            facilityDrawToggler={toggleFacilityDrawMode}
-            viewModeToggler={toggleViewMode}
+            facilityDrawToggler={() => {
+              setShowDelineationEditTabs(false);
+              setShowFacilityEditTabs(true);
+            }}
+            viewModeToggler={() => setMapMode("default")}
             handleSubmit={_handleSubmit}
           />
         </Card>
@@ -201,15 +174,13 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
           }}
         >
           <ScenarioCreateMap
-            facilityEditMode={facilityEditMode}
-            delineationEditMode={delineationEditMode}
+            mapMode={mapMode}
             facility={facility}
             facilitySetter={updateFacility}
-            facilityEditToggler={toggleFacilityEditMode}
             delineation={delineation}
             delineationSetter={updateDelineation}
-            delineationEditToggler={toggleDelineationEditMode}
-            delineationDrawToggler={toggleDelineationDrawMode}
+            showDelinEditTabs={showdelineationEditTabs}
+            showFacilityEditTabs={showFacilityEditTabs}
           />
         </Card>
       </HalfSpan>
