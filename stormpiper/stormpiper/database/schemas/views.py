@@ -23,6 +23,7 @@ COLS = [
 
 
 def build_subbasinresult_v():
+    select_fields = []
     sub_cols = "\n".join([f"""\ts."{s}",""" for s in s_cols])
     subr_cols = "\n".join([f"""\tsr."{s}",""" for s in sr_cols])
 
@@ -39,19 +40,27 @@ def build_subbasinresult_v():
         f"""\tsr."{load_col}" / s.area_acres as "{yield_col}", """
         for load_col, yield_col in zip(load_cols, yield_cols)
     ]
-    yield_col_calcs[-1] = yield_col_calcs[-1].replace(", ", " ")
 
     yield_col_block = "\n".join([depth_col_calc] + yield_col_calcs)
+    summary_fields = "\n".join(["\tdist_altid.tmnt_facility_count,"])
+    select_fields = "\n".join(
+        [sub_cols, subr_cols, conc_col_block, yield_col_block, summary_fields]
+    )
+    select_fields = select_fields[:-3] + select_fields[-3:].replace(",", "")
 
     view_template = f"""
 DROP VIEW IF EXISTS subbasinresult_v;
 CREATE OR REPLACE VIEW subbasinresult_v AS
 select
-{sub_cols}
-{subr_cols}
-{conc_col_block}
-{yield_col_block}
-from subbasin_result as sr JOIN subbasin as s on sr.subbasin = s.subbasin
+{select_fields}
+FROM subbasin s
+     LEFT JOIN subbasin_result sr ON sr.subbasin::text = s.subbasin::text
+     LEFT JOIN
+        (SELECT b.subbasin,
+                count(DISTINCT b.altid)::integer AS tmnt_facility_count
+            FROM lgu_boundary b
+            GROUP BY b.subbasin
+            ORDER BY b.subbasin) dist_altid ON dist_altid.subbasin::text = s.subbasin::text
 """
     return view_template
 
