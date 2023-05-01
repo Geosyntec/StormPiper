@@ -29,8 +29,6 @@ export default function ScenarioFeatureEditTab({
   const [resetFeature, setResetFeature] = useState(feature);
 
   useEffect(() => {
-    // setDisplayDrawReset(false); //when an addFeature event is triggered during drawMode, hide the draw reset button
-    // setActiveTab(false);
     console.log("feature within edit tab: ", feature);
   }, [feature]);
   return (
@@ -43,8 +41,8 @@ export default function ScenarioFeatureEditTab({
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                   <CheckIcon
                     onClick={() => {
-                      drawModeToggler();
-                      setActiveTab(2);
+                      viewModeToggler();
+                      setActiveTab(false);
                       setDisplayEditReset(false);
                     }}
                   />
@@ -55,8 +53,8 @@ export default function ScenarioFeatureEditTab({
                         features: [resetFeature],
                       });
                       setDisplayEditReset(false);
-                      drawModeToggler();
-                      setActiveTab(2);
+                      viewModeToggler();
+                      setActiveTab(false);
                     }}
                   />
                 </Box>
@@ -88,39 +86,23 @@ export default function ScenarioFeatureEditTab({
             disabled={feature?.geometry?.coordinates ? false : true}
           />
           <Tab
-            icon={
-              // displayDrawReset ? (
-              //   <Box>
-              //     <ClearIcon
-              //       onClick={() => {
-              //         featureSetter({
-              //           type: "FeatureCollection",
-              //           features: [resetFeature],
-              //         });
-              //         setDisplayDrawReset(false);
-              //         viewModeToggler();
-              //         setActiveTab(2);
-              //       }}
-              //     />
-              //   </Box>
-              // ) : (
-              <AddIcon />
-              // )
-            }
+            icon={<AddIcon />}
             onClick={() => {
-              // if (!displayDrawReset) {
-              drawModeToggler();
-              setActiveTab(2);
-              setResetFeature(
-                feature || {
-                  type: "FeatureCollection",
-                  features: [],
-                }
-              );
-              setDisplayDrawReset(true);
-              // }
+              if (activeTab === 2) {
+                setActiveTab(false);
+                viewModeToggler();
+              } else {
+                drawModeToggler();
+                setActiveTab(2);
+                setResetFeature(
+                  feature || {
+                    type: "FeatureCollection",
+                    features: [],
+                  }
+                );
+                setDisplayDrawReset(true);
+              }
             }}
-            disabled={feature ? true : false}
           />
         </Tabs>
       </Box>

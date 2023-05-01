@@ -41,6 +41,7 @@ export default function ScenarioDetailPage() {
   });
   const [showDelinEditTabs, setShowDelinEditTabs] = useState(false);
   const [showFacilityEditTabs, setShowFacilityEditTabs] = useState(false);
+  const [mapMode, setMapMode] = useState("default");
   const infoRef = useRef(null);
   const delinRef = useRef(null);
   const facilityRef = useRef(null);
@@ -228,15 +229,7 @@ export default function ScenarioDetailPage() {
         <HalfSpan>
           <Card
             sx={{
-              // display: "flex",
-              // flexDirection: "column",
-              // height: "500px",
-              // alignItems: "start",
-              // justifyContent: "start",
-              // padding: "1rem",
               display: "flex",
-              maxHeight: "500px",
-              overflow: "auto",
             }}
           >
             <Box sx={{ width: "100%", height: "100%", p: 3 }}>
@@ -262,6 +255,7 @@ export default function ScenarioDetailPage() {
                 onClick={() => {
                   setShowDelinEditTabs(false);
                   setShowFacilityEditTabs(true);
+                  setMapMode("default");
                 }}
               >
                 Add/Edit Facility
@@ -281,6 +275,7 @@ export default function ScenarioDetailPage() {
                 onClick={() => {
                   setShowFacilityEditTabs(false);
                   setShowDelinEditTabs(true);
+                  setMapMode("default");
                 }}
               >
                 Add/Edit Delineation
@@ -314,6 +309,8 @@ export default function ScenarioDetailPage() {
             }}
           >
             <ScenarioCreateMap
+              mapMode={mapMode}
+              setMapMode={setMapMode}
               facility={facility}
               facilitySetter={updateFacility}
               delineation={delineation}

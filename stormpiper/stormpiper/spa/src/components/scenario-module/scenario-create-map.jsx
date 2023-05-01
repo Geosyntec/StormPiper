@@ -19,6 +19,7 @@ export default function ScenarioCreateMap({
   // facilityEditMode,
   // delineationEditMode,
   mapMode,
+  setMapMode,
   facility,
   facilitySetter,
   // facilityEditToggler,
@@ -101,7 +102,7 @@ export default function ScenarioCreateMap({
   });
 
   useEffect(() => {
-    console.log("Setting map Mode:", mapMode);
+    console.log("Setting mapMode:", mapMode);
     switch (mapMode) {
       case "drawFacility":
         toggleFacilityDrawMode();
@@ -166,9 +167,9 @@ export default function ScenarioCreateMap({
           }}
         >
           <ScenarioFeatureEditTab
-            editModeToggler={toggleDelineationEditMode}
-            drawModeToggler={toggleDelineationDrawMode}
-            viewModeToggler={toggleViewMode}
+            editModeToggler={() => setMapMode("editDelineation")}
+            drawModeToggler={() => setMapMode("drawDelineation")}
+            viewModeToggler={() => setMapMode("default")}
             featureSetter={delineationSetter}
             feature={delineation?.features[0]}
           />
@@ -187,9 +188,9 @@ export default function ScenarioCreateMap({
           }}
         >
           <ScenarioFeatureEditTab
-            editModeToggler={toggleFacilityEditMode}
-            drawModeToggler={toggleFacilityDrawMode}
-            viewModeToggler={toggleViewMode}
+            editModeToggler={() => setMapMode("editFacility")}
+            drawModeToggler={() => setMapMode("drawFacility")}
+            viewModeToggler={() => setMapMode("default")}
             featureSetter={facilitySetter}
             feature={facility?.features[0]}
           />
