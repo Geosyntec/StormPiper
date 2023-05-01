@@ -23,7 +23,10 @@ export const ScenarioDelineationForm = forwardRef(
         label: "Delineation Name",
         type: "text",
         required: true,
-        value: delineation?.features[0]?.properties?.name || "",
+        // value: delineation?.features[0]?.properties?.name || "",
+        value: delineation?.features[0]
+          ? delineation.features[0].properties.name
+          : "",
       },
     ];
 
