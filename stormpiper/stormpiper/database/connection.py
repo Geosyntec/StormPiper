@@ -16,10 +16,18 @@ from stormpiper.core.config import settings
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
 
+engine_params = {
+    "pool_recycle": settings.DATABASE_POOL_RECYCLE,
+    "pool_size": 5,
+    # Temporarily exceeds the set pool_size if no connections are available.
+    "max_overflow": 2,
+    "pool_timeout": 10,  # minutes
+    "pool_pre_ping": True,
+}
+
 engine = create_engine(
     settings.DATABASE_URL_SYNC,
-    pool_recycle=settings.DATABASE_POOL_RECYCLE,
-    pool_pre_ping=True,
+    **engine_params,
 )
 
 
@@ -30,8 +38,7 @@ async def get_async_session() -> AsyncIterator[AsyncSession]:
     if _there_can_be_only_one is None:
         async_engine = create_async_engine(
             settings.DATABASE_URL_ASYNC,
-            pool_recycle=settings.DATABASE_POOL_RECYCLE,
-            pool_pre_ping=True,
+            **engine_params,
         )
         async_session_maker = sessionmaker(
             async_engine, class_=AsyncSession, expire_on_commit=False
