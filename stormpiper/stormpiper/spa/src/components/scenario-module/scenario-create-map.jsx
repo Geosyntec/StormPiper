@@ -1,4 +1,5 @@
 import DeckGLMap from "../map";
+import { GeoJsonLayer } from "@deck.gl/layers";
 import {
   EditableGeoJsonLayer,
   DrawPolygonMode,
@@ -6,27 +7,23 @@ import {
   ViewMode,
   ModifyMode,
 } from "nebula.gl";
-import { Box, Card } from "@mui/material";
+import { Box } from "@mui/material";
 import {
   activeLocalSWFacility as tmnt,
   delineations,
+  invisiblePoints,
 } from "../../assets/geojson/coreLayers";
 import { useState } from "react";
 import ScenarioFeatureEditTab from "./scenario-feature-edit-tab";
 import { useEffect } from "react";
 
 export default function ScenarioCreateMap({
-  // facilityEditMode,
-  // delineationEditMode,
   mapMode,
   setMapMode,
   facility,
   facilitySetter,
-  // facilityEditToggler,
   delineation,
   delineationSetter,
-  // delineationEditToggler,
-  // delineationDrawToggler,
   showDelinEditTabs,
   showFacilityEditTabs,
   ...props
@@ -41,8 +38,8 @@ export default function ScenarioCreateMap({
     () => ViewMode
   );
 
-  const facilityLayer = new EditableGeoJsonLayer({
-    ...tmnt.props,
+  const facilityLayerEdit = new EditableGeoJsonLayer({
+    ...invisiblePoints.props,
     id: "userPoints",
     label: "User Points",
     data: facility,
@@ -64,6 +61,13 @@ export default function ScenarioCreateMap({
         facilitySetter(updatedData);
       }
     },
+  });
+
+  const facilityLayerView = new GeoJsonLayer({
+    ...tmnt.props,
+    id: "userPointsView",
+    label: "User Points View",
+    data: facility,
   });
 
   const delineationLayer = new EditableGeoJsonLayer({
@@ -199,7 +203,7 @@ export default function ScenarioCreateMap({
       )}
       <DeckGLMap
         id="scenario-map"
-        layers={[delineationLayer, facilityLayer]}
+        layers={[delineationLayer, facilityLayerView, facilityLayerEdit]}
         {...props}
       ></DeckGLMap>
     </Box>
