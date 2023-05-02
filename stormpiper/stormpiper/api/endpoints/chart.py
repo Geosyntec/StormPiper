@@ -32,7 +32,9 @@ async def get_chart_cost_timeseries(
         )
         return HTMLResponse(html)
 
-    return PlainTextResponse(content=spec.to_json())
+    content = spec.to_json()  # type: ignore
+
+    return PlainTextResponse(content=content)
 
 
 @router.get(
