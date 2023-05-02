@@ -218,7 +218,7 @@ export const activeLocalSWFacility = {
     },
     getIcon: (d) => "marker",
     iconSizeScale: 1,
-    getIconSize: (d) => 24,
+    getIconSize: (d) => 30,
     defaultFillColor: colorToList("steelblue"),
     highlightColor: colorToList("orange"),
     getIconColor: colorToList("steelblue"),
@@ -235,6 +235,22 @@ export const activeLocalSWFacility = {
     dashGapPickable: true,
 
     // --- shared attrs ---
+    pickable: true,
+    onByDefault: true,
+  },
+};
+
+export const invisiblePoints = {
+  props: {
+    // data:"https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/21/query?where=1%3D1&outFields=*&returnGeometry=true&f=geojson&outSR=4326",
+    // --- point attrs -- keep for nebula.gl which cannot show icons apparently
+
+    getFillColor: [0, 0, 0, 0],
+    getLineColor: [0, 0, 0, 0],
+    getLineWidth: 0,
+    lineMinWidthPixels: 0,
+    getPointRadius: 20,
+    pointRadiusMinPixels: 20,
     pickable: true,
     onByDefault: true,
   },
