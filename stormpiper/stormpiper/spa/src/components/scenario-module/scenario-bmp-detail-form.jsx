@@ -10,9 +10,10 @@ import { BMPForm } from "../bmpForm";
 import { Box, Dialog, DialogActions, Typography, Button } from "@mui/material";
 
 export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
-  { facilitySetter, facility },
+  { facilitySetter, facility, formDisabled },
   ref
 ) {
+  const disabled = formDisabled ?? false;
   const [specs, setSpecs] = useState({
     context: {},
     facilitySpec: {},
@@ -45,7 +46,8 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
           const isFormValid = await childRef.current.triggerValidation();
           console.log("BMP form valid?: ", isFormValid);
           const isFeatureDrawn =
-            facility?.features.length > 0 && facility?.features[0].geometry;
+            facility?.features.length > 0 &&
+            facility?.features[0].geometry.coordinates.length > 0;
           console.log("BMP drawn?:", isFeatureDrawn);
           return isFormValid && isFeatureDrawn;
         },
@@ -198,6 +200,7 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
             ref={childRef}
             showSubmit={false}
             formDataEmitter={formOnChangeHandler}
+            formDisabled={disabled}
           ></BMPForm>
           <Dialog open={resultSuccess} onClose={() => setResultSuccess(false)}>
             <Box sx={{ padding: "15px" }}>

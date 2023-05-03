@@ -1,9 +1,9 @@
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, useImperativeHandle, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Box, TextField, Typography } from "@mui/material";
 
 export const ScenarioInfoForm = forwardRef(function ScenarioInfoForm(
-  { scenario, scenarioSetter },
+  { scenario, scenarioSetter, formDisabled },
   ref
 ) {
   const {
@@ -12,7 +12,9 @@ export const ScenarioInfoForm = forwardRef(function ScenarioInfoForm(
     formState: { errors, isValid },
     trigger,
     getValues,
+    reset,
   } = useForm();
+  const disabled = formDisabled ?? false;
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
   const fields = [
@@ -44,6 +46,14 @@ export const ScenarioInfoForm = forwardRef(function ScenarioInfoForm(
     },
   ];
 
+  useEffect(() => {
+    reset({
+      name: scenario?.name || "",
+      purpose: scenario?.info?.purpose || "",
+      description: scenario?.info?.description || "",
+    });
+  }, [scenario]);
+
   useImperativeHandle(
     ref,
     () => {
@@ -52,17 +62,16 @@ export const ScenarioInfoForm = forwardRef(function ScenarioInfoForm(
           console.log("Scenario info values: ", getValues());
           const formValidation = await trigger();
           console.log("Scenario info form isValid: ", formValidation);
-          console.log("Scenario info form errors: ", errors);
-          const noErrors = () => {
-            if (Object.keys(errors).length) {
-              return Object.keys(errors).length === 0;
-            } else {
-              return true;
-            }
-          };
-          // const noErrors= Object.keys(errors).length === 0;
+          console.log("Scenario info form errors: ", Object.keys(errors));
+          // const noErrors = () => {
+          //   if (Object.keys(errors).length) {
+          //     return Object.keys(errors).length === 0;
+          //   } else {
+          //     return true;
+          //   }
+          // };
           const formValid = formValidation;
-          return noErrors() || formValid;
+          return formValid;
         },
       };
     },
@@ -89,6 +98,12 @@ export const ScenarioInfoForm = forwardRef(function ScenarioInfoForm(
               }}
               {...formField.inputProps}
               fullWidth
+              disabled={disabled}
+              sx={{
+                "& .Mui-disabled": {
+                  WebkitTextFillColor: "rgba(0,0,0,0.7)",
+                },
+              }}
             />
           }
           {errors[formField.fieldID] && (
@@ -148,13 +163,15 @@ export const ScenarioInfoForm = forwardRef(function ScenarioInfoForm(
       }}
     >
       <Box
-        component="form"
-        noValidate
-        autoComplete="off"
+        // component="form"
+        // noValidate
+        // autoComplete="off"
         sx={{ width: "100%" }}
-        onSubmit={handleSubmit(_handleSubmit)}
+        // onSubmit={handleSubmit(_handleSubmit)}
       >
-        {_renderFormFields()}
+        <form onSubmit={handleSubmit(_handleSubmit)}>
+          {_renderFormFields()}
+        </form>
 
         {/* {errors && (
             <Box sx={{ my: "2rem", display: "flex", justifyContent: "start" }}>

@@ -6,18 +6,15 @@ import {
   Snackbar,
   CircularProgress,
 } from "@mui/material";
-import { useState, useEffect, Fragment, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 
-import { EditScenarioBasics } from "./edit-scenario-info";
 import { ScenarioBMPDetailResults } from "./scenario-bmp-results";
 import { ScenarioDelineationDetailResults } from "./scenario-delin-results";
 import { TwoColGrid, FullSpan, HalfSpan } from "../base/two-col-grid";
-import { DrawPolygonMode, DrawPointMode, ViewMode } from "nebula.gl";
 import ScenarioCreateMap from "./scenario-create-map";
 import { ScenarioDelineationForm } from "./scenario-create-delineation-form";
 import { ScenarioBMPForm } from "./scenario-bmp-detail-form";
-
 import { api_fetch } from "../../utils/utils";
 import { ScenarioInfoForm } from "./scenario-create-info-form";
 import CostSummary from "../cost-analysis/cost-summary";
@@ -43,17 +40,13 @@ export default function ScenarioDetailPage() {
   const [showDelinEditTabs, setShowDelinEditTabs] = useState(false);
   const [showFacilityEditTabs, setShowFacilityEditTabs] = useState(false);
   const [mapMode, setMapMode] = useState("default");
+  const [scenarioEditMode, setScenarioEditMode] = useState(false);
   const infoRef = useRef(null);
   const delinRef = useRef(null);
   const facilityRef = useRef(null);
 
   useEffect(() => {
     getDataByID(params.id).then((res) => {
-      // setScenarioObject({
-      //   name: res.name,
-      //   input: res.input,
-      //   info: res.info,
-      // });
       setScenarioObject(res);
       if (res.input.delineation_collection) {
         console.log("Found delineation");
@@ -131,11 +124,16 @@ export default function ScenarioDetailPage() {
 
   async function saveScenario() {
     let errMsg = null;
-    if (
-      (await infoRef.current?.triggerValidation()) === false ||
-      (await facilityRef.current?.triggerValidation(facility)) === false ||
-      (await delinRef.current?.triggerValidation(delineation)) === false
-    ) {
+    let infoFormValid = await infoRef.current?.triggerValidation();
+    let facilityFormValid =
+      facility.features.length > 0
+        ? await facilityRef.current?.triggerValidation(facility)
+        : true;
+    let delinFormValid =
+      delineation.features.length > 0
+        ? await delinRef.current?.triggerValidation(delineation)
+        : true;
+    if (!infoFormValid || !facilityFormValid || !delinFormValid) {
       errMsg = "Errors Present in Scenario Details";
     }
     if (errMsg) {
@@ -145,6 +143,7 @@ export default function ScenarioDetailPage() {
       });
     } else {
       submitScenario();
+      setScenarioEditMode(false);
     }
   }
 
@@ -199,25 +198,6 @@ export default function ScenarioDetailPage() {
       }
     }, 5000);
     setResultsPollInterval(resultsPoll);
-  }
-
-  async function saveScenario() {
-    let errMsg = null;
-    if (
-      (await infoRef.current?.triggerValidation()) === false ||
-      (await facilityRef.current?.triggerValidation(facility)) === false ||
-      (await delinRef.current?.triggerValidation(delineation)) === false
-    ) {
-      errMsg = "Errors Present in Scenario Details";
-    }
-    if (errMsg) {
-      setResultsLoadingDisplay({
-        status: true,
-        msg: errMsg,
-      });
-    } else {
-      submitScenario();
-    }
   }
 
   function submitScenario() {
@@ -323,58 +303,95 @@ export default function ScenarioDetailPage() {
             }}
           >
             <Box sx={{ width: "100%", height: "100%", p: 3 }}>
-              <Typography align="left" variant="h6">
-                Scenario Review
-              </Typography>
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <Typography align="left" variant="h6">
+                  Scenario Review
+                </Typography>
+                <Button
+                  onClick={() => setScenarioEditMode(true)}
+                  disabled={scenarioEditMode}
+                  sx={{
+                    "& .MuiInputBase-input.Mui-disabled": {
+                      color: "red",
+                    },
+                  }}
+                >
+                  Edit
+                </Button>
+              </Box>
               <ScenarioInfoForm
                 scenario={scenarioObject}
                 scenarioSetter={updateScenario}
                 ref={infoRef}
+                formDisabled={!scenarioEditMode}
               />
-              {facility?.features?.length > 0 && (
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <Typography variant="h6">Facility Details</Typography>
+                {scenarioEditMode && (
+                  <Button
+                    sx={{ alignSelf: "flex-start", paddingLeft: 0 }}
+                    onClick={() => {
+                      setShowDelinEditTabs(false);
+                      setShowFacilityEditTabs(true);
+                      setMapMode("default");
+                    }}
+                    disabled={showFacilityEditTabs}
+                  >
+                    {facility.features.length > 0 ? "Edit" : "Add"} Facility
+                  </Button>
+                )}
+              </Box>
+              {facility?.features?.length > 0 ? (
                 <Box>
                   <ScenarioBMPForm
                     facility={facility.features.length > 0 && facility}
                     facilitySetter={updateFacility}
                     ref={facilityRef}
+                    formDisabled={!scenarioEditMode}
                   />
                 </Box>
+              ) : (
+                <Box>
+                  <Typography variant="body1">No Facility</Typography>
+                </Box>
               )}
-              <Button
-                sx={{ alignSelf: "flex-start", paddingLeft: 0 }}
-                onClick={() => {
-                  setShowDelinEditTabs(false);
-                  setShowFacilityEditTabs(true);
-                  setMapMode("default");
-                }}
-              >
-                Add/Edit Facility
-              </Button>
+
               <br></br>
-              {delineation?.features?.length > 0 && (
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <Typography variant="h6">Delineation Details</Typography>
+                {scenarioEditMode && (
+                  <Button
+                    sx={{ alignSelf: "flex-start", paddingLeft: 0 }}
+                    onClick={() => {
+                      setShowFacilityEditTabs(false);
+                      setShowDelinEditTabs(true);
+                      setMapMode("default");
+                    }}
+                  >
+                    {facility.features.length > 0 ? "Edit" : "Add"} Delineation
+                  </Button>
+                )}
+              </Box>
+              {delineation?.features?.length > 0 ? (
                 <Box sx={{ width: { md: "50%" }, pr: { md: 2 } }}>
                   <ScenarioDelineationForm
                     delineationSetter={updateDelineation}
                     delineation={delineation}
                     ref={delinRef}
+                    formDisabled={!scenarioEditMode}
                   />
                 </Box>
+              ) : (
+                <Box>
+                  <Typography variant="body1">No Delineation</Typography>
+                </Box>
               )}
-              <Button
-                sx={{ alignSelf: "flex-start", paddingLeft: 0 }}
-                onClick={() => {
-                  setShowFacilityEditTabs(false);
-                  setShowDelinEditTabs(true);
-                  setMapMode("default");
-                }}
-              >
-                Add/Edit Delineation
-              </Button>
+
               <br></br>
               <Button
                 onClick={initiateScenarioSolve}
                 sx={{ alignSelf: "flex-start", paddingLeft: 0 }}
-                disabled={resultsPollInterval}
+                disabled={resultsPollInterval || scenarioEditMode}
               >
                 Calculate Scenario WQ Results
                 {resultsPollInterval && (
@@ -385,9 +402,16 @@ export default function ScenarioDetailPage() {
                 )}
               </Button>
               <br></br>
-              <Button variant="contained" onClick={() => saveScenario()}>
-                Save
-              </Button>
+              {scenarioEditMode && (
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    saveScenario();
+                  }}
+                >
+                  Save
+                </Button>
+              )}
             </Box>
           </Card>
         </HalfSpan>
