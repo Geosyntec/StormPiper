@@ -53,10 +53,12 @@ type formProps = {
   handleFormSubmit: Function;
   showSubmit?: boolean;
   formDataEmitter?: Function;
+  formDisabled?: boolean;
 };
 
 export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
   console.log("BMP Form props:", Object.keys(props));
+  const disabled = props.formDisabled ?? false;
   const showSubmit = props?.showSubmit ?? true;
   const costFields = props?.facilitySpec?.["TMNTFacilityCostPatch"] || {};
   const firstRender = useRef(true);
@@ -456,9 +458,11 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
 
   return (
     <Box>
-      <Typography variant="h6">
-        {props.values?.altid} Facility Details
-      </Typography>
+      {showSubmit && (
+        <Typography variant="h6">
+          {props.values?.altid} Facility Details
+        </Typography>
+      )}
       <form
         onSubmit={handleSubmit((data) => {
           Object.keys(data).forEach(
