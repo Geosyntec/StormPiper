@@ -31,10 +31,10 @@ def set_default_tmnt_attributes(tmnt_facility_df: pandas.DataFrame):
     ninf = (df["facilitytype"] == "Bioretention") & (df["infiltrated"].isna())
     df.loc[ninf, "facility_type"] = "bioretention_with_no_infiltration"
 
-    ded = (df["facilitytype"] == "Tank") & (df["flowcontrol"].isna())
+    ded = (df["facilitytype"] == "Tank") & (df["flowcontroltype"].isna())
     df.loc[ded, "facility_type"] = "dry_extended_detention"
 
-    fdc = (df["facilitytype"] == "Tank") & (~df["flowcontrol"].isna())
+    fdc = (df["facilitytype"] == "Tank") & (~df["flowcontroltype"].isna())
     df.loc[fdc, "facility_type"] = "flow_duration_control_tank"
 
     df.loc[(df["facilitytype"] == "Trench"), "facility_type"] = "infiltration"
