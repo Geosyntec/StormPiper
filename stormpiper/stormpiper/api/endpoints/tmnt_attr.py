@@ -10,7 +10,12 @@ from sqlalchemy import select
 from stormpiper.apps.supersafe.users import user_role_ge_editor, user_role_ge_reader
 from stormpiper.database import crud
 from stormpiper.database.schemas import tmnt_view as tmnt
-from stormpiper.models.tmnt_attr import TMNTFacilityPatch, TMNTUpdate
+from stormpiper.models.tmnt_attr import (
+    TMNTFacilityAttrPatch,
+    TMNTFacilityCostPatch,
+    TMNTFacilityPatch,
+    TMNTUpdate,
+)
 from stormpiper.models.tmnt_attr_validator import tmnt_attr_validator
 from stormpiper.models.tmnt_view import TMNTView
 from stormpiper.src.npv import get_pv_settings_db
@@ -43,6 +48,8 @@ async def validate_tmnt_update(
     db: AsyncSessionDB,
     user: Editor,
     tmnt_patch: dict[str, Any]
+    | TMNTFacilityCostPatch
+    | TMNTFacilityAttrPatch
     | TMNTFacilityPatch
     | STRUCTURAL_FACILITY_TYPE = Body(
         ...,
