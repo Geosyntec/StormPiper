@@ -92,6 +92,9 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
   }, []);
 
   function _handleSubmit(data, facility) {
+    Object.keys(data).forEach(
+      (k) => (data[k] = data[k] === "" ? null : data[k])
+    );
     console.log("Submitting bmp data: ", data);
     console.log("Existing facility:", facility);
     if (
@@ -164,7 +167,7 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
     if (loadingState) {
       return <p>loading...</p>;
     } else {
-      let fType = facilityType || "drywell";
+      let fType = facilityType || "no_treatment";
       let fTypeRoot = fType.replaceAll("_simple", "");
 
       let simpleBaseType;
@@ -180,6 +183,7 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
       return (
         <>
           <BMPForm
+            facilitySpec={specs.facilitySpec}
             allFields={facilityFields}
             simpleFields={simpleFacilityFields}
             values={
