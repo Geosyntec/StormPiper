@@ -168,6 +168,7 @@ export function BMPDetailForm() {
       return (
         <>
           <BMPForm
+            facilitySpec={specs.facilitySpec}
             allFields={facilityFields}
             simpleFields={simpleFacilityFields}
             values={TMNTAttrs}
