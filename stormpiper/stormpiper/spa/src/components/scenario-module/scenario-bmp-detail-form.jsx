@@ -1,4 +1,4 @@
-import React, {
+import {
   useEffect,
   useState,
   forwardRef,
@@ -178,7 +178,7 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
       let facilityFields = specs.facilitySpec[baseType];
       let simpleFacilityFields = specs.facilitySpec[simpleBaseType];
       return (
-        <React.Fragment>
+        <>
           <BMPForm
             allFields={facilityFields}
             simpleFields={simpleFacilityFields}
@@ -224,7 +224,7 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
               })}
             </ul>
           </Dialog>
-        </React.Fragment>
+        </>
       );
     }
   }

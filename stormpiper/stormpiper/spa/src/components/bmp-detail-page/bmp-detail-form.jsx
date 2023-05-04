@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { api_fetch } from "../../utils/utils";
-import { BMPForm } from "../bmpForm";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Dialog, DialogActions, Typography, Button } from "@mui/material";
+
+import { api_fetch } from "../../utils/utils";
+import { BMPForm } from "../bmpForm";
 
 export function BMPDetailForm() {
   const params = useParams();
@@ -165,7 +166,7 @@ export function BMPDetailForm() {
       let facilityFields = specs.facilitySpec[baseType];
       let simpleFacilityFields = specs.facilitySpec[simpleBaseType];
       return (
-        <React.Fragment>
+        <>
           <BMPForm
             allFields={facilityFields}
             simpleFields={simpleFacilityFields}
@@ -175,7 +176,6 @@ export function BMPDetailForm() {
             facilityChangeHandler={setFacilityType}
             handleFormSubmit={_handleSubmit}
             handleEditReset={removeEdits}
-            context="existing-system"
           ></BMPForm>
           <Dialog open={resultSuccess} onClose={() => setResultSuccess(false)}>
             <Box sx={{ padding: "15px" }}>
@@ -206,7 +206,7 @@ export function BMPDetailForm() {
               })}
             </ul>
           </Dialog>
-        </React.Fragment>
+        </>
       );
     }
   }

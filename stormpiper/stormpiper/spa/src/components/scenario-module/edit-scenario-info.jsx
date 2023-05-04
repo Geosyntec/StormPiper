@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { api_fetch } from "../../utils/utils";
+import { api_fetch, pick } from "../../utils/utils";
 
 import {
   Box,
@@ -30,10 +30,6 @@ const makeFormData = (data) => {
   }
   return data;
 };
-
-const pick = (obj, ...args) => ({
-  ...args.reduce((res, key) => ({ ...res, [key]: obj[key] }), {}),
-});
 
 const makeAPIPatchData = (data) => {
   let patchData = {}; //(({name, description}) => ({name, description}))(data)

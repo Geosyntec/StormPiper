@@ -49,3 +49,7 @@ export function colorToList(specifier, alpha) {
   const op = Math.ceil(255 * (alpha || opacity));
   return [r, g, b, op];
 }
+
+export function pick(obj, ...args) {
+  return { ...args.reduce((res, key) => ({ ...res, [key]: obj[key] }), {}) };
+}

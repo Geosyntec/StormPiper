@@ -88,7 +88,7 @@ export const ScenarioDelineationForm = forwardRef(
     function _renderFormFields() {
       let fieldDiv = Object.values(fields).map((formField) => {
         return (
-          <Box key={formField.fieldID} sx={{ width: "300" }}>
+          <Box key={formField.fieldID}>
             {
               <TextField
                 {...register(formField.fieldID, {
@@ -98,7 +98,6 @@ export const ScenarioDelineationForm = forwardRef(
                 type={formField.type}
                 defaultValue={formField.value}
                 required={formField.required}
-                margin="dense"
                 onChange={(e) => {
                   setDelineationName(e);
                 }}
@@ -135,9 +134,13 @@ export const ScenarioDelineationForm = forwardRef(
           sx={{
             display: "flex",
             justifyContent: "flex-start",
+            py: 1,
           }}
         >
-          <form onSubmit={handleSubmit(_handleSubmit)}>
+          <form
+            onSubmit={handleSubmit(_handleSubmit)}
+            style={{ width: "100%" }}
+          >
             {_renderFormFields()}
 
             {/* <Box sx={{ mt: 3 }}>

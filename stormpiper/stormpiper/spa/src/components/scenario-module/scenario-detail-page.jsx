@@ -352,7 +352,7 @@ export default function ScenarioDetailPage() {
               </Button>
               <br></br>
               {delineation?.features?.length > 0 && (
-                <Box>
+                <Box sx={{ width: { md: "50%" }, pr: { md: 2 } }}>
                   <ScenarioDelineationForm
                     delineationSetter={updateDelineation}
                     delineation={delineation}
