@@ -78,7 +78,8 @@ export default function BMPDetailPage() {
         <Card
           sx={{
             display: "flex",
-            height: "500px",
+            minHeight: 400,
+            height: "100%",
             alignItems: "center",
             justifyContent: "center",
           }}

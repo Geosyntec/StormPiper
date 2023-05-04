@@ -1,8 +1,5 @@
 import { ReadonlyStripedDataGrid } from "../base/striped-data-grid-readonly";
-
-const pick = (obj, ...args) => ({
-  ...args.reduce((res, key) => ({ ...res, [key]: obj[key] }), {}),
-});
+import { pick } from "../../utils/utils";
 
 const formatLoad = (params) => {
   if (params.value == null) {

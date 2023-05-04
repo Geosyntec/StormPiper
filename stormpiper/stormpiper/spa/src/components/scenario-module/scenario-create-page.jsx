@@ -106,9 +106,7 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
   }
 
   async function _handleSubmit() {
-    const formData = {
-      ...scenarioObject,
-    };
+    const formData = { ...scenarioObject };
     console.log("Submitting scenario: ", formData);
     const response = await api_fetch("/api/rest/scenario", {
       credentials: "same-origin",

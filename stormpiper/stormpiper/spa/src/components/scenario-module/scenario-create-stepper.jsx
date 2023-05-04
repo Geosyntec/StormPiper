@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   Box,
   Step,
@@ -93,8 +93,8 @@ export function ScenarioCreateStepper({
       errMsg: "Set a BMP Location and Fill Out All Required Fields",
     },
   ];
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [skipped, setSkipped] = React.useState(new Set());
+  const [activeStep, setActiveStep] = useState(0);
+  const [skipped, setSkipped] = useState(new Set());
 
   const isStepOptional = (step) => {
     return steps[step].optional;
@@ -207,7 +207,7 @@ export function ScenarioCreateStepper({
         })}
       </Stepper>
       {activeStep === steps.length ? (
-        <React.Fragment>
+        <>
           <Box sx={{ margin: "1rem" }}>
             <Typography variant="h6">Review Scenario</Typography>
             <Typography>Name: {scenarioObject.name}</Typography>
@@ -237,9 +237,9 @@ export function ScenarioCreateStepper({
             <Box sx={{ flex: "1 1 auto" }} />
             <Button onClick={handleSubmit}>Create Scenario</Button>
           </Box>
-        </React.Fragment>
+        </>
       ) : (
-        <React.Fragment>
+        <>
           <Box
             sx={{
               display: "flex",
@@ -267,7 +267,7 @@ export function ScenarioCreateStepper({
             )}
             <Button onClick={() => handleNext(activeStep)}>Next</Button>
           </Box>
-        </React.Fragment>
+        </>
       )}
     </Box>
   );
