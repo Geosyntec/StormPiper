@@ -126,13 +126,6 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
       _clearForm(isSimple);
       reset(_createDefaults(isSimple));
     }
-    // const simpleFields = props.simpleFields;
-    // simpleFields.properties =
-    // , ...props.costFields]
-    // const allFields = [...props.allFields, ...props.costFields]
-
-    console.warn(props.simpleFields, props.allFields);
-
     isSimple ? setFields(props.simpleFields) : setFields(props.allFields);
     firstRender.current = false;
   }, [isSimple, props.currentFacility, props.facilityType]);
@@ -161,7 +154,6 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
       ...fields.properties,
       ...(costFields?.properties || {}),
     };
-    console.warn(_fields);
     Object.keys(_fields).map((k: string) => {
       let v: any = _fields[k];
       let numDefault = Object.keys(costFields?.properties || {}).includes(k)
