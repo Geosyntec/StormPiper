@@ -24,26 +24,37 @@ COLS = [
 
 def build_subbasinresult_v():
     select_fields = []
-    sub_cols = "\n".join([f"""\ts."{s}",""" for s in s_cols])
-    subr_cols = "\n".join([f"""\tsr."{s}",""" for s in sr_cols])
+    sub_cols = ",\n".join([f"""\ts."{s}" """ for s in s_cols])
+    subr_cols = ",\n".join([f"""\tsr."{s}" """ for s in sr_cols])
 
     cuft_per_acre_to_inch = 0.0002754821  # ac*in
     lbs_per_cuft_to_mgl = 16018.46337  # lbs/cuft to mgl
-    depth_col_calc = f"""\tsr."runoff_volume_cuft" * {cuft_per_acre_to_inch} / s.area_acres as "{depth_col}", """
-    conc_col_block = "\n".join(
+    depth_col_calc = f"""\tsr."runoff_volume_cuft" * {cuft_per_acre_to_inch} / s.area_acres as "{depth_col}" """
+    conc_col_block = ",\n".join(
         [
-            f"""\tsr."{load_col}" / sr."runoff_volume_cuft" * {lbs_per_cuft_to_mgl} as "{conc_col}", """
+            f"""\tsr."{load_col}" / sr."runoff_volume_cuft" * {lbs_per_cuft_to_mgl} as "{conc_col}" """
             for load_col, conc_col in zip(load_cols, conc_cols)
         ]
     )
     yield_col_calcs = [
-        f"""\tsr."{load_col}" / s.area_acres as "{yield_col}", """
+        f"""\tsr."{load_col}" / s.area_acres as "{yield_col}" """
         for load_col, yield_col in zip(load_cols, yield_cols)
     ]
 
-    yield_col_block = "\n".join([depth_col_calc] + yield_col_calcs)
-    summary_fields = "\n".join(["\tdist_altid.tmnt_facility_count,"])
-    select_fields = "\n".join(
+    yield_col_block = ",\n".join([depth_col_calc] + yield_col_calcs)
+    summary_fields = ",\n".join(
+        [
+            "DIST_ALTID.TMNT_FACILITY_COUNT",
+            "TS.TOTAL_AREA_SQFT",
+            "TS.BASICWQ_AREA_SQFT",
+            "TS.BASICWQ_AREA_PCT",
+            "TS.ENHWQ_AREA_SQFT",
+            "TS.ENHWQ_AREA_PCT",
+            "TS.FC_AREA_SQFT",
+            "TS.FC_AREA_PCT",
+        ]
+    )
+    select_fields = ",\n".join(
         [sub_cols, subr_cols, conc_col_block, yield_col_block, summary_fields]
     )
     select_fields = select_fields[:-3] + select_fields[-3:].replace(",", "")
@@ -51,16 +62,77 @@ def build_subbasinresult_v():
     view_template = f"""
 DROP VIEW IF EXISTS subbasinresult_v;
 CREATE OR REPLACE VIEW subbasinresult_v AS
+WITH Q AS
+	(SELECT RELID,
+			SUBBASIN,
+			GEOM,
+			ST_AREA(GEOM) AS "area_sqft",
+			TMNT.ALTID,
+			TMNT.FLOWCONTROLTYPE,
+			TMNT.WATERQUALITYTYPE
+		FROM LGU_BOUNDARY LGU
+		LEFT JOIN
+			(SELECT ALTID,
+					FLOWCONTROLTYPE,
+					WATERQUALITYTYPE
+				FROM TMNT_FACILITY) TMNT ON TMNT.ALTID = LGU.RELID),
+	TOTALAREA AS
+	(SELECT Q.SUBBASIN,
+			SUM(Q.AREA_SQFT) AS "total_area_sqft"
+		FROM Q
+		GROUP BY (Q.SUBBASIN)
+		ORDER BY (Q.SUBBASIN)),
+	BASICWQAREA AS
+	(SELECT Q.SUBBASIN,
+			SUM(Q.AREA_SQFT) AS "basicwq_area_sqft"
+		FROM Q
+		WHERE Q.WATERQUALITYTYPE = 'Basic'
+		GROUP BY Q.SUBBASIN
+		ORDER BY Q.SUBBASIN),
+	ENHWQAREA AS
+	(SELECT Q.SUBBASIN,
+			SUM(Q.AREA_SQFT) AS "enhwq_area_sqft"
+		FROM Q
+		WHERE Q.WATERQUALITYTYPE = 'Enhanced'
+		GROUP BY Q.SUBBASIN
+		ORDER BY Q.SUBBASIN),
+	FCAREA AS
+	(SELECT Q.SUBBASIN,
+			SUM(Q.AREA_SQFT) AS "fc_area_sqft"
+		FROM Q
+		WHERE Q.FLOWCONTROLTYPE IS NOT NULL
+		GROUP BY Q.SUBBASIN
+		ORDER BY Q.SUBBASIN),
+	TMNTSUMMARY AS
+	(SELECT S.SUBBASIN,
+			TA.TOTAL_AREA_SQFT,
+			BWQ.BASICWQ_AREA_SQFT,
+			100 * (BWQ.BASICWQ_AREA_SQFT / TA.TOTAL_AREA_SQFT) AS "basicwq_area_pct",
+			EWQ.ENHWQ_AREA_SQFT,
+			100 * (EWQ.ENHWQ_AREA_SQFT / TA.TOTAL_AREA_SQFT) AS "enhwq_area_pct",
+			FC.FC_AREA_SQFT,
+			100 * (FC.FC_AREA_SQFT / TA.TOTAL_AREA_SQFT) AS "fc_area_pct"
+		FROM SUBBASIN S
+		LEFT JOIN TOTALAREA TA ON TA.SUBBASIN = S.SUBBASIN
+		LEFT JOIN BASICWQAREA BWQ ON BWQ.SUBBASIN = S.SUBBASIN
+		LEFT JOIN ENHWQAREA EWQ ON EWQ.SUBBASIN = S.SUBBASIN
+		LEFT JOIN FCAREA FC ON FC.SUBBASIN = S.SUBBASIN
+		ORDER BY S.SUBBASIN)
+
 select
 {select_fields}
 FROM subbasin s
-     LEFT JOIN subbasin_result sr ON sr.subbasin::text = s.subbasin::text
-     LEFT JOIN
-        (SELECT b.subbasin,
-                count(DISTINCT b.altid)::integer AS tmnt_facility_count
-            FROM lgu_boundary b
-            GROUP BY b.subbasin
-            ORDER BY b.subbasin) dist_altid ON dist_altid.subbasin::text = s.subbasin::text
+LEFT JOIN subbasin_result sr ON sr.subbasin::text = s.subbasin::text
+LEFT JOIN
+    (SELECT b.subbasin,
+            count(DISTINCT b.altid)::integer AS tmnt_facility_count
+        FROM lgu_boundary b
+        GROUP BY b.subbasin
+        ORDER BY b.subbasin) dist_altid ON dist_altid.subbasin::text = s.subbasin::text
+LEFT JOIN
+	(SELECT *
+		FROM TMNTSUMMARY) TS ON TS.SUBBASIN = S.SUBBASIN
+ORDER BY S.SUBBASIN;
 """
     return view_template
 
