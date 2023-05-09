@@ -16,9 +16,6 @@ export function iconToDataURL({ component }) {
     ${iconSVG}
   </svg>
 `;
-
-  console.log(template);
-
   return svgToDataURL(template);
 }
 

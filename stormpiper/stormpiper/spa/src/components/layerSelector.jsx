@@ -1,32 +1,33 @@
 import { Checkbox, Box, Typography } from "@mui/material";
-import LayersRoundedIcon from "@mui/icons-material/LayersRounded";
 
 function LayerSelector(props) {
   return (
-    <Box>
-      {props.displayStatus ? (
-        <Box sx={{ mb: "1rem", display: "flex", alignItems: "center" }}>
-          <Typography variant="h4">Layers</Typography>
+    <>
+      {props.displayStatus && (
+        <Box>
           <Box
-            sx={{ position: "absolute", right: "12%", cursor: "pointer" }}
-            onClick={props.displayController}
+            sx={{
+              mb: 1,
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
           >
-            <Typography>&#10005;</Typography>
+            <Typography variant="h4">Layers</Typography>
+            <Box sx={{ cursor: "pointer" }} onClick={props.displayController}>
+              <Typography variant="h6">&#10005;</Typography>
+            </Box>
           </Box>
-        </Box>
-      ) : (
-        <Box sx={{ mt: 1 }}>
-          <LayersRoundedIcon onClick={props.displayController} />
+          {_renderCategories(
+            props.layerDict,
+            props._onToggleLayer,
+            props.activeLayers,
+            "mainLayer"
+          )}
         </Box>
       )}
-
-      {_renderCategories(
-        props.layerDict,
-        props._onToggleLayer,
-        props.activeLayers,
-        "mainLayer"
-      )}
-    </Box>
+    </>
   );
 }
 
