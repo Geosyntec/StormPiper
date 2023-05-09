@@ -1,94 +1,42 @@
 import { Suspense, useEffect, useState, useRef, lazy } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Card, CardContent, Box, Tabs, Tab } from "@mui/material";
+import LayersRoundedIcon from "@mui/icons-material/LayersRounded";
 import GridOnRoundedIcon from "@mui/icons-material/GridOnRounded";
-import ScatterPlotRoundedIcon from "@mui/icons-material/ScatterPlotRounded";
+import SearchIcon from "@mui/icons-material/Search";
 
 import { layerDict } from "../assets/geojson/coreLayers";
 import LayerSelector from "./layerSelector";
 import BMPStatWindow from "./bmpStatWindow";
 import { api_fetch } from "../utils/utils";
+import { ExplorerSearch } from "./search/explorer-search-bar";
 
 const DeckGLMap = lazy(() => import("./map"));
 const ResultsTable = lazy(() => import("./resultsTable"));
 
 const panelStyles = {
   prjStatPanel: {
-    position: "fixed",
     zIndex: 9,
-    top: "11%",
-    left: "55%",
-    overflowX: "hidden",
-    overflowY: "auto",
-    height: "auto",
-    width: "40%",
-    textAlign: "center",
-  },
-  prjStatPanelHidden: {
-    position: "fixed",
-    zIndex: 9,
-    top: "75",
-    left: "90%",
-    overflowX: "hidden",
-    overflowY: "hidden",
-    height: "40px",
-    width: "40px",
-    textAlign: "center",
-    "&:hover": {
-      cursor: "pointer",
-    },
+    width: "400px",
+    alignSelf: "flex-start",
   },
   layerPanel: {
-    position: "relative",
     zIndex: 9,
-    top: "2%",
-    left: "2%",
-    overflowX: "hidden",
-    overflowY: "auto",
-    height: "75%",
-    width: "25%",
+    width: "300px",
   },
-  layerPanelHidden: {
-    position: "relative",
-    zIndex: 9,
-    top: "2%",
-    left: "2%",
-    overflowX: "hidden",
-    overflowY: "hidden",
-    height: "40px",
-    width: "40px",
-    textAlign: "center",
-    "&:hover": {
-      cursor: "pointer",
-    },
+  panelHidden: {
+    pointerEvents: "none",
+    opacity: 0,
+    width: "1%",
   },
+
   baseLayerPanel: {
     position: "absolute",
     zIndex: 9,
-    top: "80%",
-    left: "2%",
+    bottom: "45px",
+    left: "10px",
     height: "auto",
     width: "auto",
-    borderRadius: "2px",
-    background: "rgba(255, 255, 255, 1)",
-  },
-  verificationPanel: {
-    position: "fixed",
-    zIndex: 9,
-    top: "30%",
-    left: "25%",
-    height: "auto",
-    width: "50%",
-    borderRadius: "2px",
-    background: "rgba(255, 255, 255, 1)",
-  },
-  verificationPanelHidden: {
-    position: "fixed",
-    zIndex: 9,
-    top: "30%",
-    left: "-50%",
-    height: "auto",
-    width: "50%",
     borderRadius: "2px",
     background: "rgba(255, 255, 255, 1)",
   },
@@ -106,7 +54,6 @@ const panelStyles = {
     width: "100%",
     textAlign: "center",
   },
-
   resultsPanelHidden: {
     transitionProperty: "top",
     transitionTimingFunction: "linear",
@@ -141,6 +88,7 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
     last_updated: Date.now(),
   });
   const [layers, setLayers] = useState(false);
+  const [overlayLayers, setOverlayLayers] = useState([]);
   const [baseLayer, setBaseLayer] = useState(0);
   const [activeLayers, setActiveLayers] = useState(() => {
     var res = {};
@@ -203,7 +151,23 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
     setResultsDisplayState(!resultsDisplayState);
   }
 
+  const [searchDisplayState, setSearchDisplayState] = useState(false); //when true, results table is displayed
+
+  function _toggleSetSearchDisplayState() {
+    setSearchDisplayState(!searchDisplayState);
+  }
+
   const buttonList = [
+    {
+      label: "Show/Hide Layers",
+      icon: <LayersRoundedIcon />,
+      clickHandler: _togglelyrSelectDisplayState,
+    },
+    {
+      label: "Search for BMP",
+      icon: <SearchIcon />,
+      clickHandler: _toggleSetSearchDisplayState,
+    },
     {
       label: "Evaluate Project",
       icon: <GridOnRoundedIcon />,
@@ -215,7 +179,12 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
     setTimeout(() => {
       setDrawerButtonList(buttonList);
     }, 50);
-  }, [location]);
+  }, [
+    location,
+    searchDisplayState,
+    resultsDisplayState,
+    lyrSelectDisplayState,
+  ]);
 
   function _toggleLayer(layerName, updateFunction = setActiveLayers) {
     var currentActiveLayers = { ...activeLayers };
@@ -294,6 +263,17 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
     return props;
   }
 
+  function _overlayLayers(newLayers) {
+    newLayers = newLayers || [];
+    const baseLayers = _renderLayers(layerDict, activeLayers);
+    setLayers([...baseLayers, ...newLayers]);
+  }
+
+  function _clearSearch() {
+    _overlayLayers();
+    setSearchDisplayState(false);
+  }
+
   return (
     <Box>
       <Box
@@ -304,6 +284,19 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
           width: (theme) => `calc(100% - ${theme.spacing(7)})`,
         }}
       >
+        {searchDisplayState && (
+          <Box
+            sx={{
+              zIndex: 1000,
+              position: "relative",
+              m: 2,
+            }}
+          >
+            <Card sx={{ p: 2 }}>
+              <ExplorerSearch setLayers={_overlayLayers} />
+            </Card>
+          </Box>
+        )}
         <Suspense fallback={<Box>Loading Map...</Box>}>
           <DeckGLMap
             id="main-map"
@@ -330,40 +323,37 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
             <Tab label="Satellite" />
           </Tabs>
         </Box>
-        <Card
-          sx={
-            lyrSelectDisplayState
-              ? classes.layerPanel
-              : classes.layerPanelHidden
-          }
-        >
-          <CardContent sx={{ p: lyrSelectDisplayState ? 2 : 0 }}>
-            <LayerSelector
-              layerDict={layerDict}
-              activeLayers={activeLayers}
-              _onToggleLayer={_toggleLayer}
-              displayStatus={lyrSelectDisplayState}
-              displayController={_togglelyrSelectDisplayState}
-            ></LayerSelector>
-          </CardContent>
-        </Card>
-
-        <Card
-          sx={
-            prjStatDisplayState
-              ? classes.prjStatPanel
-              : classes.prjStatPanelHidden
-          }
-        >
-          <CardContent sx={{ p: prjStatDisplayState ? 2 : 0 }}>
-            <BMPStatWindow
-              displayStatus={prjStatDisplayState}
-              displayController={_toggleprjStatDisplayState}
-              feature={focusFeatureID}
-              isDirty={isDirty}
-            ></BMPStatWindow>
-          </CardContent>
-        </Card>
+        <Box display="flex" sx={{ p: 2, justifyContent: "space-between" }}>
+          <Card
+            sx={
+              lyrSelectDisplayState ? classes.layerPanel : classes.panelHidden
+            }
+          >
+            <CardContent sx={{ p: 2 }}>
+              <LayerSelector
+                layerDict={layerDict}
+                activeLayers={activeLayers}
+                _onToggleLayer={_toggleLayer}
+                displayStatus={lyrSelectDisplayState}
+                displayController={_togglelyrSelectDisplayState}
+              ></LayerSelector>
+            </CardContent>
+          </Card>
+          <Card
+            sx={
+              prjStatDisplayState ? classes.prjStatPanel : classes.panelHidden
+            }
+          >
+            <CardContent>
+              <BMPStatWindow
+                displayStatus={prjStatDisplayState}
+                displayController={_toggleprjStatDisplayState}
+                feature={focusFeatureID}
+                isDirty={isDirty}
+              ></BMPStatWindow>
+            </CardContent>
+          </Card>
+        </Box>
       </Box>
       <Card
         sx={

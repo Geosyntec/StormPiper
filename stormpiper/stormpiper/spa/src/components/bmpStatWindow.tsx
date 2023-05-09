@@ -275,7 +275,7 @@ function BMPStatWindow(props: statWindowProps) {
                 sx={{
                   display: "flex",
                   flexDirection: "row",
-                  padding: "5 5 5 15",
+                  py: 1,
                 }}
               >
                 <strong>{fieldLabelDict[stat]}:&#8195;</strong>
@@ -343,9 +343,7 @@ function BMPStatWindow(props: statWindowProps) {
       <ul
         style={{
           display: "flex",
-          "justify-content": "center",
-          "flex-wrap": "wrap",
-          "list-style": "none",
+          justifyContent: "center",
         }}
       >
         {Object.values(statsDict).map((category, index) => {
@@ -359,9 +357,6 @@ function BMPStatWindow(props: statWindowProps) {
                       ? theme.palette.warning.main
                       : theme.palette.grey[100],
                 }}
-                // className={`${classes.headerItem} ${
-                //   category.label === state.header && classes.active
-                // }`}
                 label={category.label}
                 onClick={() => {
                   switchStats(category.label);
@@ -374,60 +369,57 @@ function BMPStatWindow(props: statWindowProps) {
     );
   }
 
-  return props.displayStatus ? (
-    <Box>
-      <Box
-        sx={{
-          background: (theme) => theme.palette.primary.main,
-          display: "flex",
-          justifyContent: "center",
-          borderRadius: "5px",
-        }}
-      >
-        <Box>
-          <h4 style={{ color: "white" }}>{props.feature} Facility Overview</h4>
-        </Box>
-        <Box sx={{ right: "12%", position: "absolute", cursor: "pointer" }}>
-          <h4
-            // id="cancel-icon"
-            onClick={() => {
-              props.displayController();
-              firstRender.current = true;
+  return (
+    <>
+      {props.displayStatus && (
+        <Box sx={{ p: 1 }}>
+          <Box
+            sx={{
+              background: (theme) => theme.palette.primary.main,
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              borderRadius: "5px",
+              px: 2,
             }}
           >
-            &#10005;
-          </h4>
+            <Box>
+              <h4 style={{ color: "white" }}>
+                {props.feature} Facility Overview
+              </h4>
+            </Box>
+            <Box sx={{ cursor: "pointer" }}>
+              <Typography
+                variant="h6"
+                onClick={() => {
+                  props.displayController();
+                  firstRender.current = true;
+                }}
+              >
+                &#10005;
+              </Typography>
+            </Box>
+          </Box>
+          <Box>
+            {props
+              ? state.header != "Design Parameters"
+                ? _renderStats()
+                : _renderBMPForm(facilityType)
+              : null}
+          </Box>
+          <Box sx={{ display: "flex", pt: 1 }}>
+            <Button
+              component={Link}
+              to={"/app/bmp-detail/" + props.feature}
+              variant="contained"
+            >
+              View Facility Details
+            </Button>
+          </Box>
         </Box>
-      </Box>
-      <Box>
-        {/* <Box>{_renderHeaderList()}</Box> */}
-        {props
-          ? state.header != "Design Parameters"
-            ? _renderStats()
-            : _renderBMPForm(facilityType)
-          : null}
-      </Box>
-      <Box sx={{ display: "flex", p: 2 }}>
-        <Button
-          component={Link}
-          to={"/app/bmp-detail/" + props.feature}
-          variant="contained"
-        >
-          View Facility Details
-        </Button>
-      </Box>
-    </Box>
-  ) : (
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "100%",
-      }}
-    >
-      <ListAltRounded onClick={props.displayController} />
-    </Box>
+      )}
+    </>
   );
 }
 
