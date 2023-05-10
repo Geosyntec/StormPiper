@@ -154,6 +154,7 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
   const [searchDisplayState, setSearchDisplayState] = useState(false); //when true, results table is displayed
 
   function _toggleSetSearchDisplayState() {
+    searchDisplayState && _clearSearch();
     setSearchDisplayState(!searchDisplayState);
   }
 
@@ -236,6 +237,7 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
   function _lyrClickHandlers(objInfo) {
     console.log("Top level map click: ", objInfo);
     if (objInfo?.layer?.id === "activeSWFacility") {
+      _clearSearch();
       if (!prjStatDisplayState) {
         //users can click on another facility without hiding the panel
         _toggleprjStatDisplayState();

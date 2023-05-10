@@ -18,17 +18,17 @@ export function ExplorerSearch({ setLayers, ...props }) {
   const [tmntFacilityData, setTmntFacilityData] = useState([]);
   const [tmntFacilityGeojson, setTmntFacilityGeojson] = useState(null);
   const [searchResults, setSearchResults] = useState([]);
+  const [matchedValues, setMatchedValues] = useState(null);
 
   async function _fetch_tmnt_facility_data() {
     const response = await api_fetch("/api/rest/tmnt_facility?f=geojson");
     if (response.status < 400) {
       const geojson = await response.json();
-      console.log(geojson);
       setTmntFacilityData(geojson.features.map((f) => f.properties));
       setTmntFacilityGeojson(geojson);
     } else {
       response.status >= 400 &&
-        console.warning("unable to fetch", await response.content());
+        console.error("unable to fetch", await response.content());
     }
   }
 
@@ -36,44 +36,41 @@ export function ExplorerSearch({ setLayers, ...props }) {
     _fetch_tmnt_facility_data();
   }, []);
 
-  function _handleSearchResults(data) {
-    console.log("found some data", data);
-    setSearchResults(data);
-  }
-
-  function filterFacilitiesGeojson() {
-    if (tmntFacilityGeojson == null) return;
-
+  useEffect(() => {
     const matchedValues = searchResults.map((k) =>
       `${k?.[searchField]}`.toLowerCase()
     );
+    setMatchedValues(matchedValues);
+  }, [searchField, searchResults]);
 
-    const features = tmntFacilityGeojson.features.filter((f) =>
-      matchedValues.includes(`${f.properties?.[searchField]}`.toLowerCase())
+  function isFound(f) {
+    return matchedValues.includes(
+      `${f.properties?.[searchField]}`.toLowerCase()
     );
-
-    return {
-      bbox: tmntFacilityGeojson?.bbox,
-      features,
-      type: "FeatureCollection",
-    };
   }
-  function _renderFoundLayer() {
+
+  function _refreshMap() {
     const facilityLayerFound = new GeoJsonLayer({
       ...tmnt.props,
       id: "facilitiesFound",
       label: "Facilities Found",
-      data: filterFacilitiesGeojson(),
-      getIconColor: colorToList("yellow"),
-      getIconSize: 30,
+      data: tmntFacilityGeojson,
+      getIconColor: (f) => (isFound(f) ? colorToList("yellow") : [0, 0, 0, 0]),
       pickable: false,
+      updateTriggers: {
+        getIconColor: [matchedValues],
+      },
     });
     setLayers([facilityLayerFound]);
   }
 
   useEffect(() => {
-    _renderFoundLayer();
-  }, [searchField, searchResults]);
+    _refreshMap();
+  }, [tmntFacilityGeojson, matchedValues]);
+
+  function _handleSearchResults(data) {
+    setSearchResults(data);
+  }
 
   const handleInputChange = (e) => {
     setSearchResults([]);
@@ -93,6 +90,7 @@ export function ExplorerSearch({ setLayers, ...props }) {
       <Box sx={{ mx: 2, width: "100%", flexGrow: 1 }}>
         <TextField
           fullWidth
+          size="small"
           label="Search By"
           type={"text"}
           required
@@ -114,7 +112,7 @@ export function ExplorerSearch({ setLayers, ...props }) {
         searchResultsSetter={_handleSearchResults}
         sx={{ mx: 2, width: "100%" }}
       />
-      <Button variant="contained" onClick={_renderFoundLayer}>
+      <Button variant="contained" onClick={_refreshMap}>
         Search
       </Button>
     </Box>
