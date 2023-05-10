@@ -46,7 +46,7 @@ export async function api_fetch(resource, args = {}) {
 
 export function colorToList(specifier, alpha) {
   const { r, g, b, opacity } = rgb(specifier);
-  const op = Math.ceil(255 * (alpha || opacity));
+  const op = Math.ceil(255 * (alpha ?? opacity));
   return [r, g, b, op];
 }
 

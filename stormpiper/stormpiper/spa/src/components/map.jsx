@@ -48,7 +48,7 @@ function DeckGLMap({
     layer?.state ??
       setTimeout(() => {
         layer?.state && setZoomDataIsLoaded(true);
-      }, 500);
+      }, 1200);
 
     zoomDataIsLoaded &&
       layer?.state &&
