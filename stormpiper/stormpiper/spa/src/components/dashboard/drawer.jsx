@@ -75,7 +75,6 @@ export default function Drawer({
                 iconComponent={button.icon}
                 displayTitle={open}
                 clickHandler={() => {
-                  console.log("button clicked: ", button);
                   setSelectedButton(button.label);
                   if (button.clickHandler) {
                     button.clickHandler();

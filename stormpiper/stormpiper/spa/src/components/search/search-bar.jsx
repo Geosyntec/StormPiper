@@ -19,8 +19,6 @@ export default function SearchBar({
               .includes(searchFor.toLowerCase())
           )
         : [];
-
-    console.log(searchFor, searchField, results);
     searchResultsSetter(results);
   }
 
