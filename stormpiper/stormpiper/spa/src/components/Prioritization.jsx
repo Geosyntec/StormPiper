@@ -475,20 +475,7 @@ function Prioritization({ setDrawerButtonList }) {
           flexDirection: "column",
         }}
       >
-        <Suspense
-          fallback={
-            <Box
-              sx={{
-                width: "100%",
-                height: "500px",
-                position: "relative",
-                overflowY: "hidden",
-              }}
-            >
-              Loading Map...
-            </Box>
-          }
-        >
+        <Suspense fallback={<></>}>
           <Card
             sx={{
               width: "100%",

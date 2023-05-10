@@ -297,7 +297,7 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
             </Card>
           </Box>
         )}
-        <Suspense fallback={<Box>Loading Map...</Box>}>
+        <Suspense fallback={<></>}>
           <DeckGLMap
             id="main-map"
             layers={layers}

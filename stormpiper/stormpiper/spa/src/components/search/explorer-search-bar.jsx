@@ -78,7 +78,6 @@ export function ExplorerSearch({ setLayers, ...props }) {
   const handleInputChange = (e) => {
     setSearchResults([]);
     const { name, value } = e.target;
-    console.log(name, value);
     setSearchField(value);
   };
 

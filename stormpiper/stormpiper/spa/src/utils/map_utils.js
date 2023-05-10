@@ -8,7 +8,6 @@ export function getLayerData({ layer, value, field, featureType }) {
     let found = layer.state.layerProps[_featureType].data.find(
       (obj) => obj.__source.object.properties[field] === value
     );
-    console.log(found);
     return found?.__source.object;
   }
 
@@ -40,8 +39,6 @@ export function zoomToBBox({
     }
   );
 
-  console.log(boundingBox, longitude, latitude, zoom);
-
   return {
     ...viewport,
     longitude,
@@ -53,7 +50,6 @@ export function zoomToBBox({
 }
 
 export function getBBox(feature) {
-  console.log("bbox for feature:", feature);
   return feature?.bbox || bbox(feature);
 }
 
