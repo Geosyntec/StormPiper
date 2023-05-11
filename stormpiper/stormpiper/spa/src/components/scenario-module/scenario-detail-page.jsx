@@ -412,6 +412,18 @@ export default function ScenarioDetailPage() {
           </Card>
         </HalfSpan>
         <FullSpan>
+          <Box pb={3}>
+            <Card sx={{ p: 2 }}>
+              <CostSummary
+                tmntDetails={scenarioObject?.structural_tmnt?.[0]}
+                updateFacilityData={() => {
+                  console.log("attempted cost refresh. no op.");
+                }}
+              />
+            </Card>
+          </Box>
+        </FullSpan>
+        <FullSpan>
           <ScenarioBMPDetailResults data={scenarioObject} />
         </FullSpan>
         <FullSpan>
