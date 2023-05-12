@@ -14,7 +14,7 @@ def init() -> None:  # pragma: no cover
 
 
 def main() -> None:  # pragma: no cover
-    logger.info("Initializing service")
+    logger.info("Initializing worker service")
     init()
     logger.info("Worker finished initializing")
 

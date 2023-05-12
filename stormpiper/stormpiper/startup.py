@@ -93,7 +93,7 @@ def create_default_cost_globals(engine):
         session.add_all(batch)
 
 
-def build_views(engine):
+def build_views():
     from stormpiper.database.connection import engine
     from stormpiper.database.schemas.views import initialize_views
 

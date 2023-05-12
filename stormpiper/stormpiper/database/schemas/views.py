@@ -36,6 +36,9 @@ COLS = [
     *[s.lower() for s in summary_cols],
 ]
 
+WQ_COLS = list(set(sr_cols + [depth_col] + load_cols + conc_cols + yield_cols))
+INFO_COLS = list(set(s_cols + WQ_COLS + summary_cols))
+
 
 def build_subbasinwqresult_v():
     select_fields = []
@@ -65,7 +68,6 @@ CREATE OR REPLACE VIEW subbasinwqresult_v AS
 select
     S.SUBBASIN,
     S.BASINNAME,
-	S.GEOM,
 {select_fields}
 FROM subbasin s
 LEFT JOIN subbasin_result sr ON sr.subbasin::text = s.subbasin::text
@@ -77,12 +79,7 @@ ORDER BY S.SUBBASIN;
 def build_subbasininfo_v():
     select_fields = []
     sub_cols = ",\n".join([f"""\ts."{s}" """ for s in s_cols])
-    wq_cols = ",\n".join(
-        [
-            f"""\twq."{s}" """
-            for s in set(sr_cols + [depth_col] + load_cols + conc_cols + yield_cols)
-        ]
-    )
+    wq_cols = ",\n".join([f"""\twq."{s}" """ for s in WQ_COLS])
     sum_cols = ",\n".join([f"""\tts."{s.lower()}" """ for s in summary_cols])
     select_fields = ",\n".join([sub_cols, wq_cols, sum_cols])
     select_fields = select_fields[:-3] + select_fields[-3:].replace(",", "")
