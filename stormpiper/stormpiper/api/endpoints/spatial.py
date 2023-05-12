@@ -22,7 +22,7 @@ async def get_elevation(
 ) -> dict:
     """mt_rainer = [-121.756163642, 46.85166326]"""
 
-    return await run_in_threadpool(ee.get_elevation, long, lat)
+    return await run_in_threadpool(ee.get_elevation, long=long, lat=lat)
 
 
 @router.get("/ee/assets", dependencies=[Depends(_login_ee)])
