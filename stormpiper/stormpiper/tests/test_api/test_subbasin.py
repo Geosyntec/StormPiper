@@ -3,9 +3,10 @@ import pytest
 from ..utils import get_my_data
 
 
+@pytest.mark.parametrize("route", ["/api/rest/subbasin/", "/api/rest/subbasin/wq/"])
 @pytest.mark.parametrize("subbasin_id, exists", [("WS_03", True), ("DNE", False)])
-def test_get_subbasin_by_id(client, subbasin_id, exists):
-    response = client.get(f"/api/rest/subbasin/{subbasin_id}")
+def test_get_subbasin_by_id(client, route, subbasin_id, exists):
+    response = client.get(route + subbasin_id)
 
     if not exists:
         assert response.status_code >= 400, response.content
@@ -33,10 +34,21 @@ def test_get_all_subbasins(client, f, limit):
     [
         ("get", "/api/rest/subbasin/WS_03", "readonly_client", False, True),
         ("get", "/api/rest/subbasin/WS_03", "public_client", False, False),
+        ("get", "/api/rest/subbasin/WS_03/token", "readonly_client", True, True),
+        ("get", "/api/rest/subbasin/WS_03/token", "public_client", True, False),
         ("get", "/api/rest/subbasin", "readonly_client", False, True),
         ("get", "/api/rest/subbasin", "public_client", False, False),
         ("get", "/api/rest/subbasin/token", "readonly_client", True, True),
         ("get", "/api/rest/subbasin/token", "public_client", True, False),
+        # wq
+        ("get", "/api/rest/subbasin/wq/WS_03", "readonly_client", False, True),
+        ("get", "/api/rest/subbasin/wq/WS_03", "public_client", False, False),
+        ("get", "/api/rest/subbasin/wq/WS_03/token", "readonly_client", True, True),
+        ("get", "/api/rest/subbasin/wq/WS_03/token", "public_client", True, False),
+        ("get", "/api/rest/subbasin/wq", "readonly_client", False, True),
+        ("get", "/api/rest/subbasin/wq", "public_client", False, False),
+        ("get", "/api/rest/subbasin/wq/token", "readonly_client", True, True),
+        ("get", "/api/rest/subbasin/wq/token", "public_client", True, False),
     ],
 )
 @pytest.mark.parametrize("f", ["json", "geojson"])
@@ -89,6 +101,7 @@ def _not_uuid_token(*_, **__):
     "route",
     [
         "/api/rest/subbasin/token",
+        "/api/rest/subbasin/wq/token",
     ],
 )
 @pytest.mark.parametrize(

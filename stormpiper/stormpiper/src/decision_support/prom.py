@@ -7,7 +7,7 @@ from pymcdm.normalizations import minmax_normalization
 
 from stormpiper.core.config import settings
 from stormpiper.database.connection import engine
-from stormpiper.models.result_view import SubbasinResultView
+from stormpiper.models.result_view import SubbasinWQResultView
 
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
@@ -25,7 +25,7 @@ EQUITY_COLS = [
 
 POC_COLS = [
     c
-    for c in SubbasinResultView.get_fields()
+    for c in SubbasinWQResultView.get_fields()
     if any(
         (
             v in c.lower()
@@ -33,8 +33,6 @@ POC_COLS = [
         )
     )
 ]
-
-CRITERIA = EQUITY_COLS + POC_COLS
 
 
 def run_promethee_ii(
@@ -72,7 +70,7 @@ def run_subbasins_promethee_prioritization(
     ]
 
     sub_results = geopandas.read_postgis(
-        f"select * from subbasinresult_v where epoch = '1980s' order by subbasin ASC",
+        f"select * from subbasininfo_v order by subbasin",
         con=engine,
     ).assign(  # type: ignore
         score=lambda df: run_promethee_ii(
