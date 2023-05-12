@@ -8,13 +8,24 @@ from stormpiper.database.connection import engine
 from .base_class import Base
 
 
-class SubbasinResult_View(Base):
+class SubbasinWQResult_View(Base):
     __table__ = Table(
-        "subbasinresult_v",
+        "subbasinwqresult_v",
         Base.metadata,
         Column("subbasin", String, primary_key=True),
         Column("node_id", String, primary_key=True),
         Column("epoch", String, primary_key=True),
+        info=dict(is_view=True),  # Flag this as a view
+        autoload_with=engine,
+    )
+
+
+class SubbasinInfo_View(Base):
+    __table__ = Table(
+        "subbasininfo_v",
+        Base.metadata,
+        Column("subbasin", String, primary_key=True),
+        Column("node_id", String, primary_key=True),
         info=dict(is_view=True),  # Flag this as a view
         autoload_with=engine,
     )
