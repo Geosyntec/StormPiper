@@ -53,21 +53,15 @@ async function deleteScenarioDatabaseId(id) {
   return { status, text };
 }
 
-async function getAllScenarios() {
-  const response = await api_fetch(`/api/rest/scenario`);
-  const data = await response.json();
-  return data;
-}
-
-export function ScenarioInfoTable() {
+export function ScenarioInfoTable({ data, dataRefresher }) {
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
   const [currentScenarioId, setCurrentScenarioId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
-    getAllScenarios().then((res) => setRows(res));
-  }, [getAllScenarios]);
+    setRows(data);
+  }, [data]);
 
   const handleRowEditStart = (params, event) => {
     event.defaultMuiPrevented = true;
@@ -92,6 +86,7 @@ export function ScenarioInfoTable() {
     let { status, text } = await deleteScenarioDatabaseId(id);
     if (status === 204) {
       setRows(rows.filter((row) => row.id !== id));
+      dataRefresher();
       return;
     }
     console.error("delete ID failed.", text);

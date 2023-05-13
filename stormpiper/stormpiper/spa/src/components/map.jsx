@@ -90,8 +90,8 @@ function DeckGLMap({
         if (object.viewport) {
           ({ width, height } = object.viewport);
         }
-        const maxx = 175,
-          maxy = 175;
+        const maxx = 250,
+          maxy = 200;
         if (object.y > height - maxy || object.x > width - maxx) {
           object.y -= maxy;
           object.x -= maxx;
