@@ -1,12 +1,30 @@
 // DeckGL react component
 const fieldDict = {
-  activeSWMain: ["altid", "diameter"],
-  activeSWFacility: ["altid", "subbasin", "facilitytype"],
-  tmnt_delineations: ["altid", "relid"],
-  userDelineations: ["name"],
-  userPoints: ["node_id"],
-  subbasins: ["subbasin"],
-  default: ["altid"],
+  activeSWFacility: [
+    {
+      id: "altid",
+      label: "Facility ID",
+    },
+    { id: "facilitytype", label: "Facility Type" },
+    { id: "subbasin", label: "Basin ID" },
+  ],
+  tmnt_delineations: [
+    {
+      id: "altid",
+      label: "ID",
+    },
+    { id: "relid", label: "Downstream Facility" },
+  ],
+  scenarioDelineations: [
+    { id: "scenarioName", label: "Scenario" },
+    { id: "name", label: "Delineation Name" },
+  ],
+  scenarioFacilities: [
+    { id: "scenarioName", label: "Scenario" },
+    { id: "node_id", label: "Facility Name" },
+  ],
+  subbasins: [{ id: "subbasin", label: "Subbasin" }],
+  default: [{ id: "altid", label: "ID" }],
 };
 
 function getTooltipContents(object, layer, label) {
@@ -15,7 +33,7 @@ function getTooltipContents(object, layer, label) {
   if (feat) {
     let content = `<h4> Layer: ${label}</h4>
         ${fields.reduce((acc, field, i) => {
-          return acc + `<p>${field}: ${feat?.properties[field]}</p>`;
+          return acc + `<p>${field.label}: ${feat?.properties[field.id]}</p>`;
         }, "")}`;
     return content;
   }
