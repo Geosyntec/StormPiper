@@ -1,17 +1,10 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "@mui/material";
-
+import ListAltIcon from "@mui/icons-material/ListAlt";
 import { TwoColGrid, HalfSpan } from "../base/two-col-grid";
 import ScenarioCreateMap from "./scenario-create-map";
-import {
-  DrawPolygonMode,
-  DrawPointMode,
-  ViewMode,
-  ModifyMode,
-} from "nebula.gl";
-import { useEffect, useState, useRef } from "react";
 import { ScenarioCreateStepper } from "./scenario-create-stepper";
-import { useNavigate, useLocation } from "react-router-dom";
-import ListAltIcon from "@mui/icons-material/ListAlt";
 import { api_fetch } from "../../utils/utils";
 
 export default function ScenarioCreatePage({ setDrawerButtonList }) {
@@ -24,13 +17,9 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
     },
   ];
 
-  const location = useLocation();
-
   useEffect(() => {
-    setTimeout(() => {
-      setDrawerButtonList(buttonList);
-    }, 50);
-  }, [location]);
+    setDrawerButtonList(buttonList);
+  }, []);
 
   const [showFacilityEditTabs, setShowFacilityEditTabs] = useState(false);
   const [showdelineationEditTabs, setShowDelineationEditTabs] = useState(false);
