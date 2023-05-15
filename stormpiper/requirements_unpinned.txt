@@ -14,7 +14,7 @@ brotli-asgi
 earthengine-api
 
 fastapi-users
-fastapi-users-db-sqlalchemy<5.0.0
+fastapi-users-db-sqlalchemy
 
 fiona
 GeoAlchemy2
@@ -30,12 +30,12 @@ networkx
 
 scipy
 numpy
-pandas<2.0.0
+pandas
 matplotlib
 
 passlib[bcrypt]
 psycopg2-binary
-SQLAlchemy>=1.4.36,<2.0.0
+SQLAlchemy
 alembic
 
 celery[redis]
