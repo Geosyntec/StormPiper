@@ -1,3 +1,6 @@
+import { useState, useEffect, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+
 import {
   Box,
   Card,
@@ -6,8 +9,7 @@ import {
   Snackbar,
   CircularProgress,
 } from "@mui/material";
-import { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import ListAltIcon from "@mui/icons-material/ListAlt";
 
 import { ScenarioBMPDetailResults } from "./scenario-bmp-results";
 import { ScenarioDelineationDetailResults } from "./scenario-delin-results";
@@ -25,7 +27,7 @@ async function getDataByID(id) {
   return response.json();
 }
 
-export default function ScenarioDetailPage() {
+export default function ScenarioDetailPage({ setDrawerButtonList }) {
   const params = useParams();
   const [scenarioObject, setScenarioObject] = useState(null);
   const [resultsPollInterval, setResultsPollInterval] = useState(null);
@@ -44,6 +46,19 @@ export default function ScenarioDetailPage() {
   const infoRef = useRef(null);
   const delinRef = useRef(null);
   const facilityRef = useRef(null);
+
+  const navigate = useNavigate();
+  const buttonList = [
+    {
+      label: "View All Scenarios",
+      icon: <ListAltIcon />,
+      clickHandler: () => navigate("/app/scenario"),
+    },
+  ];
+
+  useEffect(() => {
+    setDrawerButtonList(buttonList);
+  }, []);
 
   useEffect(() => {
     getDataByID(params.id).then((res) => {

@@ -79,12 +79,7 @@ export default function Dashboard({
     ),
     scenarioDetail: (
       <AuthChecker useNav={true} disallowedRoles={["public"]}>
-        <ClearDrawerButtonList
-          setDrawerButtonList={setDrawerButtonList}
-          closeDrawer={closeDrawer}
-        >
-          <ScenarioDetailPage />
-        </ClearDrawerButtonList>
+        <ScenarioDetailPage setDrawerButtonList={setDrawerButtonList} />
       </AuthChecker>
     ),
     scenarioReview: (

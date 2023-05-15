@@ -11,7 +11,7 @@ import {
 
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import MapIcon from "@mui/icons-material/Map";
-import TuneIcon from "@mui/icons-material/Tune";
+import HubIcon from "@mui/icons-material/Hub";
 
 import { UserProfileContext } from "./authProvider";
 
@@ -177,7 +177,7 @@ export default function Landing() {
           >
             <ActionAreaCard
               img={
-                <TuneIcon
+                <HubIcon
                   fontSize="large"
                   color="primary"
                   sx={{
