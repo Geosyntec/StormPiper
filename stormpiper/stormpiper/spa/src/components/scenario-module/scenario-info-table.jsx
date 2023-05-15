@@ -167,7 +167,7 @@ export function ScenarioInfoTable({ data, dataRefresher }) {
       valueFormatter: (params) => {
         const value = params?.value?.description;
         if (!value) {
-          return "";
+          return " ";
         }
         return `${value}`;
       },
