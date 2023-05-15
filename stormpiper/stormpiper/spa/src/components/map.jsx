@@ -115,11 +115,17 @@ function DeckGLMap({
     props?.viewState && setViewState(props.viewState);
   }, [props?.viewState]);
 
+  let isHovering = false;
+
   return (
     <DeckGL
       initialViewState={viewState}
       controller={{ doubleClickZoom: false }}
       layers={props.layers}
+      onHover={({ object }) => (isHovering = Boolean(object))}
+      getCursor={({ isDragging }) =>
+        isDragging ? "grabbing" : isHovering ? "pointer" : "grab"
+      }
       onClick={props.onClick}
       getTooltip={(object) => {
         let width = 0;
@@ -148,6 +154,7 @@ function DeckGLMap({
               borderRadius: "6px",
               maxWidth: `${maxx}px`,
               maxHeight: `${maxy}px`,
+              lineHeight: "1.2rem",
             },
           }
         );
