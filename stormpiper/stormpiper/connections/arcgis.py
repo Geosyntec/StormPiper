@@ -12,6 +12,14 @@ logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
 
 
+def get_features(url):
+    response = requests.get(url)
+    js = response.json()
+
+    features = js.get("features", None)
+    return [] if features is None else features
+
+
 def _get_tmnt_facility_type_codes(*, url=None):
     if url is None:  # pragma: no branch
         url = external_resources["tmnt_facility_codes"]["url"]
@@ -32,7 +40,10 @@ def _get_tmnt_facilities(*, url=None):
     if url is None:  # pragma: no branch
         url = external_resources["tmnt_facilities"]["url"]
 
-    return geopandas.read_file(url)
+    features = get_features(url=url)
+    gdf = geopandas.GeoDataFrame.from_features(features=features, crs=4326)
+
+    return gdf
 
 
 def facility_node_id(altid):
@@ -130,8 +141,10 @@ def get_tmnt_facility_delineations(*, url=None):
     if url is None:  # pragma: no branch
         url = external_resources["tmnt_facility_delineations"]["url"]
 
+    features = get_features(url=url)
+
     delineations = (
-        geopandas.read_file(url)
+        geopandas.GeoDataFrame.from_features(features=features, crs=4326)
         .to_crs(settings.TACOMA_EPSG)
         .reset_index(drop=True)
         .rename(columns=lambda c: c.lower())
@@ -158,10 +171,11 @@ def get_subbasins(*, url=None, cols=None):
     if cols is None:  # pragma: no branch
         cols = external_resources["subbasins"]["columns"]
 
+    features = get_features(url)
+
     subbasins = (
-        geopandas.read_file(url)
+        geopandas.GeoDataFrame.from_features(features=features, crs=4326, columns=cols)
         .to_crs(settings.TACOMA_EPSG)
-        .reindex(columns=cols)
         .rename(columns=lambda c: c.lower())
         .loc[lambda df: ~df.geometry.is_empty]
         .drop_duplicates()
@@ -177,10 +191,11 @@ def get_equity_index(*, url=None, cols=None):
     if cols is None:  # pragma: no branch
         cols = external_resources["equity_index"]["columns"]
 
+    features = get_features(url)
+
     equity_index = (
-        geopandas.read_file(url)
+        geopandas.GeoDataFrame.from_features(features=features, crs=4326, columns=cols)
         .to_crs(settings.TACOMA_EPSG)
-        .reindex(columns=cols)
         .rename(columns=lambda c: c.lower())
         .loc[lambda df: ~df.geometry.is_empty]
         .drop_duplicates()
