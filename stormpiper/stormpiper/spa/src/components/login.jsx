@@ -68,13 +68,13 @@ export default function Login() {
       method: "POST",
       body: formData,
     }).then((resp) => {
-      if (resp.status == 200) {
+      if (resp.status >= 400) {
+        console.warn("login failure", resp);
+        setError(true);
+      } else {
         console.log("redirect on success");
         setError(false);
         navigate("/app");
-      } else {
-        console.warn("login failure", resp);
-        setError(true);
       }
     });
 
