@@ -1,7 +1,9 @@
 import sqlalchemy as sa
-from sqlalchemy.orm import declarative_base  # type: ignore ; pylance import bug.
+from sqlalchemy.orm import DeclarativeBase  # type: ignore ; pylance import bug.
 
-Base = declarative_base()
+
+class Base(DeclarativeBase):
+    ...
 
 
 class TrackedTable:
