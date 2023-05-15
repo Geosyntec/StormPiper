@@ -1,6 +1,5 @@
 import { Suspense, useState, useRef, useEffect, lazy } from "react";
 import { useForm } from "react-hook-form";
-import { useLocation } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -78,13 +77,9 @@ function Prioritization({ setDrawerButtonList }) {
     },
   ];
 
-  const location = useLocation();
-
   useEffect(() => {
-    setTimeout(() => {
-      setDrawerButtonList(buttonList);
-    }, 50);
-  }, [location]);
+    setDrawerButtonList(buttonList);
+  }, []);
 
   const formFields = [
     {

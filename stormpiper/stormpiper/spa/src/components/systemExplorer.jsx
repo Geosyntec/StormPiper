@@ -177,15 +177,8 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
   ];
 
   useEffect(() => {
-    setTimeout(() => {
-      setDrawerButtonList(buttonList);
-    }, 50);
-  }, [
-    location,
-    searchDisplayState,
-    resultsDisplayState,
-    lyrSelectDisplayState,
-  ]);
+    setDrawerButtonList(buttonList);
+  }, [searchDisplayState, resultsDisplayState, lyrSelectDisplayState]);
 
   function _toggleLayer(layerName, updateFunction = setActiveLayers) {
     var currentActiveLayers = { ...activeLayers };
