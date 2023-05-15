@@ -1,4 +1,4 @@
-import { Card } from "@mui/material";
+import { Box, Card, Typography } from "@mui/material";
 
 import { ScenarioInfoTable } from "./scenario-info-table";
 import { TwoColGrid, FullSpan } from "../base/two-col-grid";
@@ -19,26 +19,39 @@ export default function ScenarioReviewPage() {
     getAllScenarios();
   }, []);
   return (
-    <TwoColGrid>
-      <FullSpan>
-        <Card
+    <Box py={3} display="flex" justifyContent="center">
+      <TwoColGrid>
+        <FullSpan
           sx={{
             display: "flex",
-            minHeight: 400,
-            height: "100%",
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <AllScenariosMap scenarios={allScenarios} />
-        </Card>
-      </FullSpan>
-      <FullSpan>
-        <ScenarioInfoTable
-          data={allScenarios}
-          dataRefresher={getAllScenarios}
-        />
-      </FullSpan>
-    </TwoColGrid>
+          <Typography variant="h5">View All Scenarios</Typography>
+        </FullSpan>
+        <FullSpan>
+          <Card
+            sx={{
+              display: "flex",
+              minHeight: 400,
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <AllScenariosMap scenarios={allScenarios} />
+          </Card>
+        </FullSpan>
+        <FullSpan>
+          <Card sx={{ p: 2 }}>
+            <ScenarioInfoTable
+              data={allScenarios}
+              dataRefresher={getAllScenarios}
+            />
+          </Card>
+        </FullSpan>
+      </TwoColGrid>
+    </Box>
   );
 }
