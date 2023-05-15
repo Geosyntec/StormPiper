@@ -193,7 +193,6 @@ async def create_scenario(
     data: ScenarioUpdate = Depends(validate_scenario),
 ):
     scenario = ScenarioCreate(**data.dict(exclude_unset=True), created_by=user.email)
-    logger.info(scenario.json())
     try:
         attr = await crud.scenario.create(db=db, new_obj=scenario)
     except Exception as e:  # pragma: no cover
