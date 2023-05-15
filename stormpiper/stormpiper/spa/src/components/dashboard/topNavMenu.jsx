@@ -27,7 +27,7 @@ const topNavItems = [
   },
   {
     label: "Scenario Designer",
-    link: "/app/create-scenario",
+    link: "/app/scenario",
     icon: <HubIcon />,
   },
   // fallback is last
