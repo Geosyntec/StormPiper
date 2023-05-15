@@ -4,11 +4,48 @@ import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { getLayerData, zoomToFeature } from "../utils/map_utils.js";
-import getTooltipContents from "./tooltip.jsx";
 
 const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoiYWNhbmctZ3MiLCJhIjoiY2w0NGl1YWwyMDE0YzNpb2hhbzN3dzcxdiJ9.3V1BdATyCSerixms7Er3Rw";
 
+const tooltipFieldDict = {
+  activeSWFacility: [
+    {
+      id: "altid",
+      label: "Facility ID",
+    },
+    { id: "facilitytype", label: "Facility Type" },
+    { id: "subbasin", label: "Basin ID" },
+  ],
+  tmnt_delineations: [
+    {
+      id: "altid",
+      label: "ID",
+    },
+    { id: "relid", label: "Downstream Facility" },
+  ],
+  scenarioDelineations: [
+    { id: "scenarioName", label: "Scenario" },
+    { id: "name", label: "Delineation Name" },
+  ],
+  scenarioFacilities: [
+    { id: "scenarioName", label: "Scenario" },
+    { id: "node_id", label: "Facility Name" },
+  ],
+  subbasins: [{ id: "subbasin", label: "Subbasin" }],
+  default: [{ id: "altid", label: "ID" }],
+};
+
+function getTooltipContents(object, layerLabel, fields) {
+  const feat = object;
+  if (feat) {
+    let content = `<h4> Layer: ${layerLabel}</h4>
+          ${fields.reduce((acc, field, i) => {
+            return acc + `<p>${field.label}: ${feat?.properties[field.id]}</p>`;
+          }, "")}`;
+    return content;
+  }
+}
 // DeckGL react component
 function DeckGLMap({
   initialViewState,
@@ -100,8 +137,10 @@ function DeckGLMap({
           object.object && {
             html: getTooltipContents(
               object.object,
-              object?.layer?.id,
-              object?.layer?.props?.label
+              object?.layer?.props?.label,
+              tooltipFieldDict[object.layer?.id]
+                ? tooltipFieldDict[object.layer?.id]
+                : tooltipFieldDict.default
             ),
             style: {
               position: "absolute",
