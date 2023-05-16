@@ -118,5 +118,5 @@ RUN pip install -r /requirements_unpinned.txt
 
 # docker stop unpinned
 # docker rm unpinned
-# docker build . --target stormpiper-unpinned -t unpinned
+# docker build . --target stormpiper-unpinned -t unpinned --no-cache
 # docker run -it --name unpinned unpinned bash
