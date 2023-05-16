@@ -26,11 +26,7 @@ async def get_chart_cost_timeseries(
     )
     spec = make_cost_timeseries_plot(data_url)
     if f == "html":
-        html = spec.to_html().replace(
-            "</head>",
-            "<style>.vega-embed {width: 100%;}</style></head>",
-        )
-        return HTMLResponse(html)
+        return HTMLResponse(spec.to_html())
 
     content = spec.to_json()  # type: ignore
 
@@ -51,12 +47,14 @@ async def get_chart_cost_timeseries_data(node_id: str, db: AsyncSessionDB):
         select(tmnt.TMNT_View).where(tmnt.TMNT_View.node_id == node_id)
     )
 
-    if not result:  # pragma: no cover
+    scalar = result.scalars().first()
+
+    if scalar is None:  # pragma: no cover
         raise HTTPException(
             status_code=404, detail=f"Record not found for node_id={node_id}"
         )
 
-    data = orm_to_dict(result.scalars().first()).get("present_value_chart_table", None)
+    data = orm_to_dict(scalar).get("present_value_chart_table", None)
 
     if not data:  # pragma: no cover
         raise HTTPException(
