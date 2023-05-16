@@ -240,7 +240,6 @@ function Prioritization({ setDrawerButtonList }) {
             sx={{
               display: "flex",
               flexDirection: "column",
-              borderBottom: "0.5px solid grey",
               mb: "1rem",
             }}
           >
@@ -258,7 +257,10 @@ function Prioritization({ setDrawerButtonList }) {
             />
             <Typography variant="caption">{formField.description}</Typography>
             {errors[formField.fieldID] && (
-              <Typography variant="caption">
+              <Typography
+                variant="caption"
+                sx={{ color: (theme) => theme.palette.warning.main }}
+              >
                 {errors[formField.fieldID].message}
               </Typography>
             )}
@@ -278,25 +280,26 @@ function Prioritization({ setDrawerButtonList }) {
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                borderBottom: "0.5px solid grey",
                 mb: "1rem",
               }}
             >
               <Typography variant="body1">Set a project type</Typography>
+              <Box sx={{ mt: "8px", mb: "4px" }}>
+                <FormControl sx={{ width: "100%" }}>
+                  <Select {...register("wq_type")} defaultValue="retrofit">
+                    <MenuItem value="preservation">Preservation</MenuItem>
+                    <MenuItem value="retrofit">Retrofit</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
               <Typography variant="caption">
                 Are you prioritizing preservation projects or retrofit projects?
               </Typography>
-              <FormControl>
-                <Select {...register("wq_type")} defaultValue="retrofit">
-                  <MenuItem value="preservation">Preservation</MenuItem>
-                  <MenuItem value="retrofit">Retrofit</MenuItem>
-                </Select>
-              </FormControl>
             </Box>
             <Typography variant="body1">Set Priority Weights</Typography>
             {fieldDiv}
           </Box>
-          <Box>
+          <Box sx={{ px: 1 }}>
             <Button variant="contained" type="submit">
               Submit
             </Button>
@@ -428,14 +431,13 @@ function Prioritization({ setDrawerButtonList }) {
               sx={{
                 display: "grid",
                 gridTemplateColumns: "repeat(1,1r)",
-                padding: "0px 10px",
+                px: 1,
               }}
             >
               <Box
                 sx={{
                   display: "flex",
                   flexDirection: "column",
-                  borderBottom: "0.5px solid grey",
                   mb: "1rem",
                 }}
               >
@@ -447,7 +449,6 @@ function Prioritization({ setDrawerButtonList }) {
                 sx={{
                   display: "flex",
                   flexDirection: "column",
-                  borderBottom: "0.5px solid grey",
                   mb: "1rem",
                 }}
               >
@@ -507,7 +508,7 @@ function Prioritization({ setDrawerButtonList }) {
             )}
           </Card>
         </Suspense>
-        <Box sx={{ pt: 2 }}>
+        <Box sx={{ pt: 2, width: "100%" }}>
           <Card>
             <CardContent>
               {subbasinScores.length > 0 ? (
@@ -551,7 +552,7 @@ function Prioritization({ setDrawerButtonList }) {
                   />
                 </Box>
               ) : (
-                <Box>
+                <Box sx={{ width: "100%" }}>
                   <Typography variant="body1" align="center">
                     Submit a set of priority weights to view and download the
                     relative scores of each subbasin
