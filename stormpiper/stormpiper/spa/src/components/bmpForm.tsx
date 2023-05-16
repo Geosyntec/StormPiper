@@ -58,7 +58,7 @@ type formProps = {
 
 export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
   console.log("BMP Form props:", Object.keys(props));
-  const disabled = props.formDisabled ?? false;
+  const formDisabled = props.formDisabled ?? false;
   const showSubmit = props?.showSubmit ?? true;
   const costFields = props?.facilitySpec?.["TMNTFacilityCostPatch"] || {};
   const firstRender = useRef(true);
@@ -70,7 +70,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
     reset,
     getValues,
     trigger,
-    formState: { isDirty },
+    formState: { errors },
   } = useForm();
   const [isSimple, setIsSimple] = useState(() => {
     if (typeof props.values?.facility_type === "string") {
@@ -82,17 +82,12 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
     }
   });
   const [fields, setFields] = useState(() => {
-    let emptyFields: bmpFields = {
-      title: "",
-      required: [],
-      type: "",
-      properties: {},
-    };
-    return emptyFields;
+    return isSimple ? props.simpleFields : props.allFields;
   });
   const [formFields, setFormFields] = useState(() => {
     return _buildFields();
   });
+  const [isTouched, setIsTouched] = useState(false);
 
   useImperativeHandle(
     ref,
@@ -100,7 +95,6 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
       return {
         async triggerValidation() {
           const formValidation = await trigger();
-          console.log("BMP form valid?: ", formValidation);
           return formValidation;
         },
 
@@ -134,8 +128,9 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
 
   useEffect(() => {
     console.log("Building form fields with values: ", props.values);
+    isSimple ? setFields(props.simpleFields) : setFields(props.allFields);
     setFormFields(_buildFields());
-  }, [isSimple, fields]);
+  }, []);
 
   function _buildFields(): {
     fieldID: string;
@@ -169,9 +164,9 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
           required:
             fields.required.includes(k) || costFields?.required?.includes(k),
           value: props.values
-            ? props.values[k] &&
-              props.values.facility_type === props.currentFacility
-              ? props.values[k]
+            ? props.values[k]
+              ? // && props.values.facility_type === props.currentFacility
+                props.values[k]
               : v.default
               ? v.default
               : v.type === "string"
@@ -181,14 +176,13 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
             ? ""
             : numDefault,
         };
+        if (k === "facility_type" && !props.values[k]) {
+          fieldObj.value = "no_treatment";
+        }
         res.push(fieldObj);
       }
     });
-    setValue("node_id", props.values?.node_id);
-    setValue("facility_type", props.currentFacility);
-    // setValue("facility_type", props.currentFacility.replace("_simple", ""));
 
-    console.log("Finished Building Fields:", res);
     return res;
   }
 
@@ -252,55 +246,11 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
     console.log("Form should be clear: ", getValues());
   }
 
-  // function _handleRecalculate() {
-  //   api_fetch("/api/rpc/solve_watershed")
-  //     .then((resp) => {
-  //       setResultSuccess(false);
-  //       console.log("Recalculation started: ", resp);
-  //     })
-  //     .catch((err) => {
-  //       console.log("Recalculate Failed: ", err);
-  //     });
-  // }
-
-  // function _renderErrorHeader(msg: string) {
-  //   let beginningText: RegExp = /[0-9]*\svalidation (error[s]*)/g;
-  //   let header = msg.match(beginningText);
-  //   if (header) {
-  //     return header[0];
-  //   } else {
-  //     return header;
-  //   }
-  // }
-
-  // function _getErrorList(msg: string): string[] {
-  //   let errorList: string[] = [];
-
-  //   //Find the number of errors so that we know
-  //   let errorNum = 0;
-  //   let nums = msg.match(/[0-9]*/g);
-  //   if (nums) {
-  //     errorNum = parseInt(nums[0]);
-  //   }
-
-  //   //Isolate just the list of errors
-  //   let beginningText: RegExp = /[0-9]*\svalidation (error[s]*\sfor\s\w*\s)/g;
-  //   msg = msg.replaceAll(beginningText, "");
-
-  //   let err = msg.match(/([\w\s.;=_]*)\([\w.=;\s]+\)/g);
-  //   console.log("Found errors:", err);
-  //   if (err) {
-  //     err.map((e) => {
-  //       errorList.push(e.replace(/\([\w.=;\s]+\)/g, "")); //remove the error type in parantheses
-  //     });
-  //   }
-  //   return errorList;
-  // }
-
-  const wqFormFields = formFields.filter(
-    (k) => !Object.keys(costFields?.properties || {}).includes(k.fieldID)
+  const wqFormFields = formFields.filter((k) =>
+    Object.keys(
+      isSimple ? props.simpleFields.properties : props.allFields.properties
+    ).includes(k.fieldID)
   );
-
   const costFormFields = formFields.filter((k) =>
     Object.keys(costFields?.properties || {}).includes(k.fieldID)
   );
@@ -323,6 +273,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
               setIsSimple(!isSimple);
             }}
             color="primary"
+            disabled={formDisabled}
           />
         }
         label="Simple Facility?"
@@ -360,7 +311,9 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
                 key={formField.fieldID}
                 variant="outlined"
                 {...register(formField.fieldID, {
-                  required: formField.required,
+                  required: formField.required
+                    ? true
+                    : "This field is required",
                 })}
                 label={formField.label}
                 select
@@ -371,6 +324,8 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
                     e.target.value + (isSimple ? "_simple" : "")
                   );
                 }}
+                onClick={() => setIsTouched(true)}
+                disabled={formDisabled}
               >
                 {Object.keys(props.allFacilities).map((fType: string) => {
                   if (!fType.match("_simple")) {
@@ -392,7 +347,9 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
                 id={formField.fieldID}
                 variant="outlined"
                 {...register(formField.fieldID, {
-                  required: formField.required,
+                  required: formField.required
+                    ? true
+                    : "This field is required",
                 })}
                 type={formField.type}
                 defaultValue={formField.value}
@@ -402,14 +359,28 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
                   step: formField.type === "number" ? 0.01 : null,
                 }}
                 disabled={
-                  formField.label === "Node Id" && formField.value === null
+                  (formField.label === "Node Id" && showSubmit) || formDisabled //having showSubmit disabled the field is a workaround to disable it only in the scenario version of this form
                 }
+                onClick={() => setIsTouched(true)}
               />
+            )}
+            {errors[formField.fieldID] && (
+              <Typography
+                variant="caption"
+                sx={{ color: (theme) => theme.palette.warning.main }}
+                align="center"
+              >
+                {errors[formField.fieldID]?.message}
+              </Typography>
             )}
           </Box>
         );
       }
     );
+    Object.values(formFields).map((formField) => {
+      setValue(formField.fieldID, formField.value);
+    });
+
     return fieldDiv;
   }
 
@@ -446,10 +417,10 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
           justifyContent: "space-between",
         }}
       >
-        <Button variant="contained" type="submit" disabled={!isDirty}>
+        <Button variant="contained" type="submit" disabled={!isTouched}>
           Save
         </Button>
-        <Button onClick={props.handleEditReset} disabled={!isDirty}>
+        <Button onClick={props.handleEditReset} disabled={!isTouched}>
           Cancel
         </Button>
       </Box>
@@ -479,7 +450,11 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
         <Typography variant="subtitle2">Water Quality Parameters</Typography>
         {props.simpleFields && _renderSimpleCheckDiv()}
         {_renderFormFields(wqFormFields)}
-        <Accordion sx={{ my: 2 }}>
+        <Accordion
+          sx={{ my: 2 }}
+          disabled={formDisabled}
+          onClick={() => setIsTouched(true)}
+        >
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
