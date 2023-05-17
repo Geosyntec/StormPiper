@@ -112,6 +112,9 @@ export const ScenarioDelineationForm = forwardRef(
                   required: formField.required,
                 })}
                 label={formField.label}
+                InputLabelProps={{
+                  shrink: true,
+                }}
                 type={formField.type}
                 defaultValue={formField.value}
                 required={formField.required}
@@ -159,41 +162,6 @@ export const ScenarioDelineationForm = forwardRef(
             style={{ width: "100%" }}
           >
             {_renderFormFields()}
-
-            {/* <Box sx={{ mt: 3 }}>
-              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <Button variant="contained" color="primary" type="submit">
-                  Save
-                </Button>
-              </Box>
-            </Box> */}
-
-            {/* {error && (
-              <Box
-                sx={{ my: "2rem", display: "flex", justifyContent: "start" }}
-              >
-                <Typography
-                  variant="caption"
-                  align="left"
-                  color={(theme) => theme.palette.warning.main}
-                >
-                  Something went wrong - please try again
-                </Typography>
-              </Box>
-            )}
-            {success && (
-              <Box
-                sx={{ my: "2rem", display: "flex", justifyContent: "start" }}
-              >
-                <Typography
-                  variant="caption"
-                  align="left"
-                  color={(theme) => theme.palette.success.main}
-                >
-                  Name Saved
-                </Typography>
-              </Box>
-            )} */}
           </form>
         </Box>
       </Box>

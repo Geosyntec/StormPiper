@@ -22,7 +22,7 @@ export const ScenarioInfoForm = forwardRef(function ScenarioInfoForm(
       fieldID: "name",
       label: "Scenario Name",
       type: "text",
-      required: true,
+      required: "This field is required",
       minLength: 1,
       defaultValue: scenario?.name || "",
     },
@@ -87,6 +87,9 @@ export const ScenarioInfoForm = forwardRef(function ScenarioInfoForm(
               {...formField.inputProps}
               fullWidth
               disabled={disabled}
+              InputLabelProps={{
+                shrink: true,
+              }}
               sx={{
                 "& .Mui-disabled": {
                   WebkitTextFillColor: "rgba(0,0,0,0.7)",
@@ -94,6 +97,7 @@ export const ScenarioInfoForm = forwardRef(function ScenarioInfoForm(
               }}
             />
           }
+
           {errors[formField.fieldID] && (
             <Typography
               variant="caption"
@@ -113,7 +117,6 @@ export const ScenarioInfoForm = forwardRef(function ScenarioInfoForm(
       sx={{
         display: "flex",
         justifyContent: "center",
-        px: 2,
       }}
     >
       <Box

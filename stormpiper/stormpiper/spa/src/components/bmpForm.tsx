@@ -130,7 +130,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
     console.log("Building form fields with values: ", props.values);
     isSimple ? setFields(props.simpleFields) : setFields(props.allFields);
     setFormFields(_buildFields());
-  }, []);
+  }, [isSimple, fields, props.values]);
 
   function _buildFields(): {
     fieldID: string;
@@ -312,8 +312,8 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
                 variant="outlined"
                 {...register(formField.fieldID, {
                   required: formField.required
-                    ? true
-                    : "This field is required",
+                    ? "This field is required"
+                    : false,
                 })}
                 label={formField.label}
                 select
@@ -348,8 +348,8 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
                 variant="outlined"
                 {...register(formField.fieldID, {
                   required: formField.required
-                    ? true
-                    : "This field is required",
+                    ? "This field is required"
+                    : false,
                 })}
                 type={formField.type}
                 defaultValue={formField.value}
@@ -357,6 +357,9 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
                 label={formField.label}
                 inputProps={{
                   step: formField.type === "number" ? 0.01 : null,
+                }}
+                InputLabelProps={{
+                  shrink: true,
                 }}
                 disabled={
                   (formField.label === "Node Id" && showSubmit) || formDisabled //having showSubmit disabled the field is a workaround to disable it only in the scenario version of this form
