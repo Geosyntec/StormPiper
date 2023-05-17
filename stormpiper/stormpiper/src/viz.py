@@ -19,8 +19,8 @@ def make_cost_timeseries_plot(source: str | pandas.DataFrame) -> alt.TopLevelMix
         ),
     )
 
-    nearest = alt.selection(
-        type="single", nearest=True, on="mouseover", fields=["year"], empty="none"
+    nearest = alt.selection_point(
+        nearest=True, on="mouseover", fields=["year"], empty="none"
     )
 
     selectors = (
@@ -30,7 +30,7 @@ def make_cost_timeseries_plot(source: str | pandas.DataFrame) -> alt.TopLevelMix
             y="value:Q",
             opacity=alt.value(0),
         )
-        .add_selection(nearest)
+        .add_params(nearest)
     )
 
     # Draw points on the line, and highlight based on selection
