@@ -284,7 +284,7 @@ function Prioritization({ setDrawerButtonList }) {
               }}
             >
               <Typography variant="body1">Set a project type</Typography>
-              <Box sx={{ mt: "8px", mb: "4px" }}>
+              <Box sx={{ mt: 1, mb: 0.5 }}>
                 <FormControl sx={{ width: "100%" }}>
                   <Select {...register("wq_type")} defaultValue="retrofit">
                     <MenuItem value="preservation">Preservation</MenuItem>
