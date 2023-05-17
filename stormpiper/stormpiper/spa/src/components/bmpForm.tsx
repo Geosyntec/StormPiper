@@ -20,7 +20,7 @@ import React, {
   useState,
 } from "react";
 import { useForm } from "react-hook-form";
-import { api_fetch } from "../utils/utils";
+import { KCBMPDetailModal } from "./cost-estimator/kc-estimator-modal";
 
 const hiddenFields: string[] = [
   "ref_data_key",
@@ -57,7 +57,6 @@ type formProps = {
 };
 
 export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
-  console.log("BMP Form props:", Object.keys(props));
   const formDisabled = props.formDisabled ?? false;
   const showSubmit = props?.showSubmit ?? true;
   const costFields = props?.facilitySpec?.["TMNTFacilityCostPatch"] || {};
@@ -105,7 +104,6 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
         },
 
         _getValues() {
-          console.log("Values within ref: ", getValues());
           return getValues();
         },
 
@@ -125,7 +123,6 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
     }
     firstRender.current = false;
 
-    console.log("Building form fields with values: ", props.values);
     isSimple ? setFields(props.simpleFields) : setFields(props.allFields);
 
     const formFields = _buildFields();
@@ -156,7 +153,6 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
       required: boolean;
       value: string | number;
     }[] = [];
-    console.log("initial form values: ", props.values);
     const _fields = {
       ...fields.properties,
       ...(costFields?.properties || {}),
@@ -170,9 +166,14 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
         let fieldObj = {
           fieldID: k,
           label: v.title,
-          type: v.type,
+          type:
+            typeof v?.type === "string" || v?.type instanceof String
+              ? v.type
+              : "string",
           required:
-            fields.required.includes(k) || costFields?.required?.includes(k),
+            fields.required.includes(k) ||
+            costFields?.required?.includes(k) ||
+            false,
           value: props.values
             ? props.values[k]
               ? props.values[k]
@@ -236,7 +237,6 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
         defaultValues[k] = props.currentFacility;
       }
     });
-    console.log("reseting form: ", defaultValues);
     return defaultValues;
   }
 
@@ -252,7 +252,6 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
         unregister(k, { keepValue: false });
       }
     });
-    console.log("Form should be clear: ", getValues());
   }
 
   function _renderSimpleCheckDiv() {
@@ -293,8 +292,6 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
     ]
   ) {
     if (formFields.length === 0) return;
-    console.log("Rendering Form for: ", props.currentFacility);
-    console.log("With fields:", formFields);
     const fieldDiv = Object.values(formFields).map(
       (formField: {
         fieldID: string;
@@ -430,6 +427,10 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
     );
   }
 
+  const [modalOpen, setModalOpen] = useState(false);
+  const handleModalOpen = () => setModalOpen(true);
+  const handleModalClose = () => setModalOpen(false);
+
   return (
     <Box>
       {showSubmit && (
@@ -465,10 +466,29 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
           >
             <Typography>Cost Analysis Parameters</Typography>
           </AccordionSummary>
-          <AccordionDetails>{costSubForm}</AccordionDetails>
+          <AccordionDetails>
+            <>
+              {costSubForm}
+              <Button onClick={handleModalOpen}>
+                King County Cost Estimator Tool
+              </Button>
+            </>
+          </AccordionDetails>
         </Accordion>
         {showSubmit && _renderSubmitButtons()}
       </form>
+
+      <KCBMPDetailModal
+        initialBMPType={props.values.facility_type}
+        modalOpen={modalOpen}
+        handleModalClose={handleModalClose}
+        handleApply={function (res) {
+          setValue("capital_cost", res.capital_cost);
+          setValue("capital_cost_basis_year", 2023);
+          setValue("om_cost_per_yr", res.om_cost_per_yr);
+          setValue("om_cost_basis_year", 2023);
+        }}
+      />
     </Box>
   );
 });
