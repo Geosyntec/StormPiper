@@ -22,7 +22,7 @@ export const ScenarioInfoForm = forwardRef(function ScenarioInfoForm(
       fieldID: "name",
       label: "Scenario Name",
       type: "text",
-      required: "This field is required",
+      required: true,
       minLength: 1,
       defaultValue: scenario?.name || "",
     },
