@@ -86,6 +86,12 @@ class TMNTFacilityCostPatch(TMNTFacilityCostBase):
 class TMNTFacilityCostUpdate(TMNTFacilityCostPatch):
     updated_by: None | str = None
 
+    # globals
+    discount_rate: float | None = None
+    inflation_rate: float | None = None
+    planning_horizon_yrs: float | int | None = None
+    cost_basis_year: float | int | None = None
+
     # cost results
     present_value_capital_cost: float | None = None
     present_value_om_cost: float | None = None
@@ -102,6 +108,12 @@ class TMNTFacilityCostCreate(TMNTFacilityCostUpdate):
 # Properties shared by models stored in DB
 class TMNTFacilityCostInDBBase(BaseORM, TMNTFacilityCostBase):
     node_id: str
+
+    # globals
+    discount_rate: float | None = None
+    inflation_rate: float | None = None
+    planning_horizon_yrs: float | int | None = None
+    cost_basis_year: float | int | None = None
 
     # cost results
     present_value_capital_cost: float | None = None

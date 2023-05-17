@@ -35,6 +35,11 @@ class TMNTView(BaseORM):
     install_year: int | float | None
     replacement_cost: float | None
     lifespan_yrs: float | int | None
+    # cost attr globals
+    discount_rate: float | None = None
+    inflation_rate: float | None = None
+    planning_horizon_yrs: float | int | None = None
+    cost_basis_year: float | int | None = None
 
     # cost results
     present_value_capital_cost: float | None
