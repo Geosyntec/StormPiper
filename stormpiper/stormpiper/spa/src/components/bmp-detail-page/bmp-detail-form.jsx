@@ -179,7 +179,7 @@ export function BMPDetailForm() {
             handleEditReset={removeEdits}
           ></BMPForm>
           <Dialog open={resultSuccess} onClose={() => setResultSuccess(false)}>
-            <Box sx={{ padding: "15px" }}>
+            <Box sx={{ p: 2 }}>
               <Typography>
                 <strong>Facility Details Submitted</strong>
               </Typography>
@@ -192,16 +192,16 @@ export function BMPDetailForm() {
             </DialogActions>
           </Dialog>
           <Dialog open={resultError} onClose={() => setResultError(false)}>
-            <Box sx={{ padding: "15px" }}>
+            <Box sx={{ p: 2 }}>
               <Typography>
                 <strong>Submission Error</strong>
               </Typography>
               <Typography variant="caption">Please try again</Typography>
             </Box>
-            <Typography variant="caption" sx={{ padding: "0em 1em" }}>
+            <Typography variant="caption" sx={{ py: 0, px: 1 }}>
               {_renderErrorHeader(errorMsg)}
             </Typography>
-            <ul style={{ "margin-top": "none", "padding-right": "1em" }}>
+            <ul style={{ marginTop: 0, paddingRight: "1em" }}>
               {_getErrorList(errorMsg).map((msg) => {
                 return <li>{msg}</li>;
               })}
