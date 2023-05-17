@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Float, Integer, String
+from sqlalchemy import Column, Float, String
 from sqlalchemy.dialects.postgresql import JSONB
 
 from .base_class import Base, MutableTrackedTable
@@ -17,6 +17,12 @@ class TMNTFacilityCost(Base, MutableTrackedTable):
     install_year = Column(Float)
     lifespan_yrs = Column(Float)
     replacement_cost = Column(Float)
+
+    # globals
+    discount_rate= Column(Float)
+    inflation_rate= Column(Float)
+    planning_horizon_yrs= Column(Float)
+    cost_basis_year= Column(Float)
 
     # cost results
     present_value_capital_cost = Column(Float)

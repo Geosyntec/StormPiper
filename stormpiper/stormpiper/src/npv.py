@@ -3,6 +3,7 @@ from typing import Any
 
 import numpy
 import pandas
+from fastapi.concurrency import run_in_threadpool
 from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -107,7 +108,8 @@ def compute_bmp_om_pv(
         replacement_cost = 0
 
     if lifespan_yrs is None:
-        lifespan_yrs = 0
+        replacement_cost = 0
+        lifespan_yrs = planning_horizon_yrs
 
     start_analysis_year = int(min(cost_basis_year, install_year))
     end_analysis_year = int(
@@ -267,6 +269,12 @@ def compute_bmp_pv(
     )
 
     present_value_results = {
+        ## globals
+        "discount_rate": discount_rate,
+        "inflation_rate": inflation_rate,
+        "planning_horizon_yrs": planning_horizon_yrs,
+        "cost_basis_year": cost_basis_year,
+        ## results
         "present_value_total_cost": present_value_total_cost,
         "present_value_capital_cost": present_value_capital_cost,
         "present_value_om_cost": present_value_om_cost,
@@ -322,7 +330,7 @@ async def calculate_pv_for_existing_tmnt_in_db(node_id: str, db: AsyncSession):
         attr = await crud.tmnt_cost.update(db=db, id=node_id, new_obj=cost_results)
         raise
 
-    cost_results = compute_bmp_pv(**pv_req.dict())
+    cost_results = await run_in_threadpool(compute_bmp_pv, **pv_req.dict())
 
     attr = await crud.tmnt_cost.update(db=db, id=node_id, new_obj=cost_results)
 
