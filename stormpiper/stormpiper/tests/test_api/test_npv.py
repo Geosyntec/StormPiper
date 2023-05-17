@@ -48,7 +48,6 @@ def test_pv_api_response_node_id_no_server_error(client, node_id, method):
         (
             "SWFA-100018",
             {
-                "capital_cost": 450001,
                 "om_cost_per_yr": 6001,
             },
             None,
@@ -58,9 +57,8 @@ def test_pv_api_response_node_id_no_server_error(client, node_id, method):
             "SWFA-100018",
             {
                 "capital_cost": 450002,
-                "om_cost_per_yr": 6002,
+                "om_cost_per_yr": None,
                 "replacement_cost": 22500,
-                "lifespan_yrs": None,
             },
             None,
         ),

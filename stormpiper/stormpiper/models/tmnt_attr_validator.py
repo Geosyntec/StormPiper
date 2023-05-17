@@ -96,7 +96,7 @@ def maybe_update_pv_params(
     unvalidated_data.update(**cost_results)
 
     try:
-        pv_req = PVRequest(**unvalidated_data, **pv_global_settings)
+        pv_req = PVRequest(**{**unvalidated_data, **pv_global_settings})
 
     except ValidationError as _:
         logger.info("Validation Error", _)
