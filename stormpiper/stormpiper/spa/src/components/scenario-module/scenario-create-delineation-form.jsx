@@ -16,7 +16,6 @@ export const ScenarioDelineationForm = forwardRef(
       getValues,
       reset,
     } = useForm();
-    // const delineation = scenarioObject?.input?.delineation_collection || null;
     console.log("Inside delineation form, delineation = ", delineation);
     const disabled = formDisabled ?? false;
     const [error, setError] = useState(false);
@@ -27,7 +26,6 @@ export const ScenarioDelineationForm = forwardRef(
         label: "Delineation Name",
         type: "text",
         required: true,
-        // value: delineation?.features[0]?.properties?.name || "",
         value: delineation?.features[0]
           ? delineation.features[0].properties.name
           : "",
@@ -58,10 +56,6 @@ export const ScenarioDelineationForm = forwardRef(
 
           async resetForm() {
             delineationSetter(null);
-            // delineationSetter({
-            //   type: "FeatureCollection",
-            //   features: [],
-            // });
           },
 
           setName(delineation) {
