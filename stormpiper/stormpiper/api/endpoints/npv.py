@@ -50,17 +50,13 @@ async def calculate_pv_for_existing_tmnt(
 async def refresh_pv_for_all_existing_tmnt(db: AsyncSessionDB):
     """Calculates the net present value of an existing structural bmp facility"""
 
-    raise DeprecationWarning(
-        "this functionality should be supported by the frontend, not the backend."
-    )
-
     attrs = await crud.tmnt_cost.get_all(db=db)
     if not attrs:
         raise HTTPException(status_code=404, detail=f"Records not found.")
 
     for attr in attrs:
         try:
-            _ = await calculate_npv_for_existing_tmnt_in_db(db=db, node_id=attr.node_id)
+            _ = await calculate_pv_for_existing_tmnt_in_db(db=db, node_id=attr.node_id)
 
         except RecordNotFound as e:
             raise HTTPException(status_code=404, detail=f"{e}")
@@ -68,4 +64,11 @@ async def refresh_pv_for_all_existing_tmnt(db: AsyncSessionDB):
         except ValidationError as e:
             raise HTTPException(status_code=404, detail=f"{e}")
 
-    return "complete"
+    return dict(
+        status="success",
+        result="complete",
+        detail=(
+            "Present value successfully recalculated for all "
+            "treatment facilities in the database."
+        ),
+    )
