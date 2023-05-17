@@ -88,6 +88,8 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
     return _buildFields();
   });
   const [isTouched, setIsTouched] = useState(false);
+  const [wqSubForm, setWQSubForm] = useState(() => <Box></Box>);
+  const [costSubForm, setCostSubForm] = useState(() => <Box></Box>);
 
   useImperativeHandle(
     ref,
@@ -116,21 +118,29 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
   );
 
   useEffect(() => {
-    console.log("is this the first render: ", firstRender.current);
     if (!firstRender.current) {
       //Don't do this on first render to avoid set value before field is registered
       _clearForm(isSimple);
       reset(_createDefaults(isSimple));
     }
-    isSimple ? setFields(props.simpleFields) : setFields(props.allFields);
     firstRender.current = false;
-  }, [isSimple, props.currentFacility, props.facilityType]);
 
-  useEffect(() => {
     console.log("Building form fields with values: ", props.values);
     isSimple ? setFields(props.simpleFields) : setFields(props.allFields);
-    setFormFields(_buildFields());
-  }, [isSimple, fields, props.values]);
+
+    const formFields = _buildFields();
+
+    const wqFormFields = formFields.filter((k) =>
+      Object.keys(
+        isSimple ? props.simpleFields.properties : props.allFields.properties
+      ).includes(k.fieldID)
+    );
+    const costFormFields = formFields.filter((k) =>
+      Object.keys(costFields?.properties || {}).includes(k.fieldID)
+    );
+    setWQSubForm(_renderFormFields(wqFormFields));
+    setCostSubForm(_renderFormFields(costFormFields));
+  }, [isSimple, fields, props.values, props.currentFacility]);
 
   function _buildFields(): {
     fieldID: string;
@@ -244,15 +254,6 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
     });
     console.log("Form should be clear: ", getValues());
   }
-
-  const wqFormFields = formFields.filter((k) =>
-    Object.keys(
-      isSimple ? props.simpleFields.properties : props.allFields.properties
-    ).includes(k.fieldID)
-  );
-  const costFormFields = formFields.filter((k) =>
-    Object.keys(costFields?.properties || {}).includes(k.fieldID)
-  );
 
   function _renderSimpleCheckDiv() {
     return (
@@ -451,7 +452,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
       >
         <Typography variant="subtitle2">Water Quality Parameters</Typography>
         {props.simpleFields && _renderSimpleCheckDiv()}
-        {_renderFormFields(wqFormFields)}
+        {wqSubForm}
         <Accordion
           sx={{ my: 2 }}
           disabled={formDisabled}
@@ -464,9 +465,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
           >
             <Typography>Cost Analysis Parameters</Typography>
           </AccordionSummary>
-          <AccordionDetails>
-            {costFormFields.length > 0 && _renderFormFields(costFormFields)}
-          </AccordionDetails>
+          <AccordionDetails>{costSubForm}</AccordionDetails>
         </Accordion>
         {showSubmit && _renderSubmitButtons()}
       </form>
