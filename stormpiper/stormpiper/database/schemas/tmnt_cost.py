@@ -19,10 +19,10 @@ class TMNTFacilityCost(Base, MutableTrackedTable):
     replacement_cost = Column(Float)
 
     # globals
-    discount_rate= Column(Float)
-    inflation_rate= Column(Float)
-    planning_horizon_yrs= Column(Float)
-    cost_basis_year= Column(Float)
+    discount_rate = Column(Float)
+    inflation_rate = Column(Float)
+    planning_horizon_yrs = Column(Float)
+    cost_basis_year = Column(Float)
 
     # cost results
     present_value_capital_cost = Column(Float)
