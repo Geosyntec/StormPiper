@@ -165,8 +165,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
             fields.required.includes(k) || costFields?.required?.includes(k),
           value: props.values
             ? props.values[k]
-              ? // && props.values.facility_type === props.currentFacility
-                props.values[k]
+              ? props.values[k]
               : v.default
               ? v.default
               : v.type === "string"
