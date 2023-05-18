@@ -69,7 +69,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
     reset,
     getValues,
     trigger,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm();
   const [isSimple, setIsSimple] = useState(() => {
     if (typeof props.values?.facility_type === "string") {
@@ -124,19 +124,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
     firstRender.current = false;
 
     isSimple ? setFields(props.simpleFields) : setFields(props.allFields);
-
-    const formFields = _buildFields();
-
-    const wqFormFields = formFields.filter((k) =>
-      Object.keys(
-        isSimple ? props.simpleFields.properties : props.allFields.properties
-      ).includes(k.fieldID)
-    );
-    const costFormFields = formFields.filter((k) =>
-      Object.keys(costFields?.properties || {}).includes(k.fieldID)
-    );
-    setWQSubForm(_renderFormFields(wqFormFields));
-    setCostSubForm(_renderFormFields(costFormFields));
+    setFormFields(_buildFields());
   }, [isSimple, fields, props.values, props.currentFacility, formDisabled]);
 
   function _buildFields(): {
@@ -300,21 +288,22 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
         required: boolean;
         value: string | number;
       }) => {
+        const { ref: inputRef, ...inputProps } = register(formField.fieldID, {
+          required: formField.required ? "This field is required" : false,
+        });
         return (
           <Box key={formField.fieldID}>
             {formField.fieldID === "facility_type" ? (
               <TextField
                 fullWidth
+                inputRef={inputRef}
                 key={formField.fieldID}
                 variant="outlined"
-                {...register(formField.fieldID, {
-                  required: formField.required
-                    ? "This field is required"
-                    : false,
-                })}
                 label={formField.label}
                 select
                 value={props.currentFacility.replace("_simple", "")}
+                required={formField.required}
+                {...inputProps}
                 onChange={(e) => {
                   reset(_createDefaults(isSimple, false));
                   props.facilityChangeHandler(
@@ -341,17 +330,14 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
             ) : (
               <TextField
                 fullWidth
+                inputRef={inputRef}
                 id={formField.fieldID}
                 variant="outlined"
-                {...register(formField.fieldID, {
-                  required: formField.required
-                    ? "This field is required"
-                    : false,
-                })}
                 type={formField.type}
                 defaultValue={formField.value}
                 required={formField.required}
                 label={formField.label}
+                {...inputProps}
                 inputProps={{
                   step: formField.type === "number" ? 0.01 : null,
                 }}
@@ -431,6 +417,15 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
   const handleModalOpen = () => setModalOpen(true);
   const handleModalClose = () => setModalOpen(false);
 
+  const wqFormFields = formFields.filter((k) =>
+    Object.keys(
+      isSimple ? props.simpleFields.properties : props.allFields.properties
+    ).includes(k.fieldID)
+  );
+  const costFormFields = formFields.filter((k) =>
+    Object.keys(costFields?.properties || {}).includes(k.fieldID)
+  );
+
   return (
     <Box>
       {showSubmit && (
@@ -453,7 +448,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
       >
         <Typography variant="subtitle2">Water Quality Parameters</Typography>
         {props.simpleFields && _renderSimpleCheckDiv()}
-        {wqSubForm}
+        {_renderFormFields(wqFormFields)}
         <Accordion
           sx={{ my: 2 }}
           disabled={formDisabled}
@@ -468,7 +463,8 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
           </AccordionSummary>
           <AccordionDetails>
             <>
-              {costSubForm}
+              {_renderFormFields(costFormFields)}
+
               <Button onClick={handleModalOpen}>
                 King County Cost Estimator Tool
               </Button>
