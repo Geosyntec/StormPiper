@@ -47,7 +47,7 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
           console.log("BMP form valid?: ", isFormValid);
           const isFeatureDrawn =
             facility?.features.length > 0 &&
-            facility?.features[0].geometry.coordinates.length > 0;
+            facility?.features[0]?.geometry?.coordinates?.length > 0;
           console.log("BMP drawn?:", isFeatureDrawn);
           return isFormValid && isFeatureDrawn;
         },
@@ -113,6 +113,7 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
         {
           ...facility?.features[0],
           properties: data,
+          type: "Feature",
         },
       ],
     });

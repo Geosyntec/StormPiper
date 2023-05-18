@@ -43,9 +43,20 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
   const [showFacilityEditTabs, setShowFacilityEditTabs] = useState(false);
   const [mapMode, setMapMode] = useState("default");
   const [scenarioEditMode, setScenarioEditMode] = useState(false);
+  const [cachedScenario, setCachedScenario] = useState({});
   const infoRef = useRef(null);
   const delinRef = useRef(null);
   const facilityRef = useRef(null);
+  const [facility, setFacility] = useState({
+    type: "FeatureCollection",
+    features: [],
+  });
+  const [delineation, setDelineation] = useState({
+    type: "FeatureCollection",
+    features: [],
+  });
+
+  const [lastCalculatedAt, setLastCalculatedAt] = useState(null);
 
   const navigate = useNavigate();
   const buttonList = [
@@ -62,17 +73,53 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
 
   useEffect(() => {
     getDataByID(params.id).then((res) => {
-      setScenarioObject(res);
-      if (res.input.delineation_collection) {
-        console.log("Found delineation");
-        setDelineation(res.input.delineation_collection);
-      }
-      if (res.input.tmnt_facility_collection) {
-        console.log("Found facility: ", res.input.tmnt_facility_collection);
-        setFacility(res.input.tmnt_facility_collection);
-      }
+      buildScenario(res);
+      setCachedScenario(res);
+      setLastCalculatedAt(dateFormatter(res?.result_time_updated));
     });
   }, [params.id, resultsSuccessDisplay]);
+
+  const dateFormatter = (dtValue) => {
+    if (dtValue == null) {
+      return "--";
+    }
+    const valueDate = new Date(dtValue);
+    const valueLocale = valueDate.toLocaleString("en-US", {
+      timeZoneName: "short",
+    });
+    const [date, time, ..._] = valueLocale.split(",");
+    return `${date.trim()} at ${time.trim()}`;
+  };
+
+  function buildScenario(obj) {
+    setScenarioObject(obj);
+    if (obj?.input?.delineation_collection) {
+      console.log("Found delineation");
+      setDelineation(obj.input.delineation_collection);
+    } else {
+      setDelineation({
+        type: "FeatureCollection",
+        features: [],
+      });
+    }
+    if (obj?.input?.tmnt_facility_collection) {
+      console.log("Found facility: ", obj.input.tmnt_facility_collection);
+      setFacility(obj.input.tmnt_facility_collection);
+    } else {
+      setFacility({
+        type: "FeatureCollection",
+        features: [],
+      });
+    }
+  }
+
+  function resetScenario() {
+    setFacility(null);
+    setDelineation(null);
+    buildScenario(cachedScenario);
+    setMapMode("default");
+    setScenarioEditMode(false);
+  }
 
   function updateScenario(field, value) {
     let scenarioToUpdate = { ...scenarioObject };
@@ -91,21 +138,13 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
     setScenarioObject(scenarioToUpdate);
   }
 
-  const [facility, setFacility] = useState({
-    type: "FeatureCollection",
-    features: [],
-  });
-  const [delineation, setDelineation] = useState({
-    type: "FeatureCollection",
-    features: [],
-  });
-
   function updateFacility(facility) {
-    if (facility.features[0] && delineation.features[0]) {
+    console.log("facility updated: ", facility);
+    if (facility?.features[0] && delineation?.features[0]) {
       let delineationToUpdate = { ...delineation };
       delineation.features[0].properties["relid"] =
         facility.features[0].properties["node_id"];
-      console.log("facility updated: ", facility);
+
       setFacility(facility);
       setScenarioObject({
         ...scenarioObject,
@@ -141,11 +180,11 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
     let errMsg = null;
     let infoFormValid = await infoRef.current?.triggerValidation();
     let facilityFormValid =
-      facility.features.length > 0
+      facility?.features?.length > 0
         ? await facilityRef.current?.triggerValidation(facility)
         : true;
     let delinFormValid =
-      delineation.features.length > 0
+      delineation?.features?.length > 0
         ? await delinRef.current?.triggerValidation(delineation)
         : true;
     if (!infoFormValid || !facilityFormValid || !delinFormValid) {
@@ -160,6 +199,7 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
       submitScenario();
       setScenarioEditMode(false);
     }
+    setMapMode("default");
   }
 
   function submitScenario() {
@@ -338,7 +378,10 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
                 scenario={scenarioObject}
                 scenarioSetter={updateScenario}
                 ref={infoRef}
-                formDisabled={!scenarioEditMode}
+                formDisabled={
+                  !scenarioEditMode ||
+                  ["editFacility", "editDelineation"].includes(mapMode)
+                }
               />
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Typography variant="h6">Facility Details</Typography>
@@ -348,21 +391,31 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
                     onClick={() => {
                       setShowDelinEditTabs(false);
                       setShowFacilityEditTabs(true);
-                      setMapMode("default");
+                      if (facility?.features?.length > 0) {
+                        setMapMode("editFacility");
+                      } else {
+                        setMapMode("drawFacility");
+                      }
                     }}
-                    disabled={showFacilityEditTabs}
+                    disabled={[
+                      "drawFacility",
+                      "editFacility",
+                      "editDelineation",
+                      "drawDelineation",
+                    ].includes(mapMode)}
                   >
-                    {facility.features.length > 0 ? "Edit" : "Add"} Facility
+                    {facility?.features?.length > 0 ? "Edit" : "Add"} Facility
+                    Location
                   </Button>
                 )}
               </Box>
               {facility?.features?.length > 0 ? (
                 <Box>
                   <ScenarioBMPForm
-                    facility={facility.features.length > 0 && facility}
+                    facility={facility?.features?.length > 0 && facility}
                     facilitySetter={updateFacility}
                     ref={facilityRef}
-                    formDisabled={!scenarioEditMode}
+                    formDisabled={!scenarioEditMode || mapMode != "default"}
                   />
                 </Box>
               ) : (
@@ -380,10 +433,21 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
                     onClick={() => {
                       setShowFacilityEditTabs(false);
                       setShowDelinEditTabs(true);
-                      setMapMode("default");
+                      if (delineation?.features?.length > 0) {
+                        setMapMode("editDelineation");
+                      } else {
+                        setMapMode("drawDelineation");
+                      }
                     }}
+                    disabled={[
+                      "editFacility",
+                      "drawFacility",
+                      "editDelineation",
+                      "drawDelineation",
+                    ].includes(mapMode)}
                   >
-                    {facility.features.length > 0 ? "Edit" : "Add"} Delineation
+                    {delineation?.features?.length > 0 ? "Edit" : "Add"}{" "}
+                    Delineation Location
                   </Button>
                 )}
               </Box>
@@ -393,7 +457,7 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
                     delineationSetter={updateDelineation}
                     delineation={delineation}
                     ref={delinRef}
-                    formDisabled={!scenarioEditMode}
+                    formDisabled={!scenarioEditMode || mapMode != "default"}
                   />
                 </Box>
               ) : (
@@ -403,29 +467,33 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
               )}
 
               <br></br>
-              <Button
-                onClick={initiateScenarioSolve}
-                sx={{ alignSelf: "flex-start", paddingLeft: 0 }}
-                disabled={resultsPollInterval || scenarioEditMode}
-              >
-                Calculate Scenario WQ Results
-                {resultsPollInterval && (
-                  <CircularProgress
-                    style={{ margin: "0.1em", alignSelf: "center" }}
-                    size="1em"
-                  />
-                )}
-              </Button>
-              <br></br>
               {scenarioEditMode && (
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    saveScenario();
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    width: "100%",
                   }}
                 >
-                  Save
-                </Button>
+                  <Button
+                    variant="contained"
+                    onClick={() => {
+                      saveScenario();
+                    }}
+                  >
+                    Save
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={() => {
+                      resetScenario();
+                      setShowFacilityEditTabs(false);
+                      setShowDelinEditTabs(false);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </Box>
               )}
             </Box>
           </Card>
@@ -446,8 +514,31 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
               delineationSetter={updateDelineation}
               showDelinEditTabs={showDelinEditTabs}
               showFacilityEditTabs={showFacilityEditTabs}
+              editorMode={true}
               viewState={viewState}
             />
+          </Card>
+          <Card sx={{ display: "flex", flexDirection: "column", my: 2, p: 3 }}>
+            <Typography>
+              Results Last Updated At: <em>{lastCalculatedAt}</em>
+            </Typography>
+            <Button
+              onClick={initiateScenarioSolve}
+              sx={{ alignSelf: "flex-start", paddingLeft: 0 }}
+              disabled={
+                resultsPollInterval ||
+                scenarioEditMode ||
+                ["editFacility", "editDelineation"].includes(mapMode)
+              }
+            >
+              Calculate Scenario WQ Results
+              {resultsPollInterval && (
+                <CircularProgress
+                  style={{ margin: "0.1em", alignSelf: "center" }}
+                  size="1em"
+                />
+              )}
+            </Button>
           </Card>
         </HalfSpan>
         <FullSpan>

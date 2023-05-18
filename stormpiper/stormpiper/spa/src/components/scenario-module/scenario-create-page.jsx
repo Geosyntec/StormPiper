@@ -138,7 +138,7 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
             delineationSetter={updateDelineation}
             delineationDrawToggler={() => {
               console.log("inside delin draw toggler");
-              setMapMode("default");
+              setMapMode("drawDelineation");
               setShowDelineationEditTabs(true);
               setShowFacilityEditTabs(false);
             }}
@@ -146,7 +146,7 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
             facilitySetter={updateFacility}
             facilityDrawToggler={() => {
               console.log("inside facility draw toggler");
-              setMapMode("default");
+              setMapMode("drawFacility");
               setShowDelineationEditTabs(false);
               setShowFacilityEditTabs(true);
             }}
@@ -173,6 +173,7 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
             delineationSetter={updateDelineation}
             showDelinEditTabs={showdelineationEditTabs}
             showFacilityEditTabs={showFacilityEditTabs}
+            editorMode={false}
           />
         </Card>
       </HalfSpan>
