@@ -364,7 +364,10 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
       }
     );
     Object.values(formFields).map((formField) => {
-      setValue(formField.fieldID, formField.value);
+      setValue(
+        formField.fieldID,
+        getValues(formField.fieldID) || formField.value
+      );
     });
 
     return fieldDiv;
@@ -475,13 +478,13 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
       </form>
 
       <KCBMPDetailModal
-        initialBMPType={props.values.facility_type}
+        initialBMPType={props.currentFacility}
         modalOpen={modalOpen}
         handleModalClose={handleModalClose}
         handleApply={function (res) {
-          setValue("capital_cost", res.capital_cost);
+          setValue("capital_cost", Math.round(res.capital_cost));
           setValue("capital_cost_basis_year", 2023);
-          setValue("om_cost_per_yr", res.om_cost_per_yr);
+          setValue("om_cost_per_yr", Math.round(res.om_cost_per_yr));
           setValue("om_cost_basis_year", 2023);
         }}
       />
