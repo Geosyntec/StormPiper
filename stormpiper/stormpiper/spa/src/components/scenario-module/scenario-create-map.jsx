@@ -13,9 +13,8 @@ import {
   delineations,
   invisiblePoints,
 } from "../../assets/geojson/coreLayers";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import ScenarioFeatureEditTab from "./scenario-feature-edit-tab";
-import { useEffect } from "react";
 
 export default function ScenarioCreateMap({
   mapMode,
@@ -26,6 +25,7 @@ export default function ScenarioCreateMap({
   delineationSetter,
   showDelinEditTabs,
   showFacilityEditTabs,
+  editorMode,
   ...props
 }) {
   console.log("Rendering facility layer: ", facility);
@@ -42,23 +42,29 @@ export default function ScenarioCreateMap({
     ...invisiblePoints.props,
     id: "userPoints",
     label: "User Points",
-    data: facility,
+    data: facility || {
+      type: "FeatureCollection",
+      features: [],
+    },
     selectedFeatureIndexes: facility?.features?.length > 0 ? [0] : [],
     mode: facilityEditMode,
     onEdit: ({ updatedData, editType }) => {
       console.log("update: ", updatedData);
-      if (editType === "addFeature" && updatedData.features.length > 1) {
-        facilitySetter({
-          type: "FeatureCollection",
-          features: [
-            {
-              ...updatedData.features[0],
-              geometry: updatedData.features[1].geometry,
-            },
-          ],
-        });
-      } else {
-        facilitySetter(updatedData);
+      if (editType === "addFeature") {
+        if (updatedData.features.length > 1) {
+          facilitySetter({
+            type: "FeatureCollection",
+            features: [
+              {
+                ...updatedData.features[0],
+                geometry: updatedData.features[1].geometry,
+                type: "Feature",
+              },
+            ],
+          });
+        } else {
+          facilitySetter(updatedData);
+        }
       }
     },
   });
@@ -74,12 +80,14 @@ export default function ScenarioCreateMap({
     ...delineations.props,
     id: "userDelineations",
     label: "User Delineations",
-    data: delineation,
+    data: delineation || {
+      type: "FeatureCollection",
+      features: [],
+    },
     selectedFeatureIndexes: delineation?.features?.length > 0 ? [0] : [],
     mode: delineationEditMode,
     pickable: true,
     onEdit: ({ updatedData, editType, editContext }) => {
-      console.log("Edit Context: ", editContext);
       if (editType === "addFeature") {
         //When there are no existing features, simply update
         //When there is an existing feature, that must mean that the user entered a delineation name,
@@ -93,7 +101,7 @@ export default function ScenarioCreateMap({
               {
                 geometry: { ...updatedData.features[1].geometry },
                 properties: { ...updatedData.features[0].properties },
-                type: "Polygon",
+                type: "Feature",
               },
             ],
           });
@@ -106,47 +114,78 @@ export default function ScenarioCreateMap({
     },
   });
 
+  const isEventListenerAdded = useRef(false);
+
   useEffect(() => {
     console.log("Setting mapMode:", mapMode);
-    switch (mapMode) {
-      case "drawFacility":
-        toggleFacilityDrawMode();
-        break;
-      case "editFacility":
-        toggleFacilityEditMode();
-        break;
-      case "drawDelineation":
-        toggleDelineationDrawMode();
-        break;
-      case "editDelineation":
-        toggleDelineationEditMode();
-        break;
-      default:
-        toggleViewMode();
-        break;
-    }
+    mapModeHandlers[mapMode]();
   }, [mapMode]);
 
-  function toggleViewMode() {
-    setFacilityEditMode(() => ViewMode);
-    setDelineationEditMode(() => ViewMode);
-  }
-  function toggleFacilityDrawMode() {
-    setFacilityEditMode(() => DrawPointMode);
-    setDelineationEditMode(() => ViewMode);
-  }
-  function toggleDelineationDrawMode() {
-    setFacilityEditMode(() => ViewMode);
-    setDelineationEditMode(() => DrawPolygonMode);
-  }
-  function toggleDelineationEditMode() {
-    setFacilityEditMode(() => ViewMode);
-    setDelineationEditMode(() => ModifyMode);
-  }
-  function toggleFacilityEditMode() {
-    setFacilityEditMode(() => ModifyMode);
-    setDelineationEditMode(() => ViewMode);
-  }
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      console.log("Key pressed: ", e);
+      console.log("Map Mode: ", mapMode);
+      if (e.key === "Escape" && mapMode !== "default") {
+        console.log("Trying to escape!");
+        escPressHandlers[mapMode]();
+      }
+    };
+
+    if (!isEventListenerAdded.current) {
+      window.addEventListener("keydown", handleKeyDown);
+      isEventListenerAdded.current = true;
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      isEventListenerAdded.current = false;
+    };
+  }, [mapMode]);
+
+  const mapModeHandlers = {
+    toggleViewMode: () => {
+      setFacilityEditMode(() => ViewMode);
+      setDelineationEditMode(() => ViewMode);
+    },
+    drawFacility: () => {
+      mapModeHandlers.toggleViewMode();
+      setFacilityEditMode(() => DrawPointMode);
+    },
+    drawDelineation: () => {
+      mapModeHandlers.toggleViewMode();
+      setDelineationEditMode(() => DrawPolygonMode);
+    },
+    editFacility: () => {
+      mapModeHandlers.toggleViewMode();
+      setFacilityEditMode(() => ModifyMode);
+    },
+    editDelineation: () => {
+      mapModeHandlers.toggleViewMode();
+      setDelineationEditMode(() => ModifyMode);
+    },
+    default: () => {
+      mapModeHandlers.toggleViewMode();
+    },
+  };
+
+  const escPressHandlers = {
+    drawFacility: () => {
+      mapModeHandlers.toggleViewMode();
+      setTimeout(mapModeHandlers.drawFacility, 100);
+    },
+    drawDelineation: () => {
+      mapModeHandlers.toggleViewMode();
+      setTimeout(mapModeHandlers.drawDelineation, 100);
+    },
+    editFacility: () => {
+      mapModeHandlers.toggleViewMode();
+      setTimeout(mapModeHandlers.editFacility, 100);
+    },
+    editDelineation: () => {
+      mapModeHandlers.toggleViewMode();
+      setTimeout(mapModeHandlers.editDelineation, 100);
+    },
+  };
 
   return (
     <Box
@@ -157,10 +196,9 @@ export default function ScenarioCreateMap({
         overflowY: "hidden",
       }}
     >
-      {(["DrawPolygonMode2", "ModifyMode2"].includes(
+      {["DrawPolygonMode2", "ModifyMode2"].includes(
         delineationEditMode.name
-      ) ||
-        showDelinEditTabs) && (
+      ) && (
         <Box
           sx={{
             position: "absolute",
@@ -177,11 +215,12 @@ export default function ScenarioCreateMap({
             viewModeToggler={() => setMapMode("default")}
             featureSetter={delineationSetter}
             feature={delineation?.features[0]}
+            startMode={mapMode}
+            showEditConfirm={editorMode}
           />
         </Box>
       )}
-      {(["DrawPolygonMode2", "ModifyMode2"].includes(facilityEditMode.name) ||
-        showFacilityEditTabs) && (
+      {["DrawPointMode2", "ModifyMode2"].includes(facilityEditMode.name) && (
         <Box
           sx={{
             position: "absolute",
@@ -198,6 +237,8 @@ export default function ScenarioCreateMap({
             viewModeToggler={() => setMapMode("default")}
             featureSetter={facilitySetter}
             feature={facility?.features[0]}
+            startMode={mapMode}
+            showEditConfirm={editorMode}
           />
         </Box>
       )}

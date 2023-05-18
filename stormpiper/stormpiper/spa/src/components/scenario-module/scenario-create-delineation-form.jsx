@@ -50,7 +50,7 @@ export const ScenarioDelineationForm = forwardRef(
             console.log("delin form errors: ", Object.keys(errors));
             const doesPolygonExist =
               delineation?.features.length > 0 &&
-              delineation.features[0].geometry.coordinates.length > 0;
+              delineation?.features[0]?.geometry?.coordinates?.length > 0;
             return isFormValid && doesPolygonExist;
           },
 
@@ -82,6 +82,7 @@ export const ScenarioDelineationForm = forwardRef(
               {
                 ...delineation.features[0],
                 properties: { name: e.target.value },
+                type: "Feature",
               },
             ],
           })
@@ -90,6 +91,7 @@ export const ScenarioDelineationForm = forwardRef(
             features: [
               {
                 properties: { name: e.target.value },
+                type: "Feature",
               },
             ],
           });
@@ -137,7 +139,11 @@ export const ScenarioDelineationForm = forwardRef(
       delineationSetter({
         type: "FeatureCollection",
         features: [
-          { ...delineation.features[0], properties: { name: data.name } },
+          {
+            ...delineation.features[0],
+            properties: { name: data.name },
+            type: "Feature",
+          },
         ],
       });
     }

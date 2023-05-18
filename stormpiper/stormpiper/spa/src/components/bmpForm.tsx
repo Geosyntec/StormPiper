@@ -137,7 +137,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
     );
     setWQSubForm(_renderFormFields(wqFormFields));
     setCostSubForm(_renderFormFields(costFormFields));
-  }, [isSimple, fields, props.values, props.currentFacility]);
+  }, [isSimple, fields, props.values, props.currentFacility, formDisabled]);
 
   function _buildFields(): {
     fieldID: string;

@@ -40,18 +40,6 @@ const prepConcPctRemovedData = (x) => {
   return x;
 };
 
-const dateFormatter = (dtValue) => {
-  if (dtValue == null) {
-    return "--";
-  }
-  const valueDate = new Date(dtValue);
-  const valueLocale = valueDate.toLocaleString("en-US", {
-    timeZoneName: "short",
-  });
-  const [date, time, ..._] = valueLocale.split(",");
-  return `${date.trim()} at ${time.trim()}`;
-};
-
 export function ScenarioBMPDetailResults({ data }) {
   let rows = [];
 
@@ -68,14 +56,8 @@ export function ScenarioBMPDetailResults({ data }) {
     rows = bmp_results;
   }
 
-  const lastCalculatedAt = data?.result_time_updated;
-  const formattedLastCalculatedAt = dateFormatter(lastCalculatedAt);
-
   return (
     <Card>
-      <Typography>
-        Last updated at: <em>{formattedLastCalculatedAt}</em>
-      </Typography>
       <Box>
         {node_id == null ? (
           <Typography>No Treatment BMP included in Scenario.</Typography>
