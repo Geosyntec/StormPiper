@@ -47,6 +47,7 @@ export const ScenarioInfoForm = forwardRef(function ScenarioInfoForm(
   ];
 
   useEffect(() => {
+    console.log("reseting info form: ", scenario);
     reset({
       name: scenario?.name || "",
       purpose: scenario?.info?.purpose || "",
@@ -70,21 +71,24 @@ export const ScenarioInfoForm = forwardRef(function ScenarioInfoForm(
 
   function _renderFormFields() {
     let fieldDiv = Object.values(fields).map((formField) => {
+      const { ref: inputRef, ...inputProps } = register(formField.fieldID, {
+        required: formField.required ? "This field is required" : false,
+      });
       return (
         <Box key={formField.fieldID} sx={{ width: "100%" }}>
           {
             <TextField
-              {...register(formField.fieldID, { ...formField })}
+              inputRef={inputRef}
               key={formField.fieldID}
               label={formField.label}
               type={formField.type}
-              value={formField.defaultValue}
+              defaultValue={formField.defaultValue}
               required={formField.required}
               margin="dense"
+              {...inputProps}
               onChange={(e) => {
                 scenarioSetter(formField.fieldID, e.target.value);
               }}
-              {...formField.inputProps}
               fullWidth
               disabled={disabled}
               InputLabelProps={{

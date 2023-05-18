@@ -100,33 +100,35 @@ export const ScenarioDelineationForm = forwardRef(
     function _renderFormFields() {
       console.log("Building delin form fields: ", fields);
       let fieldDiv = Object.values(fields).map((formField) => {
+        const { ref: inputRef, ...inputProps } = register(formField.fieldID, {
+          required: formField.required ? "This field is required" : false,
+        });
         return (
           <Box key={formField.fieldID}>
             {
               <TextField
-                {...register(formField.fieldID, {
-                  required: formField.required,
-                })}
+                inputRef={inputRef}
                 label={formField.label}
                 InputLabelProps={{
                   shrink: true,
                 }}
+                required={formField.required}
                 type={formField.type}
                 defaultValue={formField.value}
-                required={formField.required}
+                fullWidth
+                disabled={disabled}
+                {...inputProps}
                 onChange={(e) => {
                   setDelineationName(e);
                 }}
-                fullWidth
-                disabled={disabled}
               />
             }
-            {errors[formField.name] && (
+            {errors[formField.fieldID] && (
               <Typography
                 variant="caption"
                 sx={{ color: (theme) => theme.palette.warning.main }}
               >
-                {errors[formField.name]?.message}
+                {errors[formField.fieldID]?.message}
               </Typography>
             )}
           </Box>
