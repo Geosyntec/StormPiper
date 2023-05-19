@@ -452,11 +452,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
         <Typography variant="subtitle2">Water Quality Parameters</Typography>
         {props.simpleFields && _renderSimpleCheckDiv()}
         {_renderFormFields(wqFormFields)}
-        <Accordion
-          sx={{ my: 2 }}
-          disabled={formDisabled}
-          onClick={() => setIsTouched(true)}
-        >
+        <Accordion sx={{ my: 2 }} onClick={() => setIsTouched(true)}>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
@@ -487,6 +483,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
           setValue("om_cost_per_yr", Math.round(res.om_cost_per_yr));
           setValue("om_cost_basis_year", 2023);
         }}
+        disableApply={formDisabled}
       />
     </Box>
   );
