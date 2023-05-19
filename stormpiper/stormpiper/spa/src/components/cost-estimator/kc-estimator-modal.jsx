@@ -8,6 +8,7 @@ export function KCBMPDetailModal({
   handleModalClose,
   handleApply,
   initialBMPType,
+  disableApply,
 }) {
   const style = {
     position: "absolute",
@@ -61,7 +62,12 @@ export function KCBMPDetailModal({
           <Button onClick={handleModalClose} variant="outlined" color="inherit">
             Close
           </Button>
-          <Button onClick={_handleApply} variant="outlined" color="primary">
+          <Button
+            onClick={_handleApply}
+            variant="outlined"
+            color="primary"
+            disabled={disableApply}
+          >
             Apply to BMP Form
           </Button>
         </Box>
