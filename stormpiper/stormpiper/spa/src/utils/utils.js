@@ -54,7 +54,7 @@ export function pick(obj, ...args) {
   return { ...args.reduce((res, key) => ({ ...res, [key]: obj[key] }), {}) };
 }
 
-export function dateFormatter(dtValue) => {
+export function dateFormatter(dtValue) {
   if (dtValue == null) {
     return "--";
   }
@@ -64,4 +64,4 @@ export function dateFormatter(dtValue) => {
   });
   const [date, time, ..._] = valueLocale.split(",");
   return `${date.trim()} at ${time.trim()}`;
-};
+}
