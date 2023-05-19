@@ -63,14 +63,12 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
   }
   function updateDelineation(delineation) {
     console.log("Updating delineation:", delineation);
+    // Check if there is a facility, and then add relid
+    if (facility?.features[0] && delineation?.features.length > 0) {
+      delineation.features[0].properties["relid"] =
+        facility?.features[0].properties["node_id"];
+    }
     setDelineation(delineation);
-    // if (!delineation) {
-    //   //Currently we're not able to clear the delineation without setting it to null, so we need to null it and then set it to an empty Feature Collection
-    //   setDelineation({
-    //     type: "FeatureCollection",
-    //     features: [],
-    //   });
-    // }
     setScenarioObject({
       ...scenarioObject,
       input: {
