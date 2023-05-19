@@ -6,8 +6,6 @@ from geojson_pydantic import FeatureCollection, Point, Polygon
 from nereid.api.api_v1.models.treatment_facility_models import STRUCTURAL_FACILITY_TYPE
 from pydantic import Field
 
-from stormpiper.core.utils import datetime_now
-
 from .base import BaseModel, BaseORM
 from .tmnt_attr import TMNTFacilityPatch
 
@@ -149,7 +147,10 @@ class ScenarioBase(BaseModel):
     name: str | None = "unnamed"
     info: dict | None = Field(
         None,
-        description="Any associated data object to store with the project. Frontend can determine the keys and values of this object.",
+        description=(
+            "Any associated data object to store with the project. "
+            "Frontend can determine the keys and values of this object."
+        ),
     )
     input: ScenarioInput | None = None
 
@@ -165,21 +166,16 @@ class ScenarioPatch(ScenarioBase):
 class ScenarioUpdate(ScenarioPatch):
     updated_by: str | None = None
     input: ScenarioInputUpdate | None = None
-    input_time_updated: datetime | None = Field(default_factory=datetime_now)
+    input_time_updated: datetime | None = None
     loading_hash: str | None = None
     input_hash: str | None = None
     structural_tmnt: list[dict] | None = None
-    result_time_updated: datetime | None = Field(default_factory=datetime_now)
+    result_time_updated: datetime | None = None
     lgu_boundary: dict | None = None
     lgu_load: list[dict] | None = None
     delin_load: list[dict] | None = None
     graph_edge: list[dict] | None = None
     structural_tmnt_result: list[dict] | None = None
-
-    def __init__(self, **data: Any) -> None:
-        super().__init__(**data)
-        self.__fields_set__.add("input_time_updated")
-        self.__fields_set__.add("result_time_updated")
 
 
 class ScenarioSolve(ScenarioUpdate):
@@ -190,14 +186,10 @@ class ScenarioCreate(ScenarioBase):
     created_by: str | None = None
     updated_by: str | None = None
     input: ScenarioInputUpdate | None = None
-    input_time_updated: datetime | None = Field(default_factory=datetime_now)
+    input_time_updated: datetime | None = None
     loading_hash: str | None = None
     input_hash: str | None = None
     structural_tmnt: list[dict] | None = None
-
-    def __init__(self, **data: Any) -> None:
-        super().__init__(**data)
-        self.__fields_set__.add("input_time_updated")
 
 
 # Properties shared by models stored in DB

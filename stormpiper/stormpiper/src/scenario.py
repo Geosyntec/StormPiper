@@ -7,6 +7,7 @@ import pandas
 import sqlalchemy as sa
 
 from stormpiper.core.config import POCS, settings
+from stormpiper.core.utils import datetime_now
 from stormpiper.database.connection import engine, get_session
 from stormpiper.database.schemas.scenario import Scenario
 from stormpiper.database.utils import orm_to_dict
@@ -157,7 +158,8 @@ def solve_scenario_data(data: dict, force=False, engine=None) -> dict:
     data = maybe_include_cost_effectiveness(data)
 
     if recalculate_loading or recalculate_wq:
-        data.pop("result_time_updated", None)
+        data["result_time_updated"] = datetime_now()
+
     else:
         logger.info("SCENARIO: Inputs are unchanged. Updating changelog only.")
 
