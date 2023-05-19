@@ -57,7 +57,8 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
     features: [],
   });
 
-  const [lastCalculatedAt, setLastCalculatedAt] = useState(null);
+  const [resultsCalculatedAt, setResultsCalculatedAt] = useState(null);
+  const [scenarioUpdatedAt, setScenarioUpdatedAt] = useState(null);
 
   const navigate = useNavigate();
   const buttonList = [
@@ -76,7 +77,11 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
     getDataByID(params.id).then((res) => {
       buildScenario(res);
       setCachedScenario(res);
-      setLastCalculatedAt(dateFormatter(res?.result_time_updated));
+      if (res.structural_tmnt_result || res.delin_load) {
+        //only update our results calculated time when there are new results to report
+        setResultsCalculatedAt(dateFormatter(res?.result_time_updated));
+      }
+      setScenarioUpdatedAt(dateFormatter(res?.input_time_updated));
     });
   }, [params.id, resultsSuccessDisplay]);
 
@@ -354,11 +359,6 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
                 <Button
                   onClick={() => setScenarioEditMode(true)}
                   disabled={scenarioEditMode}
-                  sx={{
-                    "& .MuiInputBase-input.Mui-disabled": {
-                      color: "red",
-                    },
-                  }}
                 >
                   Edit
                 </Button>
@@ -509,7 +509,10 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
           </Card>
           <Card sx={{ display: "flex", flexDirection: "column", my: 2, p: 3 }}>
             <Typography>
-              Results Last Updated At: <em>{lastCalculatedAt}</em>
+              Scenario Details Last Updated At: <em>{scenarioUpdatedAt}</em>
+            </Typography>
+            <Typography>
+              Results Last Updated At: <em>{resultsCalculatedAt || "--"}</em>
             </Typography>
             <Button
               onClick={initiateScenarioSolve}
