@@ -364,12 +364,9 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
       }
     );
     Object.values(formFields).map((formField) => {
-      setValue(
-        formField.fieldID,
-        getValues(formField.fieldID) || formField.value
-      );
+      const valueToSet = getValues(formField.fieldID) || formField.value;
+      setValue(formField.fieldID, valueToSet);
     });
-
     return fieldDiv;
   }
 
@@ -482,6 +479,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
           setValue("capital_cost_basis_year", 2023);
           setValue("om_cost_per_yr", Math.round(res.om_cost_per_yr));
           setValue("om_cost_basis_year", 2023);
+          props.formDataEmitter(getValues());
         }}
         disableApply={formDisabled}
       />
