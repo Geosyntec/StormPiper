@@ -20,7 +20,8 @@ import { ScenarioBMPForm } from "./scenario-bmp-detail-form";
 import { api_fetch } from "../../utils/utils";
 import { ScenarioInfoForm } from "./scenario-create-info-form";
 import CostSummary from "../cost-analysis/cost-summary";
-import { zoomToFeature, dateFormatter } from "../../utils/map_utils";
+import { zoomToFeature } from "../../utils/map_utils";
+import { dateFormatter } from "../../utils/utils";
 
 async function getDataByID(id) {
   const response = await api_fetch(`/api/rest/scenario/${id}`);

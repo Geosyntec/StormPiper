@@ -13,7 +13,7 @@ import {
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Tooltip, Typography, Link as ATag } from "@mui/material";
-import { api_fetch, dateFormatter } from "../../utils/utils";
+import { api_fetch } from "../../utils/utils";
 import { ConfirmDeleteModal } from "../base/confirm-delete-modal";
 
 // https://mui.com/x/react-data-grid/row-height/#dynamic-row-height
@@ -127,6 +127,18 @@ export function ScenarioInfoTable({ data, dataRefresher }) {
     return (
       <div style={{ whiteSpace: "pre-line" }}>{cellValues.formattedValue}</div>
     );
+  };
+
+  const dateFormatter = (params) => {
+    if (params.value == null) {
+      return "";
+    }
+    const valueDate = new Date(params.value);
+    const valueLocale = valueDate.toLocaleString("en-US", {
+      timeZoneName: "short",
+    });
+    const [date, time, ..._] = valueLocale.split(",");
+    return `${date.trim()}\n${time.trim()}`;
   };
 
   const columns = [
