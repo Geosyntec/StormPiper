@@ -53,3 +53,15 @@ export function colorToList(specifier, alpha) {
 export function pick(obj, ...args) {
   return { ...args.reduce((res, key) => ({ ...res, [key]: obj[key] }), {}) };
 }
+
+export function dateFormatter(dtValue) => {
+  if (dtValue == null) {
+    return "--";
+  }
+  const valueDate = new Date(dtValue);
+  const valueLocale = valueDate.toLocaleString("en-US", {
+    timeZoneName: "short",
+  });
+  const [date, time, ..._] = valueLocale.split(",");
+  return `${date.trim()} at ${time.trim()}`;
+};
