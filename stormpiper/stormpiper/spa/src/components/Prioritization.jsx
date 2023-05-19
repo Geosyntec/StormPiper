@@ -216,11 +216,6 @@ function Prioritization({ setDrawerButtonList }) {
       }
     )
       .then((resp) => {
-        // if(resp.status===200){
-        //   setResultSuccess(true)
-        // }else if(resp.status===422){
-        //   setResultError(true)
-        // }
         return resp.json();
       })
       .then((resp) => {
@@ -343,9 +338,6 @@ function Prioritization({ setDrawerButtonList }) {
     var exportedFilename = fileTitle + ".csv" || "export.csv";
 
     var blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    // if (navigator.msSaveBlob) { // IE 10+
-    //     navigator.msSaveBlob(blob, exportedFilename);
-    // } else {
     var link = document.createElement("a");
     if (link.download !== undefined) {
       // feature detection
@@ -358,7 +350,6 @@ function Prioritization({ setDrawerButtonList }) {
       link.click();
       document.body.removeChild(link);
     }
-    // }
   }
 
   async function exportScoringResults() {

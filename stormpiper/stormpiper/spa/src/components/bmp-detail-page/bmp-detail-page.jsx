@@ -92,20 +92,6 @@ export default function BMPDetailPage() {
         </Card>
       </HalfSpan>
       <FullSpan>
-        <Card
-          sx={{
-            // padding: 3,
-            display: "flex",
-            height: "100%",
-            minHeight: "200px",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          delin editor placeholder
-        </Card>
-      </FullSpan>
-      <FullSpan>
         <BMPDetailResults />
       </FullSpan>
     </TwoColGrid>

@@ -164,7 +164,6 @@ function DeckGLMap({
       <StaticMap
         reuseMaps
         mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
-        // mapStyle={baseLayerStyles[0].styleURL}
         mapStyle={
           baseLayerStyles[props.baseLayer]?.styleURL ||
           baseLayerStyles[0].styleURL

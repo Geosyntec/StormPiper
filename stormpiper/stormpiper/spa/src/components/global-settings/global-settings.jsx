@@ -301,7 +301,6 @@ export default function CostSettingsDataGrid() {
         slotProps={{
           footer: { setRows, setRowModesModel },
         }}
-        // getEstimatedRowHeight={() => 200}
       />
     </>
   );

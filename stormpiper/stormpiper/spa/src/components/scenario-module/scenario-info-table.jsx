@@ -255,7 +255,6 @@ export function ScenarioInfoTable({ data, dataRefresher }) {
               icon={<EditIcon />}
               label="Edit"
               className="textPrimary"
-              // onClick={handleEditClick(id)}
               color="inherit"
             />
           </Tooltip>,

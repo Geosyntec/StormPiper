@@ -14,7 +14,6 @@ export default function AllScenariosMap({ scenarios, viewState }) {
 
   useEffect(async () => {
     const layers = [];
-    // console.log("Scenarios: ", allScenarios);
     layers.push(buildDelineationLayer(scenarios));
     layers.push(buildFacilityLayer(scenarios));
     setLayers(layers);
@@ -88,7 +87,6 @@ export default function AllScenariosMap({ scenarios, viewState }) {
           id="inset-map"
           layers={layers}
           viewState={viewState}
-          // zoomFeature={{ feature: zoomFeature }}
         ></DeckGLMap>
       }
     </Box>

@@ -1,195 +1,12 @@
-// import { COORDINATE_SYSTEM } from "@deck.gl/core";
 import { GeoJsonLayer, BitmapLayer } from "@deck.gl/layers";
 import { TileLayer } from "@deck.gl/geo-layers";
 
 import { locationIconUrl } from "../icons";
 import { urlPrefix, Authorization, colorToList } from "../../utils/utils";
 
-// import { Matrix4 } from "math.gl";
-/*
-const wetlands = {
-  layer: GeoJsonLayer,
-  getData: () => vectorData.wetlands,
-  props: {
-    id: "wetlands",
-    label: "Wetlands",
-    getPointRadius: 10,
-    getFillColor: [160, 160, 180, 200],
-    getLineColor: [160, 160, 180, 200],
-    getDashArray: (f) => [20, 0],
-    getLineWidth: (f) => 1,
-    getElevation: (f) => 500,
-    lineWidthScale: 10,
-    lineWidthMinPixels: 1,
-    pickable: true,
-    dashJustified: true,
-    dashGapPickable: true,
-  },
-};
-const capitalProjectStreets = {
-  layer: GeoJsonLayer,
-  getData: () => vectorData.capitalProjectsStreets,
-  props: {
-    id: "capitalProjectStreets",
-    label: "Capital Project Streets",
-    getPointRadius: 10,
-    getFillColor: [160, 160, 180, 200],
-    getLineColor: [160, 160, 180, 200],
-    getDashArray: (f) => [20, 0],
-    getLineWidth: (f) => 1,
-    getElevation: (f) => 500,
-    lineWidthScale: 10,
-    lineWidthMinPixels: 1,
-    pickable: true,
-    dashJustified: true,
-    dashGapPickable: true,
-  },
-};
-const activeSWMain = {
-  layer: GeoJsonLayer,
-  getData: () => vectorData.activeSWMain,
-  props: {
-    id: "activeSWMain",
-    label: "Active Surfacewater Main Lines",
-    getPointRadius: 10,
-    getFillColor: [160, 160, 180, 200],
-    getLineColor: [160, 160, 180, 200],
-    getDashArray: (f) => [20, 0],
-    getLineWidth: (f) => {
-      return parseInt(f.properties["DIAMETER"]) / 48;
-    },
-    getElevation: (f) => 500,
-    lineWidthScale: 10,
-    lineWidthMinPixels: 1,
-    pickable: true,
-    dashJustified: true,
-    dashGapPickable: true,
-  },
-};
-const proposedSWFacility = {
-  layer: GeoJsonLayer,
-  getData: () => vectorData.proposedSWFacility,
-  props: {
-    id: "proposedSWFacility",
-    label: "Proposed Surface Water Facilities",
-    getPointRadius: 20,
-    getFillColor: [160, 160, 180, 200],
-    getLineColor: [160, 160, 180, 200],
-    getDashArray: (f) => [20, 0],
-    getLineWidth: (f) => 1,
-    getElevation: (f) => 500,
-    lineWidthScale: 2,
-    lineWidthMinPixels: 1,
-    pickable: true,
-    dashJustified: true,
-    dashGapPickable: true,
-  },
-};
-const activeWWMain = {
-  layer: GeoJsonLayer,
-  getData: () => vectorData.activeWWMain,
-  props: {
-    id: "activeWWMain",
-    label: "Active Wastewater Main Lines",
-    getPointRadius: 10,
-    getFillColor: [160, 160, 180, 200],
-    getLineColor: [160, 160, 180, 200],
-    getDashArray: (f) => [20, 0],
-    getLineWidth: (f) => 1,
-    getElevation: (f) => 500,
-    lineWidthScale: 10,
-    lineWidthMinPixels: 1,
-    pickable: true,
-    dashJustified: true,
-    dashGapPickable: true,
-  },
-};
-
-// const esAll = {
-//   layer: GeoJsonLayer,
-//   data: "https://storage.googleapis.com/uwt-public/geojson/es_all.geojson",
-//   props: {
-//     id: "esAll",
-//     label: "Test ES Cloud Layer",
-//     getPointRadius: 10,
-//     getFillColor: [160, 160, 180, 200],
-//     getLineColor: [160, 160, 180, 200],
-//     getDashArray: (f) => [20, 0],
-//     getLineWidth: (f) => 1,
-//     getElevation: (f) => 500,
-//     lineWidthScale: 10,
-//     lineWidthMinPixels: 1,
-//     pickable: true,
-//     dashJustified: true,
-//     dashGapPickable: true,
-//   },
-// };
-
-const row = {
-  layer: GeoJsonLayer,
-  getData: () => vectorData.row,
-  props: {
-    id: "row",
-    label: "Right of Way",
-    getPointRadius: 10,
-    getFillColor: [160, 160, 180, 200],
-    getLineColor: [160, 160, 180, 200],
-    getDashArray: (f) => [20, 0],
-    getLineWidth: (f) => 1,
-    getElevation: (f) => 500,
-    lineWidthScale: 10,
-    lineWidthMinPixels: 1,
-    pickable: true,
-    dashJustified: true,
-    dashGapPickable: true,
-  },
-};
-const equalOpportunityIndex = {
-  layer: GeoJsonLayer,
-  getData: () => vectorData.equalOpportunityIndex,
-  props: {
-    id: "equalOpportunityIndex",
-    label: "Equal Opportunity Index",
-    getPointRadius: 10,
-    getFillColor: [160, 160, 180, 200],
-    getLineColor: [160, 160, 180, 200],
-    getDashArray: (f) => [20, 0],
-    getLineWidth: (f) => 1,
-    getElevation: (f) => 500,
-    lineWidthScale: 10,
-    lineWidthMinPixels: 1,
-    pickable: true,
-    dashJustified: true,
-    dashGapPickable: true,
-  },
-};
-const landUseDesignations = {
-  layer: GeoJsonLayer,
-  getData: () => vectorData.landUseDesignations,
-  props: {
-    id: "landUseDesignations",
-    label: "Land Use Designations",
-    // coordinateSystem: COORDINATE_SYSTEM.METER_OFFSETS,
-    // coordinateOrigin: [-126.8636967, 45.1517825, 0],
-    // modelMatrix: new Matrix4().scale([0.2887,0.3374,1]),
-    getPointRadius: 10,
-    getFillColor: [160, 160, 180, 200],
-    getLineColor: [160, 160, 180, 200],
-    getDashArray: (f) => [20, 0],
-    getLineWidth: (f) => 1,
-    getElevation: (f) => 500,
-    lineWidthScale: 10,
-    lineWidthMinPixels: 1,
-    pickable: true,
-    dashJustified: true,
-    dashGapPickable: true,
-  },
-};
-*/
 export const activeLocalSWFacility = {
   layer: GeoJsonLayer,
   props: {
-    // data:"https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/21/query?where=1%3D1&outFields=*&returnGeometry=true&f=geojson&outSR=4326",
     data: urlPrefix + "/api/rest/tmnt_facility/?f=geojson",
     loadOptions: {
       fetch: {
@@ -199,6 +16,7 @@ export const activeLocalSWFacility = {
       },
     },
     id: "activeSWFacility",
+    featurePKField: "altid",
     label: "Active Surface Water Facilities",
     featureType: "points",
 
@@ -227,7 +45,6 @@ export const activeLocalSWFacility = {
 
     getFillColor: colorToList("steelblue"),
     getLineColor: [51, 51, 51, 200],
-    // getLineWidth: (f) => 1,
     getPointRadius: 6,
     pointRadiusMaxPixels: 20,
     pointRadiusMinPixels: 6,
@@ -242,7 +59,6 @@ export const activeLocalSWFacility = {
 
 export const invisiblePoints = {
   props: {
-    // data:"https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/21/query?where=1%3D1&outFields=*&returnGeometry=true&f=geojson&outSR=4326",
     // --- point attrs -- keep for nebula.gl which cannot show icons apparently
 
     getFillColor: [0, 0, 0, 0],
@@ -259,7 +75,6 @@ export const invisiblePoints = {
 export const delineations = {
   layer: GeoJsonLayer,
   props: {
-    // data:"https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/21/query?where=1%3D1&outFields=*&returnGeometry=true&f=geojson&outSR=4326",
     data: urlPrefix + "/api/rest/tmnt_delineation/?f=geojson",
     loadOptions: {
       fetch: {
@@ -269,6 +84,7 @@ export const delineations = {
       },
     },
     id: "tmnt_delineations",
+    featurePKField: "altid",
     label: "Active Treatment Facility Upstream Delineations",
     getFillColor: colorToList("steelblue", 0.2),
     defaultFillColor: colorToList("steelblue", 0.2),
@@ -279,7 +95,34 @@ export const delineations = {
     lineWidthScale: 2,
     lineWidthMinPixels: 1,
     pickable: true,
-    // onClick:(info,event)=>console.log(info,event),
+    highlightColor: [42, 213, 232],
+    dashJustified: true,
+    dashGapPickable: true,
+    onByDefault: false,
+  },
+};
+export const subbasins = {
+  layer: GeoJsonLayer,
+  props: {
+    data: urlPrefix + "/api/rest/subbasin/?f=geojson",
+    loadOptions: {
+      fetch: {
+        headers: {
+          Authorization: Authorization,
+        },
+      },
+    },
+    id: "subbasins",
+    featurePKField: "subbasin",
+    label: "Stormwater Subbasins",
+    defaultFillColor: colorToList("forestgreen", 0.2),
+    getLineColor: colorToList("forestgreen", 0.9),
+    getDashArray: (f) => [20, 0],
+    getLineWidth: (f) => 1,
+    getElevation: (f) => 500,
+    lineWidthScale: 2,
+    lineWidthMinPixels: 1,
+    pickable: true,
     highlightColor: [42, 213, 232],
     dashJustified: true,
     dashGapPickable: true,
@@ -289,7 +132,6 @@ export const delineations = {
 
 const activeSWMain = {
   layer: GeoJsonLayer,
-  // getData: () => vectorData.activeSWMain,
   props: {
     data: "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/31/query?where=1%3D1&outFields=*&returnGeometry=true&f=geojson&outSR=4326",
     id: "activeSWMain",
@@ -315,8 +157,6 @@ const tssRaster = {
   props: {
     id: "tssRaster",
     label: "Total Suspended Solids (TSS)",
-    // data: "http://storage.googleapis.com/tnc-data-v1-bucket/TSSViz/{z}/{x}/{y}",
-    // data:"./api/rest/tileserver/tnc_tss_ug_L/{z}/{x}/{y}/{s}",
     data: "/api/rest/tileserver/tnc_tss_ug_L/{z}/{x}/{y}/{s}",
     minZoom: 10,
     maxZoom: 18,
@@ -341,7 +181,6 @@ const landCoverRaster = {
     id: "landCoverRaster",
     label: "Land Cover Category",
     data: "http://storage.googleapis.com/ogd_map_tiles/landCover/{z}/{x}/{y}.png",
-    // data:"./api/rest/tileserver/{{}}/{z}/{x}/{y}/{s}",
     minZoom: 10,
     maxZoom: 18,
     tileSize: 256,
@@ -384,17 +223,9 @@ const clusteredPopRaster = {
 /* eslint-disable quote-props */
 export const layerDict = {
   "Base Imagery": {
-    Raster: [
-      tssRaster,
-      // landCoverRaster,
-      // clusteredPopRaster
-    ],
+    Raster: [tssRaster],
   },
   "Surface Water Infrastructure": {
-    "Active Network": [
-      delineations,
-      // activeSWMain,
-      activeLocalSWFacility,
-    ],
+    "Active Network": [delineations, subbasins, activeLocalSWFacility],
   },
 };

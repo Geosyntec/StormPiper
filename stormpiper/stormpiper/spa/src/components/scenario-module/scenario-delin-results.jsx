@@ -1,20 +1,7 @@
 import { Box, Card, Typography } from "@mui/material";
 
-// import BMPVolumeBalance from "../bmp-detail-page/bmp-results-volume";
-// import BMPLoadReduction from "../bmp-detail-page/bmp-results-load";
-// import BMPConcReduction from "../bmp-detail-page/bmp-results-conc";
-
 import DelineationLoadGenerated from "./scenario-delin-results-load";
 import { dateFormatter } from "../../utils/utils";
-
-// const prepLoadPctRemovedData = (x) => {
-//   const pocs = ["TSS", "TN", "TP", "TCu", "TZn", "PYR", "PHE", "DEHP"];
-//   pocs.forEach((poc) => {
-//     x[`${poc}_load_pct_removed`] =
-//       100 * (x[`${poc}_load_lbs_removed`] / x[`${poc}_load_lbs_inflow`]);
-//   });
-//   return x;
-// };
 
 const prepLoadData = (x) => {
   const lbs_to_grams = ["TCu", "TZn", "PYR", "PHE", "DEHP"];
@@ -71,14 +58,9 @@ export function ScenarioDelineationDetailResults({ data }) {
   if (delinLoadResultWide.length > 0) {
     delinLoadResultWide.forEach((r) => {
       prepLoadData(r);
-      // prepLoadPctRemovedData(r);
-      // prepConcPctRemovedData(r);
     });
     rows = delinLoadResultWide;
   }
-
-  const lastCalculatedAt = data?.result_time_updated;
-  const formattedLastCalculatedAt = dateFormatter(lastCalculatedAt);
 
   return (
     <Card>
@@ -100,10 +82,6 @@ export function ScenarioDelineationDetailResults({ data }) {
                 <Typography>
                   Performance Results for Treatment Facility:{" "}
                   <b>{node_id || "--"}</b>
-                </Typography>
-                <Typography>
-                  Results Last Generated:{" "}
-                  <b>{formattedLastCalculatedAt || "--"}</b>
                 </Typography>
                 <Box sx={{ mt: 4 }}>
                   <DelineationLoadGenerated rows={rows} />

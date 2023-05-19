@@ -177,7 +177,6 @@ export default function KCCostEstimator({ initialBMPType, getResult }) {
                 console.log(e.target.value);
               }
             }
-            // {...formField}
           >
             {formField?.options?.map((option, i) => (
               <MenuItem

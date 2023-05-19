@@ -4,7 +4,6 @@ import { urlPrefix, Authorization } from "../../utils/utils";
 const subbasins = {
   layer: GeoJsonLayer,
   props: {
-    // data:"https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/21/query?where=1%3D1&outFields=*&returnGeometry=true&f=geojson&outSR=4326",
     data:
       urlPrefix +
       "/api/rest/subbasin/?f=geojson&limit=100000&offset=0&epoch=1980s",
@@ -26,7 +25,6 @@ const subbasins = {
     lineWidthScale: 2,
     lineWidthMinPixels: 1,
     pickable: true,
-    // onClick:(info,event)=>console.log(info,event),
     highlightColor: [42, 213, 232],
     dashJustified: true,
     dashGapPickable: true,
@@ -37,10 +35,6 @@ const subbasins = {
 /* eslint-disable quote-props */
 export const layerDict = {
   Subbasins: {
-    Subbasins: [
-      subbasins,
-      // landCoverRaster,
-      // clusteredPopRaster
-    ],
+    Subbasins: [subbasins],
   },
 };
