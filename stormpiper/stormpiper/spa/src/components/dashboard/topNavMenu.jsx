@@ -1,13 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation, Link } from "react-router-dom";
-import List from "@mui/material/List";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
 import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
+import { Button, Typography } from "@mui/material";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
+import Grow from "@mui/material/Grow";
+import Paper from "@mui/material/Paper";
+import Popper from "@mui/material/Popper";
+import MenuList from "@mui/material/MenuList";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import MapIcon from "@mui/icons-material/Map";
@@ -45,7 +48,9 @@ const getTopNavItemIndexFromRoute = () => {
 };
 
 export default function TopNavMenu(props) {
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [open, setOpen] = useState(false);
+  const anchorRef = useRef(null);
+  const prevOpen = useRef(open);
   const [selectedIndex, setSelectedIndex] = useState(0);
   let location = useLocation();
 
@@ -54,75 +59,111 @@ export default function TopNavMenu(props) {
     setSelectedIndex(ix);
   }, [location]);
 
-  const open = Boolean(anchorEl);
-  const handleClickListItem = (event) => {
-    setAnchorEl(event.currentTarget);
+  useEffect(() => {
+    if (prevOpen.current === true && open === false) {
+      anchorRef.current.focus();
+    }
+
+    prevOpen.current = open;
+  }, [open]);
+
+  const handleClose = (event) => {
+    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+      return;
+    }
+
+    setOpen(false);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleToggle = () => {
+    setOpen((prevOpen) => !prevOpen);
   };
+
+  function handleListKeyDown(event) {
+    if (event.key === "Tab") {
+      event.preventDefault();
+      setOpen(false);
+    } else if (event.key === "Escape") {
+      setOpen(false);
+    }
+  }
 
   return (
     <Box {...props}>
-      <List component="nav" aria-label="Top Nav">
-        <Tooltip title="Navigate">
-          <ListItemButton
-            sx={{ borderRadius: 2, mx: 3 }}
-            id="nav-button"
-            aria-haspopup="listbox"
-            aria-controls="nav-menu"
-            aria-label="top nav options"
-            aria-expanded={open ? "true" : undefined}
-            onClick={handleClickListItem}
+      <Tooltip title="Navigate">
+        <Button
+          ref={anchorRef}
+          id="composition-button"
+          aria-controls={open ? "composition-menu" : undefined}
+          aria-expanded={open ? "true" : undefined}
+          aria-haspopup="true"
+          onClick={handleToggle}
+          color="inherit"
+          sx={{ borderRadius: 2, ml: 3, textTransform: "none" }}
+        >
+          <Typography
+            variant="subtitle2"
+            sx={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
           >
-            <ListItemText
-              primary={topNavItems[selectedIndex].label}
-              primaryTypographyProps={{
-                variant: "subtitle2",
-                style: {
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                },
-              }}
-            />
-            <KeyboardArrowDownIcon />
-          </ListItemButton>
-        </Tooltip>
-      </List>
-      <Menu
-        id="nav-menu"
-        keepMounted
-        anchorEl={anchorEl}
+            {topNavItems[selectedIndex].label}
+          </Typography>
+          <KeyboardArrowDownIcon />
+        </Button>
+      </Tooltip>
+      <Popper
         open={open}
-        onClose={handleClose}
-        MenuListProps={{
-          "aria-labelledby": "nav-button",
-          role: "listbox",
-        }}
-        PaperProps={{
-          elevation: 0,
-          sx: {
-            overflow: "visible",
-            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-          },
-        }}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
-        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+        anchorEl={anchorRef.current}
+        role={undefined}
+        placement="bottom-start"
+        transition
+        disablePortal
       >
-        {topNavItems.map((option, index) => (
-          <MenuItem
-            component={Link}
-            to={option.link}
-            key={option.label}
-            selected={index === selectedIndex}
+        {({ TransitionProps, placement }) => (
+          <Grow
+            {...TransitionProps}
+            style={{
+              transformOrigin:
+                placement === "bottom-start" ? "left top" : "right top",
+            }}
           >
-            {option?.icon && <ListItemIcon>{option.icon}</ListItemIcon>}
-            <ListItemText>{option.label}</ListItemText>
-          </MenuItem>
-        ))}
-      </Menu>
+            <Paper
+              elevation={0}
+              sx={{
+                overflow: "visible",
+                filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+              }}
+            >
+              <ClickAwayListener onClickAway={handleClose}>
+                <MenuList
+                  autoFocusItem={open}
+                  id="composition-menu"
+                  aria-labelledby="composition-button"
+                  onKeyDown={handleListKeyDown}
+                >
+                  {topNavItems.map((option, index) => (
+                    <MenuItem
+                      component={Link}
+                      to={option.link}
+                      key={option.label}
+                      selected={index === selectedIndex}
+                      onClick={handleClose}
+                    >
+                      {option?.icon && (
+                        <ListItemIcon>{option.icon}</ListItemIcon>
+                      )}
+                      <ListItemText>{option.label}</ListItemText>
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
     </Box>
   );
 }
