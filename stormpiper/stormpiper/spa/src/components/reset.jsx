@@ -16,11 +16,6 @@ export default function Reset() {
   } = useForm();
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
-  // const [resetContents, setResetContents] = useState(
-  //   <>
-  //     <Typography variant="subtitle1">Checking your reset link...</Typography>
-  //   </>
-  // );
   const [searchParams, setSearchParams] = useSearchParams();
 
   let expiresAt = searchParams.get("expires_at");

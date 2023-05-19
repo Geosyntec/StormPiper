@@ -44,8 +44,6 @@ async function getAllData() {
 export default function CostSettingsDataGrid() {
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
-  // const [currentDataId, setCurrentDataId] = useState(null);
-  // const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     getAllData().then((res) => setRows(res));

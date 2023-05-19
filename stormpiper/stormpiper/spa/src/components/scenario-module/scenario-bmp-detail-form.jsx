@@ -35,7 +35,6 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
   const [errorMsg, setErrorMsg] = useState("error!");
   const childRef = useRef(null);
 
-  // console.log("Facility within detail form: ", facility);
   // Allows parent components to perform form functions
   useImperativeHandle(
     ref,
@@ -55,16 +54,11 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
         async resetForm() {
           childRef.current.resetForm();
           facilitySetter(null);
-          // facilitySetter({
-          //   type: "FeatureCollection",
-          //   features: [],
-          // });
         },
 
         handleSubmit(facility) {
           console.log("Facility within the bmp form ref: ", facility);
           const formData = childRef.current._getValues();
-          // const isSimple = childRef.current.getIsSimple();
           _handleSubmit(formData, facility);
         },
       };
@@ -97,8 +91,6 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
     Object.keys(data).forEach(
       (k) => (data[k] = data[k] === "" ? null : data[k])
     );
-    console.log("Submitting bmp data: ", data);
-    console.log("Existing facility:", facility);
     if (
       facilityType.match("_simple") &&
       !data["facility_type"].match("_simple")

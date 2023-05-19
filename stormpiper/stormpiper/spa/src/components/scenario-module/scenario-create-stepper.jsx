@@ -87,7 +87,6 @@ export function ScenarioCreateStepper({
       },
       skipEventHandler: () => {
         facilityRef?.current?.resetForm();
-        // facilitySetter({ type: "FeatureCollection", features: [] });
       },
       validationObject: facility,
       errMsg: "Set a BMP Location and Fill Out All Required Fields",
@@ -119,12 +118,6 @@ export function ScenarioCreateStepper({
       if (steps[idx].nextEventHandler) {
         steps[idx].nextEventHandler(facility);
       }
-
-      // if (steps[idx].label === "Create a BMP") {
-      //   console.log("facility right before handleSubmit: ", facility);
-      //   steps[idx].stepRef.current.handleSubmit(facility);
-      // }
-
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
       setSkipped(newSkipped);
     } else {
@@ -153,9 +146,6 @@ export function ScenarioCreateStepper({
       newSkipped.add(activeStep);
       return newSkipped;
     });
-    // if (steps[activeStep].stepRef.current.resetForm) {
-    //   steps[activeStep].stepRef.current.resetForm();
-    // }
     if (steps[activeStep].skipEventHandler) {
       steps[activeStep].skipEventHandler();
     }

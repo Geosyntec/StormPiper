@@ -20,7 +20,6 @@ export function HalfSpan({ children, ...props }) {
 export const DrawerAwareGrid = styled(Grid)(({ theme }) => {
   return {
     [theme.breakpoints.up("sm")]: {
-      // width: `calc(100% - 56px)`,
       width: "600px",
     },
     [theme.breakpoints.up("md")]: {

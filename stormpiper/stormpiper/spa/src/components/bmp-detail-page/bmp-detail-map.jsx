@@ -53,7 +53,6 @@ export default function BMPDetailMap({
           id="inset-map"
           layers={layers}
           viewState={viewState}
-          // zoomFeature={{ feature: zoomFeature }}
         ></DeckGLMap>
       )}
     </Box>

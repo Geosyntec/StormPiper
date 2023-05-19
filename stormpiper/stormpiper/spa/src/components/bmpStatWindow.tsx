@@ -27,14 +27,6 @@ const statsDict = {
       "retention_volume_cuft",
     ],
   },
-  // tributaryArea:{
-  //   label:"Tributary Area",
-  //   fields:["tributary_area_tc_min"],
-  // },
-  // lifeCycleCosts:{
-  //   label:"Life-Cycle Costs",
-  //   fields:[],
-  // },
   performanceSummary: {
     label: "Performance Summary",
     fields: [
@@ -85,7 +77,6 @@ type specState = {
 
 function BMPStatWindow(props: statWindowProps) {
   let firstRender = useRef(true);
-  // const classes = useStyles();
 
   const [state, setState] = useState<bmpPanelState>({
     header: null,
@@ -172,7 +163,6 @@ function BMPStatWindow(props: statWindowProps) {
       let stats: any[] = [];
       let results: any[] = [];
 
-      // if(headerName!="Performance Summary"){
       const fields: string[] | undefined = Object.values(statsDict)
         .filter((group) => group.label === headerName)
         .map((f) => f.fields)[0];

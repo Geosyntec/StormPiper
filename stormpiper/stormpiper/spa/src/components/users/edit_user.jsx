@@ -74,7 +74,6 @@ export default function EditUser() {
   } = useForm({ defaultValues: defaultFormValues });
 
   const userDataSetter = async () => {
-    // console.log("data on getter", params.id);
     const _userdata = await getUser(params.id);
     const _medata = await getUser("me");
 
@@ -82,9 +81,7 @@ export default function EditUser() {
       setUserData({ ..._userdata }),
       setFormValues({ ..._userdata }),
       setMeData({ ..._medata }),
-    ]).then(() => {
-      // console.log(userdata, medata, formValues);
-    });
+    ]).then(() => {});
   };
 
   useEffect(() => {
@@ -320,7 +317,6 @@ export default function EditUser() {
         <Card
           sx={{
             p: 2,
-            // width: { xs: "100%", sm: 500 }
           }}
         >
           <TokenRouteTable token={medata?.readonly_token} />
