@@ -65,6 +65,8 @@ export default function ScenarioCreateMap({
         } else {
           facilitySetter(updatedData);
         }
+      } else {
+        facilitySetter(updatedData);
       }
     },
   });
