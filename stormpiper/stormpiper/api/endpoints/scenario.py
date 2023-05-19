@@ -10,7 +10,7 @@ from sqlalchemy import select
 import stormpiper.bg_worker as bg
 from stormpiper.apps.supersafe.users import user_role_ge_admin, user_role_ge_editor
 from stormpiper.core.config import settings
-from stormpiper.core.utils import generate_task_response
+from stormpiper.core.utils import datetime_now, generate_task_response
 from stormpiper.database import crud, utils
 from stormpiper.database.schemas.scenario import Scenario
 from stormpiper.models.bg import TaskModel
@@ -148,7 +148,7 @@ async def update_scenario(
             logger.info("SCENARIO: Clearing scenario wq results")
             data["graph_edge"] = None
             data["structural_tmnt_result"] = None
-            data.pop("input_time_updated", None)
+            data["input_time_updated"] = datetime_now()
 
         else:
             logger.info("SCENARIO: Inputs are unchanged. Updating changelog only.")
