@@ -5,6 +5,7 @@ import { Box, Card, Typography } from "@mui/material";
 // import BMPConcReduction from "../bmp-detail-page/bmp-results-conc";
 
 import DelineationLoadGenerated from "./scenario-delin-results-load";
+import { dateFormatter } from "../../utils/utils";
 
 // const prepLoadPctRemovedData = (x) => {
 //   const pocs = ["TSS", "TN", "TP", "TCu", "TZn", "PYR", "PHE", "DEHP"];
@@ -21,18 +22,6 @@ const prepLoadData = (x) => {
     x[`${poc}_g`] = 453.592 * x[`${poc}_lbs`];
   });
   return x;
-};
-
-const dateFormatter = (dtValue) => {
-  if (dtValue == null) {
-    return "--";
-  }
-  const valueDate = new Date(dtValue);
-  const valueLocale = valueDate.toLocaleString("en-US", {
-    timeZoneName: "short",
-  });
-  const [date, time, ..._] = valueLocale.split(",");
-  return `${date.trim()} at ${time.trim()}`;
 };
 
 export function ScenarioDelineationDetailResults({ data }) {

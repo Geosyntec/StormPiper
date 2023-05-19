@@ -20,7 +20,7 @@ import { ScenarioBMPForm } from "./scenario-bmp-detail-form";
 import { api_fetch } from "../../utils/utils";
 import { ScenarioInfoForm } from "./scenario-create-info-form";
 import CostSummary from "../cost-analysis/cost-summary";
-import { zoomToFeature } from "../../utils/map_utils";
+import { zoomToFeature, dateFormatter } from "../../utils/map_utils";
 
 async function getDataByID(id) {
   const response = await api_fetch(`/api/rest/scenario/${id}`);
@@ -78,18 +78,6 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
       setLastCalculatedAt(dateFormatter(res?.result_time_updated));
     });
   }, [params.id, resultsSuccessDisplay]);
-
-  const dateFormatter = (dtValue) => {
-    if (dtValue == null) {
-      return "--";
-    }
-    const valueDate = new Date(dtValue);
-    const valueLocale = valueDate.toLocaleString("en-US", {
-      timeZoneName: "short",
-    });
-    const [date, time, ..._] = valueLocale.split(",");
-    return `${date.trim()} at ${time.trim()}`;
-  };
 
   function buildScenario(obj) {
     setScenarioObject(obj);
