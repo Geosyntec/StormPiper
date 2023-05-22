@@ -59,9 +59,14 @@ async function deleteScenarioDatabaseId(id) {
   return { status, text };
 }
 
-export function ScenarioInfoTable({ data, dataRefresher }) {
+export function ScenarioInfoTable({
+  data,
+  dataRefresher,
+  focusScenarioSetter,
+}) {
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
+  const [selectedRow, setSelectedRow] = useState([]);
   const [currentScenarioId, setCurrentScenarioId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -85,6 +90,12 @@ export function ScenarioInfoTable({ data, dataRefresher }) {
     setCurrentScenarioId(id);
     handleModalOpen();
     return;
+  };
+
+  const handleCellMouseEnter = (e) => {
+    if (selectedRow.length === 0) {
+      focusScenarioSetter(e.target.parentElement.dataset.id);
+    }
   };
 
   const processDeleteCurrentScenarioId = async () => {
@@ -278,7 +289,7 @@ export function ScenarioInfoTable({ data, dataRefresher }) {
     handleModalClose();
   };
   const handleRowClick = (params) => {
-    console.log(`Scenario "${params.row.name}" clicked`);
+    focusScenarioSetter(params.row.id);
   };
 
   const getRowData = (id) => rows.find((x) => x.id == id);
@@ -351,6 +362,21 @@ export function ScenarioInfoTable({ data, dataRefresher }) {
         slots={{
           toolbar: EditToolbar,
         }}
+        slotProps={{
+          cell: {
+            onMouseEnter: handleCellMouseEnter,
+          },
+        }}
+        onRowSelectionModelChange={(newSelectionModel) => {
+          if (newSelectionModel[0] === selectedRow[0]) {
+            focusScenarioSetter(null);
+            setSelectedRow([]);
+          } else {
+            focusScenarioSetter(newSelectionModel[0]);
+            setSelectedRow(newSelectionModel);
+          }
+        }}
+        rowSelectionModel={selectedRow}
       />
       <ConfirmDeleteModal
         modalOpen={modalOpen}
