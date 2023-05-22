@@ -9,7 +9,11 @@ import {
 import { useState, useEffect } from "react";
 import { api_fetch } from "../../utils/utils";
 
-export default function AllScenariosMap({ scenarios, viewState }) {
+export default function AllScenariosMap({
+  scenarios,
+  viewState,
+  focusScenario,
+}) {
   const [layers, setLayers] = useState([]);
 
   useEffect(async () => {
@@ -17,10 +21,11 @@ export default function AllScenariosMap({ scenarios, viewState }) {
     layers.push(buildDelineationLayer(scenarios));
     layers.push(buildFacilityLayer(scenarios));
     setLayers(layers);
-  }, [scenarios]);
+  }, [scenarios, focusScenario]);
 
-  function appendScenarioName(feature, scenarioName) {
+  function appendScenarioName(feature, scenarioName, scenarioID) {
     feature.properties["scenarioName"] = scenarioName;
+    feature.properties["scenarioID"] = scenarioID;
     return feature;
   }
 
@@ -32,7 +37,8 @@ export default function AllScenariosMap({ scenarios, viewState }) {
           allDelineations.push(
             appendScenarioName(
               scenario.input["delineation_collection"].features[0],
-              scenario.name
+              scenario.name,
+              scenario.id
             )
           );
         }
@@ -46,6 +52,21 @@ export default function AllScenariosMap({ scenarios, viewState }) {
         type: "FeatureCollection",
         features: allDelineations,
       },
+      getFillColor: (d) => {
+        return d.properties.scenarioID &&
+          focusScenario === d.properties.scenarioID
+          ? tmnt_delineations.props.highlightColor || [52, 222, 235]
+          : tmnt_delineations.props.defaultFillColor || [70, 170, 21, 200];
+      },
+      getLineColor: (d) => {
+        return d.properties.scenarioID &&
+          focusScenario === d.properties.scenarioID
+          ? tmnt_delineations.props.highlightLineColor || [52, 222, 235]
+          : tmnt_delineations.props.defaultLineColor || [70, 170, 21, 200];
+      },
+      updateTriggers: {
+        getFillColor: [focusScenario],
+      },
     });
   }
   function buildFacilityLayer(allScenarios) {
@@ -56,7 +77,8 @@ export default function AllScenariosMap({ scenarios, viewState }) {
           allFacilities.push(
             appendScenarioName(
               scenario.input["tmnt_facility_collection"].features[0],
-              scenario.name
+              scenario.name,
+              scenario.id
             )
           );
         }
@@ -69,6 +91,15 @@ export default function AllScenariosMap({ scenarios, viewState }) {
       data: {
         type: "FeatureCollection",
         features: allFacilities,
+      },
+      getIconColor: (d) => {
+        return d.properties.scenarioID &&
+          focusScenario === d.properties.scenarioID
+          ? tmnt.props.highlightColor || [52, 222, 235]
+          : tmnt.props.defaultFillColor || [70, 170, 21, 200];
+      },
+      updateTriggers: {
+        getIconColor: [focusScenario],
       },
     });
   }

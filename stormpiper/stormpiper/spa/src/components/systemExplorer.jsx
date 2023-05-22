@@ -241,13 +241,14 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
   }
 
   function _injectLayerAccessors(props, focusFeatureID) {
+    const pkField = props.featurePKField;
     props.getFillColor = (d) => {
-      return d.properties.altid === focusFeatureID
+      return d.properties[pkField] && d.properties[pkField] === focusFeatureID
         ? props.highlightColor || [52, 222, 235]
         : props.defaultFillColor || [70, 170, 21, 200];
     };
     props.getIconColor = (d) => {
-      return d.properties.altid === focusFeatureID
+      return d.properties[pkField] && d.properties[pkField] === focusFeatureID
         ? props.highlightColor || [52, 222, 235]
         : props.defaultFillColor || [70, 170, 21, 200];
     };
