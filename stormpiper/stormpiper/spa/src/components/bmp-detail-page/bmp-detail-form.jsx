@@ -72,6 +72,10 @@ export function BMPDetailForm() {
       data["facility_type"] = data["facility_type"] + "_simple";
     }
 
+    if (!isSimple) {
+      data["facility_type"] = data["facility_type"].replaceAll("_simple", "");
+    }
+
     console.log("Submitting Patch Request: ", data);
     const response = await api_fetch("/api/rest/tmnt_attr/" + params.id, {
       credentials: "same-origin",
