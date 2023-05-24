@@ -258,6 +258,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
               props.facilityChangeHandler(newFacilityType);
               setValue("facility_type", newFacilityType);
               setIsSimple(!isSimple);
+              setIsTouched(true);
             }}
             color="primary"
             disabled={formDisabled}
