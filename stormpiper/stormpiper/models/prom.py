@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import Field
+from pydantic import Field, validator
 
 from stormpiper.database.schemas import views
 from stormpiper.src.decision_support import prom
@@ -17,8 +17,13 @@ VALID_CRITERIA = [
 class PromRequestCriteria(BaseModel):
     weight: float = Field(0, ge=0)
     criteria: Literal[tuple(VALID_CRITERIA)]  # type: ignore
+    direction: int = Field(1, ge=-1, le=1)
+
+    @validator("direction", pre=True, always=True)
+    def set_direction(cls, v):
+        assert v in [-1, 1], "direction must be either -1 or 1"
+        return v
 
 
 class PromRequest(BaseModel):
-    wq_type: prom.WQType
     criteria: list[PromRequestCriteria]

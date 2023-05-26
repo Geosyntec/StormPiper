@@ -1,5 +1,5 @@
 import logging
-from typing import Literal, Sequence
+from typing import Sequence
 
 import geopandas
 from pymcdm.methods import PROMETHEE_II
@@ -7,32 +7,9 @@ from pymcdm.normalizations import minmax_normalization
 
 from stormpiper.core.config import settings
 from stormpiper.database.connection import engine
-from stormpiper.models.result_view import SubbasinWQResultView
 
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
-
-WQType = Literal["retrofit", "preservation"]
-
-# TODO: make this a config option, or derived from the subbasin results summary somehow.
-EQUITY_COLS = [
-    "access",
-    "economic_value",
-    "environmental_value",
-    "livability_value",
-    "opportunity_value",
-]
-
-POC_COLS = [
-    c
-    for c in SubbasinWQResultView.get_fields()
-    if any(
-        (
-            v in c.lower()
-            for v in ["_load_lbs", "_yield_lbs", "_depth_inches", "_conc_mg/l"]
-        )
-    )
-]
 
 
 def run_promethee_ii(
@@ -55,26 +32,15 @@ def run_promethee_ii(
 def run_subbasins_promethee_prioritization(
     criteria: Sequence[str],
     weights: Sequence[float],
-    wq_type: WQType | None = None,
+    directions: Sequence[int],
     engine=engine,
 ) -> geopandas.GeoDataFrame:
-    direction = -1 if wq_type == "preservation" else 1
-
-    types = [
-        direction if c in POC_COLS
-        # subbasins with high scores for equity cols should be de-prioritized
-        else -1 if c in EQUITY_COLS
-        # fallback to assuming the criteria should be prioritized
-        else 1
-        for c in criteria
-    ]
-
     sub_results = geopandas.read_postgis(
         f"select * from subbasininfo_v order by subbasin",
         con=engine,
     ).assign(  # type: ignore
         score=lambda df: run_promethee_ii(
-            df, criteria=list(criteria), weights=list(weights), types=list(types)
+            df, criteria=list(criteria), weights=list(weights), types=list(directions)
         ).round(3)
     )
 
