@@ -82,13 +82,13 @@ async def get_all_subbasins_wq(
 
 @router.get(
     "/{subbasin_id}/token/{token}",
-    response_model=SubbasinWQResultView,
+    response_model=SubbasinInfoView,
     name="subbasin:get_subbasin_info_via_token",
     dependencies=[Depends(check_readonly_token)],
 )
 @router.get(
     "/{subbasin_id}",
-    response_model=SubbasinWQResultView,
+    response_model=SubbasinInfoView,
     name="subbasin:get_subbasin_info",
     dependencies=[Depends(user_role_ge_reader)],
 )
@@ -108,13 +108,13 @@ async def get_subbasin_info(
 
 @router.get(
     "/token/{token}",
-    response_model=list[SubbasinWQResultView],
+    response_model=list[SubbasinInfoView],
     name="subbasin:get_all_subbasins_info_via_token",
     dependencies=[Depends(check_readonly_token)],
 )
 @router.get(
     "/",
-    response_model=list[SubbasinWQResultView],
+    response_model=list[SubbasinInfoView],
     name="subbasin:get_all_subbasins",
     dependencies=[Depends(user_role_ge_reader)],
 )

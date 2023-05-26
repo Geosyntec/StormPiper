@@ -16,15 +16,20 @@ yield_cols = [n.replace("_load_lbs", "_yield_lbs_per_acre") for n in load_cols]
 conc_cols = [n.replace("_load_lbs", "_conc_mg/l") for n in load_cols]
 
 summary_cols = [
-    "TMNT_FACILITY_COUNT",
-    "BASICWQ_AREA_ACRES",
-    "BASICWQ_AREA_PCT",
-    "ENHWQ_AREA_ACRES",
-    "ENHWQ_AREA_PCT",
-    "FC_AREA_ACRES",
-    "FC_AREA_PCT",
-    "EFF_AREA_ACRES",
-    "EFF_AREA_PCT",
+    s.lower()
+    for s in [
+        "TMNT_FACILITY_COUNT",
+        "TREATED_AREA_ACRES",
+        "TREATED_AREA_PCT",
+        "BASICWQ_AREA_ACRES",
+        "BASICWQ_AREA_PCT",
+        "ENHWQ_AREA_ACRES",
+        "ENHWQ_AREA_PCT",
+        "FC_AREA_ACRES",
+        "FC_AREA_PCT",
+        "EFF_AREA_ACRES",
+        "EFF_AREA_PCT",
+    ]
 ]
 
 COLS = [
@@ -33,7 +38,7 @@ COLS = [
     depth_col,
     *yield_cols,
     *conc_cols,
-    *[s.lower() for s in summary_cols],
+    *summary_cols,
 ]
 
 WQ_COLS = list(set(sr_cols + [depth_col] + load_cols + conc_cols + yield_cols))
@@ -80,7 +85,7 @@ def build_subbasininfo_v():
     select_fields = []
     sub_cols = ",\n".join([f"""\ts."{s}" """ for s in s_cols])
     wq_cols = ",\n".join([f"""\twq."{s}" """ for s in WQ_COLS])
-    sum_cols = ",\n".join([f"""\tts."{s.lower()}" """ for s in summary_cols])
+    sum_cols = ",\n".join([f"""\tts."{s}" """ for s in summary_cols])
     select_fields = ",\n".join([sub_cols, wq_cols, sum_cols])
     select_fields = select_fields[:-3] + select_fields[-3:].replace(",", "")
 
@@ -152,10 +157,19 @@ WITH Q AS
         FROM lgu_boundary b
         GROUP BY b.subbasin
         ORDER BY b.subbasin),
+    TMNTAREA AS
+	(SELECT Q.SUBBASIN,
+			SUM(Q.AREA_ACRES) AS TREATED_AREA_ACRES
+		FROM Q
+		WHERE Q.ALTID IS NOT NULL
+		GROUP BY Q.SUBBASIN
+		ORDER BY Q.SUBBASIN),
 	TMNTSUMMARY AS
 	(SELECT S.SUBBASIN,
             TC.TMNT_FACILITY_COUNT,
 			TA.TOTAL_AREA_ACRES,
+            TMNTA.TREATED_AREA_ACRES,
+			100::double precision * (TMNTA.TREATED_AREA_ACRES / TA.TOTAL_AREA_ACRES) AS TREATED_AREA_PCT,
 			BWQ.BASICWQ_AREA_ACRES,
 			100 * (BWQ.BASICWQ_AREA_ACRES / TA.TOTAL_AREA_ACRES) AS "basicwq_area_pct",
 			EWQ.ENHWQ_AREA_ACRES,
@@ -166,6 +180,7 @@ WITH Q AS
 	 		100 * (EF.EFF_AREA_ACRES / TA.TOTAL_AREA_ACRES) AS "eff_area_pct"
 		FROM SUBBASIN S
         LEFT JOIN TMNTCOUNT TC ON TC.SUBBASIN = S.SUBBASIN
+        LEFT JOIN TMNTAREA TMNTA ON TMNTA.SUBBASIN = S.SUBBASIN
 		LEFT JOIN TOTALAREA TA ON TA.SUBBASIN = S.SUBBASIN
 		LEFT JOIN BASICWQAREA BWQ ON BWQ.SUBBASIN = S.SUBBASIN
 		LEFT JOIN ENHWQAREA EWQ ON EWQ.SUBBASIN = S.SUBBASIN
