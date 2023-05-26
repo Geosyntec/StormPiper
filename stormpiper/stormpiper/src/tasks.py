@@ -331,15 +331,17 @@ def calculate_subbasin_promethee_prioritization(
     data: dict, engine=engine
 ) -> list[dict]:
     """data: dict[str, list[dict[str, str|int|float]] | str],"""
-    criteria, weights = zip(
-        *((m["criteria"], m["weight"]) for m in data.get("criteria", []))
+    criteria, weights, directions = zip(
+        *(
+            (m["criteria"], m["weight"], m["direction"])
+            for m in data.get("criteria", [])
+        )
     )
-    wq_type = data.get("wq_type", None)
 
     scored_df = prom.run_subbasins_promethee_prioritization(
         criteria=criteria,
         weights=weights,
-        wq_type=wq_type,
+        directions=directions,
         engine=engine,
     )[["subbasin", "score"]]
 

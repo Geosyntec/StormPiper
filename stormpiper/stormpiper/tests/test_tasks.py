@@ -9,5 +9,5 @@ def test_tasks(db):
     tasks.delete_and_refresh_all_results_tables(engine=engine)
     tasks.build_default_tmnt_source_controls(engine=engine)
     tasks.calculate_subbasin_promethee_prioritization(
-        data={"criteria": [{"criteria": "access", "weight": 1}]}
+        data={"criteria": [{"criteria": "access", "weight": 1, "direction": -1}]}
     )

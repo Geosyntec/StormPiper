@@ -6,10 +6,11 @@ from stormpiper.src.decision_support import prom
 def test_prom_equity():
     criteria = ["access"]
     weights = [1]
+    directions = [-1]
 
-    df = prom.run_subbasins_promethee_prioritization(criteria, weights).set_index(
-        "subbasin"
-    )
+    df = prom.run_subbasins_promethee_prioritization(
+        criteria, weights, directions
+    ).set_index("subbasin")
 
     # sort to low access first - ascending
     subbasins_attr = df["access"].sort_values().index
@@ -23,10 +24,10 @@ def test_prom_equity():
 def test_prom_preservation():
     criteria = ["TSS_load_lbs"]
     weights = [1]
-    wq_type = "preservation"
+    directions = [-1]
 
     df = prom.run_subbasins_promethee_prioritization(
-        criteria, weights, wq_type
+        criteria, weights, directions
     ).set_index("subbasin")
 
     # if we're seeking preservation projects, we prioritize low load first
@@ -41,10 +42,10 @@ def test_prom_preservation():
 def test_prom_retrofit():
     criteria = ["TSS_load_lbs"]
     weights = [1]
-    wq_type = None
+    directions = [1]
 
     df = prom.run_subbasins_promethee_prioritization(
-        criteria, weights, wq_type
+        criteria, weights, directions
     ).set_index("subbasin")
 
     # if we're seeking retrofit projects, we prioritize high load first

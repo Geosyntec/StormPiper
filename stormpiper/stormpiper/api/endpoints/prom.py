@@ -18,4 +18,4 @@ async def calculate_subbasin_promethee_prioritization(prom: PromRequest):
     task = bg.calculate_subbasin_promethee_prioritization.apply_async(
         kwargs={"data": prom.dict()}
     )
-    return await generate_task_response(task=task)
+    return await generate_task_response(task=task, timeout=15)
