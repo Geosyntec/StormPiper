@@ -1,0 +1,7 @@
+group,display_name
+land_use,Land Use Breakdown
+land_cover,Land Cover Breakdown
+runoff,Runoff
+tmnt_summary,Treatment Facility Summary
+poc_conc,Average Pollutant Washoff Concentration
+poc_load_reduction,Annual Load Reductions
