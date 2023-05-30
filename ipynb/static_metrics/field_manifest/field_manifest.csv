@@ -17,9 +17,9 @@ Landuse Tacoma Mall Regional Growth Center,lu,RGCTM,rgctm,pct,lu_rgctm_pct,Landu
 Landcover Pasture,lc,,pasture,pct,lc_pasture_pct,Landcover Pasture (pct),,,,
 Landcover Grass,lc,,grass,pct,lc_grass_pct,Landcover Grass (pct),,,,
 Landcover Water,lc,,water,pct,lc_water_pct,Landcover Water (pct),,,,
-Landcover Impervious-roof,lc,,imp-roof,pct,lc_imp-roof_pct,Landcover Impervious-roof (pct),,,,
-Landcover Impervious-nonRoof,lc,,imp-nonroof,pct,lc_imp-nonroof_pct,Landcover Impervious-nonRoof (pct),,,,
-Landcover Impervious-total,lc,,imp-total,pct,lc_imp-total_pct,Landcover Impervious-total (pct),,1,1,1.1
+Landcover Impervious-roof,lc,,imp-roof,pct,lc_imp_roof_pct,Landcover Impervious-roof (pct),,,,
+Landcover Impervious-nonRoof,lc,,imp-nonroof,pct,lc_imp_nonroof_pct,Landcover Impervious-nonRoof (pct),,,,
+Landcover Impervious-total,lc,,imp-total,pct,lc_imp_total_pct,Landcover Impervious-total (pct),,1,1,1.1
 Age_of_Development,,,age_of_development,score,age_of_development_score,Age of Development Index,,1,1,1.2
 Pavement_Condition,,,pavement_condition,score,pavement_condition_score,Pavement Condition Index,,1,1,4.2
 Biodiversity,,,biodiversity,pct,biodiversity_pct,Biodiversity Corridor (percent),,1,1,3.1
