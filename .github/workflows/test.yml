@@ -6,9 +6,15 @@ name: Test
 # events but only for the main branch
 on:
   push:
+    paths-ignore:
+      - "ipynb/**"
+      - "k8s/**"
     branches:
       - main
   pull_request:
+    paths-ignore:
+      - "ipynb/**"
+      - "k8s/**"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
