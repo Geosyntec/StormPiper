@@ -19,23 +19,23 @@ Landcover Grass,lc,,grass,pct,lc_grass_pct,Landcover Grass (pct),,,,
 Landcover Water,lc,,water,pct,lc_water_pct,Landcover Water (pct),,,,
 Landcover Impervious-roof,lc,,imp-roof,pct,lc_imp_roof_pct,Landcover Impervious-roof (pct),,,,
 Landcover Impervious-nonRoof,lc,,imp-nonroof,pct,lc_imp_nonroof_pct,Landcover Impervious-nonRoof (pct),,,,
-Landcover Impervious-total,lc,,imp-total,pct,lc_imp_total_pct,Landcover Impervious-total (pct),,1,1,1.1
-Age_of_Development,,,age_of_development,score,age_of_development_score,Age of Development Index,,1,1,1.2
-Pavement_Condition,,,pavement_condition,score,pavement_condition_score,Pavement Condition Index,,1,1,4.2
-Biodiversity,,,biodiversity,pct,biodiversity_pct,Biodiversity Corridor (percent),,1,1,3.1
-Urban_Heat,,,urban_heat,degC,urban_heat_degC,Urban Heat Island (degrees C),,1,1,2.1
+Landcover Impervious-total,lc,,imp-total,pct,lc_imp_total_pct,Landcover Impervious-total (pct),,1,1,1_1
+Age_of_Development,,,age_of_development,score,age_of_development_score,Age of Development Index,,1,1,1_2
+Pavement_Condition,,,pavement_condition,score,pavement_condition_score,Pavement Condition Index,,1,1,4_2
+Biodiversity,,,biodiversity,pct,biodiversity_pct,Biodiversity Corridor (percent),,1,1,3_1
+Urban_Heat,,,urban_heat,degC,urban_heat_degC,Urban Heat Island (degrees C),,1,1,2_1
 discharge_points,,,discharge_points,count,discharge_points_count,Outfalls (count),,1,1,
 access,,,access,,access,access,,-1,-1,
 economic_value,,,economic_value,,economic_value,economic_value,,-1,-1,
 environmental_value,,,environmental_value,,environmental_value,environmental_value,,-1,-1,
-Livability Index,,,livability_value,,livability_value,Livability Index,,-1,-1,4.1
-Equity Index,,,opportunity_value,,opportunity_value,Equity Index,,-1,-1,4.1
+Livability Index,,,livability_value,,livability_value,Livability Index,,-1,-1,4_1
+Equity Index,,,opportunity_value,,opportunity_value,Equity Index,,-1,-1,4_1
 ,,,,,basinname,Watershed,,,,
 ,,,,,subbasin,Subbasin,,,,
 ,,,,,area_acres,Area (acres),,,,
 ,,,,,node_id,Node ID,,,,
 ,,,,,epoch,Climate Epoch,,,,
-,,,,,runoff_depth_inches,,,-1,1,1.1
+,,,,,runoff_depth_inches,,,-1,1,1_1
 ,,,,,runoff_volume_cuft,,,-1,1,
 ,,,,,runoff_volume_cuft_generated,,,-1,1,
 ,,,,,runoff_volume_cuft_reduced,,,,,
@@ -44,9 +44,9 @@ Equity Index,,,opportunity_value,,opportunity_value,Equity Index,,-1,-1,4.1
 ,,,,,PHE_conc_mg/l,,,-1,1,
 ,,,,,PYR_conc_mg/l,,,-1,1,
 ,,,,,TCu_conc_mg/l,,,-1,1,
-,,,,,TN_conc_mg/l,,,-1,1,1.1
+,,,,,TN_conc_mg/l,,,-1,1,1_1
 ,,,,,TP_conc_mg/l,,,-1,1,
-,,,,,TSS_conc_mg/l,,,-1,1,1.1
+,,,,,TSS_conc_mg/l,,,-1,1,1_1
 ,,,,,TZn_conc_mg/l,,,-1,1,
 ,,,,,DEHP_load_lbs,,,,,
 ,,,,,PHE_load_lbs,,,,,
@@ -90,7 +90,7 @@ Equity Index,,,opportunity_value,,opportunity_value,Equity Index,,-1,-1,4.1
 ,,,,,TZn_load_pct_reduced,,,,,
 ,,,,,tmnt_facility_count,Number of BMPs (count),,,,
 ,,,,,treated_area_acres,Treated Area (acres),,,,
-,,,,,treated_area_pct,Treated Area (pct),,-1,-1,1.2
+,,,,,treated_area_pct,Treated Area (pct),,-1,-1,1_2
 ,,,,,basicwq_area_acres,Area Treated by Basic WQ BMPs (acres),,,,
 ,,,,,basicwq_area_pct,Area Treated by Basic WQ BMPs (pct),,,,
 ,,,,,enhwq_area_acres,Area Treated by Enhanced WQ BMPs (acres),,,,
