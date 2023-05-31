@@ -438,9 +438,11 @@ function Prioritization({ setDrawerButtonList }) {
       return r;
     });
 
+    let sortedScores = joinedScores.sort((a, b) => b.score - a.score);
+
     const buffer = "////////////////////////////////////////\r\n";
     const formattedData = await formatFormData(getValues());
-    let scoreCSV = convertToCSV(joinedScores, [
+    let scoreCSV = convertToCSV(sortedScores, [
       "subbasin",
       ...basinFields,
       "score",
