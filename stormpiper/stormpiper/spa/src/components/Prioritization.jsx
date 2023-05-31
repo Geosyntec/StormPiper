@@ -630,8 +630,7 @@ function Prioritization({ setDrawerButtonList }) {
               ) : (
                 <Box sx={{ width: "100%" }}>
                   <Typography variant="body1" align="center">
-                    Submit a set of priority weights to view and download the
-                    relative scores of each subbasin
+                    Submit a set of priorities to view and download results
                   </Typography>
                 </Box>
               )}
