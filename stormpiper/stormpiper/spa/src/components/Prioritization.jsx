@@ -14,7 +14,12 @@ import {
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import GridOnRoundedIcon from "@mui/icons-material/GridOnRounded";
 import { interpolateViridis } from "d3-scale-chromatic";
-import { DataGrid } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridToolbarContainer,
+  GridToolbarExport,
+} from "@mui/x-data-grid";
+import SaveAltIcon from "@mui/icons-material/SaveAlt";
 
 import { layerDict } from "../assets/geojson/subbasinLayer";
 import ColorRampLegend from "./colorRampLegend";
@@ -465,6 +470,22 @@ function Prioritization({ setDrawerButtonList }) {
     );
   }
 
+  function CustomToolBar() {
+    return (
+      <GridToolbarContainer>
+        {/* <GridToolbarExport
+          sx={{ mx: 2 }}
+          onClick={exportScoringResults}
+          printOptions={{ disableToolbarButton: true }}
+          csvOptions={{ disableToolbarButton: false }}
+        /> */}
+        <Button startIcon={<SaveAltIcon />} onClick={exportScoringResults}>
+          EXPORT
+        </Button>
+      </GridToolbarContainer>
+    );
+  }
+
   return (
     <TwoColGrid>
       <HalfSpan md={5}>
@@ -560,44 +581,51 @@ function Prioritization({ setDrawerButtonList }) {
           <Card>
             <CardContent>
               {subbasinScores.length > 0 ? (
-                <Box sx={{ maxWidth: "300px" }}>
-                  <Button
-                    sx={{ mb: 2 }}
-                    variant="contained"
-                    onClick={() => exportScoringResults()}
-                  >
-                    Download Results
-                  </Button>
-                  <DataGrid
-                    autoHeight
-                    disableColumnMenu
-                    disableMultipleRowSelection={true}
-                    disableRowSelectionOnClick={true}
-                    rowSelection={false}
-                    initialState={{
-                      sorting: {
-                        sortModel: [{ field: "score", sort: "desc" }],
-                      },
-                      pagination: { paginationModel: { pageSize: 25 } },
-                    }}
-                    rows={subbasinScores}
-                    columns={[
-                      {
-                        field: "subbasin",
-                        headerName: "Subbasin ID",
-                        width: 150,
-                      },
-                      {
-                        field: "score",
-                        headerName: "Priority",
-                        width: 150,
-                      },
-                    ]}
-                    rowsPerPageOptions={[5, 25, 100]}
-                    disableSelectionOnClick
-                    getRowId={(row) => row["subbasin"]}
-                    density={"compact"}
-                  />
+                <Box>
+                  <Box sx={{ my: 1 }}>
+                    <Typography variant="body1">
+                      <strong>Subbasin Prioritization Results</strong>
+                    </Typography>
+                    <Typography variant="body2">
+                      Higher priority scores indicate subbasins more favorable
+                      for new projects <br />
+                      To view the specific subbasin attributes that determine
+                      scores, export the results below
+                    </Typography>
+                  </Box>
+                  <Box sx={{ maxWidth: "400px" }}>
+                    <DataGrid
+                      autoHeight
+                      disableColumnMenu
+                      disableMultipleRowSelection={true}
+                      disableRowSelectionOnClick={true}
+                      rowSelection={false}
+                      initialState={{
+                        sorting: {
+                          sortModel: [{ field: "score", sort: "desc" }],
+                        },
+                        pagination: { paginationModel: { pageSize: 10 } },
+                      }}
+                      rows={subbasinScores}
+                      columns={[
+                        {
+                          field: "subbasin",
+                          headerName: "Subbasin ID",
+                          width: 150,
+                        },
+                        {
+                          field: "score",
+                          headerName: "Priority Score",
+                          width: 150,
+                        },
+                      ]}
+                      rowsPerPageOptions={[5, 25, 100]}
+                      disableSelectionOnClick
+                      getRowId={(row) => row["subbasin"]}
+                      density={"compact"}
+                      slots={{ toolbar: CustomToolBar }}
+                    />
+                  </Box>
                 </Box>
               ) : (
                 <Box sx={{ width: "100%" }}>
