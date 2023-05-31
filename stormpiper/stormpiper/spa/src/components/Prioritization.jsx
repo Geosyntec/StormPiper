@@ -20,6 +20,7 @@ import { layerDict } from "../assets/geojson/subbasinLayer";
 import ColorRampLegend from "./colorRampLegend";
 import { api_fetch, colorToList } from "../utils/utils";
 import { HalfSpan, TwoColGrid } from "./base/two-col-grid";
+import { csv } from "d3-fetch";
 
 const DeckGLMap = lazy(() => import("./map"));
 
@@ -38,6 +39,7 @@ function Prioritization({ setDrawerButtonList }) {
   const [lyrSelectDisplayState, setlyrSelectDisplayState] = useState(false); // when true, control panel is displayed
   const [subbasinScores, setSubbasinScores] = useState({});
   const [baseLayer, setBaseLayer] = useState(0);
+  const [criteriaDirection, setCriteriaDirection] = useState("retro");
   const [activeLayers, setActiveLayers] = useState(() => {
     var res = {};
     Object.keys(layerDict).map((category) => {
@@ -63,6 +65,8 @@ function Prioritization({ setDrawerButtonList }) {
     });
     return res;
   });
+  const [goalGroups, setGoalGroups] = useState([]);
+  const [goalFields, setGoalFields] = useState([]);
 
   const buttonList = [
     {
@@ -81,40 +85,34 @@ function Prioritization({ setDrawerButtonList }) {
     setDrawerButtonList(buttonList);
   }, []);
 
-  const formFields = [
-    {
-      label: "Equity",
-      fieldID: "equity",
-      description:
-        "Prioritize areas based on equity-based economic, environmental, and livability attributes",
-      fieldGroup: [
-        "access",
-        "economic_value",
-        "environmental_value",
-        "livability_value",
-        "opportunity_value",
-      ],
-    },
-    {
-      label: "Pollutant Concentrations",
-      fieldID: "loads",
-      description:
-        "Prioritize areas with high pollutant concentrations and runoff volumes",
-      fieldGroup: ["TP_conc_mg/l", "TSS_conc_mg/l", "TN_conc_mg/l"],
-    },
-    {
-      label: "Pollutant Yields",
-      fieldID: "yields",
-      description:
-        "Prioritize areas with high pollutant yields (e.g. high loads and large areas)",
-      fieldGroup: [
-        "TP_yield_lbs_per_acre",
-        "TSS_yield_lbs_per_acre",
-        "TN_yield_lbs_per_acre",
-        "runoff_depth_inches",
-      ],
-    },
-  ];
+  useEffect(() => {
+    csv("../../assets/data/goals.csv").then((res) => setGoalGroups(res));
+    csv("../../assets/data/field_manifest.csv").then((res) =>
+      setGoalFields(res.filter((field) => field.priority_subgoal != ""))
+    );
+  }, []);
+
+  const formFields = goalGroups.map((group) => {
+    return {
+      groupType: group.subgoal === "0" ? "main" : "sub",
+      label: group.display_name,
+      fieldID: group.subgoal,
+      description: "",
+      fieldGroup: goalFields
+        .filter((field) => {
+          return field.priority_subgoal === group.subgoal;
+        })
+        .map((obj) => obj.field),
+    };
+  });
+
+  function toggleCriteriaDirection() {
+    const directions = ["retrofit_direction", "preservation_direction"];
+    const newDirection = directions.filter(
+      (direction) => direction != criteriaDirection
+    );
+    setCriteriaDirection(newDirection);
+  }
 
   function _renderLayers(
     layerDict,
@@ -176,24 +174,48 @@ function Prioritization({ setDrawerButtonList }) {
     return props;
   }
 
-  function formatFormData(data) {
-    console.log("Trying to submit form: ", data);
+  async function formatFormData(data) {
+    const subbasinAttributes = await api_fetch(
+      "/api/rest/subbasin/?f=geojson&offset=0&epoch=1980s",
+      {
+        credentials: "same-origin",
+        headers: {
+          accept: "application/json",
+          "Content-type": "application/json",
+        },
+        method: "GET",
+      }
+    )
+      .then((resp) => {
+        return resp.json();
+      })
+      .then((resp) => {
+        return Object.keys(resp.features[0].properties);
+      })
+      .catch((err) => {
+        console.log("Error:", err);
+      });
+
     let res = {
-      wq_type: "",
       criteria: [],
     };
 
     Object.keys(data).map((k) => {
-      if (k == "wq_type") {
-        res[k] = data[k];
-      } else {
+      if (k != "wq_type") {
         formFields
           .filter((field) => field["fieldID"] === k)[0]
           ["fieldGroup"].map((criteria) => {
-            res.criteria.push({
-              criteria: criteria,
-              weight: data[k],
-            });
+            if (subbasinAttributes.includes(criteria)) {
+              res.criteria.push({
+                criteria: criteria,
+                weight: data[k],
+                direction: parseInt(
+                  goalFields.filter((field) => field.field === criteria)[0][
+                    data.wq_type
+                  ]
+                ),
+              });
+            }
           });
       }
     });
@@ -202,7 +224,8 @@ function Prioritization({ setDrawerButtonList }) {
   }
 
   async function _handleSubmit(data) {
-    const parsedFormData = formatFormData(data);
+    const parsedFormData = await formatFormData(data);
+
     const response = await api_fetch(
       "/api/rpc/calculate_subbasin_promethee_prioritization",
       {
@@ -229,38 +252,55 @@ function Prioritization({ setDrawerButtonList }) {
   function _renderFormFields() {
     if (formFields) {
       let fieldDiv = Object.values(formFields).map((formField) => {
-        return (
-          <Box
-            key={formField.fieldID}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              mb: "1rem",
-            }}
-          >
-            <TextField
-              variant="outlined"
-              margin="dense"
-              {...register(formField.fieldID, {
-                min: { value: 0, message: "Must be greater than 0" },
-              })}
-              type="number"
-              defaultValue={0}
-              required={true}
-              label={formField.label}
-              inputProps={{ step: 0.1 }}
-            />
-            <Typography variant="caption">{formField.description}</Typography>
-            {errors[formField.fieldID] && (
-              <Typography
-                variant="caption"
-                sx={{ color: (theme) => theme.palette.warning.main }}
-              >
-                {errors[formField.fieldID].message}
-              </Typography>
-            )}
-          </Box>
-        );
+        if (formField.groupType === "sub") {
+          return (
+            <Box
+              key={formField.fieldID}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                mb: "1rem",
+              }}
+            >
+              <Typography variant="caption">{formField.label}</Typography>
+              <TextField
+                variant="outlined"
+                margin="dense"
+                {...register(formField.fieldID, {
+                  min: { value: 0, message: "Must be greater than 0" },
+                })}
+                type="number"
+                defaultValue={0}
+                required={true}
+                // label={formField.label}
+                inputProps={{ step: 0.1 }}
+                // helperText={formField.label}
+              />
+              <Typography variant="caption">{formField.description}</Typography>
+              {errors[formField.fieldID] && (
+                <Typography
+                  variant="caption"
+                  sx={{ color: (theme) => theme.palette.warning.main }}
+                >
+                  {errors[formField.fieldID].message}
+                </Typography>
+              )}
+            </Box>
+          );
+        } else {
+          return (
+            <Box
+              key={formField.fieldID}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                mb: "1rem",
+              }}
+            >
+              <Typography variant="body2">{formField.label}</Typography>
+            </Box>
+          );
+        }
       });
       return (
         <Box>
@@ -278,20 +318,30 @@ function Prioritization({ setDrawerButtonList }) {
                 mb: "1rem",
               }}
             >
-              <Typography variant="body1">Set a project type</Typography>
+              <Typography variant="body1">
+                <strong>Set a project type</strong>
+              </Typography>
               <Box sx={{ mt: 1, mb: 0.5 }}>
+                <Typography variant="caption">
+                  Are you prioritizing preservation projects or retrofit
+                  projects?
+                </Typography>
                 <FormControl sx={{ width: "100%" }}>
-                  <Select {...register("wq_type")} defaultValue="retrofit">
-                    <MenuItem value="preservation">Preservation</MenuItem>
-                    <MenuItem value="retrofit">Retrofit</MenuItem>
+                  <Select
+                    {...register("wq_type")}
+                    defaultValue="retrofit_direction"
+                  >
+                    <MenuItem value="preservation_direction">
+                      Preservation
+                    </MenuItem>
+                    <MenuItem value="retrofit_direction">Retrofit</MenuItem>
                   </Select>
                 </FormControl>
               </Box>
-              <Typography variant="caption">
-                Are you prioritizing preservation projects or retrofit projects?
-              </Typography>
             </Box>
-            <Typography variant="body1">Set Priority Weights</Typography>
+            <Typography variant="body1">
+              <strong>Set Priority Weights</strong>
+            </Typography>
             {fieldDiv}
           </Box>
           <Box sx={{ px: 1 }}>
@@ -355,7 +405,7 @@ function Prioritization({ setDrawerButtonList }) {
   async function exportScoringResults() {
     //Fetch subbasin properties to join with scores
     const subbasinAttributes = await api_fetch(
-      "/api/rest/subbasin/?f=geojson&limit=100000&offset=0&epoch=1980s",
+      "/api/rest/subbasin/?f=geojson&offset=0&epoch=1980s",
       {
         credentials: "same-origin",
         headers: {
@@ -389,7 +439,7 @@ function Prioritization({ setDrawerButtonList }) {
     });
 
     const buffer = "////////////////////////////////////////\r\n";
-    const formattedData = formatFormData(getValues());
+    const formattedData = await formatFormData(getValues());
     let scoreCSV = convertToCSV(joinedScores, [
       "subbasin",
       ...basinFields,
@@ -398,9 +448,10 @@ function Prioritization({ setDrawerButtonList }) {
     let scenarioCSV = convertToCSV(formattedData.criteria, [
       "Criteria",
       "Weight",
+      "Direction",
     ]);
     let wqTypeCSV = convertToCSV(
-      [{ wq_type: formattedData.wq_type }],
+      [{ wq_type: getValues("wq_type") }],
       ["WQ Project Type"]
     );
     exportCSVFile(
@@ -411,7 +462,7 @@ function Prioritization({ setDrawerButtonList }) {
 
   return (
     <TwoColGrid>
-      <HalfSpan md={4}>
+      <HalfSpan md={5}>
         <Card sx={{ p: 2 }}>
           {priorityWorkflowState == "scoring" ? (
             <form onSubmit={handleSubmit((data) => _handleSubmit(data))}>
@@ -454,7 +505,7 @@ function Prioritization({ setDrawerButtonList }) {
         </Card>
       </HalfSpan>
       <HalfSpan
-        md={8}
+        md={7}
         sx={{
           display: "flex",
           justifyContent: "flex-start",
@@ -495,6 +546,7 @@ function Prioritization({ setDrawerButtonList }) {
                   background: "rgba(255, 255, 255, 0.8)",
                   borderRadius: 1,
                 }}
+                label="Subbasin Priority Score"
               ></ColorRampLegend>
             )}
           </Card>
