@@ -458,7 +458,10 @@ function Prioritization({ setDrawerButtonList }) {
     );
     exportCSVFile(
       [wqTypeCSV, scenarioCSV, scoreCSV].join(buffer),
-      "testScoringOutput"
+      "Tacoma_Watersheds_Prioritization_Results_" +
+        new Date().toLocaleString("en-US", {
+          dateStyle: "short",
+        })
     );
   }
 
