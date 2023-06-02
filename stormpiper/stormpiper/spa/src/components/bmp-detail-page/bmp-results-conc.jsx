@@ -1,22 +1,5 @@
 import { ReadonlyStripedDataGrid } from "../base/striped-data-grid-readonly";
-import { pick } from "../../utils/utils";
-
-const concFormatter = (params) => {
-  if (params.value == null) {
-    return "0";
-  }
-  const n = Number(parseFloat(params.value).toPrecision(3));
-  const units = params.id.split("-").pop();
-  return `${n} ${units}`;
-};
-
-const pctFormatter = (params) => {
-  if (params.value == null) {
-    return "--";
-  }
-  const n = parseFloat(params.value).toFixed(1);
-  return `${n}%`;
-};
+import { pick, concFormatter, pctFormatter } from "../../utils/utils";
 
 const columns = [
   { field: "id" },

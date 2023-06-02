@@ -65,3 +65,64 @@ export function dateFormatter(dtValue) {
   const [date, time, ..._] = valueLocale.split(",");
   return `${date.trim()} at ${time.trim()}`;
 }
+
+export const concFormatter = (params) => {
+  if (params.value == null) {
+    return "0";
+  }
+  const n = Number(parseFloat(params.value).toPrecision(3));
+  const units = params.id.split("-").pop();
+  return `${n} ${units}`;
+};
+
+export const numFormatter = (params) => {
+  if (params.value == null) {
+    return "0";
+  }
+  if (params.field.toLowerCase() === "tmnt_facility_count") {
+    console.log("asf");
+  }
+  const n = Number(parseFloat(params.value).toPrecision(3));
+  return `${n}`;
+};
+
+export const pctFormatter = (params) => {
+  if (params.value == null) {
+    return "--";
+  }
+  const n = parseFloat(params.value).toFixed(1);
+  return `${n}%`;
+};
+
+export const strFormatter = (params) => {
+  if (!params.value) {
+    return " ";
+  }
+  return params.value.replace("_simple", "").replaceAll("_", " ");
+};
+
+export const createDisplayName = (str) => {
+  const units = ["pct", "lbs", "mg/l", "inches", "cuft"];
+
+  let targetIndex = -1;
+
+  for (const target of units) {
+    targetIndex = str.indexOf(target);
+    if (targetIndex !== -1) {
+      break;
+    }
+  }
+
+  if (targetIndex !== -1) {
+    const substring1 = str
+      .substring(0, targetIndex)
+      .replaceAll("_", " ")
+      .replace(/(?:^|\s)\S/g, function (a) {
+        return a.toUpperCase();
+      }); // e.g "TSS Conc"
+    const substring2 = str.substring(targetIndex).replaceAll("_", " "); // e.g. "(mg/l)"
+    return `${substring1} (${substring2})`;
+  }
+
+  return [str];
+};
