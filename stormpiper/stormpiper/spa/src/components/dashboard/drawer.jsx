@@ -35,9 +35,11 @@ export default function Drawer({
   toggleDrawer,
   drawerWidth,
   drawerButtonList,
+  selectedDrawerButton,
+  setSelectedDrawerButton,
   ...props
 }) {
-  const [selectedButton, setSelectedButton] = useState("");
+  const [selectedButton, setSelectedButton] = useState(selectedDrawerButton);
   const buttons = drawerButtonList;
   return (
     <DrawerStyled
@@ -71,16 +73,17 @@ export default function Drawer({
               }}
             >
               <WorkflowModal
+                id={button.label}
                 workflowTitle={button.label}
                 iconComponent={button.icon}
                 displayTitle={open}
                 clickHandler={() => {
-                  setSelectedButton(button.label);
+                  setSelectedDrawerButton(button.label);
                   if (button.clickHandler) {
                     button.clickHandler();
                   }
                 }}
-                selected={selectedButton}
+                selected={selectedDrawerButton}
               ></WorkflowModal>
             </ListItem>
           );
