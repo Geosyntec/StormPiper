@@ -19,9 +19,9 @@ land_cover,area_acres
 land_cover,lc_pasture_pct
 land_cover,lc_grass_pct
 land_cover,lc_water_pct
-land_cover,lc_imp-roof_pct
-land_cover,lc_imp-nonroof_pct
-land_cover,lc_imp-total_pct
+land_cover,lc_imp_roof_pct
+land_cover,lc_imp_nonroof_pct
+land_cover,lc_imp_total_pct
 runoff,runoff_depth_inches
 runoff,runoff_volume_cuft
 runoff,runoff_volume_cuft_generated
