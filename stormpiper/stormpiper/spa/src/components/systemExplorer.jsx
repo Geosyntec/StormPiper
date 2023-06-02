@@ -1,9 +1,10 @@
-import { Suspense, useEffect, useState, useRef, lazy } from "react";
+import { Suspense, useEffect, useState, useRef, lazy, useContext } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Card, CardContent, Box, Tabs, Tab } from "@mui/material";
 import LayersRoundedIcon from "@mui/icons-material/LayersRounded";
 import GridOnRoundedIcon from "@mui/icons-material/GridOnRounded";
 import SearchIcon from "@mui/icons-material/Search";
+import { UserProfileContext } from "./authProvider";
 
 import { layerDict } from "../assets/geojson/coreLayers";
 import LayerSelector from "./layerSelector";
@@ -12,7 +13,6 @@ import { api_fetch } from "../utils/utils";
 import { ExplorerSearch } from "./search/explorer-search-bar";
 
 const DeckGLMap = lazy(() => import("./map"));
-const ResultsTable = lazy(() => import("./resultsTable"));
 
 const panelStyles = {
   prjStatPanel: {
@@ -34,7 +34,7 @@ const panelStyles = {
     position: "absolute",
     zIndex: 9,
     bottom: "45px",
-    left: "10px",
+    right: "10px",
     height: "auto",
     width: "auto",
     borderRadius: "2px",
@@ -70,8 +70,11 @@ const panelStyles = {
   },
 };
 
-function SystemExplorer({ setDrawerButtonList, userProfile }) {
+function SystemExplorer({ setDrawerButtonList }) {
   const classes = panelStyles;
+  // const userProfile = useContext(UserProfileContext);
+  const userProfile = useContext(UserProfileContext);
+
   let params = useParams();
   let navigate = useNavigate();
   let location = useLocation();
@@ -168,11 +171,6 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
       label: "Search for BMP",
       icon: <SearchIcon />,
       clickHandler: _toggleSetSearchDisplayState,
-    },
-    {
-      label: "Evaluate Project",
-      icon: <GridOnRoundedIcon />,
-      clickHandler: _toggleSetResultsDisplayState,
     },
   ];
 
@@ -357,18 +355,7 @@ function SystemExplorer({ setDrawerButtonList, userProfile }) {
             ? classes.resultsPanel
             : classes.resultsPanelHidden
         }
-      >
-        <CardContent className={resultsDisplayState ? "" : "zero-padding"}>
-          <Suspense fallback={<Box>Loading Table...</Box>}>
-            <ResultsTable
-              nodes="all"
-              currentNode={focusFeatureID}
-              displayController={_toggleSetResultsDisplayState}
-              displayState={resultsDisplayState}
-            ></ResultsTable>
-          </Suspense>
-        </CardContent>
-      </Card>
+      ></Card>
     </Box>
   );
 }

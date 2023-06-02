@@ -33,6 +33,10 @@ ReactDOM.render(
           </Route>
         </Route>
         <Route
+          path="/app/view-results"
+          element={<App viewComponent="resultsView" />}
+        ></Route>
+        <Route
           path="/app/manage-users"
           element={<App viewComponent="editAllUsers" />}
         ></Route>
