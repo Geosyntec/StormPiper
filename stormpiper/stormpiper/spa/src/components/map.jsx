@@ -41,7 +41,15 @@ function getTooltipContents(object, layerLabel, fields) {
   if (feat) {
     let content = `<h4> Layer: ${layerLabel}</h4>
           ${fields.reduce((acc, field, i) => {
-            return acc + `<p>${field.label}: ${feat?.properties[field.id]}</p>`;
+            let formattedValue;
+            if (typeof feat.properties[field.id] === "string") {
+              formattedValue = feat.properties[field.id];
+            } else {
+              formattedValue = parseFloat(
+                feat.properties[field.id]
+              ).toLocaleString();
+            }
+            return acc + `<p>${field.label}: ${formattedValue}</p>`;
           }, "")}`;
     return content;
   }
@@ -52,6 +60,7 @@ function DeckGLMap({
   currentFeatureID,
   zoomID,
   zoomFeature,
+  tooltipObj,
   ...props
 }) {
   // Viewport settings
@@ -139,14 +148,18 @@ function DeckGLMap({
           object.y -= maxy;
           object.x -= maxx;
         }
+        let tooltipFields = tooltipFieldDict[object.layer?.id]
+          ? [...tooltipFieldDict[object.layer?.id]]
+          : [...tooltipFieldDict.default];
+        if (tooltipObj) {
+          tooltipFields.push(tooltipObj);
+        }
         return (
           object.object && {
             html: getTooltipContents(
               object.object,
               object?.layer?.props?.label,
-              tooltipFieldDict[object.layer?.id]
-                ? tooltipFieldDict[object.layer?.id]
-                : tooltipFieldDict.default
+              tooltipFields
             ),
             style: {
               position: "absolute",
