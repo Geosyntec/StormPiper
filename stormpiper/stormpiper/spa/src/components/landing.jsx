@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
+import GridOnRoundedIcon from "@mui/icons-material/GridOnRounded";
 import MapIcon from "@mui/icons-material/Map";
 import HubIcon from "@mui/icons-material/Hub";
 
@@ -21,10 +22,11 @@ function ActionAreaCard({ img, header, content, ...props }) {
   return (
     <Card
       sx={{
-        display: "flex-start",
+        display: "flex",
         alignItems: "stretch",
-        height: "100%",
-        maxWidth: { xs: "100%", md: 345 },
+        justifyContent: "center",
+        height: { xs: "100%", md: 250 },
+        maxWidth: { xs: "100%", md: 400 },
       }}
       {...props}
     >
@@ -106,25 +108,29 @@ export default function Landing() {
       <Box
         sx={{
           position: "absolute",
-          width: "90%",
+          width: "60%",
           top: "85%",
-          left: "5%",
+          left: "20%",
         }}
       >
         <Grid
           container
-          rowSpacing={6}
-          columnSpacing={6}
+          rowSpacing={2}
+          columnSpacing={2}
           alignItems="stretch"
-          justifyContent="center"
+          justifyContent="flex-start"
         >
           <Grid
             item
             xs={12}
-            md={4}
+            md={6}
             component={Link}
             to={allowNav && "/app/map"}
-            sx={{ textDecoration: "none" }}
+            sx={{
+              textDecoration: "none",
+              display: "flex",
+              justifyContent: "center",
+            }}
           >
             <ActionAreaCard
               img={
@@ -136,19 +142,49 @@ export default function Landing() {
               }
               header={"Map Explorer"}
               content={`
-                    Evaluate BMP performance, pinpoint potential retrofit
-                    sites and, identify viable approaches to treat stormwater
-                    and improve Tacoma’s receiving waters.
+                    Visualize the existing state of the stormwater BMP system. Search for specific facilities, and explore subbasins, pollutant heat maps, and reference imagery.
                     `}
             />
           </Grid>
           <Grid
             item
             xs={12}
-            md={4}
+            md={6}
+            component={Link}
+            to={allowNav && "/app/view-results"}
+            sx={{
+              textDecoration: "none",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <ActionAreaCard
+              img={
+                <GridOnRoundedIcon
+                  color="primary"
+                  fontSize="large"
+                  sx={{ transform: "scale(1.5)" }}
+                />
+              }
+              header={"WQ Results Viewer"}
+              content={`
+              Evaluate BMP performance, pinpoint potential retrofit
+              sites, identify viable approaches to treat stormwater
+              and improve Tacoma’s receiving waters.
+                    `}
+            />
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            md={6}
             component={Link}
             to={allowNav && "/app/prioritization"}
-            sx={{ textDecoration: "none" }}
+            sx={{
+              textDecoration: "none",
+              display: "flex",
+              justifyContent: "center",
+            }}
           >
             <ActionAreaCard
               img={
@@ -170,10 +206,14 @@ export default function Landing() {
           <Grid
             item
             xs={12}
-            md={4}
+            md={6}
             component={Link}
             to={allowNav && "/app/scenario"}
-            sx={{ textDecoration: "none" }}
+            sx={{
+              textDecoration: "none",
+              display: "flex",
+              justifyContent: "center",
+            }}
           >
             <ActionAreaCard
               img={

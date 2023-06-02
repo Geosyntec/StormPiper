@@ -6,6 +6,8 @@ import Drawer from "./drawer";
 import AppBar from "./appbar";
 import Landing from "../landing";
 import AuthChecker from "../authChecker";
+import ResultsViewerPage from "../results-viewer/results-page";
+// import SystemExplorer from "../systemExplorer";
 
 const SystemExplorer = lazy(() => import("../systemExplorer"));
 const Prioritization = lazy(() => import("../Prioritization"));
@@ -42,6 +44,7 @@ export default function Dashboard({
   closeDrawer,
 }) {
   const [drawerButtonList, setDrawerButtonList] = useState([]);
+  const [selectedDrawerButton, setSelectedDrawerButton] = useState(null);
 
   const hideDrawer = drawerButtonList.length === 0;
 
@@ -54,6 +57,14 @@ export default function Dashboard({
     systemExplorer: (
       <AuthChecker useNav={true} disallowedRoles={["public"]}>
         <SystemExplorer setDrawerButtonList={setDrawerButtonList} />
+      </AuthChecker>
+    ),
+    resultsView: (
+      <AuthChecker useNav={true} disallowedRoles={["public"]}>
+        <ResultsViewerPage
+          setDrawerButtonList={setDrawerButtonList}
+          setSelectedDrawerButton={setSelectedDrawerButton}
+        />
       </AuthChecker>
     ),
     editMe: <EditUser />,
@@ -130,6 +141,8 @@ export default function Dashboard({
         open={open}
         drawerWidth={drawerWidth}
         toggleDrawer={toggleDrawer}
+        selectedDrawerButton={selectedDrawerButton}
+        setSelectedDrawerButton={setSelectedDrawerButton}
         sx={{ display: hideDrawer && "none" }}
       />
       <MainBox open={open} drawerWidth={drawerWidth}>
