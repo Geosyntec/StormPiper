@@ -40,7 +40,6 @@ function Prioritization({ setDrawerButtonList }) {
     getValues,
     formState: { errors },
   } = useForm();
-  const [priorityWorkflowState, setPriorityWorkflowState] = useState("scoring");
   const [lyrSelectDisplayState, setlyrSelectDisplayState] = useState(false); // when true, control panel is displayed
   const [subbasinScores, setSubbasinScores] = useState({});
   const [baseLayer, setBaseLayer] = useState(0);
@@ -73,21 +72,8 @@ function Prioritization({ setDrawerButtonList }) {
   const [goalGroups, setGoalGroups] = useState([]);
   const [goalFields, setGoalFields] = useState([]);
 
-  const buttonList = [
-    {
-      label: "About",
-      icon: <InfoRoundedIcon />,
-      clickHandler: () => setPriorityWorkflowState("info"),
-    },
-    {
-      label: "Define Weights",
-      icon: <GridOnRoundedIcon />,
-      clickHandler: () => setPriorityWorkflowState("scoring"),
-    },
-  ];
-
   useEffect(() => {
-    setDrawerButtonList(buttonList);
+    setDrawerButtonList([]);
   }, []);
 
   useEffect(() => {
@@ -110,14 +96,6 @@ function Prioritization({ setDrawerButtonList }) {
         .map((obj) => obj.field),
     };
   });
-
-  function toggleCriteriaDirection() {
-    const directions = ["retrofit_direction", "preservation_direction"];
-    const newDirection = directions.filter(
-      (direction) => direction != criteriaDirection
-    );
-    setCriteriaDirection(newDirection);
-  }
 
   function _renderLayers(
     layerDict,
@@ -277,9 +255,7 @@ function Prioritization({ setDrawerButtonList }) {
                 type="number"
                 defaultValue={0}
                 required={true}
-                // label={formField.label}
                 inputProps={{ step: 0.1 }}
-                // helperText={formField.label}
               />
               <Typography variant="caption">{formField.description}</Typography>
               {errors[formField.fieldID] && (
@@ -331,7 +307,7 @@ function Prioritization({ setDrawerButtonList }) {
                   Are you prioritizing preservation projects or retrofit
                   projects?
                 </Typography>
-                <FormControl sx={{ width: "100%" }}>
+                <FormControl sx={{ width: "100%", mt: 1 }}>
                   <Select
                     {...register("wq_type")}
                     defaultValue="retrofit_direction"
@@ -490,44 +466,27 @@ function Prioritization({ setDrawerButtonList }) {
     <TwoColGrid>
       <HalfSpan md={5}>
         <Card sx={{ p: 2 }}>
-          {priorityWorkflowState == "scoring" ? (
+          <Box>
+            <Box
+              sx={{
+                margin: 1,
+                pb: 2,
+                borderBottom: "1px solid grey",
+              }}
+            >
+              <Typography variant="h6">
+                <strong>About Subbasin Prioritization</strong>
+              </Typography>
+              <Typography variant="caption">
+                Use this tool to identify regions of the City of Tacoma
+                Watershed that are most in need of stormwater retrofit or
+                preservation projects
+              </Typography>
+            </Box>
             <form onSubmit={handleSubmit((data) => _handleSubmit(data))}>
               {_renderFormFields()}
             </form>
-          ) : (
-            <Box
-              sx={{
-                display: "grid",
-                gridTemplateColumns: "repeat(1,1r)",
-                px: 1,
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  mb: "1rem",
-                }}
-              >
-                <Typography variant="body1">
-                  About Subbasin Prioritization
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  mb: "1rem",
-                }}
-              >
-                <Typography variant="caption">
-                  Use this tool to identify regions of the City of Tacoma
-                  Watershed that are most in need of stormwater retrofit or
-                  preservation projects
-                </Typography>
-              </Box>
-            </Box>
-          )}
+          </Box>
         </Card>
       </HalfSpan>
       <HalfSpan
