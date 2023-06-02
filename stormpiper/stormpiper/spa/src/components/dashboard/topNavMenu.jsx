@@ -14,25 +14,33 @@ import MenuList from "@mui/material/MenuList";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import MapIcon from "@mui/icons-material/Map";
+import GridOnRoundedIcon from "@mui/icons-material/GridOnRounded";
+
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import HubIcon from "@mui/icons-material/Hub";
 
 const topNavItems = [
-  {
-    label: "Prioritize Watersheds",
-    link: "/app/prioritization",
-    icon: <CompareArrowsIcon sx={{ transform: "rotate(90deg)" }} />,
-  },
   {
     label: "Map Explorer",
     link: "/app/map",
     icon: <MapIcon />,
   },
   {
+    label: "WQ Results Viewer",
+    link: "/app/view-results",
+    icon: <GridOnRoundedIcon />,
+  },
+  {
+    label: "Prioritize Watersheds",
+    link: "/app/prioritization",
+    icon: <CompareArrowsIcon sx={{ transform: "rotate(90deg)" }} />,
+  },
+  {
     label: "Scenario Designer",
     link: "/app/scenario",
     icon: <HubIcon />,
   },
+
   // fallback is last
   {
     label: "Home",
