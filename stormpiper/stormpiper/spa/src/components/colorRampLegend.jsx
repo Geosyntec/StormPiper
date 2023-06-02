@@ -1,8 +1,8 @@
 import { Box, Typography } from "@mui/material";
 
-export default function ColorRampLegend(props) {
+export default function ColorRampLegend({ sx, label }) {
   return (
-    <Box id="color-ramp-legend" {...props}>
+    <Box id="color-ramp-legend" sx={{ ...sx }}>
       <Box
         sx={{
           width: "100%",
@@ -14,7 +14,7 @@ export default function ColorRampLegend(props) {
           sx={{
             borderRadius: 0.5,
             width: "100%",
-            height: "40%",
+            height: "50%",
             position: "absolute",
             background: "#4a7d70",
             backgroundImage:
@@ -31,7 +31,7 @@ export default function ColorRampLegend(props) {
               textAlign: "center",
             }}
           >
-            <Typography variant="caption">Subbasin Priority Score</Typography>
+            <Typography variant="caption">{label}</Typography>
           </Box>
           <Box
             sx={{
