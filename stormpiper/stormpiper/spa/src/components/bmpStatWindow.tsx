@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { api_fetch } from "../utils/utils";
+import { api_fetch, dateFormatter } from "../utils/utils";
 import { BMPForm } from "./bmpForm";
 
 // TODO: Make Facility Type editable (for now, only allow user to toggle between simple and not simple). Look for endpoint that can retrieve all facility types, and their respective data models
@@ -197,7 +197,7 @@ function BMPStatWindow(props: statWindowProps) {
   }
 
   function _renderUpdateBox() {
-    let lastUpdated: Date = new Date(props.isDirty?.last_updated);
+    let lastUpdated: Date = dateFormatter(props.isDirty?.last_updated);
     let lastUpdatedStr: string;
     if (lastUpdated && lastUpdated != undefined) {
       lastUpdatedStr = lastUpdated.toLocaleString("en-US", {
