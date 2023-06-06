@@ -190,6 +190,7 @@ function Prioritization({ setDrawerButtonList }) {
           ["fieldGroup"].map((criteria) => {
             if (subbasinAttributes.includes(criteria)) {
               res.criteria.push({
+                subgoal: k,
                 criteria: criteria,
                 weight: data[k],
                 direction: parseInt(
@@ -406,7 +407,7 @@ function Prioritization({ setDrawerButtonList }) {
     formFields.map((f) => {
       f.fieldGroup.map((field) => basinFields.push(field));
     });
-    //TODO: Sort by scores, descending
+
     let joinedScores = subbasinAttributes.features.map((subbasin) => {
       let r = {};
       r["subbasin"] = subbasin.properties.subbasin;
@@ -429,6 +430,7 @@ function Prioritization({ setDrawerButtonList }) {
       "score",
     ]);
     let scenarioCSV = convertToCSV(formattedData.criteria, [
+      "Subgoal",
       "Criteria",
       "Weight",
       "Direction",
@@ -512,7 +514,7 @@ function Prioritization({ setDrawerButtonList }) {
               layers={_renderLayers(layerDict, activeLayers, firstRender)}
               baseLayer={baseLayer}
               initialViewState={{
-                zoom: 9.6,
+                zoom: 10,
               }}
               sx={{
                 position: "absolute",
