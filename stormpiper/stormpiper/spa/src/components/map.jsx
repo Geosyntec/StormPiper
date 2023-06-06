@@ -36,6 +36,9 @@ const tooltipFieldDict = {
   default: [{ id: "altid", label: "ID" }],
 };
 
+const LONGITUDE_RANGE = [-122.7, -121.8];
+const LATITUDE_RANGE = [47.05, 47.45];
+
 function getTooltipContents(object, layerLabel, fields) {
   const feat = object;
   if (feat) {
@@ -132,6 +135,20 @@ function DeckGLMap({
       controller={{ doubleClickZoom: false }}
       layers={props.layers}
       onHover={({ object }) => (isHovering = Boolean(object))}
+      onViewStateChange={({ viewState, oldViewState }) => {
+        viewState.longitude = Math.min(
+          LONGITUDE_RANGE[1],
+          Math.max(LONGITUDE_RANGE[0], viewState.longitude)
+        );
+        viewState.latitude = Math.min(
+          LATITUDE_RANGE[1],
+          Math.max(LATITUDE_RANGE[0], viewState.latitude)
+        );
+        if (viewState.zoom < 9) {
+          viewState = { ...oldViewState, zoom: 9 };
+        }
+        return viewState;
+      }}
       getCursor={({ isDragging }) =>
         isDragging ? "grabbing" : isHovering ? "pointer" : "grab"
       }
