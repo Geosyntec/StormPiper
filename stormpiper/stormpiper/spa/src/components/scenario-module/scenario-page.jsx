@@ -47,10 +47,9 @@ export default function ScenarioReviewPage() {
           <Card
             sx={{
               display: "flex",
-              minHeight: "300px",
-              height: "100%",
               alignItems: "center",
               justifyContent: "center",
+              height: "300px",
             }}
           >
             <AllScenariosMap
@@ -60,7 +59,7 @@ export default function ScenarioReviewPage() {
           </Card>
         </HalfSpan>
         <FullSpan>
-          <Card sx={{ p: 2 }}>
+          <Card sx={{ height: 500, p: 2 }}>
             <ScenarioInfoTable
               data={allScenarios}
               dataRefresher={getAllScenarios}

@@ -350,8 +350,8 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
     return (
       <Box
         sx={{
+          height: 600,
           maxHeight: 1000,
-          minHeight: 500,
           "& .actions": {
             color: "text.secondary",
           },
@@ -379,9 +379,6 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
                 [theme.breakpoints.up("xs")]: {
                   flexDirection: "row",
                 },
-                // [theme.breakpoints.up("lg")]: {
-                //   flexDirection: "row",
-                // },
               };
             }}
           >
