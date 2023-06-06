@@ -58,7 +58,7 @@ export function dateFormatter(dtValue) {
   if (dtValue == null) {
     return "--";
   }
-  const valueDate = new Date(dtValue);
+  const valueDate = new Date(dtValue.replace(" ", "T"));
   const valueLocale = valueDate.toLocaleString("en-US", {
     timeZoneName: "short",
   });
