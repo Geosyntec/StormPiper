@@ -43,7 +43,7 @@ export default function BMPDetailMap({
     <Box
       sx={{
         width: "100%",
-        height: "100%",
+        height: "500px",
         position: "relative",
         overflowY: "hidden",
       }}
