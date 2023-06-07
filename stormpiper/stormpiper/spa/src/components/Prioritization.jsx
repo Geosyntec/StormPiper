@@ -25,7 +25,7 @@ import { layerDict } from "../assets/geojson/subbasinLayer";
 import ColorRampLegend from "./colorRampLegend";
 import { api_fetch, colorToList } from "../utils/utils";
 import { HalfSpan, TwoColGrid } from "./base/two-col-grid";
-import { csv } from "d3-fetch";
+import { goals_csv, field_manifest_csv } from "../assets/data/csv_assets";
 
 const DeckGLMap = lazy(() => import("./map"));
 
@@ -77,8 +77,8 @@ function Prioritization({ setDrawerButtonList }) {
   }, []);
 
   useEffect(() => {
-    csv("../../assets/data/goals.csv").then((res) => setGoalGroups(res));
-    csv("../../assets/data/field_manifest.csv").then((res) =>
+    goals_csv.then((res) => setGoalGroups(res));
+    field_manifest_csv.then((res) =>
       setGoalFields(res.filter((field) => field.priority_subgoal != ""))
     );
   }, []);
