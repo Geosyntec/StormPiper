@@ -8,7 +8,10 @@ import {
 } from "@mui/x-data-grid";
 
 import { api_fetch } from "../../utils/utils";
-import { csv } from "d3-fetch";
+import {
+  result_fields_csv,
+  result_groups_csv,
+} from "../../assets/data/csv_assets";
 
 type TableHeader = {
   field: string;
@@ -31,7 +34,7 @@ type FacilityResultsTableState = {
   loaded: Boolean;
 };
 
-export default function SubbasinResultsTable() {
+export default function SubbasinResultsTable({ fieldList }) {
   let allResults: any;
   let resSpec: any;
   let headers: TableHeader[];
@@ -46,65 +49,54 @@ export default function SubbasinResultsTable() {
   const [resultsGroups, setResultsGroups] = useState([]);
   const [fieldGroups, setFieldGroups] = useState([]);
   const pinnedFields = ["basinname", "subbasin"];
-  // const fieldGroups: FieldGroup[] =
-  //   resultsGroups &&
-  //   resultsGroups.map((group) => {
-  //     return {
-  //       groupName: group.display_name,
-  //       fields: [
-  //         ...pinnedFields,
-  //         ...resultsFields
-  //           .filter((field) => field.group === group.group)
-  //           .map((group) => group.field),
-  //       ],
-  //     };
-  //   });
 
   const [currentFields, setCurrentFields] = useState(fieldGroups[0]?.fields);
   const [currentGroup, setCurrentGroup] = useState(fieldGroups[0]?.groupName);
 
   useEffect(() => {
-    let resources = ["/openapi.json", "/api/rest/subbasin/wq/"];
+    let resources = [
+      { resource: "/openapi.json", format: "json" },
+      { resource: "/api/rest/subbasin/wq/", format: "json" },
+      { resource: result_fields_csv, format: "csv" },
+      { resource: result_groups_csv, format: "csv" },
+    ];
     Promise.all(
-      resources.map((url) => api_fetch(url).then((res) => res.json()))
+      resources.map(({ resource, format }) => {
+        if (format === "json") {
+          return api_fetch(resource).then((res) => res.json());
+        } else {
+          return resource;
+        }
+      })
     )
       .then((resArray) => {
         resSpec = resArray[0].components.schemas.SubbasinInfoView;
         allResults = resArray[1];
-        headers = _buildTableColumns(resSpec.properties);
+        headers = _buildTableColumns(resSpec.properties, fieldList);
         setResultState({
           results: allResults,
           headers,
           loaded: true,
         });
+
+        setResultsFields(resArray[2]);
+        setResultsGroups(resArray[3]);
+        let fieldGroups = resArray[3].map((group) => {
+          return {
+            groupName: group.display_name,
+            fields: [
+              ...pinnedFields,
+              ...resArray[2]
+                .filter((field) => field.group === group.group)
+                .map((group) => group.field),
+            ],
+          };
+        });
+        setFieldGroups(fieldGroups);
+        setCurrentFields(fieldGroups[0]?.fields);
+        setCurrentGroup(fieldGroups[0]?.groupName);
       })
       .catch((err) => console.warn("Couldn't get results", err));
-  }, []);
-
-  useEffect(() => {
-    Promise.all(
-      [
-        "../../assets/data/result_fields.csv",
-        "../../assets/data/result_groups.csv",
-      ].map((url) => csv(url))
-    ).then((resArray) => {
-      setResultsFields(resArray[0]);
-      setResultsGroups(resArray[1]);
-      let fieldGroups = resArray[1].map((group) => {
-        return {
-          groupName: group.display_name,
-          fields: [
-            ...pinnedFields,
-            ...resArray[0]
-              .filter((field) => field.group === group.group)
-              .map((group) => group.field),
-          ],
-        };
-      });
-      setFieldGroups(fieldGroups);
-      setCurrentFields(fieldGroups[0]?.fields);
-      setCurrentGroup(fieldGroups[0]?.groupName);
-    });
   }, []);
 
   function CustomToolbar() {
@@ -121,7 +113,17 @@ export default function SubbasinResultsTable() {
             my: 2,
           }}
         >
-          <GridToolbarExport sx={{ mx: 2 }} />
+          <GridToolbarExport
+            csvOptions={{
+              allColumns: true,
+              fileName: () => {
+                "Tacoma_Watersheds_Subbasin_" +
+                  currentGroup.replaceAll(" ", "_");
+              },
+            }}
+            printOptions={{ disableToolbarButton: true }}
+            sx={{ mx: 2 }}
+          />
           <ul
             style={{
               display: "flex",
@@ -175,20 +177,27 @@ export default function SubbasinResultsTable() {
     return valueFormatter;
   }
 
-  function _buildTableColumns(props: {
-    [key: string]: { title: string; type: string };
-  }): TableHeader[] {
+  function _buildTableColumns(
+    props: {
+      [key: string]: { title: string; type: string };
+    },
+    resultFields: { group: string; field: string; displayName: string }[]
+  ): TableHeader[] {
     let colArr: TableHeader[] = [];
     Object.keys(props).map((k) => {
-      colArr.push({
-        field: k,
-        headerName: props[k].title,
-        width: 150, //pinnedFields.includes(k) ? 100 : 100 + (props[k].title.length - 20),
-        headerAlign: "center",
-        align: "center",
-        valueFormatter: getValueFormatter(k, props[k].type),
-        type: props[k].type,
-      });
+      if (resultFields) {
+        colArr.push({
+          field: k,
+          headerName:
+            resultFields.filter((field) => field.field === k)[0]?.displayName ||
+            k, //props[k].title,
+          width: 150, //pinnedFields.includes(k) ? 100 : 100 + (props[k].title.length - 20),
+          headerAlign: "center",
+          align: "center",
+          valueFormatter: getValueFormatter(k, props[k].type),
+          type: props[k].type,
+        });
+      }
     });
     return colArr;
   }
@@ -218,7 +227,7 @@ export default function SubbasinResultsTable() {
       <Box
         sx={{
           maxHeight: 1000,
-          minHeight: 500,
+          height: 500,
           "& .actions": {
             color: "text.secondary",
           },
@@ -263,12 +272,6 @@ export default function SubbasinResultsTable() {
             getRowId={(row) => row["node_id"] + row["epoch"]}
             density={"compact"}
             slots={{ toolbar: CustomToolbar }}
-            slotProps={{
-              toolbar: {
-                csvOptions: { allColumns: true },
-                printOptions: { disableToolbarButton: true },
-              },
-            }}
           />
         </Box>
       </Box>

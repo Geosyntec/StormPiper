@@ -6,15 +6,16 @@ import {
   TextField,
   MenuItem,
   ListSubheader,
-  FormControl,
-  InputLabel,
-  Select,
 } from "@mui/material";
 import { FullSpan, HalfSpan } from "../base/two-col-grid";
 import SubbasinResultsMap from "./subbasin-results-map";
-import { csv } from "d3-fetch";
 import { api_fetch } from "../../utils/utils";
 import { createDisplayName } from "../../utils/utils";
+import {
+  result_fields_csv,
+  field_manifest_csv,
+  result_groups_csv,
+} from "../../assets/data/csv_assets";
 
 const SubbasinResultsTable = lazy(() => import("./subbasin-results-table"));
 
@@ -36,10 +37,9 @@ export default function SubbasinResultsView() {
 
   useEffect(() => {
     Promise.all(
-      [
-        "../../assets/data/result_fields.csv",
-        "../../assets/data/field_manifest.csv",
-      ].map((url) => csv(url))
+      [result_fields_csv, field_manifest_csv, result_groups_csv].map(
+        (resource) => resource
+      )
     ).then((resArray) => {
       resArray[0].forEach((field) => {
         let displayName = resArray[1].filter((f) => {
@@ -51,10 +51,8 @@ export default function SubbasinResultsView() {
         field.displayName = displayName;
       });
       setResultsFields(resArray[0]);
+      setResultsGroups(resArray[2]);
     });
-    csv("../../assets/data/result_groups.csv").then((res) =>
-      setResultsGroups(res)
-    );
   }, []);
 
   return (
@@ -139,7 +137,9 @@ export default function SubbasinResultsView() {
           }}
         >
           <Suspense fallback={<Box>Loading Table...</Box>}>
-            <SubbasinResultsTable></SubbasinResultsTable>
+            <SubbasinResultsTable
+              fieldList={resultsFields}
+            ></SubbasinResultsTable>
           </Suspense>
         </Card>
       </FullSpan>
