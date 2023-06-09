@@ -9,6 +9,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  InputAdornment,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
@@ -55,6 +56,31 @@ type formProps = {
   formDataEmitter?: Function;
   formDisabled?: boolean;
 };
+
+function getFieldAdornment(k) {
+  const cost = <InputAdornment position="start">$</InputAdornment>;
+  const pct = <InputAdornment position="end">%</InputAdornment>;
+  const knownAdornments = {
+    captured_pct: { endAdornment: pct },
+    retained_pct: { endAdornment: pct },
+    om_cost_per_yr: { startAdornment: cost },
+    capital_cost: { startAdornment: cost },
+    replacement_cost: { startAdornment: cost },
+  };
+
+  return knownAdornments?.[k];
+}
+
+function getFieldOverrides(k) {
+  const knownOverrides = {
+    capital_cost_basis_year: { type: "number", step: 1 },
+    om_cost_basis_year: { type: "number", step: 1 },
+    install_year: { type: "number", step: 1 },
+    lifespan_yrs: { type: "number", step: 1 },
+  };
+
+  return knownOverrides?.[k];
+}
 
 export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
   const formDisabled = props.formDisabled ?? false;
@@ -147,17 +173,21 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
     };
     Object.keys(_fields).map((k: string) => {
       let v: any = _fields[k];
-      let numDefault = Object.keys(costFields?.properties || {}).includes(k)
-        ? null
-        : 0;
+      const overrides = getFieldOverrides(k);
+      const is_cost_field = Object.keys(costFields?.properties || {}).includes(
+        k
+      );
+      let numDefault = is_cost_field ? null : 0;
+
       if (!hiddenFields.includes(k)) {
         let fieldObj = {
           fieldID: k,
           label: v.title,
-          type:
-            typeof v?.type === "string" || v?.type instanceof String
-              ? v.type
-              : "string",
+          type: overrides?.type
+            ? overrides.type
+            : typeof v?.type === "string" || v?.type instanceof String
+            ? v.type
+            : "string",
           required:
             fields.required.includes(k) ||
             costFields?.required?.includes(k) ||
@@ -173,6 +203,8 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
             : v.type === "string"
             ? ""
             : numDefault,
+          adornment: getFieldAdornment(k),
+          step: overrides?.step || null,
         };
         if (k === "facility_type" && !props.values[k]) {
           fieldObj.value = "no_treatment";
@@ -340,10 +372,16 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
                 label={formField.label}
                 {...inputProps}
                 inputProps={{
-                  step: formField.type === "number" ? 0.01 : null,
+                  step:
+                    formField.type === "number"
+                      ? formField?.step || 0.01
+                      : null,
                 }}
                 InputLabelProps={{
                   shrink: true,
+                }}
+                InputProps={{
+                  ...formField.adornment,
                 }}
                 disabled={
                   (formField.label === "Node Id" && showSubmit) || formDisabled //having showSubmit disabled the field is a workaround to disable it only in the scenario version of this form
