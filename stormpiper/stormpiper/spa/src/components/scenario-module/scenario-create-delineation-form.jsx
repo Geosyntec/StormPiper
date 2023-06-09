@@ -155,10 +155,16 @@ export const ScenarioDelineationForm = forwardRef(
         <Box
           sx={{
             display: "flex",
+            flexDirection: "column",
             justifyContent: "flex-start",
-            py: 1,
           }}
         >
+          <Typography
+            variant="body2"
+            sx={{ mt: 1, mb: 4, pb: 1, borderBottom: "1px solid grey" }}
+          >
+            <strong>Draw a delineation on the map, and give it a name</strong>
+          </Typography>
           <form
             onSubmit={handleSubmit(_handleSubmit)}
             style={{ width: "100%" }}
