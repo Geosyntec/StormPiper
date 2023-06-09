@@ -222,12 +222,12 @@ def build_tmnt_v():
 
     tctscols = [f"""\ttc."{s}" as "cost_attr_{s}" """ for s in ts_cols]
     tccols = [f"""\ttc."{s}" """ for s in tc_cols]
-    costploadclos = [
+    costploadcols = [
         f"""tc.present_value_total_cost / nullif(COALESCE(nullif(sign(r."{poc}_removed"),-1),0)*r."{poc}_removed", 0) AS "{poc.split("_")[0]}_total_cost_dollars_per_load_lbs_removed" """
         for poc in load_cols
     ]
 
-    block = ",\n".join(tcols + tatscols + tacols + tctscols + tccols + costploadclos)
+    block = ",\n".join(tcols + tatscols + tacols + tctscols + tccols + costploadcols)
 
     view_template = f"""
 CREATE OR REPLACE VIEW tmnt_v AS
