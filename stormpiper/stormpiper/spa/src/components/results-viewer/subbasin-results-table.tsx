@@ -60,44 +60,47 @@ export default function SubbasinResultsTable({ fieldList }) {
       { resource: result_fields_csv, format: "csv" },
       { resource: result_groups_csv, format: "csv" },
     ];
-    Promise.all(
-      resources.map(({ resource, format }) => {
-        if (format === "json") {
-          return api_fetch(resource).then((res) => res.json());
-        } else {
-          return resource;
-        }
-      })
-    )
-      .then((resArray) => {
-        resSpec = resArray[0].components.schemas.SubbasinInfoView;
-        allResults = resArray[1];
-        headers = _buildTableColumns(resSpec.properties, fieldList);
-        setResultState({
-          results: allResults,
-          headers,
-          loaded: true,
-        });
+    if (fieldList) {
+      //guard against render cycles where field list is not set
+      Promise.all(
+        resources.map(({ resource, format }) => {
+          if (format === "json") {
+            return api_fetch(resource).then((res) => res.json());
+          } else {
+            return resource;
+          }
+        })
+      )
+        .then((resArray) => {
+          resSpec = resArray[0].components.schemas.SubbasinInfoView;
+          allResults = resArray[1];
+          headers = _buildTableColumns(resSpec.properties, fieldList);
+          setResultState({
+            results: allResults,
+            headers,
+            loaded: true,
+          });
 
-        setResultsFields(resArray[2]);
-        setResultsGroups(resArray[3]);
-        let fieldGroups = resArray[3].map((group) => {
-          return {
-            groupName: group.display_name,
-            fields: [
-              ...pinnedFields,
-              ...resArray[2]
-                .filter((field) => field.group === group.group)
-                .map((group) => group.field),
-            ],
-          };
-        });
-        setFieldGroups(fieldGroups);
-        setCurrentFields(fieldGroups[0]?.fields);
-        setCurrentGroup(fieldGroups[0]?.groupName);
-      })
-      .catch((err) => console.warn("Couldn't get results", err));
-  }, []);
+          setResultsFields(resArray[2]);
+          setResultsGroups(resArray[3]);
+          let fieldGroups = resArray[3].map((group) => {
+            return {
+              groupName: group.display_name,
+              fields: [
+                ...pinnedFields,
+                ...resArray[2]
+                  .filter((field) => field.group === group.group)
+                  .map((group) => group.field),
+              ],
+            };
+          });
+          setFieldGroups(fieldGroups);
+          setCurrentFields(fieldGroups[0]?.fields);
+          setCurrentGroup(fieldGroups[0]?.groupName);
+        })
+        .catch((err) => console.warn("Couldn't get results", err));
+    }
+  }, [fieldList]);
 
   function CustomToolbar() {
     return (
@@ -190,7 +193,7 @@ export default function SubbasinResultsTable({ fieldList }) {
           field: k,
           headerName:
             resultFields.filter((field) => field.field === k)[0]?.displayName ||
-            k, //props[k].title,
+            props[k].title, //props[k].title,
           width: 150, //pinnedFields.includes(k) ? 100 : 100 + (props[k].title.length - 20),
           headerAlign: "center",
           align: "center",
