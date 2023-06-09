@@ -4,6 +4,8 @@ from .base import BaseORM
 class TMNTView(BaseORM):
     node_id: str
     altid: str
+    basinname: str | None
+    subbasin: str | None
     facilitytype: str | None
     commonname: str | None
     facilitydetail: str | None
