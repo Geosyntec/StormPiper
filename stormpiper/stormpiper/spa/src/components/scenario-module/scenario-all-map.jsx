@@ -118,6 +118,7 @@ export default function AllScenariosMap({
           id="inset-map"
           layers={layers}
           viewState={viewState}
+          showTooltip={true}
         ></DeckGLMap>
       }
     </Box>

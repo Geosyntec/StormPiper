@@ -53,6 +53,7 @@ export default function BMPDetailMap({
           id="inset-map"
           layers={layers}
           viewState={viewState}
+          showTooltip={true}
         ></DeckGLMap>
       )}
     </Box>
