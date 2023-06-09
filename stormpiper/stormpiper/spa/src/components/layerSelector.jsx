@@ -4,7 +4,7 @@ function LayerSelector(props) {
   return (
     <>
       {props.displayStatus && (
-        <Box>
+        <Box sx={{ overflow: "scroll" }}>
           <Box
             sx={{
               mb: 1,
@@ -12,6 +12,7 @@ function LayerSelector(props) {
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
+              borderBottom: "1px solid grey",
             }}
           >
             <Typography variant="h4">Layers</Typography>
@@ -31,12 +32,7 @@ function LayerSelector(props) {
   );
 }
 
-function _renderCategories(
-  layerDict,
-  _onToggleLayer,
-  activeLayers,
-  layerLevel
-) {
+function _renderCategories(layerDict, _onToggleLayer, activeLayers) {
   return Object.keys(layerDict).map((layerCategory) => {
     const layers = layerDict[layerCategory];
     if (!layers.length) {
@@ -61,7 +57,9 @@ function _renderCategories(
     } else {
       return (
         <Box key={layerCategory}>
-          <Typography variant="subtitle1">{layerCategory}</Typography>
+          <Typography variant="subtitle1">
+            <strong>{layerCategory}</strong>
+          </Typography>
 
           {Object.values(layers).map((layer) => {
             return (

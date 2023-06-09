@@ -1,5 +1,6 @@
 import ReactDOMServer from "react-dom/server";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import GridOnIcon from "@mui/icons-material/GridOn";
 
 export function svgToDataURL(svg) {
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
@@ -21,4 +22,8 @@ export function iconToDataURL({ component }) {
 
 export const locationIconUrl = iconToDataURL({
   component: <LocationOnIcon />,
+});
+
+export const inletIconUrl = iconToDataURL({
+  component: <GridOnIcon />,
 });
