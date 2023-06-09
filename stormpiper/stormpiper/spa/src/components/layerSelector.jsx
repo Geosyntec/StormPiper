@@ -4,7 +4,7 @@ function LayerSelector(props) {
   return (
     <>
       {props.displayStatus && (
-        <Box sx={{ overflow: "scroll" }}>
+        <Box>
           <Box
             sx={{
               mb: 1,
