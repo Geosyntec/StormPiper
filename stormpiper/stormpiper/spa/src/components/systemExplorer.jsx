@@ -23,7 +23,7 @@ const panelStyles = {
   layerPanel: {
     zIndex: 9,
     width: "400px",
-    overflow: "scroll",
+    overflowY: "scroll",
   },
   panelHidden: {
     pointerEvents: "none",
@@ -343,7 +343,7 @@ function SystemExplorer({ setDrawerButtonList }) {
               lyrSelectDisplayState ? classes.layerPanel : classes.panelHidden
             }
           >
-            <CardContent sx={{ p: 2, overflow: "scroll" }}>
+            <CardContent sx={{ p: 2 }}>
               <LayerSelector
                 layerDict={layerDict}
                 activeLayers={activeLayers}
