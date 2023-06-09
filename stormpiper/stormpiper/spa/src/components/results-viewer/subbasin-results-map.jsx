@@ -68,7 +68,7 @@ export default function SubbasinResultsMap({ visParam }) {
         return colorToList(interpolateViridis(score));
       });
     } else {
-      setVisFunction(() => colorToList("forestgreen", 0.2));
+      setVisFunction(() => colorToList("transparent", 0));
     }
   }, [visParam]);
 
@@ -102,7 +102,10 @@ export default function SubbasinResultsMap({ visParam }) {
       <DeckGLMap
         id="inset-map"
         layers={subbasinLayer}
-        tooltipObj={{ id: visParam, label: visParam }}
+        tooltipObj={visParam && { id: visParam, label: visParam }}
+        initialViewState={{
+          zoom: 10,
+        }}
       ></DeckGLMap>
       {visParam && (
         <ColorRampLegend
