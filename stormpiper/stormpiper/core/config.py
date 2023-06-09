@@ -109,7 +109,7 @@ class Settings(BaseSettings):
 
 settings = Settings()
 
-external_resources = json.loads(
+external_resources: dict[str, dict] = json.loads(
     (Path(__file__).parent / "external_resources.json").read_text()
 )
 

@@ -3,6 +3,7 @@ import base64
 import logging
 
 import geopandas
+import pandas
 import requests
 
 from stormpiper.core.config import external_resources, settings
@@ -12,7 +13,7 @@ logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
 
 
-def get_features(url):
+def get_features(url: str | bytes) -> list:
     response = requests.get(url)
     js = response.json()
 
@@ -20,9 +21,9 @@ def get_features(url):
     return [] if features is None else features
 
 
-def _get_tmnt_facility_type_codes(*, url=None):
+def _get_tmnt_facility_type_codes(*, url: str | bytes | None = None) -> dict[str, str]:
     if url is None:  # pragma: no branch
-        url = external_resources["tmnt_facility_codes"]["url"]
+        url = external_resources.get("tmnt_facility_codes", {}).get("url", "")
     r = requests.get(url)
     data = r.json()
 
@@ -36,9 +37,9 @@ def _get_tmnt_facility_type_codes(*, url=None):
     return code_lu
 
 
-def _get_tmnt_facilities(*, url=None):
+def _get_tmnt_facilities(*, url: str | bytes | None = None) -> geopandas.GeoDataFrame:
     if url is None:  # pragma: no branch
-        url = external_resources["tmnt_facilities"]["url"]
+        url = external_resources.get("tmnt_facilities", {}).get("url", "")
 
     features = get_features(url=url)
     gdf = geopandas.GeoDataFrame.from_features(features=features, crs=4326)
@@ -46,11 +47,13 @@ def _get_tmnt_facilities(*, url=None):
     return gdf
 
 
-def facility_node_id(altid):
+def facility_node_id(altid: str) -> str:
     return altid
 
 
-def warn_maintainers_of_duplicates(*, df, bmp_url):  # pragma: no cover
+def warn_maintainers_of_duplicates(
+    *, df: pandas.DataFrame, bmp_url: str
+) -> None:  # pragma: no cover
     duplicate_altids = df
     b64_content = base64.b64encode(duplicate_altids.to_json().encode()).decode()
     content = (
@@ -80,7 +83,13 @@ def warn_maintainers_of_duplicates(*, df, bmp_url):  # pragma: no cover
     )
 
 
-def get_tmnt_facilities(*, bmp_url=None, codes_url=None, cols=None, with_warning=True):
+def get_tmnt_facilities(
+    *,
+    bmp_url: str | None = None,
+    codes_url: str | bytes | None = None,
+    cols: list[str] | None = None,
+    with_warning: bool = True,
+):
     if cols is None:  # pragma: no branch
         cols = external_resources["tmnt_facilities"]["columns"]
 
@@ -126,7 +135,7 @@ def get_tmnt_facilities(*, bmp_url=None, codes_url=None, cols=None, with_warning
 
     if len(duplicate_altids) > 0 and with_warning:  # pragma: no cover
         # send email to maintainers
-        warn_maintainers_of_duplicates(df=duplicate_altids, bmp_url=bmp_url)
+        warn_maintainers_of_duplicates(df=duplicate_altids, bmp_url=bmp_url or "")
 
     return gdf.drop_duplicates()
 
