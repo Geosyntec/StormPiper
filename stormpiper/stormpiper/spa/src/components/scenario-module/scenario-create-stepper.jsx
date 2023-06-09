@@ -26,7 +26,6 @@ export function ScenarioCreateStepper({
   facilityDrawToggler,
   viewModeToggler,
 }) {
-  console.log("facility within stepper: ", facility);
   const infoRef = useRef(null);
   const facilityRef = useRef(null);
   const delinRef = useRef(null);
@@ -42,6 +41,7 @@ export function ScenarioCreateStepper({
       ),
       optional: false,
       stepRef: infoRef,
+      resetEventHandler: infoRef?.current?.resetForm,
       nextEventHandler: delineationDrawToggler,
       validationObject: scenarioObject,
       errMsg: "Enter a Scenario Name",
@@ -62,6 +62,7 @@ export function ScenarioCreateStepper({
         facilityDrawToggler();
       },
       backEventHandler: viewModeToggler,
+      resetEventHandler: delinRef?.current?.resetForm,
       skipEventHandler: () => {
         delinRef?.current?.resetForm();
         facilityDrawToggler();
@@ -85,6 +86,7 @@ export function ScenarioCreateStepper({
         facilityRef?.current?.handleSubmit(facility);
         delineationDrawToggler();
       },
+      resetEventHandler: facilityRef?.current?.resetForm,
       skipEventHandler: () => {
         facilityRef?.current?.resetForm();
       },
@@ -133,6 +135,11 @@ export function ScenarioCreateStepper({
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
+  const handleReset = () => {
+    if (steps[activeStep].resetEventHandler) {
+      steps[activeStep].resetEventHandler();
+    }
+  };
   const handleSkip = () => {
     if (!isStepOptional(activeStep)) {
       // You probably want to guard against something like this,
@@ -149,10 +156,6 @@ export function ScenarioCreateStepper({
     if (steps[activeStep].skipEventHandler) {
       steps[activeStep].skipEventHandler();
     }
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
   };
 
   const facilityDoesExist = () => {
@@ -250,6 +253,9 @@ export function ScenarioCreateStepper({
               Back
             </Button>
             <Box sx={{ flex: "1 1 auto" }} />
+            <Button color="inherit" onClick={handleReset} sx={{ mr: 1 }}>
+              Reset
+            </Button>
             {isStepOptional(activeStep) && (
               <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
                 Skip
