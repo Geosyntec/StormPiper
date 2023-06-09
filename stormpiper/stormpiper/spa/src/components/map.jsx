@@ -158,7 +158,7 @@ function DeckGLMap({
         if (viewState.zoom < 9) {
           viewState = { ...oldViewState, zoom: 9 };
         }
-        setZoomLevel(viewState.zoom);
+        setZoomLevel && setZoomLevel(viewState.zoom);
 
         return viewState;
       }}
