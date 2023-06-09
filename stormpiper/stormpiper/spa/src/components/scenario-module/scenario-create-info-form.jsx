@@ -47,7 +47,6 @@ export const ScenarioInfoForm = forwardRef(function ScenarioInfoForm(
   ];
 
   useEffect(() => {
-    console.log("reseting info form: ", scenario);
     reset({
       name: scenario?.name || "",
       purpose: scenario?.info?.purpose || "",
@@ -63,6 +62,20 @@ export const ScenarioInfoForm = forwardRef(function ScenarioInfoForm(
           const formValidation = await trigger();
           const formValid = formValidation;
           return formValid;
+        },
+
+        async resetForm() {
+          scenarioSetter({
+            name: "",
+            info: {
+              description: "",
+              purpose: "",
+            },
+            input: {
+              delineation_collection: null,
+              tmnt_facility_collection: null,
+            },
+          });
         },
       };
     },
