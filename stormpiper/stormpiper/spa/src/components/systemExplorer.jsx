@@ -22,7 +22,8 @@ const panelStyles = {
   },
   layerPanel: {
     zIndex: 9,
-    width: "300px",
+    width: "400px",
+    overflow: "scroll",
   },
   panelHidden: {
     pointerEvents: "none",
@@ -72,7 +73,6 @@ const panelStyles = {
 
 function SystemExplorer({ setDrawerButtonList }) {
   const classes = panelStyles;
-  // const userProfile = useContext(UserProfileContext);
   const userProfile = useContext(UserProfileContext);
 
   let params = useParams();
@@ -91,8 +91,8 @@ function SystemExplorer({ setDrawerButtonList }) {
     last_updated: Date.now(),
   });
   const [layers, setLayers] = useState(false);
-  const [overlayLayers, setOverlayLayers] = useState([]);
   const [baseLayer, setBaseLayer] = useState(0);
+  const [zoomLevel, setZoomLevel] = useState(11);
   const [activeLayers, setActiveLayers] = useState(() => {
     var res = {};
     Object.keys(layerDict).map((category) => {
@@ -124,8 +124,8 @@ function SystemExplorer({ setDrawerButtonList }) {
   }, [location, params?.id]);
 
   useEffect(async () => {
-    setLayers(_renderLayers(layerDict, activeLayers));
-  }, [focusFeatureID, activeLayers]);
+    setLayers(_renderLayers(layerDict, activeLayers, zoomLevel));
+  }, [focusFeatureID, activeLayers, zoomLevel]);
 
   function _fetchIsDirty() {
     if (userProfile?.is_verified) {
@@ -180,12 +180,20 @@ function SystemExplorer({ setDrawerButtonList }) {
 
   function _toggleLayer(layerName, updateFunction = setActiveLayers) {
     var currentActiveLayers = { ...activeLayers };
+
+    //Ensure that only one raster layer is displayed at time to avoid z-index issues
+    if (layerName.toLowerCase().match("raster")) {
+      Object.keys(currentActiveLayers).map((k) => {
+        if (k.toLowerCase().match("raster") && k != layerName) {
+          currentActiveLayers[k] = false;
+        }
+      });
+    }
     currentActiveLayers[layerName] = !currentActiveLayers[layerName];
-    console.log("Current Active Layers:", currentActiveLayers);
     updateFunction(currentActiveLayers);
   }
 
-  function _renderLayers(layerDict, visState, layersToRender = []) {
+  function _renderLayers(layerDict, visState, zoomLevel, layersToRender = []) {
     Object.keys(layerDict).map((category) => {
       const layerGroup = layerDict[category];
       if (layerGroup.length) {
@@ -195,8 +203,9 @@ function SystemExplorer({ setDrawerButtonList }) {
             props.data = getData();
           }
           if (
-            visState[props.id] ||
-            (firstRender.current && props.onByDefault)
+            (visState[props.id] ||
+              (firstRender.current && props.onByDefault)) &&
+            zoomLevel > props.minZoom
           ) {
             props = _injectLayerAccessors(props, focusFeatureID);
             layersToRender.push(new Layer(props));
@@ -204,7 +213,12 @@ function SystemExplorer({ setDrawerButtonList }) {
           return false;
         });
       } else {
-        layersToRender = _renderLayers(layerGroup, visState, layersToRender);
+        layersToRender = _renderLayers(
+          layerGroup,
+          visState,
+          zoomLevel,
+          layersToRender
+        );
       }
       return false;
     });
@@ -218,7 +232,6 @@ function SystemExplorer({ setDrawerButtonList }) {
 
   function _toggleprjStatDisplayState() {
     if (prjStatDisplayState) {
-      console.log("Clearing Focused Feature");
       setFocusFeatureID(null);
       navigate("/app/map");
     }
@@ -226,7 +239,6 @@ function SystemExplorer({ setDrawerButtonList }) {
   }
 
   function _lyrClickHandlers(objInfo) {
-    console.log("Top level map click: ", objInfo);
     if (objInfo?.layer?.id === "activeSWFacility") {
       _clearSearch();
       if (!prjStatDisplayState) {
@@ -259,7 +271,7 @@ function SystemExplorer({ setDrawerButtonList }) {
 
   function _overlayLayers(newLayers) {
     newLayers = newLayers || [];
-    const baseLayers = _renderLayers(layerDict, activeLayers);
+    const baseLayers = _renderLayers(layerDict, activeLayers, zoomLevel);
     setLayers([...baseLayers, ...newLayers]);
   }
 
@@ -302,6 +314,7 @@ function SystemExplorer({ setDrawerButtonList }) {
               featureID: focusFeatureID,
               featureIDField: "node_id",
             }}
+            setZoomLevel={setZoomLevel}
           ></DeckGLMap>
         </Suspense>
         <Box sx={classes.baseLayerPanel}>
@@ -317,13 +330,20 @@ function SystemExplorer({ setDrawerButtonList }) {
             <Tab label="Satellite" />
           </Tabs>
         </Box>
-        <Box display="flex" sx={{ p: 2, justifyContent: "space-between" }}>
+        <Box
+          display="flex"
+          sx={{
+            p: 2,
+            justifyContent: "space-between",
+            height: "100%",
+          }}
+        >
           <Card
             sx={
               lyrSelectDisplayState ? classes.layerPanel : classes.panelHidden
             }
           >
-            <CardContent sx={{ p: 2 }}>
+            <CardContent sx={{ p: 2, overflow: "scroll" }}>
               <LayerSelector
                 layerDict={layerDict}
                 activeLayers={activeLayers}

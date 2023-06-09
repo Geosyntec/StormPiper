@@ -33,6 +33,16 @@ const tooltipFieldDict = {
     { id: "node_id", label: "Facility Name" },
   ],
   subbasins: [{ id: "subbasin", label: "Subbasin" }],
+  swCBLead: [{ id: "ALTID", label: "Lead ID" }],
+  swInlet: [{ id: "ALTID", label: "Inlet ID" }],
+  swMain: [
+    { id: "ALTID", label: "Pipe ID" },
+    { id: "DIAMETER", label: "Diameter" },
+  ],
+  swTrunk: [
+    { id: "ALTID", label: "Pipe ID" },
+    { id: "DIAMETER", label: "Diameter" },
+  ],
   default: [{ id: "altid", label: "ID" }],
 };
 
@@ -63,6 +73,7 @@ function DeckGLMap({
   currentFeatureID,
   zoomID,
   zoomFeature,
+  setZoomLevel,
   tooltipObj,
   ...props
 }) {
@@ -147,6 +158,8 @@ function DeckGLMap({
         if (viewState.zoom < 9) {
           viewState = { ...oldViewState, zoom: 9 };
         }
+        setZoomLevel(viewState.zoom);
+
         return viewState;
       }}
       getCursor={({ isDragging }) =>
