@@ -176,7 +176,22 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
       let facilityFields = specs.facilitySpec[baseType];
       let simpleFacilityFields = specs.facilitySpec[simpleBaseType];
       return (
-        <>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-start",
+          }}
+        >
+          <Typography
+            variant="body2"
+            sx={{ mt: 1, mb: 4, pb: 1, borderBottom: "1px solid grey" }}
+          >
+            <strong>
+              Draw a BMP facility on the map, and give it some performance and
+              cost parameters
+            </strong>
+          </Typography>
           <BMPForm
             facilitySpec={specs.facilitySpec}
             allFields={facilityFields}
@@ -224,7 +239,7 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
               })}
             </ul>
           </Dialog>
-        </>
+        </Box>
       );
     }
   }

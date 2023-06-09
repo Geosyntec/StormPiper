@@ -121,8 +121,15 @@ export const ScenarioInfoForm = forwardRef(function ScenarioInfoForm(
       sx={{
         display: "flex",
         justifyContent: "center",
+        flexDirection: "column",
       }}
     >
+      <Typography
+        variant="body2"
+        sx={{ mt: 1, mb: 2, pb: 1, borderBottom: "1px solid grey" }}
+      >
+        <strong>Start by describing your scenario below</strong>
+      </Typography>
       <Box
         component="form"
         noValidate
