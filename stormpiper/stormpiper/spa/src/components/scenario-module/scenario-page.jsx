@@ -1,10 +1,12 @@
-import { Box, Card, Typography } from "@mui/material";
+import { Box, Button, Card, Typography } from "@mui/material";
 
 import { ScenarioInfoTable } from "./scenario-info-table";
 import { TwoColGrid, FullSpan, HalfSpan } from "../base/two-col-grid";
 import AllScenariosMap from "./scenario-all-map";
 import { api_fetch } from "../../utils/utils";
 import { useState, useEffect } from "react";
+import AddIcon from "@mui/icons-material/Add";
+import { useNavigate } from "react-router-dom";
 
 export default function ScenarioReviewPage() {
   async function getAllScenarios() {
@@ -12,7 +14,7 @@ export default function ScenarioReviewPage() {
     const data = await response.json();
     setAllScenarios(data);
   }
-
+  const navigate = useNavigate();
   const [allScenarios, setAllScenarios] = useState([]);
   const [focusScenario, setfocusScenario] = useState(null);
 
@@ -29,7 +31,7 @@ export default function ScenarioReviewPage() {
               flexDirection: "column",
               minHeight: "300px",
               height: "100%",
-              alignContent: "center",
+              alignContent: "flex-start",
               justifyContent: "start",
               padding: 2,
             }}
@@ -41,6 +43,15 @@ export default function ScenarioReviewPage() {
               Use the table below to find an existing scenario or to create a
               new one.
             </Typography>
+            <Button
+              color="primary"
+              variant="contained"
+              startIcon={<AddIcon />}
+              sx={{ alignSelf: "flex-start", my: 2 }}
+              onClick={() => navigate("/app/create-scenario")}
+            >
+              Create New Scenario
+            </Button>
           </Card>
         </HalfSpan>
         <HalfSpan md={8} sx={{ position: "sticky", top: 0, zIndex: 1 }}>

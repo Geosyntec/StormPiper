@@ -2,17 +2,11 @@ import CancelIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
-import AddIcon from "@mui/icons-material/Add";
 import Box from "@mui/material/Box";
-import {
-  DataGrid,
-  GridActionsCellItem,
-  GridRowModes,
-  GridToolbarContainer,
-} from "@mui/x-data-grid";
+import { DataGrid, GridActionsCellItem, GridRowModes } from "@mui/x-data-grid";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Button, Tooltip, Typography, Link as ATag } from "@mui/material";
+import { Tooltip, Typography, Link as ATag } from "@mui/material";
 import { api_fetch } from "../../utils/utils";
 import { ConfirmDeleteModal } from "../base/confirm-delete-modal";
 
@@ -295,22 +289,6 @@ export function ScenarioInfoTable({
   const getRowData = (id) => rows.find((x) => x.id == id);
   const navigate = useNavigate();
 
-  function EditToolbar() {
-    const handleClick = () => {
-      navigate("/app/create-scenario");
-    };
-
-    return (
-      <GridToolbarContainer>
-        <Tooltip title="Create New Scenario">
-          <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-            Create New Scenario
-          </Button>
-        </Tooltip>
-      </GridToolbarContainer>
-    );
-  }
-
   return (
     <Box
       sx={{
@@ -359,9 +337,6 @@ export function ScenarioInfoTable({
         onProcessRowUpdateError={(error) => console.error(error)}
         getRowHeight={() => "auto"}
         getEstimatedRowHeight={() => 200}
-        slots={{
-          toolbar: EditToolbar,
-        }}
         slotProps={{
           cell: {
             onMouseEnter: handleCellMouseEnter,
