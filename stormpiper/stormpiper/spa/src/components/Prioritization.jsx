@@ -516,6 +516,7 @@ function Prioritization({ setDrawerButtonList }) {
               initialViewState={{
                 zoom: 10,
               }}
+              showTooltip={true}
               sx={{
                 position: "absolute",
               }}

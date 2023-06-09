@@ -106,6 +106,7 @@ export default function SubbasinResultsMap({ visParam }) {
         initialViewState={{
           zoom: 10,
         }}
+        showTooltip={true}
       ></DeckGLMap>
       {visParam && (
         <ColorRampLegend

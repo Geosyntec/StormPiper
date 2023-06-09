@@ -315,6 +315,7 @@ function SystemExplorer({ setDrawerButtonList }) {
               featureIDField: "node_id",
             }}
             setZoomLevel={setZoomLevel}
+            showTooltip={true}
           ></DeckGLMap>
         </Suspense>
         <Box sx={classes.baseLayerPanel}>

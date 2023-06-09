@@ -167,6 +167,9 @@ function DeckGLMap({
       }
       onClick={props.onClick}
       getTooltip={(object) => {
+        if (!props.showTooltip) {
+          return;
+        }
         let width = 0;
         let height = 0;
         if (object.viewport) {

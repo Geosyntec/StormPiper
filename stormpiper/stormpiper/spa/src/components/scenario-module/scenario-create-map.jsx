@@ -247,6 +247,7 @@ export default function ScenarioCreateMap({
       <DeckGLMap
         id="scenario-map"
         layers={[delineationLayer, facilityLayerView, facilityLayerEdit]}
+        showTooltip={false}
         {...props}
       ></DeckGLMap>
     </Box>
