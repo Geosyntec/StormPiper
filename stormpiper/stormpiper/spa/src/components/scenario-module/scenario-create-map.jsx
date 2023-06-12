@@ -148,22 +148,27 @@ export default function ScenarioCreateMap({
     toggleViewMode: () => {
       setFacilityEditMode(() => ViewMode);
       setDelineationEditMode(() => ViewMode);
+      setMapMode("default");
     },
     drawFacility: () => {
       mapModeHandlers.toggleViewMode();
       setFacilityEditMode(() => DrawPointMode);
+      setMapMode("drawFacility");
     },
     drawDelineation: () => {
       mapModeHandlers.toggleViewMode();
       setDelineationEditMode(() => DrawPolygonMode);
+      setMapMode("drawDelineation");
     },
     editFacility: () => {
       mapModeHandlers.toggleViewMode();
       setFacilityEditMode(() => ModifyMode);
+      setMapMode("editFacility");
     },
     editDelineation: () => {
       mapModeHandlers.toggleViewMode();
       setDelineationEditMode(() => ModifyMode);
+      setMapMode("editDelineation");
     },
     default: () => {
       mapModeHandlers.toggleViewMode();
@@ -198,9 +203,7 @@ export default function ScenarioCreateMap({
         overflowY: "hidden",
       }}
     >
-      {["DrawPolygonMode2", "ModifyMode2"].includes(
-        delineationEditMode.name
-      ) && (
+      {["editDelineation", "drawDelineation"].includes(mapMode) && (
         <Box
           sx={{
             position: "absolute",
@@ -222,7 +225,7 @@ export default function ScenarioCreateMap({
           />
         </Box>
       )}
-      {["DrawPointMode2", "ModifyMode2"].includes(facilityEditMode.name) && (
+      {["drawFacility", "editFacility"].includes(mapMode) && (
         <Box
           sx={{
             position: "absolute",
