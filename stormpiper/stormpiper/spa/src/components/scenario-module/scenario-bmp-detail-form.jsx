@@ -10,7 +10,7 @@ import { BMPForm } from "../bmpForm";
 import { Box, Dialog, DialogActions, Typography, Button } from "@mui/material";
 
 export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
-  { facilitySetter, facility, formDisabled },
+  { facilitySetter, facility, formDisabled, showHelperText },
   ref
 ) {
   const disabled = formDisabled ?? false;
@@ -183,15 +183,14 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
             justifyContent: "flex-start",
           }}
         >
-          <Typography
-            variant="body2"
-            sx={{ mt: 1, mb: 4, pb: 1, borderBottom: "1px solid grey" }}
-          >
-            <strong>
-              Draw a BMP facility on the map, and give it some performance and
-              cost parameters
-            </strong>
-          </Typography>
+          {showHelperText && (
+            <Typography variant="body2" sx={{ mt: 1, mb: 4, pb: 1 }}>
+              <strong>
+                Draw a BMP facility on the map, and give it some performance and
+                cost parameters
+              </strong>
+            </Typography>
+          )}
           <BMPForm
             facilitySpec={specs.facilitySpec}
             allFields={facilityFields}
