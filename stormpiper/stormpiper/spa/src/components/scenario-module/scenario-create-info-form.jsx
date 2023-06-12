@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { Box, TextField, Typography } from "@mui/material";
 
 export const ScenarioInfoForm = forwardRef(function ScenarioInfoForm(
-  { scenario, scenarioSetter, formDisabled },
+  { scenario, scenarioSetter, formDisabled, showHelperText },
   ref
 ) {
   const {
@@ -137,12 +137,11 @@ export const ScenarioInfoForm = forwardRef(function ScenarioInfoForm(
         flexDirection: "column",
       }}
     >
-      <Typography
-        variant="body2"
-        sx={{ mt: 1, mb: 2, pb: 1, borderBottom: "1px solid grey" }}
-      >
-        <strong>Start by describing your scenario below</strong>
-      </Typography>
+      {showHelperText && (
+        <Typography variant="body2" sx={{ mt: 1, mb: 2, pb: 1 }}>
+          <strong>Start by describing your scenario below</strong>
+        </Typography>
+      )}
       <Box
         component="form"
         noValidate

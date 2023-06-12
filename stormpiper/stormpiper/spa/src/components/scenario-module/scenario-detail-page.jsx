@@ -405,6 +405,7 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
                     facilitySetter={updateFacility}
                     ref={facilityRef}
                     formDisabled={!scenarioEditMode || mapMode != "default"}
+                    showHelperText={false}
                   />
                 </Box>
               ) : (
@@ -447,6 +448,7 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
                     delineation={delineation}
                     ref={delinRef}
                     formDisabled={!scenarioEditMode || mapMode != "default"}
+                    showHelperText={false}
                   />
                 </Box>
               ) : (

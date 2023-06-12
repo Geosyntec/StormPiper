@@ -53,6 +53,7 @@ export function ScenarioCreateStepper({
           delineation={delineation}
           delineationSetter={delineationSetter}
           ref={delinRef}
+          showHelperText={true}
         />
       ),
       optional: true,
@@ -77,6 +78,7 @@ export function ScenarioCreateStepper({
           facility={facility}
           facilitySetter={facilitySetter}
           ref={facilityRef}
+          showHelperText={true}
         />
       ),
       optional: true,

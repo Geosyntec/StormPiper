@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 export const ScenarioDelineationForm = forwardRef(
   function ScenarioDelineationForm(
-    { delineationSetter, delineation, formDisabled },
+    { delineationSetter, delineation, formDisabled, showHelperText },
     ref
   ) {
     const {
@@ -16,7 +16,6 @@ export const ScenarioDelineationForm = forwardRef(
       getValues,
       reset,
     } = useForm();
-    console.log("Inside delineation form, delineation = ", delineation);
     const disabled = formDisabled ?? false;
     const [error, setError] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -159,12 +158,11 @@ export const ScenarioDelineationForm = forwardRef(
             justifyContent: "flex-start",
           }}
         >
-          <Typography
-            variant="body2"
-            sx={{ mt: 1, mb: 4, pb: 1, borderBottom: "1px solid grey" }}
-          >
-            <strong>Draw a delineation on the map, and give it a name</strong>
-          </Typography>
+          {showHelperText && (
+            <Typography variant="body2" sx={{ mt: 1, mb: 4, pb: 1 }}>
+              <strong>Draw a delineation on the map, and give it a name</strong>
+            </Typography>
+          )}
           <form
             onSubmit={handleSubmit(_handleSubmit)}
             style={{ width: "100%" }}
