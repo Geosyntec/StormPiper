@@ -16,12 +16,12 @@ def test_fetch_tmnt():
 
 
 @pytest.mark.integration
-def test_fetch_equity_index():
-    df = arcgis.get_equity_index()
+def test_fetch_subbasin_metrics():
+    df = arcgis.get_subbasin_metrics()
     assert len(df) > 50
 
 
 @pytest.mark.integration
 def test_fetch_subbasins():
-    df = arcgis.get_subbasins_with_equity_ix()
+    df = arcgis.get_subbasins_with_metrics()
     assert len(df) > 50
