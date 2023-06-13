@@ -194,7 +194,7 @@ def get_subbasins(*, url=None, cols=None):
     return subbasins
 
 
-def get_equity_index(*, url=None, cols=None):
+def get_equity_index_deprecated(*, url=None, cols=None):  # pragma: no cover
     if url is None:  # pragma: no branch
         url = external_resources["equity_index"]["url"]
     if cols is None:  # pragma: no branch
@@ -213,11 +213,11 @@ def get_equity_index(*, url=None, cols=None):
     return equity_index
 
 
-def get_subbasins_with_equity_ix(
+def get_subbasins_with_equity_ix_deprecated(
     *, url=None, cols=None, equity_ix_url=None, equity_ix_cols=None
-):
+):  # pragma: no cover
     subbasins_raw = get_subbasins(url=url, cols=cols)
-    equity_index = get_equity_index(url=equity_ix_url, cols=equity_ix_cols)
+    equity_index = get_equity_index_deprecated(url=equity_ix_url, cols=equity_ix_cols)
 
     equity_index_cols = [c for c in equity_index.columns if "geometry" != c.lower()]
 
@@ -236,5 +236,26 @@ def get_subbasins_with_equity_ix(
     # sum over census blocks
     sub_weighted_avg = subbasins_eq_ix.groupby(["subbasin"])[equity_index_cols].sum()
     subbasins = subbasins_raw.merge(sub_weighted_avg, on="subbasin", how="left")
+
+    return subbasins
+
+
+def get_subbasin_metrics(*, url=None):
+    if url is None:  # pragma: no branch
+        url = external_resources["subbasin_metrics"]["url"]
+
+    features = [f.get("attributes", {}) for f in get_features(url)]
+    df = (
+        pandas.DataFrame(features)
+        .rename(columns=lambda c: c.lower())
+        .drop(columns=["object", "id", "objectid"], errors="ignore")
+    )
+    return df
+
+
+def get_subbasins_with_metrics(*, url=None, cols=None, subbasin_metrics_url=None):
+    subbasins_raw = get_subbasins(url=url, cols=cols)
+    subbasin_metrics = get_subbasin_metrics(url=subbasin_metrics_url)
+    subbasins = subbasins_raw.merge(subbasin_metrics, on="subbasin", how="left")
 
     return subbasins

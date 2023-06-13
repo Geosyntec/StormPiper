@@ -36,5 +36,8 @@
       "Opportunity_Value",
       "geometry"
     ]
+  },
+  "subbasin_metrics": {
+    "url": "https://services3.arcgis.com/SCwJH1pD8WSn5T5y/arcgis/rest/services/swSubbasinMetrics/FeatureServer/56/query?f=pjson&where=1%3D1&outFields=*"
   }
 }
