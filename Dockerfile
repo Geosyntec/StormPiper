@@ -1,4 +1,4 @@
-FROM redis:6.2.11-alpine3.17 as redis
+FROM redis:6.2.12-alpine3.18 as redis
 COPY ./stormpiper/redis.conf /redis.conf
 CMD ["redis-server", "/redis.conf"]
 
@@ -14,7 +14,7 @@ COPY ./stormpiper/stormpiper/spa /app/
 RUN npm run build
 
 
-FROM python:3.11.3-slim-bullseye as core-runtime
+FROM python:3.11.4-slim-bullseye as core-runtime
 RUN apt-get update -y \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /stormpiper
@@ -32,7 +32,7 @@ COPY --from=build-frontend /app/build /stormpiper/stormpiper/spa/build
 RUN chmod +x /start.sh /start-pod.sh /start-reload.sh /start-test-container.sh
 
 
-FROM python:3.11.3-bullseye as base-builder
+FROM python:3.11.4-bullseye as base-builder
 RUN apt-get update -y \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean \
@@ -50,7 +50,8 @@ RUN mkdir /gunicorn \
     gunicorn==20.1.0
 
 
-FROM python:3.11.3-slim-bullseye as core-env
+FROM python:3.11.4-slim-bullseye as core-env
+RUN pip install -U pip wheel setuptools
 COPY --from=builder /core /core
 COPY ./stormpiper/requirements.txt /requirements.txt
 RUN python -m venv /opt/venv

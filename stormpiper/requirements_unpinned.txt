@@ -53,6 +53,8 @@ asgi-ratelimit
 
 Pint==0.19.2
 nereid @ https://github.com/Geosyntec/nereid/archive/v0.7.0.zip
+setuptools
+wheel
 
 pymcdm>=1.1.0
 
