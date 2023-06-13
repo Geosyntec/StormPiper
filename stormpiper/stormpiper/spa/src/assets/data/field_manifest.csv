@@ -23,7 +23,7 @@ Landcover Impervious-total,lc,,imp-total,pct,lc_imp_total_pct,Landcover Impervio
 Age_of_Development,,,age_of_development,score,age_of_development_score,Age of Development Index,,1,1,1_2
 Pavement_Condition,,,pavement_condition,score,pavement_condition_score,Pavement Condition Index,,1,1,4_2
 Biodiversity,,,biodiversity,pct,biodiversity_pct,Biodiversity Corridor (percent),,1,1,3_1
-Urban_Heat,,,urban_heat,degC,urban_heat_degC,Urban Heat Island (degrees C),,1,1,2_1
+Urban_Heat,,,urban_heat,degC,urban_heat_degc,Urban Heat Island (degrees C),,1,1,2_1
 discharge_points,,,discharge_points,count,discharge_points_count,Outfalls (count),,1,1,
 access,,,access,,access,access,,-1,-1,
 economic_value,,,economic_value,,economic_value,economic_value,,-1,-1,
