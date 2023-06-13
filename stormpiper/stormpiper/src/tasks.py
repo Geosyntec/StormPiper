@@ -44,7 +44,9 @@ def delete_and_refresh_tmnt_facility_table(
     )
 
     logger.info("deleting and replacing tmnt_facility table")
-    delete_and_replace_postgis_table(gdf=gdf, table_name="tmnt_facility", engine=engine)
+    delete_and_replace_postgis_table(
+        gdf=gdf, table_name="tmnt_facility", engine=engine  # type: ignore
+    )
     logger.info("TASK COMPLETE: replaced tmnt_facility table.")
 
     return gdf
@@ -62,7 +64,7 @@ def delete_and_refresh_tmnt_facility_delineation_table(
 
     logger.info("deleting and replacing tmnt_facility_delineation table")
     delete_and_replace_postgis_table(
-        gdf=gdf,
+        gdf=gdf,  # type: ignore
         table_name="tmnt_facility_delineation",
         engine=engine,
     )
@@ -72,22 +74,21 @@ def delete_and_refresh_tmnt_facility_delineation_table(
 
 
 def delete_and_refresh_subbasin_table(
-    *, engine=engine, url=None, cols=None, equity_ix_url=None, equity_ix_cols=None
+    *, engine=engine, url=None, cols=None, subbasin_metrics_url=None
 ):  # pragma: no cover
     logger.info("fetching subbasin info")
     gdf = (
-        arcgis.get_subbasins_with_equity_ix(
-            url=url,
-            cols=cols,
-            equity_ix_url=equity_ix_url,
-            equity_ix_cols=equity_ix_cols,
+        arcgis.get_subbasins_with_metrics(
+            url=url, cols=cols, subbasin_metrics_url=subbasin_metrics_url
         )
         .reset_index(drop=True)
         .assign(id=lambda df: df.index.values + 1)
     )
 
     logger.info("deleting and replacing subbasin table")
-    delete_and_replace_postgis_table(gdf=gdf, table_name="subbasin", engine=engine)
+    delete_and_replace_postgis_table(
+        gdf=gdf, table_name="subbasin", engine=engine  # type: ignore
+    )
     logger.info("TASK COMPLETE: replaced subbasin table.")
 
     return gdf
