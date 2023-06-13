@@ -56,7 +56,7 @@ export default function SubbasinResultsTable({ fieldList }) {
   useEffect(() => {
     let resources = [
       { resource: "/openapi.json", format: "json" },
-      { resource: "/api/rest/subbasin/wq/", format: "json" },
+      { resource: "/api/rest/subbasin/", format: "json" },
       { resource: result_fields_csv, format: "csv" },
       { resource: result_groups_csv, format: "csv" },
     ];
