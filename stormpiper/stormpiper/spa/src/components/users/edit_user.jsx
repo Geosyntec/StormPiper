@@ -252,18 +252,15 @@ export default function EditUser() {
   ];
 
   return (
-    <Stack spacing={3} mt={3} mb={6}>
+    <Stack spacing={2} mt={3} mb={6}>
       <Box display="flex" justifyContent="center">
-        <Card sx={{ p: 2, width: { xs: "100%", sm: 500 } }}>
+        <Card sx={{ width: { xs: "100%", sm: 625 } }}>
           <CardContent>
             {/* TODO: check text and variant */}
-            <Typography align="center" variant="h5">
-              Review and Edit User Information
-            </Typography>
+            <Typography variant="h6">Edit Profile</Typography>
             {!userdata ? (
-              <Box>loading...</Box>
+              <></>
             ) : (
-              // TODO: add loading spinner
               <Box
                 component="form"
                 noValidate
@@ -276,7 +273,7 @@ export default function EditUser() {
                     display: "flex",
                     alignItems: "flex-end",
                     flexDirection: "column",
-                    mt: 4,
+                    mt: 2,
                   }}
                 >
                   <Button variant="contained" color="primary" type="submit">
@@ -319,6 +316,7 @@ export default function EditUser() {
             p: 2,
           }}
         >
+          <Typography variant="h6">Data Integration</Typography>
           <TokenRouteTable token={medata?.readonly_token} />
         </Card>
       </Box>
