@@ -53,12 +53,12 @@ const field_def = [
   },
   {
     row_name: "Total Nitrogen",
-    units: "mg/l",
+    units: "ug/l",
     prefix: "TN",
   },
   {
     row_name: "Total Phosphorus",
-    units: "mg/l",
+    units: "ug/l",
     prefix: "TP",
   },
   {
@@ -73,18 +73,18 @@ const field_def = [
   },
   {
     row_name: "PYR",
-    units: "mg/l",
+    units: "ug/l",
     prefix: "PYR",
   },
   {
     row_name: "PHE",
-    units: "mg/l",
+    units: "ug/l",
     prefix: "PHE",
   },
 
   {
     row_name: "DEHP",
-    units: "mg/l",
+    units: "ug/l",
     prefix: "DEHP",
   },
 ];

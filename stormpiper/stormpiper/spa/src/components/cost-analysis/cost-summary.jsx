@@ -116,11 +116,8 @@ export default function CostSummary({
         flexGrow={1}
         alignItems={"center"}
         justifyContent={"space-between"}
-        pb={2}
       >
-        <Typography variant="h4" fontWeight="bold">
-          Lifecycle Cost Analysis
-        </Typography>
+        <Typography variant="h6">Lifecycle Cost Analysis</Typography>
         {hasData && (
           <Tooltip title="Refresh Cost Analysis">
             <IconButton onClick={refreshCostAnalysisByID} color="primary">
@@ -130,18 +127,25 @@ export default function CostSummary({
         )}
       </Box>
       {hasData && (
-        <>
+        <Box sx={{ pt: 2 }}>
           <CostTimeseriesChart
             node_id={tmntDetails?.node_id || ""}
             data_values={tmntDetails?.present_value_chart_table || []}
           />
           <CostDetails tmntDetails={tmntDetails || {}} />
           <CostEffectivenessDetails tmntDetails={tmntDetails || {}} />
-        </>
+        </Box>
       )}
       {!hasData && (
-        <Typography variant="h6" fontWeight="bold" textAlign="center">
-          Lifecycle Costs Are Unavailable for This Facility
+        <Typography
+          variant="body1"
+          textAlign="center"
+          fontStyle="italic"
+          color={(theme) => theme.palette.grey[600]}
+        >
+          Lifecycle costs are unavailable for this facility.
+          <br />
+          This usually means that the "Cost Analysis Parameters" are incomplete.
         </Typography>
       )}
     </Box>

@@ -1,7 +1,5 @@
 import { Box, Card, Typography } from "@mui/material";
-
 import DelineationLoadGenerated from "./scenario-delin-results-load";
-import { dateFormatter } from "../../utils/utils";
 
 const prepLoadData = (x) => {
   const lbs_to_grams = ["TCu", "TZn", "PYR", "PHE", "DEHP"];
@@ -64,29 +62,22 @@ export function ScenarioDelineationDetailResults({ data }) {
 
   return (
     <Card>
-      <Typography>
-        Loading Results for Delineation Name: <b>{name || "--"}</b>
-      </Typography>
-
-      <Box>
+      <Box sx={{ p: 2 }}>
         {node_id == null ? (
           <Typography>
             No delineation feature is included in Scenario.
           </Typography>
         ) : (
           <>
+            <Typography>
+              Loading Results for Delineation Name: <b>{name || "--"}</b>
+            </Typography>
             {!rows.length ? (
               <Typography>Loading...</Typography>
             ) : (
-              <>
-                <Typography>
-                  Performance Results for Treatment Facility:{" "}
-                  <b>{node_id || "--"}</b>
-                </Typography>
-                <Box sx={{ mt: 4 }}>
-                  <DelineationLoadGenerated rows={rows} />
-                </Box>
-              </>
+              <Box>
+                <DelineationLoadGenerated rows={rows} />
+              </Box>
             )}
           </>
         )}

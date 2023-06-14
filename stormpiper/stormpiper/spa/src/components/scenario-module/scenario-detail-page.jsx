@@ -536,7 +536,7 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
           </Card>
         </HalfSpan>
         <FullSpan>
-          <Box pb={3}>
+          <Box>
             <Card sx={{ p: 2 }}>
               <CostSummary
                 tmntDetails={scenarioObject?.structural_tmnt?.[0]}
