@@ -7,7 +7,6 @@ import AppBar from "./appbar";
 import Landing from "../landing";
 import AuthChecker from "../authChecker";
 import ResultsViewerPage from "../results-viewer/results-page";
-// import SystemExplorer from "../systemExplorer";
 
 const SystemExplorer = lazy(() => import("../systemExplorer"));
 const Prioritization = lazy(() => import("../Prioritization"));

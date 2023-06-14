@@ -45,19 +45,31 @@ const routesWithToken = [
       `,
   },
   {
-    url: "/api/rest/subbasin/token/{token}?f=json&limit=1000000&offset=0&epoch=1980s",
+    url: "/api/rest/subbasin/token/{token}?f=json&limit=1000000&offset=0",
     description: `Get attributes or geojson for all subbasins.
+      ${f}
+      ${limit}
+      ${offset}
+    `,
+  },
+  {
+    url: "/api/rest/subbasin/{subbasin_id}/token/{token}",
+    description: `Get attributes or geojson for specific subbasin.`,
+  },
+  {
+    url: "/api/rest/subbasin/wq/{subbasin_id}/token/{token}?epoch=1980s",
+    description: `Get water quality results for specific subbasin.
+      ${epoch}
+      `,
+  },
+  {
+    url: "/api/rest/subbasin/wq/token/{token}?f=json&limit=1000000&offset=0&epoch=1980s",
+    description: `Get water quality results for all subbasins.
       ${f}
       ${limit}
       ${offset}
       ${epoch}
     `,
-  },
-  {
-    url: "/api/rest/subbasin/{subbasin_id}/token/{token}?epoch=1980s",
-    description: `Get attributes or geojson for specific subbasin.
-      ${epoch}
-      `,
   },
   {
     url: "/api/rest/results/token/{token}?ntype=null&limit=1000000&offset=0&epoch=1980s",
@@ -93,13 +105,8 @@ const CopyToClipboardButton = ({ data }) => {
 
 export default function TokenRouteTable({ token }) {
   return (
-    <TableContainer component={Paper}>
+    <TableContainer>
       <Table size="small" aria-label="token route table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Data Integration</TableCell>
-          </TableRow>
-        </TableHead>
         <TableBody>
           {routesWithToken.map((row) => {
             const link = `${window.location.origin}${row.url.replace(
