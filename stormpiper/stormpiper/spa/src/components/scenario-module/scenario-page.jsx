@@ -12,6 +12,14 @@ export default function ScenarioReviewPage() {
   async function getAllScenarios() {
     const response = await api_fetch(`/api/rest/scenario`);
     const data = await response.json();
+
+    data.forEach((x) => {
+      x.info &&
+        Object.keys(x.info).map((attr) => {
+          x[`info-${attr}`] = x.info[attr];
+        });
+    });
+    console.log(data);
     setAllScenarios(data);
   }
   const navigate = useNavigate();
@@ -22,7 +30,7 @@ export default function ScenarioReviewPage() {
     getAllScenarios();
   }, []);
   return (
-    <Box py={3} display="flex" justifyContent="start">
+    <Box display="flex" justifyContent="center">
       <TwoColGrid>
         <HalfSpan md={4} sx={{ position: "sticky", top: 0, zIndex: 1 }}>
           <Card

@@ -10,6 +10,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import ListAltIcon from "@mui/icons-material/ListAlt";
+import AddIcon from "@mui/icons-material/Add";
 
 import { ScenarioBMPDetailResults } from "./scenario-bmp-results";
 import { ScenarioDelineationDetailResults } from "./scenario-delin-results";
@@ -66,6 +67,11 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
       label: "View All Scenarios",
       icon: <ListAltIcon />,
       clickHandler: () => navigate("/app/scenario"),
+    },
+    {
+      label: "Create New Scenario",
+      icon: <AddIcon />,
+      clickHandler: () => navigate("/app/create-scenario"),
     },
   ];
 
@@ -323,7 +329,7 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
     <Box
       sx={{
         display: "flex",
-        justifyContent: "center",
+        justifyContent: "start",
       }}
     >
       <Snackbar

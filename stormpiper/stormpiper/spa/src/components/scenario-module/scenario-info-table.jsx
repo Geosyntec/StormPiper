@@ -2,6 +2,7 @@ import CancelIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Box from "@mui/material/Box";
 import { DataGrid, GridActionsCellItem, GridRowModes } from "@mui/x-data-grid";
 import { useState, useEffect } from "react";
@@ -169,13 +170,27 @@ export function ScenarioInfoTable({
       ),
     },
     {
-      field: "info",
+      field: "info-description",
       headerName: "Description",
       flex: 1,
       minWidth: 200,
       renderCell: (params) => <ExpandableCell {...params} />,
       valueFormatter: (params) => {
-        const value = params?.value?.description;
+        const value = params?.value;
+        if (!value) {
+          return " ";
+        }
+        return `${value}`;
+      },
+    },
+    {
+      field: "info-purpose",
+      headerName: "Purpose",
+      flex: 1,
+      minWidth: 200,
+      renderCell: (params) => <ExpandableCell {...params} />,
+      valueFormatter: (params) => {
+        const value = params?.value;
         if (!value) {
           return " ";
         }
@@ -237,7 +252,7 @@ export function ScenarioInfoTable({
               <GridActionsCellItem
                 icon={<SaveIcon />}
                 label="Save"
-                onClick={handleSaveClick(id)}
+                onClick={() => handleSaveClick(id)}
               />
             </Tooltip>,
             <Tooltip title="Cancel">
@@ -245,7 +260,7 @@ export function ScenarioInfoTable({
                 icon={<CancelIcon />}
                 label="Cancel"
                 className="textPrimary"
-                onClick={handleCancelClick(id)}
+                onClick={() => handleCancelClick(id)}
                 color="inherit"
               />
             </Tooltip>,
@@ -271,10 +286,42 @@ export function ScenarioInfoTable({
               color="inherit"
             />
           </Tooltip>,
+          <Tooltip title="Copy Entry">
+            <GridActionsCellItem
+              icon={<ContentCopyIcon />}
+              label="Copy"
+              onClick={() => handleCopyClick(id)}
+              color="inherit"
+            />
+          </Tooltip>,
         ];
       },
     },
   ];
+
+  const handleCopyClick = async (id) => {
+    const scenario = { ...rows.find((x) => x.id === id) };
+    scenario.name += " (copy)";
+    const response = await api_fetch("/api/rest/scenario", {
+      credentials: "same-origin",
+      headers: {
+        accept: "application/json",
+        "Content-type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify(scenario),
+    })
+      .then((resp) => resp.json())
+      .then((resp) => {
+        if (resp.id) {
+          console.log("submission succeeded");
+        } else {
+          console.warn("submission failure", resp);
+        }
+      });
+
+    dataRefresher();
+  };
 
   const handleModalOpen = () => setModalOpen(true);
   const handleModalClose = () => setModalOpen(false);
