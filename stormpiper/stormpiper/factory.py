@@ -138,7 +138,7 @@ def create_app(
     templates = Jinja2Templates(directory="stormpiper/spa/build")
 
     @app.get(
-        "/docs", include_in_schema=False, dependencies=[Depends(user_role_ge_admin)]
+        "/api/docs", include_in_schema=False, dependencies=[Depends(user_role_ge_admin)]
     )
     async def custom_swagger_ui_html():
         return get_swagger_ui_html(

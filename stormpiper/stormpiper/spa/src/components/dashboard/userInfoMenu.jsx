@@ -15,6 +15,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import LogoutIcon from "@mui/icons-material/Logout";
 import GroupIcon from "@mui/icons-material/Group";
+import BoltIcon from "@mui/icons-material/Bolt";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { UserProfileContext } from "../authProvider";
@@ -156,7 +157,7 @@ export default function UserInfo({ ...props }) {
                       </Button>
                     </ListItem>
                   )}
-                  <Divider sx={{ my: 3 }} />
+                  <Divider sx={{ my: 1 }} />
                   <MenuItem
                     component={Link}
                     to={"/app/manage-users/me"}
@@ -192,6 +193,21 @@ export default function UserInfo({ ...props }) {
                         Settings
                       </MenuItem>,
                     ]}
+                  </AuthChecker>
+                  <AuthChecker allowedRoles={["admin"]}>
+                    {
+                      <MenuItem
+                        component={Link}
+                        to={"/api/docs"}
+                        target="_blank"
+                        onClick={handleClose}
+                      >
+                        <ListItemIcon>
+                          <BoltIcon />
+                        </ListItemIcon>
+                        API Docs
+                      </MenuItem>
+                    }
                   </AuthChecker>
                   <MenuItem
                     onClick={() => {
