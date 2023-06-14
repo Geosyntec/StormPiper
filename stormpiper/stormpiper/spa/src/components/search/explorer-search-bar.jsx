@@ -61,7 +61,7 @@ export function ExplorerSearch({ setLayers, ...props }) {
         getIconColor: [matchedValues],
       },
     });
-    setLayers([facilityLayerFound]);
+    setLayers(facilityLayerFound);
   }
 
   useEffect(() => {
