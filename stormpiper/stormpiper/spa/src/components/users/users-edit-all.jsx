@@ -4,7 +4,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import { DataGrid, GridActionsCellItem, GridRowModes } from "@mui/x-data-grid";
 import { useState, useEffect } from "react";
-import { Box, Card, Tooltip } from "@mui/material";
+import { Box, Card, Tooltip, Typography } from "@mui/material";
 import { api_fetch } from "../../utils/utils";
 import { FullSpan, TwoColGrid } from "../base/two-col-grid";
 import { ConfirmDeleteModal } from "../base/confirm-delete-modal";
@@ -236,7 +236,8 @@ export default function Users() {
           }}
         >
           <FullSpan sx={{ height: "600px", maxWidth: "100vw" }}>
-            <Card>
+            <Card sx={{ p: 2 }}>
+              <Typography variant="h6">Manage Users</Typography>
               <DataGrid
                 rows={rows}
                 columns={columns}
