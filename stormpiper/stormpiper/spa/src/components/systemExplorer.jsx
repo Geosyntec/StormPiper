@@ -2,13 +2,12 @@ import { Suspense, useEffect, useState, useRef, lazy, useContext } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Card, CardContent, Box, Tabs, Tab } from "@mui/material";
 import LayersRoundedIcon from "@mui/icons-material/LayersRounded";
-import GridOnRoundedIcon from "@mui/icons-material/GridOnRounded";
 import SearchIcon from "@mui/icons-material/Search";
 import { UserProfileContext } from "./authProvider";
 
 import { layerDict } from "../assets/geojson/coreLayers";
 import LayerSelector from "./layerSelector";
-import BMPStatWindow from "./bmpStatWindow";
+import BMPInfoWindow from "./bmpInfoWindow";
 import { api_fetch } from "../utils/utils";
 import { ExplorerSearch } from "./search/explorer-search-bar";
 
@@ -366,12 +365,12 @@ function SystemExplorer({ setDrawerButtonList }) {
             }
           >
             <CardContent>
-              <BMPStatWindow
+              <BMPInfoWindow
                 displayStatus={prjStatDisplayState}
                 displayController={_toggleprjStatDisplayState}
                 feature={focusFeatureID}
                 isDirty={isDirty}
-              ></BMPStatWindow>
+              ></BMPInfoWindow>
             </CardContent>
           </Card>
         </Box>

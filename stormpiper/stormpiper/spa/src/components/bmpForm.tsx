@@ -21,6 +21,7 @@ import React, {
   useState,
 } from "react";
 import { useForm } from "react-hook-form";
+import { BMPReadOnlyInfo } from "./bmp-detail-page/bmp-basic-info";
 import { KCBMPDetailModal } from "./cost-estimator/kc-estimator-modal";
 
 const hiddenFields: string[] = [
@@ -472,6 +473,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
           {props.values?.altid} Facility Details
         </Typography>
       )}
+      <BMPReadOnlyInfo data={props.values} />
       <form
         onSubmit={handleSubmit((data) => {
           Object.keys(data).forEach(
