@@ -91,6 +91,7 @@ function SystemExplorer({ setDrawerButtonList }) {
     last_updated: Date.now(),
   });
   const [layers, setLayers] = useState(false);
+  const [overlayLayers, setOverlayLayers] = useState([]);
   const [baseLayer, setBaseLayer] = useState(0);
   const [zoomLevel, setZoomLevel] = useState(11);
   const [activeLayers, setActiveLayers] = useState(() => {
@@ -124,8 +125,9 @@ function SystemExplorer({ setDrawerButtonList }) {
   }, [location, params?.id]);
 
   useEffect(async () => {
-    setLayers(_renderLayers(layerDict, activeLayers, zoomLevel));
-  }, [focusFeatureID, activeLayers, zoomLevel]);
+    const baseLayers = _renderLayers(layerDict, activeLayers, zoomLevel);
+    setLayers([...baseLayers, ...overlayLayers]);
+  }, [focusFeatureID, activeLayers, overlayLayers, zoomLevel]);
 
   function _fetchIsDirty() {
     if (userProfile?.is_verified) {
@@ -269,14 +271,18 @@ function SystemExplorer({ setDrawerButtonList }) {
     return props;
   }
 
-  function _overlayLayers(newLayers) {
-    newLayers = newLayers || [];
-    const baseLayers = _renderLayers(layerDict, activeLayers, zoomLevel);
-    setLayers([...baseLayers, ...newLayers]);
+  function _addSearchLayer(layer) {
+    const ol = overlayLayers.filter((x) => x.id !== "facilitiesFound");
+    setOverlayLayers([...ol, layer]);
+  }
+
+  function _removeSearchLayer() {
+    const ol = overlayLayers.filter((x) => x.id !== "facilitiesFound");
+    setOverlayLayers([...ol]);
   }
 
   function _clearSearch() {
-    _overlayLayers();
+    _removeSearchLayer();
     setSearchDisplayState(false);
   }
 
@@ -299,7 +305,7 @@ function SystemExplorer({ setDrawerButtonList }) {
             }}
           >
             <Card sx={{ p: 2 }}>
-              <ExplorerSearch setLayers={_overlayLayers} />
+              <ExplorerSearch setLayers={_addSearchLayer} />
             </Card>
           </Box>
         )}
