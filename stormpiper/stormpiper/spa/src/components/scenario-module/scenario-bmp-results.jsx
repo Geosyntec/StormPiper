@@ -1,4 +1,4 @@
-import { Box, Card, Typography } from "@mui/material";
+import { Box, Card, Stack, Typography } from "@mui/material";
 
 import BMPVolumeBalance from "../bmp-detail-page/bmp-results-volume";
 import BMPLoadReduction from "../bmp-detail-page/bmp-results-load";
@@ -17,6 +17,15 @@ const prepLoadRemovedData = (x) => {
   const lbs_to_grams = ["TCu", "TZn", "PYR", "PHE", "DEHP"];
   lbs_to_grams.forEach((poc) => {
     x[`${poc}_load_g_removed`] = 453.592 * x[`${poc}_load_lbs_removed`];
+  });
+  return x;
+};
+
+const prepConcData = (x) => {
+  const lbs_to_grams = ["TN", "TP", "PYR", "PHE", "DEHP"];
+  lbs_to_grams.forEach((poc) => {
+    x[`${poc}_conc_ug/l_influent`] = 1e3 * x[`${poc}_conc_mg/l_influent`];
+    x[`${poc}_conc_ug/l_effluent`] = 1e3 * x[`${poc}_conc_mg/l_effluent`];
   });
   return x;
 };
@@ -52,39 +61,44 @@ export function ScenarioBMPDetailResults({ data }) {
       prepLoadRemovedData(r);
       prepLoadPctRemovedData(r);
       prepConcPctRemovedData(r);
+      prepConcData(r);
     });
     rows = bmp_results;
   }
 
   return (
-    <Card>
-      <Box>
-        {node_id == null ? (
+    <Box>
+      {node_id == null ? (
+        <Card>
           <Typography>No Treatment BMP included in Scenario.</Typography>
-        ) : (
-          <>
-            {!rows.length ? (
-              <Typography>Loading...</Typography>
-            ) : (
-              <>
-                <Typography>
-                  Performance Results for Treatment Facility:{" "}
-                  <b>{node_id || "--"}</b>
-                </Typography>
-                <Box sx={{ mt: 4 }}>
-                  <BMPVolumeBalance rows={rows} />
-                </Box>
-                <Box sx={{ mt: 4 }}>
-                  <BMPLoadReduction rows={rows} />
-                </Box>
-                <Box sx={{ mt: 4 }}>
-                  <BMPConcReduction rows={rows} />
-                </Box>
-              </>
-            )}
-          </>
-        )}
-      </Box>
-    </Card>
+        </Card>
+      ) : (
+        <Box>
+          {!rows.length ? (
+            <Card sx={{ p: 2 }}>
+              <Typography variant="h6" fontWeight="bold" textAlign="center">
+                BMP Water Quality Results Are Unavailable for This Facility
+              </Typography>
+            </Card>
+          ) : (
+            <Stack spacing={2}>
+              <Card sx={{ p: 2 }}>
+                {
+                  <Box>
+                    <Typography>
+                      Performance Results for Treatment Facility:{" "}
+                      <b>{node_id || "--"}</b>
+                    </Typography>
+                    <BMPVolumeBalance rows={rows} />
+                  </Box>
+                }
+              </Card>
+              <Card sx={{ p: 2 }}>{<BMPLoadReduction rows={rows} />}</Card>
+              <Card sx={{ p: 2 }}>{<BMPConcReduction rows={rows} />}</Card>
+            </Stack>
+          )}
+        </Box>
+      )}
+    </Box>
   );
 }

@@ -44,6 +44,15 @@ const prepConcPctRemovedData = (x) => {
   return x;
 };
 
+const prepConcData = (x) => {
+  const lbs_to_grams = ["TN", "TP", "PYR", "PHE", "DEHP"];
+  lbs_to_grams.forEach((poc) => {
+    x[`${poc}_conc_ug/l_influent`] = 1e3 * x[`${poc}_conc_mg/l_influent`];
+    x[`${poc}_conc_ug/l_effluent`] = 1e3 * x[`${poc}_conc_mg/l_effluent`];
+  });
+  return x;
+};
+
 async function getResultsDataByID(id) {
   return await api_fetch(`/api/rest/results/${id}?epoch=all`);
 }
@@ -73,6 +82,7 @@ export function BMPDetailResults() {
         prepLoadRemovedData(r);
         prepLoadPctRemovedData(r);
         prepConcPctRemovedData(r);
+        prepConcData(r);
       });
       setRows(res);
     }
@@ -98,7 +108,7 @@ export function BMPDetailResults() {
             </Typography>
           </Card>
         ) : (
-          <Stack spacing={3}>
+          <Stack spacing={2}>
             <Card sx={{ p: 2 }}>{<BMPVolumeBalance rows={rows} />}</Card>
             <Card sx={{ p: 2 }}>{<BMPLoadReduction rows={rows} />}</Card>
             <Card sx={{ p: 2 }}>{<BMPConcReduction rows={rows} />}</Card>
