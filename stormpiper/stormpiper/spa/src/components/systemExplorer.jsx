@@ -40,6 +40,16 @@ const panelStyles = {
     borderRadius: "2px",
     background: "rgba(255, 255, 255, 1)",
   },
+  legendCard: {
+    position: "absolute",
+    zIndex: 9,
+    bottom: "100px",
+    right: "10px",
+    height: "auto",
+    width: "auto",
+    borderRadius: "2px",
+    background: "rgba(255, 255, 255, 1)",
+  },
   resultsPanel: {
     transitionProperty: "top",
     transitionTimingFunction: "linear",
@@ -91,6 +101,7 @@ function SystemExplorer({ setDrawerButtonList }) {
   });
   const [layers, setLayers] = useState(false);
   const [overlayLayers, setOverlayLayers] = useState([]);
+  const [legendImg, setLegendImg] = useState(null);
   const [baseLayer, setBaseLayer] = useState(0);
   const [zoomLevel, setZoomLevel] = useState(11);
   const [activeLayers, setActiveLayers] = useState(() => {
@@ -188,6 +199,9 @@ function SystemExplorer({ setDrawerButtonList }) {
         if (k.toLowerCase().match("raster") && k != layerName) {
           currentActiveLayers[k] = false;
         }
+        if (currentActiveLayers[layerName]) {
+          setLegendImg(null);
+        }
       });
     }
     currentActiveLayers[layerName] = !currentActiveLayers[layerName];
@@ -210,6 +224,9 @@ function SystemExplorer({ setDrawerButtonList }) {
           ) {
             props = _injectLayerAccessors(props, focusFeatureID);
             layersToRender.push(new Layer(props));
+            if (props.id.toLowerCase().match("raster")) {
+              setLegendImg(props.legendImg);
+            }
           }
           return false;
         });
@@ -323,6 +340,20 @@ function SystemExplorer({ setDrawerButtonList }) {
             showTooltip={true}
           ></DeckGLMap>
         </Suspense>
+        {legendImg && (
+          <Card sx={classes.legendCard}>
+            <CardContent
+              sx={{ padding: 0, "&:last-child": { paddingBottom: 0 } }}
+            >
+              <img
+                src={legendImg.src}
+                height={legendImg.height || "200px"}
+                aspect-ratio={legendImg.aspectRatio || "4/3"}
+                // width={legendImg.width || "286px"}
+              />
+            </CardContent>
+          </Card>
+        )}
         <Box sx={classes.baseLayerPanel}>
           <Tabs
             value={baseLayer}

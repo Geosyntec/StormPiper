@@ -292,6 +292,9 @@ const totalCopperRaster = {
     minZoom: 10,
     maxZoom: 18,
     tileSize: 256,
+    legendImg: {
+      src: "../assets/img/copper_legend.png",
+    },
 
     renderSubLayers: (props) => {
       const {
@@ -315,6 +318,9 @@ const totalNitrogenRaster = {
     minZoom: 10,
     maxZoom: 18,
     tileSize: 256,
+    legendImg: {
+      src: "../assets/img/tkn_legend.png",
+    },
 
     renderSubLayers: (props) => {
       const {
@@ -338,6 +344,9 @@ const totalZincRaster = {
     minZoom: 10,
     maxZoom: 18,
     tileSize: 256,
+    legendImg: {
+      src: "../assets/img/zinc_legend.png",
+    },
 
     renderSubLayers: (props) => {
       const {
@@ -361,6 +370,9 @@ const tssRaster = {
     minZoom: 10,
     maxZoom: 18,
     tileSize: 256,
+    legendImg: {
+      src: "../assets/img/tss_legend.png",
+    },
 
     renderSubLayers: (props) => {
       const {
@@ -384,6 +396,11 @@ const landCoverRaster = {
     minZoom: 10,
     maxZoom: 18,
     tileSize: 256,
+    legendImg: {
+      src: "../assets/img/landcover_legend.png",
+      height: "300px",
+      aspectRatio: "1/1",
+    },
     renderSubLayers: (props) => {
       const {
         bbox: { west, south, east, north },
@@ -406,6 +423,9 @@ const imperviousnessRaster = {
     minZoom: 10,
     maxZoom: 18,
     tileSize: 256,
+    legendImg: {
+      src: "../assets/img/imp_legend.png",
+    },
     renderSubLayers: (props) => {
       const {
         bbox: { west, south, east, north },
@@ -428,6 +448,9 @@ const runoffRaster = {
     minZoom: 10,
     maxZoom: 18,
     tileSize: 256,
+    legendImg: {
+      src: "../assets/img/runoff_legend.png",
+    },
     renderSubLayers: (props) => {
       const {
         bbox: { west, south, east, north },
