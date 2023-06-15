@@ -8,17 +8,23 @@ import {
   Typography,
 } from "@mui/material";
 
-export function BMPReadOnlyInfo({ data, ...props }) {
-  const fields = [
-    { title: "ALTID", name: "altid" },
-    { title: "Facility Type (Tacoma GIS)", name: "facilitytype" },
-    { title: "Common Name", name: "commonname" },
-    { title: "Facility Detail", name: "faciliitydetail" },
-    { title: "Flow Control Type", name: "flowcontroltype" },
-    { title: "Water Quality Type", name: "waterqualitytype" },
-    { title: "Basin Name", name: "basinname" },
-    { title: "Subbasin", name: "subbasin" },
-  ];
+const DEFAULT_FIELDS = [
+  { title: "ALTID", name: "altid" },
+  { title: "Facility Type (Tacoma GIS)", name: "facilitytype" },
+  { title: "Common Name", name: "commonname" },
+  { title: "Facility Detail", name: "faciliitydetail" },
+  { title: "Flow Control Type", name: "flowcontroltype" },
+  { title: "Water Quality Type", name: "waterqualitytype" },
+  { title: "Basin Name", name: "basinname" },
+  { title: "Subbasin", name: "subbasin" },
+];
+
+export function BMPReadOnlyInfo({ data, fields, ...props }) {
+  fields = fields || DEFAULT_FIELDS;
+  const field_names = fields.map((x) => x.name);
+  const found = field_names.some((r) => Object.keys(data).includes(r));
+
+  if (!found) return null;
 
   return (
     <Box {...props}>
