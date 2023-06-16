@@ -205,7 +205,7 @@ function DeckGLMap({
           }
         );
       }}
-      style={props.style}
+      style={{ ...props.style, overflow: "hidden" }}
     >
       <StaticMap
         reuseMaps
