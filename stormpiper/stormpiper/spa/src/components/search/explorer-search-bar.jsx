@@ -55,10 +55,12 @@ export function ExplorerSearch({ setLayers, ...props }) {
       id: "facilitiesFound",
       label: "Facilities Found",
       data: tmntFacilityGeojson,
-      getIconColor: (f) => (isFound(f) ? colorToList("yellow") : [0, 0, 0, 0]),
+      getIconColor: (f) => (isFound(f) ? [0, 0, 0, 255] : [0, 0, 0, 0]),
+      getIcon: (d) => "marker_found",
       pickable: false,
       updateTriggers: {
         getIconColor: [matchedValues],
+        getIcon: [matchedValues],
       },
     });
     setLayers(facilityLayerFound);

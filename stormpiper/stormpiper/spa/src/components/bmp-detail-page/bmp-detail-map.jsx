@@ -22,6 +22,7 @@ export default function BMPDetailMap({
       type: "FeatureCollection",
       features: [facility],
     },
+    getIcon: (d) => "marker",
   });
 
   const delineationLayer = new GeoJsonLayer({
