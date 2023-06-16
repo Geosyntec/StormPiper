@@ -52,10 +52,6 @@ export default function ScenarioFeatureEditTab({
     }
   }, []);
 
-  useEffect(() => {
-    console.log("feature within edit tab: ", feature);
-  }, [feature]);
-
   function deleteFeature() {
     const deletedFeature = {
       type: "FeatureCollection",
@@ -80,21 +76,21 @@ export default function ScenarioFeatureEditTab({
                     justifyContent: "space-between",
                   }}
                 >
-                  <CheckIcon
+                  <SaveAsIcon
                     onClick={() => {
-                      viewModeToggler();
+                      drawModeToggler();
                       setActiveTab(false);
                       setDisplayEditReset(false);
                     }}
                   />
-                  <ClearIcon
+                  <UndoIcon
                     onClick={() => {
                       featureSetter({
                         type: "FeatureCollection",
                         features: [resetFeature],
                       });
                       setDisplayEditReset(false);
-                      viewModeToggler();
+                      drawModeToggler();
                       setActiveTab(false);
                     }}
                   />
@@ -128,7 +124,7 @@ export default function ScenarioFeatureEditTab({
                     onClick={() => {
                       deleteFeature();
                       setDisplayDeleteConfirm(false);
-                      viewModeToggler();
+                      drawModeToggler();
                     }}
                   />
                   <ClearIcon

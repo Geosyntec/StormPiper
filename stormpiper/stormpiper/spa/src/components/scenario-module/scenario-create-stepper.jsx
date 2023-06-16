@@ -83,7 +83,10 @@ export function ScenarioCreateStepper({
       ),
       optional: true,
       stepRef: facilityRef,
-      nextEventHandler: () => facilityRef?.current?.handleSubmit(facility),
+      nextEventHandler: () => {
+        facilityRef?.current?.handleSubmit(facility);
+        viewModeToggler();
+      },
       backEventHandler: () => {
         facilityRef?.current?.handleSubmit(facility);
         delineationDrawToggler();
