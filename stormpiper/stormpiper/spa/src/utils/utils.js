@@ -44,8 +44,9 @@ export async function api_fetch(resource, args = {}) {
   const response = await fetch(resource, args);
 
   console.log(response.status, window.location.pathname);
-  if (response.status === 401 && window.location.pathname !== "/app")
-    window.location.replace("./app");
+  if (response.status === 401 && window.location.pathname !== "/app") {
+    window.location.replace(`${urlPrefix}/app`);
+  }
 
   return response;
 }
