@@ -1,6 +1,5 @@
-import { GeoJsonLayer, BitmapLayer } from "@deck.gl/layers";
+import { GeoJsonLayer, BitmapLayer, PathLayer } from "@deck.gl/layers";
 import { TileLayer } from "@deck.gl/geo-layers";
-
 import { locationIconUrl, inletIconUrl } from "../icons";
 import { urlPrefix, Authorization, colorToList } from "../../utils/utils";
 
@@ -42,6 +41,46 @@ async function collatePaginatedQuery(url) {
   return res;
 }
 
+class StrokedPathLayer extends PathLayer {
+  initializeState(opts) {
+    super.initializeState(opts);
+
+    const { gl } = this.context;
+    const attributeManager = this.getAttributeManager();
+    attributeManager.addInstanced({
+      instanceOutlineWidths: {
+        size: 1,
+        accessor: "getOutlineWidth",
+        defaultValue: 1,
+      },
+      instanceOutlineColors: {
+        size: 4,
+        type: gl.UNSIGNED_BYTE,
+        accessor: "getOutlineColor",
+        normalized: true,
+        defaultValue: [0, 0, 0, 255],
+      },
+    });
+  }
+
+  draw(opts) {
+    const { attributes } = this.getAttributeManager();
+    const { model } = this.state;
+
+    model.setAttributes({
+      instanceStrokeWidths: attributes.instanceOutlineWidths,
+      instanceColors: attributes.instanceOutlineColors,
+    });
+    super.draw(opts);
+
+    model.setAttributes({
+      instanceStrokeWidths: attributes.instanceStrokeWidths,
+      instanceColors: attributes.instanceColors,
+    });
+    super.draw(opts);
+  }
+}
+
 export const activeLocalSWFacility = {
   layer: GeoJsonLayer,
   props: {
@@ -76,13 +115,12 @@ export const activeLocalSWFacility = {
     getIcon: (d) => "marker",
     iconSizeScale: 1,
     getIconSize: (d) => 30,
-    defaultFillColor: colorToList("steelblue"),
+    defaultFillColor: colorToList("forestgreen"),
     highlightColor: colorToList("orange"),
-    getIconColor: colorToList("steelblue"),
 
     // --- point attrs -- keep for nebula.gl which cannot show icons apparently
 
-    getFillColor: colorToList("steelblue"),
+    // getFillColor: colorToList("steelblue"),
     getLineColor: [51, 51, 51, 200],
     getPointRadius: 6,
     pointRadiusMaxPixels: 20,
@@ -253,6 +291,7 @@ export const swCBLead = {
     onByDefault: false,
   },
 };
+
 export const subbasins = {
   layer: GeoJsonLayer,
   props: {
@@ -268,18 +307,26 @@ export const subbasins = {
     featurePKField: "subbasin",
     label: "Stormwater Subbasins",
     minZoom: 8,
-    defaultFillColor: colorToList("forestgreen", 0.2),
-    getLineColor: colorToList("forestgreen", 0.9),
-    getDashArray: (f) => [20, 0],
-    getLineWidth: (f) => 1,
+    defaultFillColor: colorToList("transparent", 0),
+    getLineColor: colorToList("black", 1),
+    getDashArray: (f) => [4, 1],
+    getLineWidth: (f) => 6,
     getElevation: (f) => 500,
+    getOutlineWidth: 10,
+    getOutlineColor: [255, 200, 200],
     lineWidthScale: 2,
-    lineWidthMinPixels: 1,
+    onByDefault: true,
     pickable: true,
-    highlightColor: [42, 213, 232],
-    dashJustified: true,
-    dashGapPickable: true,
-    onByDefault: false,
+    _subLayerProps: {
+      "polygons-stroke": {
+        type: StrokedPathLayer,
+        getPath: (d) => d,
+        getWidth: 4,
+        getColor: colorToList("black", 1),
+        getOutlineWidth: 12,
+        getOutlineColor: colorToList("orange", 1),
+      },
+    },
   },
 };
 
