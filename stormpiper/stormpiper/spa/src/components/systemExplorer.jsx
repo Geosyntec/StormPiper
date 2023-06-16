@@ -225,7 +225,13 @@ function SystemExplorer({ setDrawerButtonList }) {
             props = _injectLayerAccessors(props, focusFeatureID);
             layersToRender.push(new Layer(props));
             if (props.id.toLowerCase().match("raster")) {
-              setLegendImg(props.legendImg);
+              import(`../assets/img/${props.legendImg?.src}.png`)
+                .then((res) => {
+                  setLegendImg({ ...props.legendImg, src: res.default });
+                })
+                .catch((err) => {
+                  setLegendImg(null);
+                });
             }
           }
           return false;
@@ -346,7 +352,7 @@ function SystemExplorer({ setDrawerButtonList }) {
               sx={{ padding: 0, "&:last-child": { paddingBottom: 0 } }}
             >
               <img
-                src={legendImg.src}
+                src={legendImg?.src}
                 height={legendImg.height || "200px"}
                 aspect-ratio={legendImg.aspectRatio || "4/3"}
                 // width={legendImg.width || "286px"}
