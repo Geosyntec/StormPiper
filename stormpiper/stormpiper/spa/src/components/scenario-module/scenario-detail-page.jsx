@@ -94,6 +94,22 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
 
   function buildScenario(obj) {
     setScenarioObject(obj);
+    if (obj?.input?.tmnt_facility_collection) {
+      console.log("Found facility: ", obj.input.tmnt_facility_collection);
+      setFacility(obj.input.tmnt_facility_collection);
+      setViewState(
+        zoomToFeature({
+          feature: obj.input.tmnt_facility_collection,
+          transitionInterpolator: null,
+          transitionDuration: 0,
+        })
+      );
+    } else {
+      setFacility({
+        type: "FeatureCollection",
+        features: [],
+      });
+    }
     if (obj?.input?.delineation_collection) {
       console.log("Found delineation");
       setDelineation(obj.input.delineation_collection);
@@ -106,20 +122,6 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
       );
     } else {
       setDelineation({
-        type: "FeatureCollection",
-        features: [],
-      });
-    }
-    if (obj?.input?.tmnt_facility_collection) {
-      console.log("Found facility: ", obj.input.tmnt_facility_collection);
-      setFacility(obj.input.tmnt_facility_collection);
-      zoomToFeature({
-        feature: obj.input.tmnt_facility_collection,
-        transitionInterpolator: null,
-        transitionDuration: 0,
-      });
-    } else {
-      setFacility({
         type: "FeatureCollection",
         features: [],
       });
