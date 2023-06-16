@@ -120,7 +120,7 @@ export const activeLocalSWFacility = {
 
     // --- point attrs -- keep for nebula.gl which cannot show icons apparently
 
-    // getFillColor: colorToList("steelblue"),
+    getFillColor: colorToList("forestgreen"),
     getLineColor: [51, 51, 51, 200],
     getPointRadius: 6,
     pointRadiusMaxPixels: 20,
@@ -340,7 +340,7 @@ const totalCopperRaster = {
     maxZoom: 18,
     tileSize: 256,
     legendImg: {
-      src: "../assets/img/copper_legend.png",
+      src: "copper_legend",
     },
 
     renderSubLayers: (props) => {
@@ -366,7 +366,7 @@ const totalNitrogenRaster = {
     maxZoom: 18,
     tileSize: 256,
     legendImg: {
-      src: "../assets/img/tkn_legend.png",
+      src: "tkn_legend",
     },
 
     renderSubLayers: (props) => {
@@ -392,7 +392,7 @@ const totalZincRaster = {
     maxZoom: 18,
     tileSize: 256,
     legendImg: {
-      src: "../assets/img/zinc_legend.png",
+      src: "zinc_legend",
     },
 
     renderSubLayers: (props) => {
@@ -418,7 +418,7 @@ const tssRaster = {
     maxZoom: 18,
     tileSize: 256,
     legendImg: {
-      src: "../assets/img/tss_legend.png",
+      src: "tss_legend",
     },
 
     renderSubLayers: (props) => {
@@ -444,7 +444,7 @@ const landCoverRaster = {
     maxZoom: 18,
     tileSize: 256,
     legendImg: {
-      src: "../assets/img/landcover_legend.png",
+      src: "landcover_legend",
       height: "300px",
       aspectRatio: "1/1",
     },
@@ -471,7 +471,7 @@ const imperviousnessRaster = {
     maxZoom: 18,
     tileSize: 256,
     legendImg: {
-      src: "../assets/img/imp_legend.png",
+      src: "imp_legend",
     },
     renderSubLayers: (props) => {
       const {
@@ -496,7 +496,7 @@ const runoffRaster = {
     maxZoom: 18,
     tileSize: 256,
     legendImg: {
-      src: "../assets/img/runoff_legend.png",
+      src: "runoff_legend",
     },
     renderSubLayers: (props) => {
       const {
