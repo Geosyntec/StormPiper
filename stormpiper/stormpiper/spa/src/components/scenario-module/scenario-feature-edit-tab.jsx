@@ -7,6 +7,7 @@ import {
   Box,
   Tabs,
   Tab,
+  Tooltip,
 } from "@mui/material";
 import { Fragment, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
@@ -76,27 +77,33 @@ export default function ScenarioFeatureEditTab({
                     justifyContent: "space-between",
                   }}
                 >
-                  <SaveAsIcon
-                    onClick={() => {
-                      drawModeToggler();
-                      setActiveTab(false);
-                      setDisplayEditReset(false);
-                    }}
-                  />
-                  <UndoIcon
-                    onClick={() => {
-                      featureSetter({
-                        type: "FeatureCollection",
-                        features: [resetFeature],
-                      });
-                      setDisplayEditReset(false);
-                      drawModeToggler();
-                      setActiveTab(false);
-                    }}
-                  />
+                  <Tooltip title="Accept Edits">
+                    <SaveAsIcon
+                      onClick={() => {
+                        drawModeToggler();
+                        setActiveTab(false);
+                        setDisplayEditReset(false);
+                      }}
+                    />
+                  </Tooltip>
+                  <Tooltip title="Cancel Edits">
+                    <UndoIcon
+                      onClick={() => {
+                        featureSetter({
+                          type: "FeatureCollection",
+                          features: [resetFeature],
+                        });
+                        setDisplayEditReset(false);
+                        drawModeToggler();
+                        setActiveTab(false);
+                      }}
+                    />
+                  </Tooltip>
                 </Box>
               ) : (
-                <EditIcon />
+                <Tooltip title="Edit">
+                  <EditIcon />
+                </Tooltip>
               )
             }
             onClick={() => {
@@ -120,25 +127,31 @@ export default function ScenarioFeatureEditTab({
                     justifyContent: "space-between",
                   }}
                 >
-                  <CheckIcon
-                    onClick={() => {
-                      deleteFeature();
-                      setDisplayDeleteConfirm(false);
-                      drawModeToggler();
-                    }}
-                  />
-                  <ClearIcon
-                    onClick={() => {
-                      setDisplayDeleteConfirm(false);
-                    }}
-                  />
+                  <Tooltip title="Confirm Delete">
+                    <CheckIcon
+                      onClick={() => {
+                        deleteFeature();
+                        setDisplayDeleteConfirm(false);
+                        drawModeToggler();
+                      }}
+                    />
+                  </Tooltip>
+                  <Tooltip title="Cancel Delete">
+                    <ClearIcon
+                      onClick={() => {
+                        setDisplayDeleteConfirm(false);
+                      }}
+                    />
+                  </Tooltip>
                 </Box>
               ) : (
-                <DeleteIcon
-                  onClick={() => {
-                    setDisplayDeleteConfirm(true);
-                  }}
-                />
+                <Tooltip title="Delete">
+                  <DeleteIcon
+                    onClick={() => {
+                      setDisplayDeleteConfirm(true);
+                    }}
+                  />
+                </Tooltip>
               )
             }
             disabled={feature?.geometry?.coordinates ? false : true}
@@ -147,29 +160,33 @@ export default function ScenarioFeatureEditTab({
             <Tab
               key="saveAs"
               icon={
-                <SaveAsIcon
-                  onClick={viewModeToggler}
-                  disabled={feature?.geometry?.coordinates ? false : true}
-                />
+                <Tooltip title="Save">
+                  <SaveAsIcon
+                    onClick={viewModeToggler}
+                    disabled={feature?.geometry?.coordinates ? false : true}
+                  />
+                </Tooltip>
               }
             />,
             <Tab
               key="undoEdit"
               icon={
-                <UndoIcon
-                  onClick={() => {
-                    if (resetFeature) {
-                      featureSetter({
-                        type: "FeatureCollection",
-                        features: [resetFeature],
-                      });
-                    } else {
-                      featureSetter(null);
-                    }
-                    viewModeToggler();
-                  }}
-                  disabled={feature?.geometry?.coordinates ? false : true}
-                />
+                <Tooltip title="Undo">
+                  <UndoIcon
+                    onClick={() => {
+                      if (resetFeature) {
+                        featureSetter({
+                          type: "FeatureCollection",
+                          features: [resetFeature],
+                        });
+                      } else {
+                        featureSetter(null);
+                      }
+                      viewModeToggler();
+                    }}
+                    disabled={feature?.geometry?.coordinates ? false : true}
+                  />
+                </Tooltip>
               }
             />,
           ]}
