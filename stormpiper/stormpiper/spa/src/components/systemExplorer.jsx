@@ -276,19 +276,14 @@ function SystemExplorer({ setDrawerButtonList }) {
 
   function _injectLayerAccessors(props, focusFeatureID) {
     const pkField = props.featurePKField;
-    props.getFillColor = (d) => {
+
+    props.getIcon = (d) => {
       return d.properties[pkField] && d.properties[pkField] === focusFeatureID
-        ? props.highlightColor || [52, 222, 235]
-        : props.defaultFillColor || [70, 170, 21, 200];
-    };
-    props.getIconColor = (d) => {
-      return d.properties[pkField] && d.properties[pkField] === focusFeatureID
-        ? props.highlightColor || [52, 222, 235]
-        : props.defaultFillColor || [70, 170, 21, 200];
+        ? "marker_selected"
+        : "marker";
     };
     props.updateTriggers = {
-      getFillColor: [focusFeatureID || null],
-      getIconColor: [focusFeatureID || null],
+      getIcon: [focusFeatureID || null],
     };
     return props;
   }
