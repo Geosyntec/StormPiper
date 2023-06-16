@@ -18,12 +18,7 @@ export default function AuthChecker({
   const _useNav = useNav || false; // default to false
 
   useEffect(() => {
-    if (!userProfile?.role) {
-      if (_useNav) {
-        navigate("/app");
-        return;
-      } else return;
-    }
+    if (!userProfile?.role) return;
 
     if (
       (_disallowedRoles.length &&
