@@ -60,6 +60,7 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
 
   const [resultsCalculatedAt, setResultsCalculatedAt] = useState(null);
   const [scenarioUpdatedAt, setScenarioUpdatedAt] = useState(null);
+  const [viewState, setViewState] = useState(null);
 
   const navigate = useNavigate();
   const buttonList = [
@@ -96,6 +97,13 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
     if (obj?.input?.delineation_collection) {
       console.log("Found delineation");
       setDelineation(obj.input.delineation_collection);
+      setViewState(
+        zoomToFeature({
+          feature: obj.input.delineation_collection,
+          transitionInterpolator: null,
+          transitionDuration: 0,
+        })
+      );
     } else {
       setDelineation({
         type: "FeatureCollection",
@@ -105,6 +113,11 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
     if (obj?.input?.tmnt_facility_collection) {
       console.log("Found facility: ", obj.input.tmnt_facility_collection);
       setFacility(obj.input.tmnt_facility_collection);
+      zoomToFeature({
+        feature: obj.input.tmnt_facility_collection,
+        transitionInterpolator: null,
+        transitionDuration: 0,
+      });
     } else {
       setFacility({
         type: "FeatureCollection",
@@ -307,23 +320,6 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
     }, 5000);
     setResultsPollInterval(resultsPoll);
   }
-
-  let zoomFeature = null;
-  let viewState = null;
-
-  if (delineation?.features?.length > 0) {
-    zoomFeature = delineation;
-  } else if (facility?.features?.length > 0) {
-    zoomFeature = facility;
-  }
-
-  viewState =
-    zoomFeature &&
-    zoomToFeature({
-      feature: zoomFeature,
-      transitionInterpolator: null,
-      transitionDuration: 0,
-    });
 
   return (
     <Box
