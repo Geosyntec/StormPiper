@@ -21,6 +21,7 @@ export default function AuthProvider({ children }) {
     if (resjson?.email) {
       setUserProfile({ ...resjson });
     } else {
+      console.log("no email found. redirecting to homepage");
       navigate("/app");
     }
   }, []);
