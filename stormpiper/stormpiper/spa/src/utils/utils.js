@@ -41,7 +41,13 @@ export async function api_fetch(resource, args = {}) {
     args = { ...args, headers: { ...headers, Authorization } };
   }
 
-  return await fetch(resource, args);
+  const response = await fetch(resource, args);
+
+  console.log(response.status, window.location.pathname);
+  if (response.status === 401 && window.location.pathname !== "/app")
+    window.location.replace("./app");
+
+  return response;
 }
 
 export function colorToList(specifier, alpha) {
