@@ -251,14 +251,15 @@ def get_subbasin_metrics(*, url=None):
         .drop(columns=["object", "id", "objectid"], errors="ignore")
     )
 
-    check_lu = df.set_index("subbasin")[
-        [c for c in df.columns if c.startswith("lu_")]
-    ].assign(check_sum=lambda df: df.sum(axis=1))
+    lu_cols = [c for c in df.columns if c.startswith("lu_")]
+    check_lu = df.set_index("subbasin")[lu_cols].assign(
+        check_sum=lambda df: df.sum(axis=1)
+    )
     if check_lu["check_sum"].mean() <= 1.1:  # if fraction rather than pct
-        df.loc[:, [c for c in df.columns if c.startswith("lu_")]] *= 100
+        df.loc[:, lu_cols] *= 100
 
     check_lc = df.set_index("subbasin")[
-        [c for c in df.columns if c.startswith("lc_")]
+        [c for c in df.columns if c.startswith("lc_") and not c.endswith("total_pct")]
     ].assign(check_sum=lambda df: df.sum(axis=1))
     if check_lc["check_sum"].mean() <= 1.1:  # if fraction rather than pct
         df.loc[:, [c for c in df.columns if c.startswith("lc_")]] *= 100
