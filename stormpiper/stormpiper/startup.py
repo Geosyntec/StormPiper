@@ -66,7 +66,6 @@ def create_initial_users() -> None:
     if platform.system() == "Windows":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     asyncio.run(init_users.create_admin())
-    asyncio.run(init_users.create_service_datastudio())
 
     logger.info("Initial data created")
 
