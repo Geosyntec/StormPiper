@@ -50,18 +50,13 @@ export default function BMPInfoWindow(props: statWindowProps) {
 
   useEffect(() => {
     if (!props?.feature) return;
-    console.log("Fetching tmnt attributes");
-    let tmnt_results = [
-      // "/api/rest/results/" + props.feature,
-      "/api/rest/tmnt_facility/" + props.feature,
-    ];
+    let tmnt_results = ["/api/rest/tmnt_facility/" + props.feature];
 
     setLoadingState(false);
     Promise.all(
       tmnt_results.map((url) => api_fetch(url).then((res) => res.json()))
     )
       .then((resArray) => {
-        console.log("Fetched all resources; ", resArray);
         //TODO: Can we set the header based on RecalculationState? If true, then set to Performance Summary, else Overview
         setState({
           ...state,
