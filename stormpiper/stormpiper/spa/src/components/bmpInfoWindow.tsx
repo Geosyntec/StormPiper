@@ -40,13 +40,6 @@ export default function BMPInfoWindow(props: statWindowProps) {
     results: [],
   });
   const [loadingState, setLoadingState] = useState<boolean>(false);
-  const [recalculationState, setRecalculationState] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (!props?.isDirty?.is_dirty) {
-      setRecalculationState(false);
-    }
-  }, [props?.isDirty]);
 
   useEffect(() => {
     if (!props?.feature) return;
@@ -74,66 +67,7 @@ export default function BMPInfoWindow(props: statWindowProps) {
           error: true,
         });
       });
-  }, [props?.feature, recalculationState]);
-
-  function _recalculate() {
-    setRecalculationState(true);
-    api_fetch("/api/rpc/solve_watershed")
-      .then((resp) => {
-        return resp.json();
-      })
-      .then((resp) => {
-        console.log("Recalculation started: ", resp);
-      })
-      .catch((err) => {
-        console.log("Recalculate Failed: ", err);
-      });
-  }
-
-  function _renderUpdateBox() {
-    let lastUpdated: Date = dateFormatter(props.isDirty?.last_updated);
-    let lastUpdatedStr: string = "";
-    if (lastUpdated && lastUpdated != undefined) {
-      lastUpdatedStr = lastUpdated.toLocaleString("en-US", {
-        dateStyle: "short",
-        timeStyle: "short",
-      });
-    }
-    return (
-      <Box>
-        {props?.isDirty ? (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Typography variant="caption">
-              Results Last Updated: {lastUpdatedStr}{" "}
-              {props?.isDirty?.is_dirty && (
-                <a
-                  href={props?.isDirty?.is_dirty ? "#" : undefined}
-                  onClick={_recalculate}
-                  style={{ cursor: "pointer" }}
-                >
-                  Refresh
-                </a>
-              )}
-            </Typography>
-            {recalculationState && (
-              <CircularProgress
-                style={{ margin: "1em", alignSelf: "center" }}
-                size="1em"
-              />
-            )}
-          </Box>
-        ) : (
-          <Box></Box>
-        )}
-      </Box>
-    );
-  }
+  }, [props?.feature]);
 
   function _renderStats() {
     if (!props.feature) {
@@ -146,7 +80,7 @@ export default function BMPInfoWindow(props: statWindowProps) {
     } else {
       return (
         <>
-          {_renderUpdateBox()}
+          {/* {_renderUpdateBox()} */}
           <BMPReadOnlyInfo data={state.bmp_data} />
         </>
       );
