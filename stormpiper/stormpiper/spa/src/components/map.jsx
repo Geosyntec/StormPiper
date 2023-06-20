@@ -170,13 +170,17 @@ function DeckGLMap({
         if (!props.showTooltip) {
           return;
         }
+
+        let tt = window.document
+          .getElementById("deckgl-wrapper")
+          .getElementsByClassName("deck-tooltip")[0];
         let width = 0;
         let height = 0;
         if (object.viewport) {
           ({ width, height } = object.viewport);
         }
-        const maxx = 250,
-          maxy = 200;
+        const maxx = tt.clientWidth,
+          maxy = tt.clientHeight;
         if (object.y > height - maxy || object.x > width - maxx) {
           object.y -= maxy;
           object.x -= maxx;
@@ -198,8 +202,8 @@ function DeckGLMap({
               position: "absolute",
               overflow: "hidden",
               borderRadius: "6px",
-              maxWidth: `${maxx}px`,
-              maxHeight: `${maxy}px`,
+              maxWidth: `250px`,
+              maxHeight: `300px`,
               lineHeight: "1.2rem",
             },
           }
