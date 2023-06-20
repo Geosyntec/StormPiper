@@ -103,7 +103,6 @@ function SystemExplorer({ setDrawerButtonList }) {
   const [overlayLayers, setOverlayLayers] = useState([]);
   const [legendImg, setLegendImg] = useState(null);
   const [baseLayer, setBaseLayer] = useState(0);
-  const [zoomLevel, setZoomLevel] = useState(11);
   const [activeLayers, setActiveLayers] = useState(() => {
     var res = {};
     Object.keys(layerDict).map((category) => {
@@ -135,9 +134,9 @@ function SystemExplorer({ setDrawerButtonList }) {
   }, [location, params?.id]);
 
   useEffect(async () => {
-    const baseLayers = _renderLayers(layerDict, activeLayers, zoomLevel);
+    const baseLayers = _renderLayers(layerDict, activeLayers);
     setLayers([...baseLayers, ...overlayLayers]);
-  }, [focusFeatureID, activeLayers, overlayLayers, zoomLevel]);
+  }, [focusFeatureID, activeLayers, overlayLayers]);
 
   function _fetchIsDirty() {
     if (userProfile?.is_verified) {
@@ -208,7 +207,7 @@ function SystemExplorer({ setDrawerButtonList }) {
     updateFunction(currentActiveLayers);
   }
 
-  function _renderLayers(layerDict, visState, zoomLevel, layersToRender = []) {
+  function _renderLayers(layerDict, visState, layersToRender = []) {
     Object.keys(layerDict).map((category) => {
       const layerGroup = layerDict[category];
       if (layerGroup.length) {
@@ -218,9 +217,8 @@ function SystemExplorer({ setDrawerButtonList }) {
             props.data = getData();
           }
           if (
-            (visState[props.id] ||
-              (firstRender.current && props.onByDefault)) &&
-            zoomLevel > props.minZoom
+            visState[props.id] ||
+            (firstRender.current && props.onByDefault)
           ) {
             props = _injectLayerAccessors(props, focusFeatureID);
             layersToRender.push(new Layer(props));
@@ -237,12 +235,7 @@ function SystemExplorer({ setDrawerButtonList }) {
           return false;
         });
       } else {
-        layersToRender = _renderLayers(
-          layerGroup,
-          visState,
-          zoomLevel,
-          layersToRender
-        );
+        layersToRender = _renderLayers(layerGroup, visState, layersToRender);
       }
       return false;
     });
@@ -337,7 +330,6 @@ function SystemExplorer({ setDrawerButtonList }) {
               featureID: focusFeatureID,
               featureIDField: "node_id",
             }}
-            setZoomLevel={setZoomLevel}
             showTooltip={true}
           ></DeckGLMap>
         </Suspense>
