@@ -61,7 +61,7 @@ async function getFacilityDataByID(id) {
   return await api_fetch(`/api/rest/tmnt_facility/${id}`);
 }
 
-export function BMPDetailResults() {
+export function BMPDetailResults({ data }) {
   const params = useParams();
   const [rows, setRows] = useState([]);
   const [tmntDetails, setTmntDetails] = useState(null);
@@ -75,20 +75,37 @@ export function BMPDetailResults() {
   };
 
   useEffect(async () => {
-    const res_response = await getResultsDataByID(params.id);
-    if (res_response.status <= 400) {
-      const res = await res_response.json();
-      res.forEach((r) => {
-        prepLoadRemovedData(r);
-        prepLoadPctRemovedData(r);
-        prepConcPctRemovedData(r);
-        prepConcData(r);
-      });
-      setRows(res);
-    }
+    data?.forEach((r) => {
+      prepLoadRemovedData(r);
+      prepLoadPctRemovedData(r);
+      prepConcPctRemovedData(r);
+      prepConcData(r);
+    });
+    setRows(data);
 
     updateFacilityData();
-  }, [params.id]);
+  }, [params.id, data]);
+
+  function renderResultsTable(rows) {
+    if (!rows?.length) {
+      return (
+        <Card sx={{ p: 2 }}>
+          <Typography variant="h6" fontWeight="bold" textAlign="center">
+            BMP Water Quality Results are Unavailable for This Facility <br />
+            Please Refresh
+          </Typography>
+        </Card>
+      );
+    }
+
+    return (
+      <Stack spacing={2}>
+        <Card sx={{ p: 2 }}>{<BMPVolumeBalance rows={rows} />}</Card>
+        <Card sx={{ p: 2 }}>{<BMPLoadReduction rows={rows} />}</Card>
+        <Card sx={{ p: 2 }}>{<BMPConcReduction rows={rows} />}</Card>
+      </Stack>
+    );
+  }
 
   return (
     <Box>
@@ -100,21 +117,7 @@ export function BMPDetailResults() {
           />
         </Card>
       </Box>
-      <Box>
-        {!rows.length ? (
-          <Card sx={{ p: 2 }}>
-            <Typography variant="h6" fontWeight="bold" textAlign="center">
-              BMP Water Quality Results Are Unavailable for This Facility
-            </Typography>
-          </Card>
-        ) : (
-          <Stack spacing={2}>
-            <Card sx={{ p: 2 }}>{<BMPVolumeBalance rows={rows} />}</Card>
-            <Card sx={{ p: 2 }}>{<BMPLoadReduction rows={rows} />}</Card>
-            <Card sx={{ p: 2 }}>{<BMPConcReduction rows={rows} />}</Card>
-          </Stack>
-        )}
-      </Box>
+      <Box>{renderResultsTable(data)}</Box>
     </Box>
   );
 }

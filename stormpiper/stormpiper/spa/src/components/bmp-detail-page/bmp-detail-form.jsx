@@ -5,7 +5,7 @@ import { Box, Dialog, DialogActions, Typography, Button } from "@mui/material";
 import { api_fetch } from "../../utils/utils";
 import { BMPForm } from "../bmpForm";
 
-export function BMPDetailForm() {
+export function BMPDetailForm({ calculateHandler }) {
   const params = useParams();
   const [specs, setSpecs] = useState({
     context: {},
@@ -14,7 +14,6 @@ export function BMPDetailForm() {
   const [facilityType, setFacilityType] = useState("");
   const [loadingState, setLoadingState] = useState(true);
   const [TMNTAttrs, setTMNTAttrs] = useState({});
-  const [resultSuccess, setResultSuccess] = useState(false);
   const [resultError, setResultError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("error!");
 
@@ -87,9 +86,7 @@ export function BMPDetailForm() {
       body: JSON.stringify(data),
     })
       .then((resp) => {
-        if (resp.status === 200) {
-          setResultSuccess(true);
-        } else if (resp.status === 422) {
+        if (resp.status === 422) {
           setResultError(true);
         }
         return resp.json();
@@ -106,16 +103,6 @@ export function BMPDetailForm() {
         console.log(err);
       });
     return response;
-  }
-  function _handleRecalculate() {
-    api_fetch("/api/rpc/solve_watershed")
-      .then((resp) => {
-        setResultSuccess(false);
-        console.log("Recalculation started: ", resp);
-      })
-      .catch((err) => {
-        console.log("Recalculate Failed: ", err);
-      });
   }
 
   function _renderErrorHeader(msg) {
@@ -182,19 +169,6 @@ export function BMPDetailForm() {
             handleFormSubmit={_handleSubmit}
             handleEditReset={removeEdits}
           ></BMPForm>
-          <Dialog open={resultSuccess} onClose={() => setResultSuccess(false)}>
-            <Box sx={{ p: 2 }}>
-              <Typography>
-                <strong>Facility Details Submitted</strong>
-              </Typography>
-            </Box>
-            <DialogActions>
-              <Button onClick={_handleRecalculate}>
-                Recalculate WQ Results
-              </Button>
-              <Button onClick={() => setResultSuccess(false)}>Continue</Button>
-            </DialogActions>
-          </Dialog>
           <Dialog open={resultError} onClose={() => setResultError(false)}>
             <Box sx={{ p: 2 }}>
               <Typography>
