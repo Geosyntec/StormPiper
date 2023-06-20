@@ -95,7 +95,7 @@ export const activeLocalSWFacility = {
     },
     id: "activeSWFacility",
     featurePKField: "altid",
-    label: "Active Surface Water Facilities",
+    label: "Stormwater Facilities",
     featureType: "points",
     minZoom: 8,
     zorder: 100,
@@ -222,7 +222,7 @@ export const delineations = {
     },
     id: "tmnt_delineations",
     featurePKField: "altid",
-    label: "Facility Upstream Delineations",
+    label: "Stormwater Facility Delineations",
     minZoom: 8,
     getFillColor: colorToList("steelblue", 0.2),
     defaultFillColor: colorToList("steelblue", 0.2),
@@ -238,7 +238,7 @@ export const delineations = {
     pickable: true,
     dashJustified: true,
     dashGapPickable: true,
-    onByDefault: false,
+    onByDefault: true,
   },
 };
 export const swMain = {
@@ -591,7 +591,12 @@ const contourRaster = {
 
 /* eslint-disable quote-props */
 export const layerDict = {
+  "Surface Water Infrastructure": {
+    Structures: [activeLocalSWFacility],
+    Delineations: [delineations, subbasins],
+  },
   "Base Layers": {
+    Conveyance: [swTrunk, swMain, swCBLead, swInlet],
     Landuse: [
       landCoverRaster,
       imperviousnessRaster,
@@ -605,10 +610,5 @@ export const layerDict = {
       totalZincRaster,
       tssRaster,
     ],
-  },
-  "Surface Water Infrastructure": {
-    Delineations: [delineations, subbasins],
-    Structures: [activeLocalSWFacility, swInlet],
-    Conveyance: [swMain, swTrunk, swCBLead],
   },
 };
