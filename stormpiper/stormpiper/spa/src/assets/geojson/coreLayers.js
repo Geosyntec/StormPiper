@@ -3,7 +3,7 @@ import { TileLayer } from "@deck.gl/geo-layers";
 import { locationIconUrl, inletIconUrl } from "../icons";
 import { urlPrefix, Authorization, colorToList } from "../../utils/utils";
 
-async function collatePaginatedQuery(url) {
+async function collatePaginatedQuery({ url, fields }) {
   let res = {
     type: "FeatureCollection",
     features: [],
@@ -17,12 +17,13 @@ async function collatePaginatedQuery(url) {
   const totalPages = Math.ceil(featureCount / 1000);
   let page = 1;
   let requestArr = [];
-
+  let _url = "";
   while (page <= totalPages) {
     let offset = (page - 1) * 1000;
-    requestArr.push(
-      `${url}/query?where=1%3D1&outFields=*&returnGeometry=true&f=geojson&outSR=4326&resultOffset=${offset}&resultRecordCount=1000&orderByFields=ALTID`
-    );
+    _url = `${url}/query?where=1%3D1&outFields=${fields.join(
+      ","
+    )}&returnGeometry=true&f=geojson&outSR=4326&resultOffset=${offset}&resultRecordCount=1000`;
+    requestArr.push(_url);
     page += 1;
   }
 
@@ -168,9 +169,10 @@ export const invisiblePoints = {
 export const swInlet = {
   layer: GeoJsonLayer,
   props: {
-    data: collatePaginatedQuery(
-      "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/25"
-    ),
+    data: collatePaginatedQuery({
+      url: "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/25",
+      fields: ["ALTID"],
+    }),
     loadOptions: {
       fetch: {
         headers: {
@@ -240,9 +242,10 @@ export const delineations = {
 export const swMain = {
   layer: GeoJsonLayer,
   props: {
-    data: collatePaginatedQuery(
-      "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/31"
-    ),
+    data: collatePaginatedQuery({
+      url: "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/31",
+      fields: ["ALTID", "DIAMETER"],
+    }),
     id: "swMain",
     featurePKField: "altid",
     label: "Surfacewater Main",
@@ -264,9 +267,10 @@ export const swMain = {
 export const swTrunk = {
   layer: GeoJsonLayer,
   props: {
-    data: collatePaginatedQuery(
-      "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/32"
-    ),
+    data: collatePaginatedQuery({
+      url: "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/32",
+      fields: ["ALTID", "DIAMETER"],
+    }),
     id: "swTrunk",
     featurePKField: "altid",
     label: "Surfacewater Trunk",
@@ -286,9 +290,10 @@ export const swTrunk = {
 export const swCBLead = {
   layer: GeoJsonLayer,
   props: {
-    data: collatePaginatedQuery(
-      "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/30"
-    ),
+    data: collatePaginatedQuery({
+      url: "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/30",
+      fields: ["ALTID"],
+    }),
     id: "swCBLead",
     featurePKField: "altid",
     label: "Catchbasin Leads",
