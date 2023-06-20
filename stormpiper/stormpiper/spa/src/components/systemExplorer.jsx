@@ -240,6 +240,9 @@ function SystemExplorer({ setDrawerButtonList }) {
       return false;
     });
     firstRender.current = false;
+    layersToRender.sort(
+      (a, b) => (a.props?.zorder || 0) - (b.props?.zorder || 0)
+    );
     return layersToRender;
   }
 
