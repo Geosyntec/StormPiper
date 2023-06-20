@@ -98,6 +98,7 @@ export const activeLocalSWFacility = {
     label: "Active Surface Water Facilities",
     featureType: "points",
     minZoom: 8,
+    zorder: 100,
 
     // --- icon attrs
     pointType: "icon",
