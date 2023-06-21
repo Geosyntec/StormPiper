@@ -225,7 +225,7 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
           <Dialog open={resultError} onClose={() => setResultError(false)}>
             <Box sx={{ padding: "15px" }}>
               <Typography>
-                <strong>Submission Error</strong>
+                <strong>Error Saving Scenario</strong>
               </Typography>
               <Typography variant="caption">Please try again</Typography>
             </Box>

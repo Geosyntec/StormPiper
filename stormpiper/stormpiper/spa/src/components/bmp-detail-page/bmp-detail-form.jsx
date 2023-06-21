@@ -1,11 +1,20 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Dialog, DialogActions, Typography, Button } from "@mui/material";
+import {
+  Box,
+  Dialog,
+  DialogActions,
+  Typography,
+  Button,
+  List,
+  ListItem,
+  Snackbar,
+} from "@mui/material";
 
 import { api_fetch } from "../../utils/utils";
 import { BMPForm } from "../bmpForm";
 
-export function BMPDetailForm({ calculateHandler }) {
+export function BMPDetailForm() {
   const params = useParams();
   const [specs, setSpecs] = useState({
     context: {},
@@ -16,6 +25,11 @@ export function BMPDetailForm({ calculateHandler }) {
   const [TMNTAttrs, setTMNTAttrs] = useState({});
   const [resultError, setResultError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("error!");
+  const [snackbarContents, setSnackbarContents] = useState({
+    status: false,
+    msg: "",
+    closeHandler: () => {},
+  });
 
   useEffect(() => {
     if (!params.id) return;
@@ -86,20 +100,34 @@ export function BMPDetailForm({ calculateHandler }) {
       body: JSON.stringify(data),
     })
       .then((resp) => {
-        if (resp.status === 422) {
+        if (resp.status >= 400) {
           setResultError(true);
+        } else {
+          setSnackbarContents({
+            status: true,
+            msg: "BMP Updated",
+            closeHandler: () => {
+              setSnackbarContents({
+                status: false,
+                msg: "",
+                closeHandler: () => {},
+              });
+            },
+          });
         }
         return resp.json();
       })
       .then((r) => {
         //assume that only error responses have a detail object
         if (r.detail) {
+          console.log("setting err msg: ", r.detail);
           setErrorMsg(r.detail);
         }
       })
       .catch((err) => {
         console.log("Error patching tmnt:");
         setResultError(true);
+        setErrorMsg(err.message);
         console.log(err);
       });
     return response;
@@ -111,7 +139,7 @@ export function BMPDetailForm({ calculateHandler }) {
     if (header) {
       return header[0];
     } else {
-      return header;
+      return msg;
     }
   }
 
@@ -158,6 +186,13 @@ export function BMPDetailForm({ calculateHandler }) {
       let simpleFacilityFields = specs.facilitySpec[simpleBaseType];
       return (
         <>
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            open={snackbarContents.status}
+            autoHideDuration={3000}
+            onClose={snackbarContents.closeHandler}
+            message={snackbarContents.msg}
+          />
           <BMPForm
             facilitySpec={specs.facilitySpec}
             allFields={facilityFields}
@@ -172,18 +207,21 @@ export function BMPDetailForm({ calculateHandler }) {
           <Dialog open={resultError} onClose={() => setResultError(false)}>
             <Box sx={{ p: 2 }}>
               <Typography>
-                <strong>Submission Error</strong>
+                <strong>Error Saving BMP</strong>
               </Typography>
-              <Typography variant="caption">Please try again</Typography>
             </Box>
-            <Typography variant="caption" sx={{ py: 0, px: 1 }}>
-              {_renderErrorHeader(errorMsg)}
+            <Typography variant="caption" sx={{ py: 0, px: 2 }}>
+              {errorMsg && _renderErrorHeader(errorMsg)}
             </Typography>
-            <ul style={{ marginTop: 0, paddingRight: "1em" }}>
+            <List sx={{ mt: 0, pr: 1 }}>
               {_getErrorList(errorMsg).map((msg) => {
-                return <li>{msg}</li>;
+                return (
+                  <ListItem>
+                    <Typography variant="caption">{msg}</Typography>
+                  </ListItem>
+                );
               })}
-            </ul>
+            </List>
           </Dialog>
         </>
       );
