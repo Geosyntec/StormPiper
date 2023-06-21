@@ -85,10 +85,8 @@ function DeckGLMap({
   if (initialViewState != null) {
     INITIAL_VIEW_STATE = { ...INITIAL_VIEW_STATE, ...initialViewState };
   }
-  const layers = props?.layers || [];
   const loc = useLocation();
   const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
-  const [zoomDataIsLoaded, setZoomDataIsLoaded] = useState(false);
 
   const baseLayerStyles = [
     {
@@ -99,25 +97,13 @@ function DeckGLMap({
     },
   ];
 
-  function doZoomID({ layerID, featureID, featureIDField }) {
-    const layer = layers.find((layer) => layer.props.id === layerID);
-    layer?.state ??
-      setTimeout(() => {
-        layer?.state && setZoomDataIsLoaded(true);
-      }, 1200);
+  function doZoomID({ zoomLayerData, featureID, featureIDField }) {
+    let feature = zoomLayerData.features.find(
+      (obj) => obj.properties?.[featureIDField] === featureID
+    );
 
-    zoomDataIsLoaded &&
-      layer?.state &&
-      featureID &&
-      setTimeout(() => {
-        const feature = getLayerData({
-          layer,
-          value: featureID,
-          field: featureIDField,
-        });
-        const view = zoomToFeature({ feature });
-        setViewState({ ...view });
-      }, 5);
+    const view = zoomToFeature({ feature });
+    setViewState({ ...view });
   }
 
   function doZoomFeature({ feature, ...props }) {
@@ -126,9 +112,9 @@ function DeckGLMap({
   }
 
   useEffect(() => {
-    zoomID?.featureID && doZoomID(zoomID);
+    zoomID?.featureID && zoomID?.zoomLayerData && doZoomID(zoomID);
     zoomFeature?.feature && doZoomFeature(zoomFeature);
-  }, [loc, zoomID?.featureID, zoomDataIsLoaded, zoomFeature?.feature]);
+  }, [loc, zoomID?.featureID, zoomID?.zoomLayerData, zoomFeature?.feature]);
 
   useEffect(() => {
     props?.viewState && setViewState(props.viewState);
