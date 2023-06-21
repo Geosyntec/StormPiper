@@ -418,13 +418,13 @@ function SystemExplorer({ setDrawerButtonList }) {
           </Card>
         </Box>
       </Box>
-      <Card
+      {/* <Card
         sx={
           resultsDisplayState
             ? classes.resultsPanel
             : classes.resultsPanelHidden
         }
-      ></Card>
+      ></Card> */}
     </Box>
   );
 }

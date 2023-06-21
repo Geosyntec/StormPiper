@@ -42,16 +42,6 @@ export default function BMPDetailPage() {
   const [bmpResults, setBMPResults] = useState(null);
   const [delineation, setDelineation] = useState(null);
   const [viewState, setViewState] = useState(null);
-  const [resultsPollInterval, setResultsPollInterval] = useState(null);
-  const [resultsSuccessDisplay, setResultsSuccessDisplay] = useState({
-    status: false,
-    msg: "",
-  });
-  const [resultsLoadingDisplay, setResultsLoadingDisplay] = useState({
-    status: false,
-    msg: "",
-  });
-  const [recalculationState, setRecalculationState] = useState(false);
 
   async function getResultsDataByID() {
     const res_response = await api_fetch(
@@ -61,36 +51,6 @@ export default function BMPDetailPage() {
       const res = await res_response.json();
       setBMPResults(res);
     }
-  }
-
-  async function initiateResultsSolve() {
-    setResultsLoadingDisplay({
-      status: true,
-      msg: "Refreshing Results",
-    });
-    setRecalculationState(true);
-
-    const taskID = await api_fetch("/api/rpc/solve_watershed")
-      .then((res) => res.json())
-      .then((res) => {
-        if (!["STARTED", "SUCCESS"].includes(res.status)) {
-          throw new Error("Scenario will not solve");
-        }
-        return res.task_id;
-      });
-    const resultsPoll = setInterval(async () => {
-      const taskResult = await api_fetch(`/api/rest/tasks/${taskID}`)
-        .then((res) => res.json())
-        .then((res) => {
-          return res.status;
-        });
-      if (taskResult === "SUCCESS") {
-        setResultsSuccessDisplay({ status: true, msg: "Results Calculated" });
-        setRecalculationState(false);
-        getResultsDataByID();
-      }
-    }, 5000);
-    setResultsPollInterval(resultsPoll);
   }
 
   useEffect(async () => {
@@ -116,31 +76,11 @@ export default function BMPDetailPage() {
 
   return (
     <>
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        open={resultsSuccessDisplay.status}
-        autoHideDuration={3000}
-        onClose={() => {
-          setResultsSuccessDisplay({ status: false, msg: "" });
-          clearInterval(resultsPollInterval);
-          setResultsPollInterval(null);
-        }}
-        message={resultsSuccessDisplay.msg}
-      />
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        open={resultsLoadingDisplay.status}
-        autoHideDuration={3000}
-        onClose={() => {
-          setResultsLoadingDisplay({ status: false, msg: "" });
-        }}
-        message={resultsLoadingDisplay.msg}
-      />
       <TwoColGrid>
         <HalfSpan>
           <Card sx={{ display: "flex", p: 3, height: "100%" }}>
             <Box sx={{ width: "100%" }}>
-              <BMPDetailForm calculateHandler={initiateResultsSolve} />
+              <BMPDetailForm />
             </Box>
           </Card>
         </HalfSpan>
@@ -167,10 +107,7 @@ export default function BMPDetailPage() {
             }}
           >
             <Card sx={{ padding: 2 }}>
-              <ResultRefreshBox
-                refreshHandler={initiateResultsSolve}
-                recalculationState={recalculationState}
-              />
+              <ResultRefreshBox refreshHandler={getResultsDataByID} />
             </Card>
           </Box>
         </HalfSpan>
