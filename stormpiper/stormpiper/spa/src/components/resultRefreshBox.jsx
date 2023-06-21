@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
-export default function ResultRefreshBox({ refreshHandler }) {
+export default function ResultRefreshBox({ refreshHandler, sx }) {
   const [isDirty, setIsDirty] = useState({
     is_dirty: false,
     last_updated: null,
@@ -86,6 +86,7 @@ export default function ResultRefreshBox({ refreshHandler }) {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        ...sx,
       }}
     >
       <Snackbar
@@ -108,14 +109,14 @@ export default function ResultRefreshBox({ refreshHandler }) {
         }}
         message={resultsSuccessDisplay.msg}
       />
-      <Typography variant="caption">
+      <Typography sx={{ width: "100%" }} variant="caption">
         Results Last Updated: {lastUpdatedStr}{" "}
       </Typography>
       <Button
         variant="contained"
         disabled={recalculationState || !isDirty?.is_dirty}
         onClick={initiateResultsSolve}
-        sx={{ width: "100%" }}
+        sx={{ width: { xs: "100%", md: "auto" } }}
       >
         Refresh Results
         {recalculationState && (

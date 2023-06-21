@@ -1,11 +1,12 @@
 import {
   Chip,
-  Button,
   CircularProgress,
   Box,
   Typography,
   TextField,
   MenuItem,
+  ListItem,
+  Paper,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import {
@@ -18,6 +19,7 @@ import { Link } from "react-router-dom";
 import { numFormatter, pctFormatter, strFormatter } from "../../utils/utils";
 
 import { api_fetch } from "../../utils/utils";
+import ResultRefreshBox from "../resultRefreshBox";
 
 type TableHeader = {
   field: string;
@@ -186,6 +188,10 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
   const [currentEpoch, setCurrentEpoch] = useState("1980s");
 
   useEffect(() => {
+    fetchTableData();
+  }, [currentEpoch]);
+
+  function fetchTableData() {
     let resources = [
       "/openapi.json",
       `/api/rest/results?ntype=tmnt_facility&epoch=${currentEpoch}`,
@@ -204,7 +210,7 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
         });
       })
       .catch((err) => console.warn("Couldn't get results", err));
-  }, [currentEpoch]);
+  }
 
   function getValueFormatter(fieldName: string, type: string) {
     let valueFormatter;
@@ -302,19 +308,24 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
               );
             })}
           </TextField>
-          <ul
-            style={{
+          <Box
+            sx={{
               display: "flex",
-              alignContent: "end",
+              flexDirection: { xs: "column", md: "row" },
+              justifyContent: "flex-start",
               flexWrap: "wrap",
               listStyle: "none",
               padding: 0,
               margin: 0,
             }}
+            component="ul"
           >
             {fieldGroups.map((group) => {
               return (
-                <li key={group.groupName}>
+                <ListItem
+                  key={group.groupName}
+                  sx={{ width: "auto", padding: 0 }}
+                >
                   <Chip
                     sx={{
                       margin: (theme) => theme.spacing(0.5),
@@ -336,10 +347,10 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
                       setCurrentGroup(group.groupName);
                     }}
                   />
-                </li>
+                </ListItem>
               );
             })}
-          </ul>
+          </Box>
         </Box>
       </GridToolbarContainer>
     );
@@ -377,7 +388,7 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
                 display: "flex",
                 margin: 1,
                 [theme.breakpoints.up("xs")]: {
-                  flexDirection: "row",
+                  flexDirection: "column",
                 },
               };
             }}
@@ -389,20 +400,22 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
                 flexDirection: "column",
               }}
             >
-              <Typography
-                sx={{ margin: (theme) => theme.spacing(0.5) }}
-                variant="h5"
-              >
+              <Typography sx={{ my: 0.5 }} variant="h5">
                 Facility Water Quality Results
               </Typography>
-              <Typography
-                sx={{ margin: (theme) => theme.spacing(0.5) }}
-                variant="body1"
-              >
+              <Typography variant="body1">
                 View tabular data below, or click on individual facilities to
                 view detailed stats
               </Typography>
             </Box>
+            <ResultRefreshBox
+              refreshHandler={fetchTableData}
+              sx={{
+                my: 1,
+                width: { xs: "100%", md: "40%" },
+                alignItems: "start",
+              }}
+            />
           </Box>
           <DataGrid
             sx={{
@@ -411,12 +424,12 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
                 whiteSpace: "break-spaces",
                 lineHeight: "1.35rem",
               },
+              margin: 1,
             }}
             rows={resultState.results}
             columnHeaderHeight={100}
             columns={getCurrentColumns(resultState.headers, currentFields)}
             rowsPerPageOptions={[5, 25, 100]}
-            // disableSelectionOnClick
             getRowId={(row) => row["node_id"] + row["epoch"]}
             density={"compact"}
             slots={{ toolbar: CustomToolbar }}

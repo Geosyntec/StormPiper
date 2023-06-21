@@ -1,4 +1,10 @@
-import { Chip, Button, CircularProgress, Box, Typography } from "@mui/material";
+import {
+  Chip,
+  ListItem,
+  CircularProgress,
+  Box,
+  Typography,
+} from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { numFormatter, pctFormatter } from "../../utils/utils";
 import {
@@ -127,19 +133,24 @@ export default function SubbasinResultsTable({ fieldList }) {
             printOptions={{ disableToolbarButton: true }}
             sx={{ mx: 2 }}
           />
-          <ul
-            style={{
+          <Box
+            sx={{
               display: "flex",
-              alignContent: "end",
+              flexDirection: { xs: "column", md: "row" },
+              justifyContent: "flex-start",
               flexWrap: "wrap",
               listStyle: "none",
               padding: 0,
               margin: 0,
             }}
+            component="ul"
           >
             {fieldGroups.map((group) => {
               return (
-                <li key={group.groupName}>
+                <ListItem
+                  key={group.groupName}
+                  sx={{ width: "auto", padding: 0 }}
+                >
                   <Chip
                     sx={{
                       margin: (theme) => theme.spacing(0.5),
@@ -161,10 +172,10 @@ export default function SubbasinResultsTable({ fieldList }) {
                       setCurrentGroup(group.groupName);
                     }}
                   />
-                </li>
+                </ListItem>
               );
             })}
-          </ul>
+          </Box>
         </Box>
       </GridToolbarContainer>
     );
