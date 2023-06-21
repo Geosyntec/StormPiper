@@ -100,6 +100,7 @@ function SystemExplorer({ setDrawerButtonList }) {
     last_updated: Date.now(),
   });
   const [layers, setLayers] = useState(false);
+  const [zoomLayerData, setZoomLayerData] = useState(null);
   const [overlayLayers, setOverlayLayers] = useState([]);
   const [legendImg, setLegendImg] = useState(null);
   const [baseLayer, setBaseLayer] = useState(0);
@@ -270,7 +271,7 @@ function SystemExplorer({ setDrawerButtonList }) {
     }
   }
 
-  function _injectLayerAccessors(props, focusFeatureID) {
+  function _setActiveSWFacilityProps(props, focusFeatureID) {
     const pkField = props.featurePKField;
 
     props.getIcon = (d) => {
@@ -281,21 +282,34 @@ function SystemExplorer({ setDrawerButtonList }) {
     props.updateTriggers = {
       getIcon: [focusFeatureID || null],
     };
+
+    props.onDataLoad = (data) => {
+      console.log("active facility data is loaded");
+      setZoomLayerData(data);
+    };
+
+    return props;
+  }
+
+  function _injectLayerAccessors(props, focusFeatureID) {
+    if (props.id === "activeSWFacility")
+      props = _setActiveSWFacilityProps(props, focusFeatureID);
+
     return props;
   }
 
   function _addSearchLayer(layer) {
-    const ol = overlayLayers.filter((x) => x.id !== "facilitiesFound");
+    const ol = overlayLayers.filter((x) => x.id !== layer.id);
     setOverlayLayers([...ol, layer]);
   }
 
-  function _removeSearchLayer() {
-    const ol = overlayLayers.filter((x) => x.id !== "facilitiesFound");
+  function _removeSearchLayer(layerID) {
+    const ol = overlayLayers.filter((x) => x.id !== layerID);
     setOverlayLayers([...ol]);
   }
 
   function _clearSearch() {
-    _removeSearchLayer();
+    _removeSearchLayer("facilitiesFound");
     setSearchDisplayState(false);
   }
 
@@ -307,6 +321,7 @@ function SystemExplorer({ setDrawerButtonList }) {
           height: "calc(100vh - 66px)",
           left: (theme) => theme.spacing(7),
           width: (theme) => `calc(100% - ${theme.spacing(7)})`,
+          overflow: "hidden",
         }}
       >
         {searchDisplayState && (
@@ -330,6 +345,7 @@ function SystemExplorer({ setDrawerButtonList }) {
             onClick={_lyrClickHandlers.bind(this)}
             zoomID={{
               layerID: "activeSWFacility",
+              zoomLayerData: zoomLayerData,
               featureID: focusFeatureID,
               featureIDField: "node_id",
             }}
@@ -368,7 +384,7 @@ function SystemExplorer({ setDrawerButtonList }) {
           sx={{
             p: 2,
             justifyContent: "space-between",
-            height: "100%",
+            height: "calc(100% - 100px)",
           }}
         >
           <Card
