@@ -16,6 +16,7 @@ import {
   field_manifest_csv,
   result_groups_csv,
 } from "../../assets/data/csv_assets";
+import ResultRefreshBox from "../resultRefreshBox";
 
 const SubbasinResultsTable = lazy(() => import("./subbasin-results-table"));
 
@@ -25,17 +26,7 @@ export default function SubbasinResultsView() {
   const [resultsGroups, setResultsGroups] = useState(null);
   const [subbasinAttributes, setSubbasinAttributes] = useState([]);
 
-  useEffect(async () => {
-    const attributes = await api_fetch("/api/rest/subbasin/")
-      .then((res) => res.json())
-      .then((res) => {
-        return Object.keys(res[0]);
-      })
-      .catch((err) => console.warn("Couldn't get results", err));
-    setSubbasinAttributes(attributes);
-  }, []);
-
-  useEffect(() => {
+  function fetchSubbasinResults() {
     Promise.all(
       [result_fields_csv, field_manifest_csv, result_groups_csv].map(
         (resource) => resource
@@ -53,6 +44,21 @@ export default function SubbasinResultsView() {
       setResultsFields(resArray[0]);
       setResultsGroups(resArray[2]);
     });
+  }
+
+  async function fetchSubbasinLayer() {
+    const attributes = await api_fetch("/api/rest/subbasin/")
+      .then((res) => res.json())
+      .then((res) => {
+        return Object.keys(res[0]);
+      })
+      .catch((err) => console.warn("Couldn't get results", err));
+    setSubbasinAttributes(attributes);
+  }
+
+  useEffect(() => {
+    fetchSubbasinLayer();
+    fetchSubbasinResults();
   }, []);
 
   return (
@@ -112,6 +118,13 @@ export default function SubbasinResultsView() {
                 return [subHeader, ...groupFields];
               })}
           </TextField>
+          <ResultRefreshBox
+            refreshHandler={fetchSubbasinResults}
+            sx={{
+              my: 2,
+              alignItems: "start",
+            }}
+          />
         </Card>
       </HalfSpan>
       <HalfSpan md={8}>
