@@ -14,7 +14,7 @@ def warn_maintainers_of_errors(*, content: str | None = None) -> None:
     email_dict_list = [{"Email": email} for email in emails]
 
     if platform.system() == "Windows":
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())  # type: ignore
     asyncio.run(
         send_email_to_user(
             template="error_message",

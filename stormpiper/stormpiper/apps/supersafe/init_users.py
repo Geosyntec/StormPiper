@@ -111,7 +111,7 @@ def main():  # pragma: no cover
     import platform
 
     if platform.system() == "Windows":
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())  # type: ignore
 
     asyncio.run(create_all())
 
