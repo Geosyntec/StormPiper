@@ -133,6 +133,7 @@ export const activeLocalSWFacility = {
       },
     },
     getIcon: (d) => "marker",
+    iconAlphaCutoff: 0.0,
     iconSizeScale: 1,
     getIconSize: (d) => 30,
 
@@ -201,6 +202,7 @@ export const swInlet = {
     getIcon: (d) => "marker",
     iconSizeScale: 1,
     iconSizeUnits: "meters",
+    iconAlphaCutoff: 0.0,
     getIconSize: (d) => 6,
     defaultFillColor: colorToList("grey"),
     getIconColor: colorToList("grey"),
@@ -222,6 +224,7 @@ export const delineations = {
     },
     id: "tmnt_delineations",
     featurePKField: "altid",
+    zorder: 5,
     label: "Stormwater Facility Delineations",
     minZoom: 8,
     getFillColor: colorToList("steelblue", 0.2),
