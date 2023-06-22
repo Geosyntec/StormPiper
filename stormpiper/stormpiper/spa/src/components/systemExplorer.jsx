@@ -162,10 +162,6 @@ function SystemExplorer({ setDrawerButtonList }) {
 
   const [resultsDisplayState, setResultsDisplayState] = useState(false); //when true, results table is displayed
 
-  function _toggleSetResultsDisplayState() {
-    setResultsDisplayState(!resultsDisplayState);
-  }
-
   const [searchDisplayState, setSearchDisplayState] = useState(false); //when true, results table is displayed
 
   function _toggleSetSearchDisplayState() {
@@ -418,13 +414,6 @@ function SystemExplorer({ setDrawerButtonList }) {
           </Card>
         </Box>
       </Box>
-      {/* <Card
-        sx={
-          resultsDisplayState
-            ? classes.resultsPanel
-            : classes.resultsPanelHidden
-        }
-      ></Card> */}
     </Box>
   );
 }

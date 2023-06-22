@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card } from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import { TwoColGrid, HalfSpan } from "../base/two-col-grid";
 import ScenarioCreateMap from "./scenario-create-map";
 import { ScenarioCreateStepper } from "./scenario-create-stepper";
 import { api_fetch } from "../../utils/utils";
+import LayersRoundedIcon from "@mui/icons-material/LayersRounded";
 
 export default function ScenarioCreatePage({ setDrawerButtonList }) {
   const navigate = useNavigate();
@@ -15,6 +16,11 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
       icon: <ListAltIcon />,
       clickHandler: () => navigate("/app/scenario"),
     },
+    {
+      label: "Show/Hide Layers",
+      icon: <LayersRoundedIcon />,
+      clickHandler: togglelyrSelectDisplayState,
+    },
   ];
 
   useEffect(() => {
@@ -23,6 +29,7 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
 
   const [showFacilityEditTabs, setShowFacilityEditTabs] = useState(false);
   const [showdelineationEditTabs, setShowDelineationEditTabs] = useState(false);
+  const [lyrSelectDisplayState, setlyrSelectDisplayState] = useState(false); // when true, control panel is displayed
 
   const [facility, setFacility] = useState({
     type: "FeatureCollection",
@@ -44,6 +51,10 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
       tmnt_facility_collection: null,
     },
   });
+
+  function togglelyrSelectDisplayState() {
+    setlyrSelectDisplayState(!lyrSelectDisplayState);
+  }
 
   function updateFacility(facility) {
     console.log("Trying to update facility: ", facility);
@@ -172,6 +183,8 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
             showDelinEditTabs={showdelineationEditTabs}
             showFacilityEditTabs={showFacilityEditTabs}
             editorMode={false}
+            showLayerSelector={lyrSelectDisplayState}
+            toggleShowLayerSelector={togglelyrSelectDisplayState}
           />
         </Card>
       </HalfSpan>
