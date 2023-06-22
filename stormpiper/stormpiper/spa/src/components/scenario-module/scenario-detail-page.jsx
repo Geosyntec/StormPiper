@@ -85,7 +85,7 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
 
   useEffect(() => {
     setDrawerButtonList(buttonList);
-  }, []);
+  }, [lyrSelectDisplayState]);
 
   useEffect(() => {
     getDataByID(params.id).then((res) => {

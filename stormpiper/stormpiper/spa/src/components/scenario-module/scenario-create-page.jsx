@@ -23,10 +23,6 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
     },
   ];
 
-  useEffect(() => {
-    setDrawerButtonList(buttonList);
-  }, []);
-
   const [showFacilityEditTabs, setShowFacilityEditTabs] = useState(false);
   const [showdelineationEditTabs, setShowDelineationEditTabs] = useState(false);
   const [lyrSelectDisplayState, setlyrSelectDisplayState] = useState(false); // when true, control panel is displayed
@@ -51,6 +47,10 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
       tmnt_facility_collection: null,
     },
   });
+
+  useEffect(() => {
+    setDrawerButtonList(buttonList);
+  }, [lyrSelectDisplayState]);
 
   function togglelyrSelectDisplayState() {
     setlyrSelectDisplayState(!lyrSelectDisplayState);
