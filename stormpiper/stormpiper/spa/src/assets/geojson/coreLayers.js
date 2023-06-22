@@ -42,7 +42,7 @@ async function collatePaginatedQuery({ url, fields }) {
   return res;
 }
 
-class StrokedPathLayer extends PathLayer {
+export class StrokedPathLayer extends PathLayer {
   initializeState(opts) {
     super.initializeState(opts);
 

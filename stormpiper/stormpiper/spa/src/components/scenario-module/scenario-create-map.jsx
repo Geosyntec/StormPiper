@@ -15,8 +15,8 @@ import {
 } from "../../assets/geojson/coreLayers";
 import { useState, useRef, useEffect } from "react";
 import LayerSelector from "../layerSelector";
-import { layerDict } from "../../assets/geojson/coreLayers";
-
+import { layerDict, StrokedPathLayer } from "../../assets/geojson/coreLayers";
+import { colorToList } from "../../utils/utils";
 import ScenarioFeatureEditTab from "./scenario-feature-edit-tab";
 
 export default function ScenarioCreateMap({
@@ -42,7 +42,6 @@ export default function ScenarioCreateMap({
   const [delineationEditMode, setDelineationEditMode] = useState(
     () => ViewMode
   );
-  const [layers, setLayers] = useState([]);
 
   const facilityLayerEdit = new EditableGeoJsonLayer({
     ...invisiblePoints.props,
@@ -119,6 +118,22 @@ export default function ScenarioCreateMap({
       } else {
         delineationSetter(updatedData);
       }
+    },
+    getFillColor: colorToList("steelblue", 0.2),
+    getLineColor: colorToList("black", 1),
+    _subLayerProps: {
+      geojson: {
+        _subLayerProps: {
+          "polygons-stroke": {
+            type: StrokedPathLayer,
+            getPath: (d) => d,
+            getWidth: 1,
+            getColor: colorToList("steelblue", 1),
+            getOutlineWidth: 4,
+            getOutlineColor: colorToList("white", 1),
+          },
+        },
+      },
     },
   });
 

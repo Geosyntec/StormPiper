@@ -5,9 +5,10 @@ import { Box } from "@mui/material";
 import {
   activeLocalSWFacility as tmnt,
   delineations as tmnt_delineations,
+  StrokedPathLayer,
 } from "../../assets/geojson/coreLayers";
 import { useState, useEffect } from "react";
-import { api_fetch } from "../../utils/utils";
+import { api_fetch, colorToList } from "../../utils/utils";
 
 export default function AllScenariosMap({
   scenarios,
@@ -67,6 +68,21 @@ export default function AllScenariosMap({
       updateTriggers: {
         getFillColor: [focusScenario],
       },
+      _subLayerProps: {
+        "polygons-stroke": {
+          type: StrokedPathLayer,
+          getPath: (d) => d,
+          getWidth: 1,
+          getColor: (d) => {
+            return d.__source.object.properties.scenarioID &&
+              focusScenario === d.__source.object.properties.scenarioID
+              ? colorToList("orange", 1)
+              : colorToList("steelblue", 1);
+          },
+          getOutlineWidth: 4,
+          getOutlineColor: colorToList("white", 1),
+        },
+      },
     });
   }
   function buildFacilityLayer(allScenarios) {
@@ -92,11 +108,11 @@ export default function AllScenariosMap({
         type: "FeatureCollection",
         features: allFacilities,
       },
-      getIconColor: (d) => {
+      getIcon: (d) => {
         return d.properties.scenarioID &&
           focusScenario === d.properties.scenarioID
-          ? tmnt.props.highlightColor || [52, 222, 235]
-          : tmnt.props.defaultFillColor || [70, 170, 21, 200];
+          ? "marker_selected"
+          : "marker";
       },
       updateTriggers: {
         getIconColor: [focusScenario],
