@@ -7,13 +7,16 @@ import {
   ViewMode,
   ModifyMode,
 } from "nebula.gl";
-import { Box } from "@mui/material";
+import { Box, Card, CardContent } from "@mui/material";
 import {
   activeLocalSWFacility as tmnt,
   delineations,
   invisiblePoints,
 } from "../../assets/geojson/coreLayers";
 import { useState, useRef, useEffect } from "react";
+import LayerSelector from "../layerSelector";
+import { layerDict } from "../../assets/geojson/coreLayers";
+
 import ScenarioFeatureEditTab from "./scenario-feature-edit-tab";
 
 export default function ScenarioCreateMap({
@@ -26,10 +29,12 @@ export default function ScenarioCreateMap({
   showDelinEditTabs,
   showFacilityEditTabs,
   editorMode,
+  showLayerSelector,
+  toggleShowLayerSelector,
   ...props
 }) {
-  console.log("Rendering facility layer: ", facility);
-  console.log("Rendering delineation layer: ", delineation);
+  let firstRender = useRef(true);
+
   const [delineationFeatureIndexes, setDelineationFeatureIndexes] = useState(
     []
   );
@@ -37,6 +42,7 @@ export default function ScenarioCreateMap({
   const [delineationEditMode, setDelineationEditMode] = useState(
     () => ViewMode
   );
+  const [layers, setLayers] = useState([]);
 
   const facilityLayerEdit = new EditableGeoJsonLayer({
     ...invisiblePoints.props,
@@ -118,6 +124,32 @@ export default function ScenarioCreateMap({
 
   const isEventListenerAdded = useRef(false);
 
+  const [activeLayers, setActiveLayers] = useState(() => {
+    var res = {};
+    Object.keys(layerDict).map((category) => {
+      const layerGroup = layerDict[category];
+      if (!layerGroup.length) {
+        const nestedLayerGroup = layerDict[category];
+        Object.keys(nestedLayerGroup).map((nestedCategory) => {
+          const layerGroup = nestedLayerGroup[nestedCategory];
+          for (const layer in layerGroup) {
+            const layerID = layerGroup[layer].props?.id;
+
+            res[layerID] = false; //keep everything off by default
+          }
+          return false;
+        });
+      } else {
+        for (const layer in layerGroup) {
+          const layerID = layerGroup[layer].props?.id;
+          res[layerID] = false; //keep everything off by default
+        }
+      }
+      return false;
+    });
+    return res;
+  });
+
   useEffect(() => {
     console.log("Setting mapMode:", mapMode);
     mapModeHandlers[mapMode]();
@@ -194,6 +226,48 @@ export default function ScenarioCreateMap({
     },
   };
 
+  function _renderLayers(layerDict, visState, layersToRender = []) {
+    Object.keys(layerDict).map((category) => {
+      const layerGroup = layerDict[category];
+      if (layerGroup.length) {
+        Object.keys(layerGroup).map((id) => {
+          let { layer: Layer, props, getData } = layerGroup[id];
+          if (getData && !props.data) {
+            props.data = getData();
+          }
+          if (visState[props.id]) {
+            // props = _injectLayerAccessors(props, focusFeatureID);
+            layersToRender.push(new Layer(props));
+          }
+          return false;
+        });
+      } else {
+        layersToRender = _renderLayers(layerGroup, visState, layersToRender);
+      }
+      return false;
+    });
+    firstRender.current = false;
+    layersToRender.sort(
+      (a, b) => (a.props?.zorder || 0) - (b.props?.zorder || 0)
+    );
+    return layersToRender;
+  }
+
+  function _toggleLayer(layerName, updateFunction = setActiveLayers) {
+    var currentActiveLayers = { ...activeLayers };
+
+    //Ensure that only one raster layer is displayed at time to avoid z-index issues
+    if (layerName.toLowerCase().match("raster")) {
+      Object.keys(currentActiveLayers).map((k) => {
+        if (k.toLowerCase().match("raster") && k != layerName) {
+          currentActiveLayers[k] = false;
+        }
+      });
+    }
+    currentActiveLayers[layerName] = !currentActiveLayers[layerName];
+    console.log("active layers: ", currentActiveLayers);
+    updateFunction(currentActiveLayers);
+  }
   return (
     <Box
       sx={{
@@ -249,10 +323,46 @@ export default function ScenarioCreateMap({
       )}
       <DeckGLMap
         id="scenario-map"
-        layers={[delineationLayer, facilityLayerView, facilityLayerEdit]}
+        layers={[
+          ..._renderLayers(layerDict, activeLayers),
+          facilityLayerEdit,
+          facilityLayerView,
+          delineationLayer,
+        ]}
         showTooltip={false}
         {...props}
       ></DeckGLMap>
+      {showLayerSelector && (
+        <Box
+          sx={{
+            display: "flex",
+            position: "relative",
+            justifyContent: "space-between",
+            height: "50%",
+            width: "50%",
+            top: "48%",
+            left: "2%",
+          }}
+        >
+          <Card
+            sx={{
+              zIndex: 9,
+              width: "100%",
+              overflowY: "scroll",
+            }}
+          >
+            <CardContent sx={{ p: 2 }}>
+              <LayerSelector
+                layerDict={layerDict}
+                activeLayers={activeLayers}
+                _onToggleLayer={_toggleLayer}
+                displayStatus={showLayerSelector}
+                displayController={toggleShowLayerSelector}
+              ></LayerSelector>
+            </CardContent>
+          </Card>
+        </Box>
+      )}
     </Box>
   );
 }
