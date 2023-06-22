@@ -340,9 +340,9 @@ export default function ScenarioCreateMap({
         id="scenario-map"
         layers={[
           ..._renderLayers(layerDict, activeLayers),
+          delineationLayer,
           facilityLayerEdit,
           facilityLayerView,
-          delineationLayer,
         ]}
         showTooltip={false}
         {...props}
