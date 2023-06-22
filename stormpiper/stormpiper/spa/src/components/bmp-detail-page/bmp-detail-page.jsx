@@ -107,7 +107,10 @@ export default function BMPDetailPage() {
             }}
           >
             <Card sx={{ padding: 2 }}>
-              <ResultRefreshBox refreshHandler={getResultsDataByID} />
+              <ResultRefreshBox
+                refreshHandler={getResultsDataByID}
+                sx={{ alignItems: "start" }}
+              />
             </Card>
           </Box>
         </HalfSpan>

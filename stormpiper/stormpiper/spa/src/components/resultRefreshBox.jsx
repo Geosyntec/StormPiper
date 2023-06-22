@@ -109,7 +109,11 @@ export default function ResultRefreshBox({ refreshHandler, sx }) {
         }}
         message={resultsSuccessDisplay.msg}
       />
-      <Typography sx={{ width: "100%" }} variant="caption">
+      <Typography
+        sx={{ width: { xs: "100%", md: "auto" } }}
+        align="center"
+        variant="caption"
+      >
         Results Last Updated: {lastUpdatedStr}{" "}
       </Typography>
       <Button
