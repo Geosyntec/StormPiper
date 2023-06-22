@@ -15,16 +15,13 @@ function LayerSelector(props) {
               // borderBottom: "1px solid grey",
             }}
           >
-            <Typography variant="h4">Layers</Typography>
-            <Box sx={{ cursor: "pointer" }} onClick={props.displayController}>
-              <Typography variant="h6">&#10005;</Typography>
-            </Box>
+            {/* <Typography variant="h4">Layers</Typography> */}
           </Box>
           {_renderCategories(
             props.layerDict,
             props._onToggleLayer,
             props.activeLayers,
-            "mainLayer"
+            props.displayController
           )}
         </Box>
       )}
@@ -32,8 +29,13 @@ function LayerSelector(props) {
   );
 }
 
-function _renderCategories(layerDict, _onToggleLayer, activeLayers) {
-  return Object.keys(layerDict).map((layerCategory) => {
+function _renderCategories(
+  layerDict,
+  _onToggleLayer,
+  activeLayers,
+  displayController
+) {
+  return Object.keys(layerDict).map((layerCategory, idx) => {
     const layers = layerDict[layerCategory];
     if (!layers.length) {
       return (
@@ -45,6 +47,14 @@ function _renderCategories(layerDict, _onToggleLayer, activeLayers) {
             "&:last-child": { borderBottom: "none" },
           }}
         >
+          {idx === 0 && (
+            <Box
+              sx={{ cursor: "pointer", float: "right" }}
+              onClick={displayController}
+            >
+              <Typography variant="h6">&#10005;</Typography>
+            </Box>
+          )}
           <Typography variant="h6">{layerCategory}</Typography>
           {_renderCategories(
             layers,
@@ -81,14 +91,17 @@ function _renderCategories(layerDict, _onToggleLayer, activeLayers) {
 
 function LayerToggler(props) {
   return (
-    <Box>
+    <Box sx={{ display: "flex" }}>
       <Box>
         <Checkbox
           id={props.layerID}
           checked={props.activeLayers[props.layerID]}
           onChange={() => props._toggleLayer(props.layerID)}
           color="primary"
+          sx={{ pt: 0 }}
         />
+      </Box>
+      <Box sx={{ alignSelf: "start" }}>
         <label htmlFor={props.layerLabel}>
           <span>{props.layerLabel}</span>
         </label>
