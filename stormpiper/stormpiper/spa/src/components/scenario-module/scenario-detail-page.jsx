@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import AddIcon from "@mui/icons-material/Add";
+import LayersRoundedIcon from "@mui/icons-material/LayersRounded";
 
 import { ScenarioBMPDetailResults } from "./scenario-bmp-results";
 import { ScenarioDelineationDetailResults } from "./scenario-delin-results";
@@ -61,6 +62,7 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
   const [resultsCalculatedAt, setResultsCalculatedAt] = useState(null);
   const [scenarioUpdatedAt, setScenarioUpdatedAt] = useState(null);
   const [viewState, setViewState] = useState(null);
+  const [lyrSelectDisplayState, setlyrSelectDisplayState] = useState(false); // when true, control panel is displayed
 
   const navigate = useNavigate();
   const buttonList = [
@@ -73,6 +75,11 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
       label: "Create New Scenario",
       icon: <AddIcon />,
       clickHandler: () => navigate("/app/create-scenario"),
+    },
+    {
+      label: "Show/Hide Layers",
+      icon: <LayersRoundedIcon />,
+      clickHandler: togglelyrSelectDisplayState,
     },
   ];
 
@@ -91,6 +98,10 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
       setScenarioUpdatedAt(dateFormatter(res?.input_time_updated));
     });
   }, [params.id, resultsSuccessDisplay]);
+
+  function togglelyrSelectDisplayState() {
+    setlyrSelectDisplayState(!lyrSelectDisplayState);
+  }
 
   function buildScenario(obj) {
     setScenarioObject(obj);
@@ -511,6 +522,8 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
               showFacilityEditTabs={showFacilityEditTabs}
               editorMode={true}
               viewState={viewState}
+              showLayerSelector={lyrSelectDisplayState}
+              toggleShowLayerSelector={togglelyrSelectDisplayState}
             />
           </Card>
           <Card sx={{ display: "flex", flexDirection: "column", my: 2, p: 3 }}>
