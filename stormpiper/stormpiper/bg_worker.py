@@ -32,6 +32,7 @@ celery_app.conf.update(
     result_backend=settings.REDIS_RESULT_BACKEND,
     timezone="US/Pacific",
     singleton_lock_expiry=1800,
+    broker_connection_retry_on_startup=True,
 )
 
 
