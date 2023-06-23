@@ -169,12 +169,16 @@ def solve_scenario_data(data: dict, force=False, engine=None) -> dict:
 def solve_scenario_db(data: dict, engine=engine) -> dict:
     Session = get_session(engine=engine)
     data = ScenarioSolve(**data).dict(exclude_unset=True)
-    id_ = data["id"]
+    id_ = str(data["id"])
+    res = {}
     with Session.begin() as session:  # type: ignore
-        q = sa.update(Scenario).where(Scenario.id == id_).values(data)
-        session.execute(q)
+        q = (
+            sa.update(Scenario)
+            .where(Scenario.id == id_)
+            .values(data)
+            .returning(Scenario)
+        )
+        res = session.scalars(q).first()
+        res = orm_to_dict(res)
 
-    with Session.begin() as session:  # type: ignore
-        q = sa.select(Scenario).where(Scenario.id == id_)
-        res = session.execute(q).scalars().first()
-        return orm_to_dict(res)
+    return res
