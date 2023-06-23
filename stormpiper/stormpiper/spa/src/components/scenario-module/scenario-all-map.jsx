@@ -8,7 +8,7 @@ import {
   StrokedPathLayer,
 } from "../../assets/geojson/coreLayers";
 import { useState, useEffect } from "react";
-import { api_fetch, colorToList } from "../../utils/utils";
+import { colorToList } from "../../utils/utils";
 
 export default function AllScenariosMap({
   scenarios,
@@ -65,9 +65,7 @@ export default function AllScenariosMap({
           ? tmnt_delineations.props.highlightLineColor || [52, 222, 235]
           : tmnt_delineations.props.defaultLineColor || [70, 170, 21, 200];
       },
-      updateTriggers: {
-        getFillColor: [focusScenario],
-      },
+
       _subLayerProps: {
         "polygons-stroke": {
           type: StrokedPathLayer,
@@ -113,9 +111,6 @@ export default function AllScenariosMap({
           focusScenario === d.properties.scenarioID
           ? "marker_selected"
           : "marker";
-      },
-      updateTriggers: {
-        getIconColor: [focusScenario],
       },
     });
   }
