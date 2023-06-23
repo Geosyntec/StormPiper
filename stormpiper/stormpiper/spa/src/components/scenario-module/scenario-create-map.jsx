@@ -7,12 +7,13 @@ import {
   ViewMode,
   ModifyMode,
 } from "nebula.gl";
-import { Box, Card, CardContent } from "@mui/material";
+import { Box, Card, CardContent, Button, Tooltip } from "@mui/material";
 import {
   activeLocalSWFacility as tmnt,
   delineations,
   invisiblePoints,
 } from "../../assets/geojson/coreLayers";
+import LayersRoundedIcon from "@mui/icons-material/LayersRounded";
 import { useState, useRef, useEffect } from "react";
 import LayerSelector from "../layerSelector";
 import { layerDict, StrokedPathLayer } from "../../assets/geojson/coreLayers";
@@ -29,11 +30,10 @@ export default function ScenarioCreateMap({
   showDelinEditTabs,
   showFacilityEditTabs,
   editorMode,
-  showLayerSelector,
-  toggleShowLayerSelector,
   ...props
 }) {
   let firstRender = useRef(true);
+  const [lyrSelectDisplayState, setlyrSelectDisplayState] = useState(false); // when true, control panel is displayed
 
   const [delineationFeatureIndexes, setDelineationFeatureIndexes] = useState(
     []
@@ -42,6 +42,10 @@ export default function ScenarioCreateMap({
   const [delineationEditMode, setDelineationEditMode] = useState(
     () => ViewMode
   );
+
+  function togglelyrSelectDisplayState() {
+    setlyrSelectDisplayState(!lyrSelectDisplayState);
+  }
 
   const facilityLayerEdit = new EditableGeoJsonLayer({
     ...invisiblePoints.props,
@@ -347,37 +351,75 @@ export default function ScenarioCreateMap({
         showTooltip={false}
         {...props}
       ></DeckGLMap>
-      {showLayerSelector && (
+      <Box
+        sx={{
+          position: "relative",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <Box
           sx={{
             display: "flex",
             position: "relative",
-            justifyContent: "space-between",
-            height: "50%",
-            width: "50%",
-            top: "48%",
-            left: "2%",
+            justifyContent: "flex-end",
           }}
         >
-          <Card
+          <Button
+            onClick={togglelyrSelectDisplayState}
+            selected={lyrSelectDisplayState}
+            variant="contained"
+            color={lyrSelectDisplayState ? "primary" : "inherit"}
             sx={{
-              zIndex: 9,
-              width: "100%",
-              overflowY: "scroll",
+              m: 1,
+              p: 0,
+              minWidth: 0,
+              backgroundColor: lyrSelectDisplayState ? "primary" : "white",
             }}
           >
-            <CardContent sx={{ p: 2 }}>
-              <LayerSelector
-                layerDict={layerDict}
-                activeLayers={activeLayers}
-                _onToggleLayer={_toggleLayer}
-                displayStatus={showLayerSelector}
-                displayController={toggleShowLayerSelector}
-              ></LayerSelector>
-            </CardContent>
-          </Card>
+            <Tooltip title="Show/Hide Layers">
+              <Box
+                sx={{
+                  p: 1,
+                  color: lyrSelectDisplayState ? "white" : "dimgrey",
+                }}
+              >
+                <LayersRoundedIcon />
+              </Box>
+            </Tooltip>
+          </Button>
         </Box>
-      )}
+
+        {lyrSelectDisplayState && (
+          <Box
+            sx={{
+              display: "flex",
+              position: "relative",
+              justifyContent: "flex-end",
+              height: "400px",
+              width: "100%",
+              p: 2,
+            }}
+          >
+            <Card
+              sx={{
+                zIndex: 9,
+                overflowY: "scroll",
+              }}
+            >
+              <CardContent sx={{ p: 2 }}>
+                <LayerSelector
+                  layerDict={layerDict}
+                  activeLayers={activeLayers}
+                  _onToggleLayer={_toggleLayer}
+                  displayStatus={lyrSelectDisplayState}
+                  displayController={togglelyrSelectDisplayState}
+                ></LayerSelector>
+              </CardContent>
+            </Card>
+          </Box>
+        )}
+      </Box>
     </Box>
   );
 }

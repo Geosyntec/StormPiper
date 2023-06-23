@@ -74,6 +74,8 @@ export default function Drawer({
             >
               <WorkflowModal
                 id={button.label}
+                href={button?.link}
+                linkComponent={button?.link}
                 workflowTitle={button.label}
                 iconComponent={button.icon}
                 displayTitle={open}

@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
+import { Link } from "@mui/material";
 
 export default function WorkflowModal(props) {
   const CustomButton = styled(Button, {
@@ -19,6 +20,8 @@ export default function WorkflowModal(props) {
   return (
     <CustomButton
       selected={props.selected}
+      component={props.linkComponent && Link}
+      href={props.href}
       onClick={props.clickHandler}
       sx={{
         minWidth: 0,

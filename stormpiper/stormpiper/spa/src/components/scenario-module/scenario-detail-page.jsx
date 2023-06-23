@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import {
   Box,
@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import AddIcon from "@mui/icons-material/Add";
-import LayersRoundedIcon from "@mui/icons-material/LayersRounded";
 
 import { ScenarioBMPDetailResults } from "./scenario-bmp-results";
 import { ScenarioDelineationDetailResults } from "./scenario-delin-results";
@@ -62,30 +61,23 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
   const [resultsCalculatedAt, setResultsCalculatedAt] = useState(null);
   const [scenarioUpdatedAt, setScenarioUpdatedAt] = useState(null);
   const [viewState, setViewState] = useState(null);
-  const [lyrSelectDisplayState, setlyrSelectDisplayState] = useState(false); // when true, control panel is displayed
 
-  const navigate = useNavigate();
   const buttonList = [
     {
       label: "View All Scenarios",
       icon: <ListAltIcon />,
-      clickHandler: () => navigate("/app/scenario"),
+      link: "/app/scenario",
     },
     {
       label: "Create New Scenario",
       icon: <AddIcon />,
-      clickHandler: () => navigate("/app/create-scenario"),
-    },
-    {
-      label: "Show/Hide Layers",
-      icon: <LayersRoundedIcon />,
-      clickHandler: togglelyrSelectDisplayState,
+      link: "/app/create-scenario",
     },
   ];
 
   useEffect(() => {
     setDrawerButtonList(buttonList);
-  }, [lyrSelectDisplayState]);
+  }, []);
 
   useEffect(() => {
     getDataByID(params.id).then((res) => {
@@ -98,10 +90,6 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
       setScenarioUpdatedAt(dateFormatter(res?.input_time_updated));
     });
   }, [params.id, resultsSuccessDisplay]);
-
-  function togglelyrSelectDisplayState() {
-    setlyrSelectDisplayState(!lyrSelectDisplayState);
-  }
 
   function buildScenario(obj) {
     setScenarioObject(obj);
@@ -514,8 +502,6 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
               showFacilityEditTabs={showFacilityEditTabs}
               editorMode={true}
               viewState={viewState}
-              showLayerSelector={lyrSelectDisplayState}
-              toggleShowLayerSelector={togglelyrSelectDisplayState}
             />
           </Card>
           <Card sx={{ display: "flex", flexDirection: "column", my: 2, p: 3 }}>
