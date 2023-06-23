@@ -264,20 +264,40 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
       .then((res) => res.json())
       .then((res) => {
         if (!["STARTED", "SUCCESS"].includes(res.status)) {
-          throw new Error("Scenario will not solve");
+          setResultsPollInterval(null);
+          setResultsSuccessDisplay({ status: true, msg: "Calculation Failed" });
+          console.error("Scenario will not solve");
         }
         return res.task_id;
       });
+    let intervalMilliseconds = 2500;
+    let maxTimeSeconds = 60.0; // try for 1 min, these solves should be ~5-15 seconds
+    let counterSeconds = 0.0;
     const resultsPoll = setInterval(async () => {
+      counterSeconds += intervalMilliseconds / 1000;
+      if (counterSeconds >= maxTimeSeconds) {
+        clearInterval(resultsPoll);
+        setResultsPollInterval(null);
+        setResultsSuccessDisplay({
+          status: true,
+          msg: "Calculation refresh timed out. Try refreshing the page in a few minutes.",
+        });
+
+        return;
+      }
       const taskResult = await api_fetch(`/api/rest/tasks/${taskID}`)
         .then((res) => res.json())
         .then((res) => {
-          return res.status;
+          return res?.status || "";
         });
-      if (taskResult === "SUCCESS") {
+      if (taskResult == "" || taskResult.toLowerCase().includes("fail")) {
+        clearInterval(resultsPoll);
+        setResultsPollInterval(null);
+        setResultsSuccessDisplay({ status: true, msg: "Calculation Failed" });
+      } else if (taskResult === "SUCCESS") {
         setResultsSuccessDisplay({ status: true, msg: "Results Calculated" });
       }
-    }, 5000);
+    }, intervalMilliseconds);
     setResultsPollInterval(resultsPoll);
   }
 
@@ -304,34 +324,6 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
         });
       }
     });
-  }
-
-  async function initiateScenarioSolve() {
-    setResultsLoadingDisplay({
-      status: true,
-      msg: "Scenario Solve Started",
-    });
-    const taskID = await api_fetch(`/api/rpc/solve_scenario/${params.id}`, {
-      method: "POST",
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (!["STARTED", "SUCCESS"].includes(res.status)) {
-          throw new Error("Scenario will not solve");
-        }
-        return res.task_id;
-      });
-    const resultsPoll = setInterval(async () => {
-      const taskResult = await api_fetch(`/api/rest/tasks/${taskID}`)
-        .then((res) => res.json())
-        .then((res) => {
-          return res.status;
-        });
-      if (taskResult === "SUCCESS") {
-        setResultsSuccessDisplay({ status: true, msg: "Results Calculated" });
-      }
-    }, 5000);
-    setResultsPollInterval(resultsPoll);
   }
 
   return (
@@ -537,7 +529,7 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
               onClick={initiateScenarioSolve}
               sx={{ alignSelf: "flex-start", paddingLeft: 0 }}
               disabled={
-                resultsPollInterval ||
+                resultsPollInterval != null ||
                 scenarioEditMode ||
                 ["editFacility", "editDelineation"].includes(mapMode)
               }
