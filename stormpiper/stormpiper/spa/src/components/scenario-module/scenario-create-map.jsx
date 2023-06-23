@@ -323,8 +323,7 @@ export default function ScenarioCreateMap({
           sx={{
             position: "absolute",
             zIndex: 9,
-            top: "1%",
-            left: "1%",
+            m: 1,
             borderRadius: "2px",
             background: "rgba(255, 255, 255, 1)",
           }}
