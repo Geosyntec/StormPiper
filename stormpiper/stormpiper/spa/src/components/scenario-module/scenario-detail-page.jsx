@@ -22,7 +22,16 @@ import { api_fetch } from "../../utils/utils";
 import { ScenarioInfoForm } from "./scenario-create-info-form";
 import CostSummary from "../cost-analysis/cost-summary";
 import { zoomToFeature } from "../../utils/map_utils";
-import { dateFormatter } from "../../utils/utils";
+import {
+  dateFormatter,
+  exportCSVFile,
+  convertToCSV,
+  transposeObject,
+  sortResultsArray,
+} from "../../utils/utils";
+import { all_cols as volumeCols } from "../bmp-detail-page/bmp-results-volume";
+import { all_cols as concCols } from "../bmp-detail-page/bmp-results-conc";
+import { all_cols as loadCols } from "../bmp-detail-page/bmp-results-load";
 
 async function getDataByID(id) {
   const response = await api_fetch(`/api/rest/scenario/${id}`);
@@ -92,6 +101,7 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
   }, [params.id, resultsSuccessDisplay]);
 
   function buildScenario(obj) {
+    console.log("current scenario: ", obj);
     setScenarioObject(obj);
     if (obj?.input?.tmnt_facility_collection) {
       console.log("Found facility: ", obj.input.tmnt_facility_collection);
@@ -314,6 +324,106 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
     });
   }
 
+  function createBMPResultsCSV() {
+    if (
+      !scenarioObject?.structural_tmnt_result ||
+      !scenarioObject?.input?.tmnt_facility_collection
+    ) {
+      return "Not Available\r\n";
+    }
+    let sortedFields = Array.from(
+      new Set([...volumeCols, ...concCols, ...loadCols]).values()
+    );
+    const nodeID =
+      scenarioObject.input.tmnt_facility_collection.features[0].properties
+        .node_id;
+    const allResults = scenarioObject.structural_tmnt_result || [];
+    const bmpResults = allResults.filter((x) => x?.node_id === nodeID);
+
+    const sortedResults = convertToCSV(
+      sortResultsArray(
+        bmpResults,
+        new Set([...volumeCols, ...concCols, ...loadCols])
+      ),
+      sortedFields
+    );
+
+    return sortedResults;
+  }
+
+  function createDelinResultsCSV() {
+    if (
+      !scenarioObject?.delin_load ||
+      !scenarioObject?.input?.delineation_collection
+    ) {
+      return "Not Available\r\n";
+    }
+    const delinID =
+      scenarioObject.input.delineation_collection.features[0].properties.altid;
+
+    const allResults = scenarioObject.delin_load || [];
+    const delinResults = allResults.filter((x) => x?.altid === delinID);
+
+    const sortedResults = convertToCSV(
+      delinResults,
+      Object.keys(delinResults[0])
+    );
+
+    return sortedResults;
+  }
+
+  function createTmntCSV() {
+    if (!scenarioObject?.structural_tmnt?.[0]) {
+      return "Not Available\r\n";
+    }
+
+    let tmntProperties = { ...scenarioObject.structural_tmnt[0] };
+    delete tmntProperties["present_value_cost_table"]; //remove nested objects
+    delete tmntProperties["present_value_chart_table"];
+
+    const sortedTmntFields = Array.from(
+      new Set(["node_id", "facility_type", ...Object.keys(tmntProperties)])
+    );
+
+    const sortedResults = convertToCSV(
+      transposeObject(sortResultsArray(tmntProperties, sortedTmntFields)[0]),
+      ["BMP Attribute", "Value"]
+    );
+
+    return sortedResults;
+  }
+
+  function createCostSummaryCSV() {
+    if (!scenarioObject?.structural_tmnt?.[0]?.["present_value_cost_table"]) {
+      return "Not Available\r\n";
+    }
+
+    const costTable =
+      scenarioObject.structural_tmnt[0]["present_value_cost_table"];
+
+    return convertToCSV(costTable, Object.keys(costTable[0]));
+  }
+
+  function exportScenarioDetails() {
+    const date = new Date().toLocaleString("en-US", {
+      dateStyle: "short",
+    });
+    const header = `Scenario Report for ${scenarioObject.name}\r\nExported ${date}\r\n`;
+    const buffer = "////////////////////////////////////////\r\n";
+    const finalCSV = [
+      header,
+      "BMP Attributes\r\n",
+      createTmntCSV(),
+      "BMP Present Value Cost Summary\r\n",
+      createCostSummaryCSV(),
+      "BMP WQ Results by Climate Epoch\r\n",
+      createBMPResultsCSV(),
+      "Delineation WQ Results by Climate Epoch\r\n",
+      createDelinResultsCSV(),
+    ].join(buffer);
+    exportCSVFile(finalCSV, `${scenarioObject.name}_bmp_details_${date}`);
+  }
+
   return (
     <Box
       sx={{
@@ -513,7 +623,8 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
             </Typography>
             <Button
               onClick={initiateScenarioSolve}
-              sx={{ alignSelf: "flex-start", paddingLeft: 0 }}
+              variant="contained"
+              sx={{ paddingLeft: 0, my: 1 }}
               disabled={
                 resultsPollInterval != null ||
                 scenarioEditMode ||
@@ -527,6 +638,9 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
                   size="1em"
                 />
               )}
+            </Button>
+            <Button variant="contained" onClick={exportScenarioDetails}>
+              Export Scenario Details
             </Button>
           </Card>
         </HalfSpan>

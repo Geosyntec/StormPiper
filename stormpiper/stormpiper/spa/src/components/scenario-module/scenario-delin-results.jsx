@@ -64,20 +64,24 @@ export function ScenarioDelineationDetailResults({ data }) {
     <Card>
       <Box sx={{ p: 2 }}>
         {node_id == null ? (
-          <Typography>
-            No delineation feature is included in Scenario.
-          </Typography>
+          <Typography>No delineation feature included in Scenario</Typography>
         ) : (
           <>
-            <Typography>
-              Loading Results for Delineation Name: <b>{name || "--"}</b>
-            </Typography>
             {!rows.length ? (
-              <Typography>Loading...</Typography>
+              <Card sx={{ p: 2 }}>
+                <Typography variant="h6" fontWeight="bold" textAlign="center">
+                  Water Quality Results Are Unavailable for This Delineation
+                </Typography>
+              </Card>
             ) : (
-              <Box>
-                <DelineationLoadGenerated rows={rows} />
-              </Box>
+              <>
+                <Typography>
+                  Loading Results for Delineation Name: <b>{name || "--"}</b>
+                </Typography>
+                <Box>
+                  <DelineationLoadGenerated rows={rows} />
+                </Box>
+              </>
             )}
           </>
         )}
