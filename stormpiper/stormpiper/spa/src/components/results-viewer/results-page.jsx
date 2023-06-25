@@ -1,6 +1,6 @@
 import { useEffect, useState, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Card, CardContent, Typography } from "@mui/material";
+import { Box, Card, CardContent, Typography, Grid } from "@mui/material";
 import ScatterPlotIcon from "@mui/icons-material/ScatterPlot";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
@@ -105,44 +105,37 @@ export default function ResultsViewerPage({
                   conditions of each stormwater subbasin.
                 </Typography>
               </Box>
-              <Box
-                sx={(theme) => {
-                  return {
-                    display: "flex",
-                    justifyContent: "space-around",
-                    [theme.breakpoints.up("xs")]: {
-                      flexDirection: "column",
-                    },
-                    [theme.breakpoints.up("md")]: {
-                      flexDirection: "row",
-                    },
-                  };
-                }}
-              >
-                <ActionAreaCard
-                  img={
-                    <ScatterPlotIcon
-                      color="primary"
-                      fontSize="large"
-                      sx={{ transform: "scale(1.5)" }}
+              <Box>
+                <Grid container rowSpacing={2} columnSpacing={2}>
+                  <Grid item xs={12} md={6}>
+                    <ActionAreaCard
+                      img={
+                        <ScatterPlotIcon
+                          color="primary"
+                          fontSize="large"
+                          sx={{ transform: "scale(1.5)" }}
+                        />
+                      }
+                      header="BMP Facility Results View"
+                      content="Explore BMP results across four climate epochs"
+                      onClick={toggleFacilityView}
                     />
-                  }
-                  header="BMP Facility Results View"
-                  content="Explore BMP results across four climate epochs"
-                  onClick={toggleFacilityView}
-                />
-                <ActionAreaCard
-                  img={
-                    <DashboardOutlinedIcon
-                      color="primary"
-                      fontSize="large"
-                      sx={{ transform: "scale(1.5)" }}
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <ActionAreaCard
+                      img={
+                        <DashboardOutlinedIcon
+                          color="primary"
+                          fontSize="large"
+                          sx={{ transform: "scale(1.5)" }}
+                        />
+                      }
+                      header="Subbasins Results View"
+                      content="Explore stormwater subbasin results. Results only available for the 1980's climate epoch"
+                      onClick={toggleSubbasinView}
                     />
-                  }
-                  header="Subbasins Results View"
-                  content="Explore stormwater subbasin results. Results only available for the 1980's climate epoch"
-                  onClick={toggleSubbasinView}
-                />
+                  </Grid>
+                </Grid>
               </Box>
             </CardContent>
           </Card>
