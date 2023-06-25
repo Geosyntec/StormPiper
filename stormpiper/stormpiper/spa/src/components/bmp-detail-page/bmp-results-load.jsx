@@ -106,7 +106,7 @@ const field_def = [
   },
 ];
 
-const all_cols = new Set([
+export const all_cols = new Set([
   "node_id",
   "epoch",
   ...field_def.flatMap((x) => [
