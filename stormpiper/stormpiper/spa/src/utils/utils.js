@@ -132,3 +132,81 @@ export const createDisplayName = (str) => {
 
   return [str];
 };
+
+export function exportCSVFile(csv, fileTitle) {
+  var exportedFilename = fileTitle + ".csv" || "export.csv";
+
+  var blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  var link = document.createElement("a");
+  if (link.download !== undefined) {
+    // feature detection
+    // Browsers that support HTML5 download attribute
+    var url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", exportedFilename);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+}
+
+export function convertToCSV(objArray, headers) {
+  var array = typeof objArray != "object" ? JSON.parse(objArray) : objArray;
+  var str = "";
+
+  let headersFormatted = {};
+
+  if (headers) {
+    headers.map((k) => {
+      headersFormatted[k] = k;
+    });
+    array.unshift(headersFormatted);
+  }
+  console.log("Trying to convert to CSV: ", array);
+
+  for (var i = 0; i < array.length; i++) {
+    var line = "";
+    for (var index in array[i]) {
+      if (line != "") line += ",";
+
+      line += array[i][index];
+    }
+
+    str += line + "\r\n";
+  }
+
+  return str;
+}
+
+export function transposeObject(obj) {
+  //Takes an JSON-like object, and creates an array of field-value pairs
+  let res = [];
+  Object.keys(obj).map((k) => {
+    res.push({
+      field: k,
+      value: obj[k],
+    });
+  });
+  return res;
+}
+
+export function sortResultsArray(objArray, fieldSet) {
+  if (!objArray) {
+    return;
+  }
+
+  if (!objArray.length) {
+    objArray = [objArray];
+  }
+
+  const sortedArray = objArray.map((obj) => {
+    let res = {};
+    fieldSet.forEach((field) => {
+      res[field] = obj[field];
+    });
+    return res;
+  });
+
+  return sortedArray;
+}
