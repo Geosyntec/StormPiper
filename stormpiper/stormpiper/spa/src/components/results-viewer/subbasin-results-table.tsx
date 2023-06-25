@@ -3,9 +3,11 @@ import {
   ListItem,
   CircularProgress,
   Box,
+  MenuItem,
+  TextField,
   Typography,
 } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { numFormatter, pctFormatter } from "../../utils/utils";
 import {
   DataGrid,
@@ -45,6 +47,7 @@ export default function SubbasinResultsTable({ fieldList }) {
   let resSpec: any;
   let headers: TableHeader[];
 
+  const firstRender = useRef(true);
   const [resultState, setResultState] = useState<FacilityResultsTableState>({
     results: [],
     headers: [],
@@ -54,18 +57,41 @@ export default function SubbasinResultsTable({ fieldList }) {
   const [resultsFields, setResultsFields] = useState([]);
   const [resultsGroups, setResultsGroups] = useState([]);
   const [fieldGroups, setFieldGroups] = useState([]);
-  const pinnedFields = ["basinname", "subbasin"];
+  const pinnedFields = ["basinname", "subbasin", "epoch"];
 
+  const [currentEpoch, setCurrentEpoch] = useState("1980s");
   const [currentFields, setCurrentFields] = useState(fieldGroups[0]?.fields);
   const [currentGroup, setCurrentGroup] = useState(fieldGroups[0]?.groupName);
 
   useEffect(() => {
-    let resources = [
-      { resource: "/openapi.json", format: "json" },
-      { resource: "/api/rest/subbasin/", format: "json" },
-      { resource: result_fields_csv, format: "csv" },
-      { resource: result_groups_csv, format: "csv" },
-    ];
+    let resources = [];
+    if (
+      [
+        "Land Use Breakdown",
+        "Land Cover Breakdown",
+        "Treatment Facility Summary",
+      ].includes(currentGroup)
+    ) {
+      resources = [
+        { resource: "/openapi.json", format: "json" },
+        {
+          resource: `/api/rest/subbasin/`,
+          format: "json",
+        },
+        { resource: result_fields_csv, format: "csv" },
+        { resource: result_groups_csv, format: "csv" },
+      ];
+    } else {
+      resources = [
+        { resource: "/openapi.json", format: "json" },
+        {
+          resource: `/api/rest/subbasin/wq/?epoch=${currentEpoch}`,
+          format: "json",
+        },
+        { resource: result_fields_csv, format: "csv" },
+        { resource: result_groups_csv, format: "csv" },
+      ];
+    }
     if (fieldList) {
       //guard against render cycles where field list is not set
       Promise.all(
@@ -100,13 +126,18 @@ export default function SubbasinResultsTable({ fieldList }) {
               ],
             };
           });
-          setFieldGroups(fieldGroups);
-          setCurrentFields(fieldGroups[0]?.fields);
-          setCurrentGroup(fieldGroups[0]?.groupName);
+
+          //initialize table on first render
+          if (firstRender.current) {
+            setFieldGroups(fieldGroups);
+            setCurrentFields(fieldGroups[0]?.fields);
+            setCurrentGroup(fieldGroups[0]?.groupName);
+            firstRender.current = false;
+          }
         })
         .catch((err) => console.warn("Couldn't get results", err));
     }
-  }, [fieldList]);
+  }, [fieldList, currentEpoch, currentGroup]);
 
   function CustomToolbar() {
     return (
@@ -133,6 +164,38 @@ export default function SubbasinResultsTable({ fieldList }) {
             printOptions={{ disableToolbarButton: true }}
             sx={{ mx: 2 }}
           />
+          <TextField
+            sx={{ minWidth: "125px", mx: 5, alignSelf: "center" }}
+            variant="outlined"
+            label="Climate Epoch"
+            select
+            value={
+              [
+                "Land Use Breakdown",
+                "Land Cover Breakdown",
+                "Treatment Facility Summary",
+              ].includes(currentGroup)
+                ? "1980s"
+                : currentEpoch
+            }
+            onChange={(e) => {
+              setCurrentEpoch(e.target.value);
+            }}
+            size="small"
+            disabled={[
+              "Land Use Breakdown",
+              "Land Cover Breakdown",
+              "Treatment Facility Summary",
+            ].includes(currentGroup)}
+          >
+            {["all", "1980s", "2030s", "2050s", "2080s"].map((epoch) => {
+              return (
+                <MenuItem key={`epoch-${epoch}`} value={epoch}>
+                  {epoch}
+                </MenuItem>
+              );
+            })}
+          </TextField>
           <Box
             sx={{
               display: "flex",
