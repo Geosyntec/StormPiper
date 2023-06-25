@@ -57,14 +57,14 @@ export default function SubbasinResultsMap({ visParam }) {
 
   useEffect(() => {
     if (visParam) {
-      setSubbasinData(addNormalizedField(visParam, subbasinData));
+      setSubbasinData(addNormalizedField(visParam.field, subbasinData));
       let f = (d) => {
         return [10, 10, 10, 120];
       };
       setVisFunction(() => (d) => {
         let score = subbasinData.features.filter(
           (feature) => feature.properties.subbasin === d.properties.subbasin
-        )[0].properties[`${visParam}-normalized`];
+        )[0].properties[`${visParam.field}-normalized`];
         return colorToList(interpolateViridis(score));
       });
     } else {
@@ -102,7 +102,9 @@ export default function SubbasinResultsMap({ visParam }) {
       <DeckGLMap
         id="inset-map"
         layers={subbasinLayer}
-        tooltipObj={visParam && { id: visParam, label: visParam }}
+        tooltipObj={
+          visParam && { id: visParam.field, label: visParam.displayName }
+        }
         initialViewState={{
           zoom: 10,
         }}
@@ -115,12 +117,12 @@ export default function SubbasinResultsMap({ visParam }) {
             bottom: "25px",
             right: "15px",
             width: "250px",
-            height: "40px",
+            height: "auto",
             padding: 2,
             background: "rgba(255, 255, 255, 0.8)",
             borderRadius: 1,
           }}
-          label={`${visParam} Percentile`}
+          label={`${visParam.displayName} Percentile`}
         ></ColorRampLegend>
       )}
     </Box>

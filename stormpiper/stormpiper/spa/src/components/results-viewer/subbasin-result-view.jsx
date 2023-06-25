@@ -83,7 +83,7 @@ export default function SubbasinResultsView() {
           </Typography>
           <Typography sx={{ my: 3 }} variant="body1"></Typography>
           <TextField
-            sx={{ minWidth: "85%" }}
+            sx={{ minWidth: "85%", maxWidth: "100%" }}
             key="vis-param-picker"
             variant="filled"
             label="Subbasin Parameter to Visualize"
@@ -102,7 +102,7 @@ export default function SubbasinResultsView() {
                     return (
                       <MenuItem
                         key={field.field}
-                        value={field.field}
+                        value={field}
                         disabled={!subbasinAttributes.includes(field.field)}
                         sx={{ overflow: "hidden" }}
                       >
