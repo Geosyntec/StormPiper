@@ -235,7 +235,19 @@ export default function Landing() {
             />
           </Grid>
         </Grid>
-        <Box height="150px" />
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100px",
+            width: "100%",
+          }}
+        >
+          <Typography sx={{ color: "grey" }} variant="caption" align="center">
+            Copyright © 2023 Geosyntec Consultants Inc.
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );
