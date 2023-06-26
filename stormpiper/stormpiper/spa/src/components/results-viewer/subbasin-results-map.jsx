@@ -51,7 +51,6 @@ export default function SubbasinResultsMap({ visParam }) {
       },
     });
     const res = await response.json();
-    console.log("subbasin request: ", res);
     setSubbasinData(res);
   }, []);
 

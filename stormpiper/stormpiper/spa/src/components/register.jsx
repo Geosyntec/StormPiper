@@ -91,8 +91,6 @@ export default function Register() {
 
   async function _handleSubmit(data, e) {
     delete data.confirm_password;
-    console.log("Event: ", e);
-    console.log("Data:", data);
     const formData = new FormData(e.target);
     const response = await api_fetch("/auth/register", {
       credentials: "same-origin",

@@ -24,7 +24,6 @@ const patchUserDatabaseId = async (data) => {
 
   if (response.status <= 200) {
     const newData = await response.json();
-    console.log("patchDatabase Succeeded", newData);
     return newData;
   } else {
     console.error("patchDatabase Failed with data:", response, data);

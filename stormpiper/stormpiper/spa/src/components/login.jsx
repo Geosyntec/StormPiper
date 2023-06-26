@@ -61,7 +61,6 @@ export default function Login() {
   }
 
   async function _handleSubmit(data, e) {
-    console.log("Event: ", e);
     const formData = new FormData(e.target);
     const response = await api_fetch("/auth/jwt-cookie/login", {
       credentials: "same-origin",
@@ -72,7 +71,6 @@ export default function Login() {
         console.warn("login failure", resp);
         setError(true);
       } else {
-        console.log("redirect on success");
         setError(false);
         navigate("/app");
       }

@@ -48,7 +48,6 @@ export default function Reset() {
   ];
 
   function _renderFormFields() {
-    console.log("Rendering fields. Any errors?:", errors);
     let fieldDiv = Object.values(fields).map((formField) => {
       return (
         <Box key={formField.name} sx={{ mb: 3 }}>
@@ -78,9 +77,7 @@ export default function Reset() {
   }
 
   async function _handleSubmit(data, e) {
-    console.log("Event: ", e);
     const formData = new FormData(e.target);
-    console.log("formData: ", formData);
     data = { ...Object.fromEntries(formData.entries()), token };
 
     const response = await api_fetch("/auth/reset-password", {

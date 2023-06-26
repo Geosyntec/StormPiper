@@ -304,7 +304,6 @@ export default function SubbasinResultsTable({ fieldList }) {
   }
 
   if (resultState.loaded) {
-    console.log("Active Group: ", currentGroup);
     return (
       <Box
         sx={{

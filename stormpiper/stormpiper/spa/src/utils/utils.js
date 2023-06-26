@@ -8,7 +8,6 @@ if (import.meta.env.MODE === "development") {
 
   if (import.meta.env?.VITE_AUTH_TOKEN) {
     Authorization = `Bearer ${import.meta.env?.VITE_AUTH_TOKEN}`;
-    console.log("set access token with .env");
   } else if (
     import.meta.env?.VITE_LOGIN_ACCOUNT_EMAIL &&
     import.meta.env?.VITE_LOGIN_ACCOUNT_PASSWORD
@@ -26,7 +25,6 @@ if (import.meta.env.MODE === "development") {
     if (response.status === 200) {
       const data = await response.json();
       Authorization = `Bearer ${data.access_token}`;
-      console.log("set access token with login credentials");
     }
   }
 }
@@ -84,9 +82,6 @@ export const concFormatter = (params) => {
 export const numFormatter = (params) => {
   if (params.value == null) {
     return "0";
-  }
-  if (params.field.toLowerCase() === "tmnt_facility_count") {
-    console.log("asf");
   }
   const n = Number(parseFloat(params.value).toPrecision(3));
   return `${n}`;
@@ -163,7 +158,6 @@ export function convertToCSV(objArray, headers) {
     });
     array.unshift(headersFormatted);
   }
-  console.log("Trying to convert to CSV: ", array);
 
   for (var i = 0; i < array.length; i++) {
     var line = "";

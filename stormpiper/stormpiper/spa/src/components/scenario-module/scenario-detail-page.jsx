@@ -101,10 +101,8 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
   }, [params.id, resultsSuccessDisplay]);
 
   function buildScenario(obj) {
-    console.log("current scenario: ", obj);
     setScenarioObject(obj);
     if (obj?.input?.tmnt_facility_collection) {
-      console.log("Found facility: ", obj.input.tmnt_facility_collection);
       setFacility(obj.input.tmnt_facility_collection);
       setViewState(
         zoomToFeature({
@@ -120,7 +118,6 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
       });
     }
     if (obj?.input?.delineation_collection) {
-      console.log("Found delineation");
       setDelineation(obj.input.delineation_collection);
       setViewState(
         zoomToFeature({
@@ -163,7 +160,6 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
   }
 
   function updateFacility(facility) {
-    console.log("facility updated: ", facility);
     if (facility?.features[0] && delineation?.features[0]) {
       let delineationToUpdate = { ...delineation };
       delineation.features[0].properties["relid"] =
@@ -189,7 +185,6 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
     }
   }
   function updateDelineation(delineation) {
-    console.log("updating delin: ", delineation);
     setDelineation(delineation);
     setScenarioObject({
       ...scenarioObject,
@@ -232,7 +227,6 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
       info: scenarioObject.info,
       input: scenarioObject.input,
     };
-    console.log("Submitting scenario: ", scenarioToSubmit);
     api_fetch(`/api/rest/scenario/${params.id}`, {
       credentials: "same-origin",
       headers: {
@@ -305,7 +299,6 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
       info: scenarioObject.info,
       input: scenarioObject.input,
     };
-    console.log("Submitting scenario: ", scenarioToSubmit);
     api_fetch(`/api/rest/scenario/${params.id}`, {
       credentials: "same-origin",
       headers: {

@@ -56,7 +56,6 @@ export function BMPDetailForm() {
         setTMNTAttrs(resArray[2]);
       })
       .then(() => {
-        console.log("tmnt: ", TMNTAttrs);
         setLoadingState(false);
       });
   }, []);
@@ -74,14 +73,12 @@ export function BMPDetailForm() {
         setFacilityType(resArray[0].facility_type);
       })
       .then(() => {
-        console.log("tmnt: ", TMNTAttrs);
         setLoadingState(false);
       });
   }
 
   async function _handleSubmit(data, isSimple) {
     if (isSimple && !data["facility_type"].match("_simple")) {
-      console.log("Appending simple");
       data["facility_type"] = data["facility_type"] + "_simple";
     }
 
@@ -89,7 +86,6 @@ export function BMPDetailForm() {
       data["facility_type"] = data["facility_type"].replaceAll("_simple", "");
     }
 
-    console.log("Submitting Patch Request: ", data);
     const response = await api_fetch("/api/rest/tmnt_attr/" + params.id, {
       credentials: "same-origin",
       headers: {
@@ -120,12 +116,10 @@ export function BMPDetailForm() {
       .then((r) => {
         //assume that only error responses have a detail object
         if (r.detail) {
-          console.log("setting err msg: ", r.detail);
           setErrorMsg(r.detail);
         }
       })
       .catch((err) => {
-        console.log("Error patching tmnt:");
         setResultError(true);
         setErrorMsg(err.message);
         console.log(err);
