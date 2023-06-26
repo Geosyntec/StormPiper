@@ -280,7 +280,6 @@ function SystemExplorer({ setDrawerButtonList }) {
     };
 
     props.onDataLoad = (data) => {
-      console.log("active facility data is loaded");
       setZoomLayerData(data);
     };
 

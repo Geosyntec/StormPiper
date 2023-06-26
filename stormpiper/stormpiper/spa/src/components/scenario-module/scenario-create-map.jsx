@@ -58,7 +58,6 @@ export default function ScenarioCreateMap({
     selectedFeatureIndexes: facility?.features?.length > 0 ? [0] : [],
     mode: facilityEditMode,
     onEdit: ({ updatedData, editType }) => {
-      console.log("update: ", updatedData);
       if (editType === "addFeature") {
         if (updatedData.features.length > 1) {
           facilitySetter({
@@ -169,16 +168,12 @@ export default function ScenarioCreateMap({
   });
 
   useEffect(() => {
-    console.log("Setting mapMode:", mapMode);
     mapModeHandlers[mapMode]();
   }, [mapMode]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      console.log("Key pressed: ", e);
-      console.log("Map Mode: ", mapMode);
       if (e.key === "Escape" && mapMode !== "default") {
-        console.log("Trying to escape!");
         escPressHandlers[mapMode]();
       }
     };
@@ -283,7 +278,6 @@ export default function ScenarioCreateMap({
       });
     }
     currentActiveLayers[layerName] = !currentActiveLayers[layerName];
-    console.log("active layers: ", currentActiveLayers);
     updateFunction(currentActiveLayers);
   }
   return (

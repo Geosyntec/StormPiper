@@ -46,7 +46,6 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
   }, []);
 
   function updateFacility(facility) {
-    console.log("Trying to update facility: ", facility);
     let delineationToUpdate = delineation ? { ...delineation } : null;
     if (facility?.features[0] && delineation?.features.length > 0) {
       delineation.features[0].properties["relid"] =
@@ -62,7 +61,6 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
     });
   }
   function updateDelineation(delineation) {
-    console.log("Updating delineation:", delineation);
     // Check if there is a facility, and then add relid
     if (facility?.features[0] && delineation?.features.length > 0) {
       delineation.features[0].properties["relid"] =
@@ -94,7 +92,6 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
 
   async function _handleSubmit() {
     const formData = { ...scenarioObject };
-    console.log("Submitting scenario: ", formData);
     const response = await api_fetch("/api/rest/scenario", {
       credentials: "same-origin",
       headers: {
@@ -106,7 +103,6 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
     })
       .then((resp) => resp.json())
       .then((resp) => {
-        console.log("response body: ", resp);
         if (resp.id) {
           navigate(`/app/scenario/${resp.id}`);
         } else {
@@ -135,7 +131,6 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
             delineation={delineation}
             delineationSetter={updateDelineation}
             delineationDrawToggler={() => {
-              console.log("inside delin draw toggler");
               setMapMode("drawDelineation");
               setShowDelineationEditTabs(true);
               setShowFacilityEditTabs(false);
@@ -143,7 +138,6 @@ export default function ScenarioCreatePage({ setDrawerButtonList }) {
             facility={facility}
             facilitySetter={updateFacility}
             facilityDrawToggler={() => {
-              console.log("inside facility draw toggler");
               setMapMode("drawFacility");
               setShowDelineationEditTabs(false);
               setShowFacilityEditTabs(true);

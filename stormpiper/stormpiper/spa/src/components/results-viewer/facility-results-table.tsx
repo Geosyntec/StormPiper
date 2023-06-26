@@ -372,7 +372,6 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
   }
 
   if (resultState.loaded) {
-    console.log("Active Group: ", currentGroup);
     return (
       <Box
         sx={{

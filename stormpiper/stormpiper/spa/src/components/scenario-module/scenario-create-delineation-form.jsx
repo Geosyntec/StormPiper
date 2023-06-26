@@ -45,8 +45,6 @@ export const ScenarioDelineationForm = forwardRef(
         return {
           async triggerValidation(delineation) {
             const isFormValid = await trigger();
-            console.log("delin form values: ", getValues());
-            console.log("delin form errors: ", Object.keys(errors));
             const doesPolygonExist =
               delineation?.features.length > 0 &&
               delineation?.features[0]?.geometry?.coordinates?.length > 0;
@@ -97,7 +95,6 @@ export const ScenarioDelineationForm = forwardRef(
     }
 
     function _renderFormFields() {
-      console.log("Building delin form fields: ", fields);
       let fieldDiv = Object.values(fields).map((formField) => {
         const { ref: inputRef, ...inputProps } = register(formField.fieldID, {
           required: formField.required ? "This field is required" : false,

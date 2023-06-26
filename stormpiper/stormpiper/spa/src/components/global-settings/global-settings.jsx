@@ -35,7 +35,6 @@ const patchDatabaseId = async (data) => {
 
   if (response.status <= 200) {
     const newData = await response.json();
-    console.log("patchDatabase Succeeded", newData);
     return newData;
   } else {
     console.error("patchDatabase Failed with data:", response, data);
@@ -55,7 +54,6 @@ const postDatabaseId = async (data) => {
 
   if (response.status <= 200) {
     const newData = await response.json();
-    console.log("posthDatabase Succeeded", newData);
     return newData;
   } else {
     console.error("postDatabase Failed with data:", response, data);
@@ -169,8 +167,6 @@ export default function CostSettingsDataGrid() {
     } else {
       data = await patchDatabaseId({ ...newRow });
     }
-
-    console.log(newRow, oldRow);
 
     if (!data) {
       return oldRow;

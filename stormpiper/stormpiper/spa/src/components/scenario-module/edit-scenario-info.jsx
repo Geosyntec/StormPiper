@@ -51,7 +51,6 @@ export function EditScenarioBasics({ data }) {
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
   let _formValues = makeFormData(data);
-  console.log(_formValues);
 
   const [formValues, setFormValues] = useState({ ..._formValues });
 
@@ -128,14 +127,9 @@ export function EditScenarioBasics({ data }) {
   }
 
   async function _handleSubmit(data, e) {
-    console.log("Event: ", e);
-    console.log("Data:", data);
-
     const formData = new FormData(e.target);
 
     const sendData = makeAPIPatchData(Object.fromEntries(formData.entries()));
-
-    console.log("sending...", sendData);
 
     const response = await patchDataById(scenario_id, sendData);
 

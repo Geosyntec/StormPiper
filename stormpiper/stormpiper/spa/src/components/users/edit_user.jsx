@@ -127,8 +127,6 @@ export default function EditUser() {
   }
 
   async function _handleSubmit(data, e) {
-    console.log("Event: ", e);
-    console.log("Data:", data);
     delete data.is_verified;
     delete data.readonly_token;
     const formData = new FormData(e.target);
@@ -159,7 +157,6 @@ export default function EditUser() {
   const CopyToClipboardButton = ({ data }) => {
     const handleClick = () => {
       navigator.clipboard.writeText(data);
-      console.log(data);
     };
 
     return (

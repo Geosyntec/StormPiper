@@ -20,7 +20,6 @@ import { all_cols as concCols } from "./bmp-results-conc";
 import { all_cols as loadCols } from "./bmp-results-load";
 
 async function getFacility(id) {
-  console.log("Looking for: ", id);
   const response = await api_fetch(
     `/api/rest/tmnt_facility/?f=geojson&node_id=${id}`
   );
@@ -31,7 +30,6 @@ async function getFacility(id) {
   return facility;
 }
 async function getDelineation(id) {
-  console.log("Looking for delineation: ", id);
   const response = await api_fetch(
     `/api/rest/tmnt_delineation?f=geojson&relid=${id}`
   );
@@ -39,7 +37,6 @@ async function getDelineation(id) {
   const delineation = data?.features?.find((feature) => {
     return feature.properties.relid === id;
   });
-  console.log("Found delineation: ", delineation, data, delineation?.bbox);
 
   return delineation;
 }

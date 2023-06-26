@@ -19,7 +19,6 @@ export default function ScenarioReviewPage() {
           x[`info-${attr}`] = x.info[attr];
         });
     });
-    console.log(data);
     setAllScenarios(data);
   }
   const navigate = useNavigate();

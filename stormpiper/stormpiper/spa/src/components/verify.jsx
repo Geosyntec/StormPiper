@@ -12,8 +12,6 @@ export default function Verify() {
   let expiresAt = searchParams.get("expires_at");
   let now = new Date();
   let expiryDateFormatted = new Date(expiresAt);
-  console.log("Token:", token);
-  console.log("expires_at: ", expiryDateFormatted);
 
   const [verifyResults, setVerifyResults] = useState(
     <>
@@ -48,7 +46,6 @@ export default function Verify() {
         method: "POST",
         body: JSON.stringify({ token: token }),
       }).then((resp) => {
-        console.log("Auth response: ", resp.status);
         if (resp.status === 200) {
           setVerifyResults(
             <>

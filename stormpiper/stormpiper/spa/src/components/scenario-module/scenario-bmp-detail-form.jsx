@@ -25,7 +25,6 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
     } else {
       res = "no_treatment";
     }
-    console.log("Setting initial facility type: ", res);
 
     return res;
   });
@@ -41,13 +40,10 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
     () => {
       return {
         async triggerValidation(facility) {
-          console.log("Validating facility:", facility);
           const isFormValid = await childRef.current.triggerValidation();
-          console.log("BMP form valid?: ", isFormValid);
           const isFeatureDrawn =
             facility?.features.length > 0 &&
             facility?.features[0]?.geometry?.coordinates?.length > 0;
-          console.log("BMP drawn?:", isFeatureDrawn);
           return isFormValid && isFeatureDrawn;
         },
 
@@ -57,7 +53,6 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
         },
 
         handleSubmit(facility) {
-          console.log("Facility within the bmp form ref: ", facility);
           const formData = childRef.current._getValues();
           _handleSubmit(formData, facility);
         },
@@ -95,7 +90,6 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
       facilityType.match("_simple") &&
       !data["facility_type"].match("_simple")
     ) {
-      console.log("Appending simple");
       data["facility_type"] = data["facility_type"] + "_simple";
     }
 
@@ -114,7 +108,6 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
     api_fetch("/api/rpc/solve_watershed")
       .then((resp) => {
         setResultSuccess(false);
-        console.log("Recalculation started: ", resp);
       })
       .catch((err) => {
         console.log("Recalculate Failed: ", err);
