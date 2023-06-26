@@ -69,8 +69,8 @@ export function ScenarioBMPDetailResults({ data }) {
   return (
     <Box>
       {node_id == null ? (
-        <Card>
-          <Typography>No Treatment BMP included in Scenario.</Typography>
+        <Card sx={{ p: 2 }}>
+          <Typography>No treatment BMP included in Scenario</Typography>
         </Card>
       ) : (
         <Box>

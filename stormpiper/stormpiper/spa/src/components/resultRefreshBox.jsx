@@ -109,18 +109,14 @@ export default function ResultRefreshBox({ refreshHandler, sx }) {
         }}
         message={resultsSuccessDisplay.msg}
       />
-      <Typography
-        sx={{ width: { xs: "100%", md: "auto" } }}
-        align="center"
-        variant="caption"
-      >
+      <Typography align="center">
         Results Last Updated: {lastUpdatedStr}{" "}
       </Typography>
       <Button
         variant="contained"
         disabled={recalculationState || !isDirty?.is_dirty}
         onClick={initiateResultsSolve}
-        sx={{ width: { xs: "100%", md: "auto" } }}
+        sx={{ width: "100%", my: 1 }}
       >
         Refresh Results
         {recalculationState && (
