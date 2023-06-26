@@ -1,5 +1,6 @@
 import { GeoJsonLayer } from "@deck.gl/layers";
 import { urlPrefix, Authorization } from "../../utils/utils";
+import { PathStyleExtension } from "@deck.gl/extensions";
 
 const subbasins = {
   layer: GeoJsonLayer,
@@ -18,9 +19,10 @@ const subbasins = {
     label: "Subbasins for Prioritization",
     getFillColor: [1, 1, 28, 1],
     defaultFillColor: [1, 1, 28, 1],
-    getLineColor: [189, 189, 189, 255],
+    defaultLineColor: [189, 189, 189, 255],
     getDashArray: (f) => [20, 0],
-    getLineWidth: (f) => 1,
+    getLineColor: (f) => [189, 189, 189, 255],
+    getLineWidth: (f) => 10,
     getElevation: (f) => 500,
     lineWidthScale: 2,
     lineWidthMinPixels: 1,

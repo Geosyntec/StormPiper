@@ -11,19 +11,18 @@ import {
   MenuItem,
   FormControl,
 } from "@mui/material";
-import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
-import GridOnRoundedIcon from "@mui/icons-material/GridOnRounded";
 import { interpolateViridis } from "d3-scale-chromatic";
-import {
-  DataGrid,
-  GridToolbarContainer,
-  GridToolbarExport,
-} from "@mui/x-data-grid";
+import { DataGrid, GridToolbarContainer } from "@mui/x-data-grid";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 
 import { layerDict } from "../assets/geojson/subbasinLayer";
 import ColorRampLegend from "./colorRampLegend";
-import { api_fetch, colorToList } from "../utils/utils";
+import {
+  api_fetch,
+  colorToList,
+  exportCSVFile,
+  convertToCSV,
+} from "../utils/utils";
 import { HalfSpan, TwoColGrid } from "./base/two-col-grid";
 import { goals_csv, field_manifest_csv } from "../assets/data/csv_assets";
 
@@ -33,17 +32,13 @@ function Prioritization({ setDrawerButtonList }) {
   let firstRender = useRef(true);
   const {
     register,
-    unregister,
     handleSubmit,
-    setValue,
-    reset,
     getValues,
     formState: { errors },
   } = useForm();
-  const [lyrSelectDisplayState, setlyrSelectDisplayState] = useState(false); // when true, control panel is displayed
   const [subbasinScores, setSubbasinScores] = useState({});
   const [baseLayer, setBaseLayer] = useState(0);
-  const [criteriaDirection, setCriteriaDirection] = useState("retro");
+  const [focusBasin, setFocusBasin] = useState(null);
   const [activeLayers, setActiveLayers] = useState(() => {
     var res = {};
     Object.keys(layerDict).map((category) => {
@@ -145,17 +140,45 @@ function Prioritization({ setDrawerButtonList }) {
           );
         })[0].score;
 
-        return colorToList(interpolateViridis(score / 100));
+        if (!focusBasin) {
+          return colorToList(interpolateViridis(score / 100), 1);
+        }
+
+        if (d.properties.subbasin === focusBasin) {
+          return colorToList(interpolateViridis(score / 100), 1);
+        } else {
+          return colorToList(interpolateViridis(score / 100), 0.7);
+        }
       } else {
         return props.defaultFillColor || [70, 170, 21, 200];
       }
     };
+    props.getLineColor = (d) => {
+      if (d.properties.subbasin === focusBasin) {
+        return colorToList("black", 1);
+      } else {
+        return colorToList("grey", 0.5);
+      }
+    };
+
+    props.getLineWidth = (d) => {
+      if (d.properties.subbasin === focusBasin) {
+        return 10;
+      } else {
+        return 1;
+      }
+    };
+
     props.updateTriggers = {
-      getFillColor: [subbasinScores],
+      getFillColor: [subbasinScores, focusBasin],
+      getLineColor: [focusBasin || null],
+      getLineWidth: [focusBasin || null],
     };
 
     return props;
   }
+
+  function injectSubbasinScores() {}
 
   async function formatFormData(data) {
     const subbasinAttributes = await api_fetch(
@@ -338,52 +361,6 @@ function Prioritization({ setDrawerButtonList }) {
     }
   }
 
-  function convertToCSV(objArray, headers) {
-    var array = typeof objArray != "object" ? JSON.parse(objArray) : objArray;
-    var str = "";
-
-    let headersFormatted = {};
-
-    if (headers) {
-      headers.map((k) => {
-        headersFormatted[k] = k;
-      });
-      array.unshift(headersFormatted);
-    }
-    console.log("Trying to convert to CSV: ", array);
-
-    for (var i = 0; i < array.length; i++) {
-      var line = "";
-      for (var index in array[i]) {
-        if (line != "") line += ",";
-
-        line += array[i][index];
-      }
-
-      str += line + "\r\n";
-    }
-
-    return str;
-  }
-
-  function exportCSVFile(csv, fileTitle) {
-    var exportedFilename = fileTitle + ".csv" || "export.csv";
-
-    var blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    var link = document.createElement("a");
-    if (link.download !== undefined) {
-      // feature detection
-      // Browsers that support HTML5 download attribute
-      var url = URL.createObjectURL(blob);
-      link.setAttribute("href", url);
-      link.setAttribute("download", exportedFilename);
-      link.style.visibility = "hidden";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  }
-
   async function exportScoringResults() {
     //Fetch subbasin properties to join with scores
     const subbasinAttributes = await api_fetch(
@@ -492,12 +469,15 @@ function Prioritization({ setDrawerButtonList }) {
         </Card>
       </HalfSpan>
       <HalfSpan
+        id="sticky"
         md={7}
         sx={{
-          display: "flex",
-          justifyContent: "flex-start",
-          alignItems: "center",
+          // display: "flex",
+          // justifyContent: "flex-start",
+          // alignItems: "center",
           flexDirection: "column",
+          position: "sticky",
+          top: 0,
         }}
       >
         <Suspense fallback={<></>}>
@@ -552,7 +532,8 @@ function Prioritization({ setDrawerButtonList }) {
                       Higher priority scores indicate subbasins more favorable
                       for new projects <br />
                       To view the specific subbasin attributes that determine
-                      scores, export the results below
+                      scores, export the results below <br />
+                      Click on a row to highlight a subbasin's location
                     </Typography>
                   </Box>
                   <Box sx={{ maxWidth: "400px" }}>
@@ -569,6 +550,13 @@ function Prioritization({ setDrawerButtonList }) {
                         pagination: { paginationModel: { pageSize: 10 } },
                       }}
                       rows={subbasinScores}
+                      onRowClick={(row) => {
+                        if (row.id === focusBasin) {
+                          setFocusBasin(null);
+                        } else {
+                          setFocusBasin(row.id);
+                        }
+                      }}
                       columns={[
                         {
                           field: "subbasin",

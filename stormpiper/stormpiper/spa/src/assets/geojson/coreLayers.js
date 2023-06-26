@@ -226,7 +226,7 @@ export const delineations = {
     },
     id: "tmnt_delineations",
     featurePKField: "altid",
-    zorder: 5,
+    zorder: 10,
     label: "Stormwater Facility Delineations",
     minZoom: 8,
     getFillColor: colorToList("steelblue", 0.2),
@@ -244,6 +244,16 @@ export const delineations = {
     dashJustified: true,
     dashGapPickable: true,
     onByDefault: true,
+    _subLayerProps: {
+      "polygons-stroke": {
+        type: StrokedPathLayer,
+        getPath: (d) => d,
+        getWidth: 1,
+        getColor: colorToList("steelblue", 1),
+        getOutlineWidth: 4,
+        getOutlineColor: colorToList("white", 1),
+      },
+    },
   },
 };
 export const swMain = {
