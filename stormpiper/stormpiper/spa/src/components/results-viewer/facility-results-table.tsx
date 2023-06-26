@@ -288,7 +288,22 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
             my: 2,
           }}
         >
-          <GridToolbarExport sx={{ mx: 2 }} />
+          <GridToolbarExport
+            sx={{ mx: 2 }}
+            csvOptions={{
+              allColumns: true,
+              fileName:
+                "Tacoma_Watersheds_BMP_" +
+                currentEpoch +
+                "_" +
+                currentGroup?.replaceAll(" ", "_") +
+                "_" +
+                new Date().toLocaleString("en-US", {
+                  dateStyle: "short",
+                }),
+            }}
+            printOptions={{ disableToolbarButton: true }}
+          />
           <TextField
             sx={{ minWidth: "125px", mx: 5, alignSelf: "center" }}
             variant="outlined"

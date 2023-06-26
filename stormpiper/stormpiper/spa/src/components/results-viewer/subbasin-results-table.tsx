@@ -156,10 +156,15 @@ export default function SubbasinResultsTable({ fieldList }) {
           <GridToolbarExport
             csvOptions={{
               allColumns: true,
-              fileName: () => {
+              fileName:
                 "Tacoma_Watersheds_Subbasin_" +
-                  currentGroup.replaceAll(" ", "_");
-              },
+                currentEpoch +
+                "_" +
+                currentGroup?.replaceAll(" ", "_") +
+                "_" +
+                new Date().toLocaleString("en-US", {
+                  dateStyle: "short",
+                }),
             }}
             printOptions={{ disableToolbarButton: true }}
             sx={{ mx: 2 }}
