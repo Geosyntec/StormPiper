@@ -69,11 +69,11 @@ def maybe_include_cost_effectiveness(data: dict) -> dict:
         if pvtc is None:
             continue
 
-        fac_result_dct = next(
+        fac_result_dct = next(  # pragma: no branch
             (dct for dct in tmnt_results if dct["node_id"] == node_id), None
         )
         if fac_result_dct is None:
-            continue
+            continue  # pragma: no cover
 
         for poc in POCS:
             load_reduced = fac_result_dct.get(f"{poc}_load_lbs_removed", 0)

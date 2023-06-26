@@ -45,11 +45,18 @@ TMNT_PROPERTIES_BMP_01 = {
     "facility_type": "bioretention_with_partial_infiltration_simple",
     "captured_pct": 80,
     "retained_pct": 20,
-    "capital_cost": 250000,
-    "om_cost_per_yr": 6000,
-    "lifespan_yrs": 30,
-    "replacement_cost": 180000,
 }
+
+TMNT_PROPERTIES_BMP_01_COST = {
+    **TMNT_PROPERTIES_BMP_01,
+    **{
+        "capital_cost": 250000,
+        "om_cost_per_yr": 6000,
+        "lifespan_yrs": 30,
+        "replacement_cost": 180000,
+    },
+}
+
 
 DELIN_ONLY = {
     "delineation_collection": {
@@ -68,6 +75,22 @@ DELIN_ONLY = {
 }
 
 TMNT_ONLY = {
+    "tmnt_facility_collection": {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "properties": TMNT_PROPERTIES_BMP_01_COST,
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [-122.473, 47.255],
+                },
+            },
+        ],
+    },
+}
+
+TMNT_ONLY_NO_COST = {
     "tmnt_facility_collection": {
         "type": "FeatureCollection",
         "features": [
@@ -117,7 +140,10 @@ DELIN_TO_TMNT = {
 DELIN_ONLY_SCENARIO = {"name": "delin only", "input": DELIN_ONLY}
 TMNT_ONLY_SCENARIO = {"name": "tmnt only", "input": TMNT_ONLY}
 TMNT_SCENARIO = {"name": "tmnt scenario", "input": DELIN_TO_TMNT}
-
+TMNT_SCENARIO_NO_COST = {
+    "name": "tmnt scenario no cost",
+    "input": {**DELIN_TO_TMNT, **TMNT_ONLY_NO_COST},
+}
 
 SCENARIO_EXAMPLES = {
     "empty": {"summary": "", "value": {"name": "empty scenario"}},
