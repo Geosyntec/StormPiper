@@ -4,6 +4,11 @@ import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { getLayerData, zoomToFeature } from "../utils/map_utils.js";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import { Box, Button } from "@mui/material";
+import debounce from "lodash.debounce";
+import { FlyToInterpolator } from "@deck.gl/core";
 
 const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoiYWNhbmctZ3MiLCJhIjoiY2w0NGl1YWwyMDE0YzNpb2hhbzN3dzcxdiJ9.3V1BdATyCSerixms7Er3Rw";
@@ -86,7 +91,8 @@ function DeckGLMap({
     INITIAL_VIEW_STATE = { ...INITIAL_VIEW_STATE, ...initialViewState };
   }
   const loc = useLocation();
-  const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
+  const [viewState, setViewState] = useState(INITIAL_VIEW_STATE); //use this to actively change the map view
+  const [cachedViewState, setCachedViewState] = useState(INITIAL_VIEW_STATE); //use this to track the view state for the zoom buttons to be aware of the last known view state
 
   const baseLayerStyles = [
     {
@@ -111,6 +117,29 @@ function DeckGLMap({
     setViewState({ ...view });
   }
 
+  function incrementZoomLevel(direction, step = 0.5) {
+    const transitionConfig = {
+      transitionInterpolator: new FlyToInterpolator(),
+      transitionDuration: 100,
+    };
+
+    setTimeout(() => {
+      if (direction === "in") {
+        setViewState({
+          ...cachedViewState,
+          zoom: cachedViewState.zoom + step,
+          ...transitionConfig,
+        });
+      } else {
+        setViewState({
+          ...cachedViewState,
+          zoom: cachedViewState.zoom - step,
+          ...transitionConfig,
+        });
+      }
+    }, 25);
+  }
+
   useEffect(() => {
     zoomID?.featureID && zoomID?.zoomLayerData && doZoomID(zoomID);
     zoomFeature?.feature && doZoomFeature(zoomFeature);
@@ -123,69 +152,133 @@ function DeckGLMap({
   let isHovering = false;
 
   return (
-    <DeckGL
-      initialViewState={viewState}
-      controller={{ doubleClickZoom: false }}
-      layers={props.layers}
-      onHover={({ object }) => (isHovering = Boolean(object))}
-      getCursor={({ isDragging }) =>
-        isDragging ? "grabbing" : isHovering ? "pointer" : "grab"
-      }
-      onClick={props.onClick}
-      getTooltip={(object) => {
-        if (!props.showTooltip) {
-          return;
+    <>
+      <DeckGL
+        initialViewState={viewState}
+        controller={{ doubleClickZoom: false }}
+        layers={props.layers}
+        onHover={({ object }) => (isHovering = Boolean(object))}
+        getCursor={({ isDragging }) =>
+          isDragging ? "grabbing" : isHovering ? "pointer" : "grab"
         }
-
-        let tt = window.document
-          .getElementById("deckgl-wrapper")
-          .getElementsByClassName("deck-tooltip")[0];
-        let width = 0;
-        let height = 0;
-        if (object.viewport) {
-          ({ width, height } = object.viewport);
-        }
-        const maxx = tt.clientWidth,
-          maxy = tt.clientHeight;
-        if (object.y > height - maxy || object.x > width - maxx) {
-          object.y -= maxy;
-          object.x -= maxx;
-        }
-        let tooltipFields = tooltipFieldDict[object.layer?.id]
-          ? [...tooltipFieldDict[object.layer?.id]]
-          : [...tooltipFieldDict.default];
-        if (tooltipObj) {
-          tooltipFields.push(tooltipObj);
-        }
-        return (
-          object.object && {
-            html: getTooltipContents(
-              object.object,
-              object?.layer?.props?.label,
-              tooltipFields
-            ),
-            style: {
-              position: "absolute",
-              overflow: "hidden",
-              borderRadius: "6px",
-              maxWidth: `250px`,
-              maxHeight: `300px`,
-              lineHeight: "1.2rem",
-            },
+        onClick={props.onClick}
+        getTooltip={(object) => {
+          if (!props.showTooltip) {
+            return;
           }
-        );
-      }}
-      style={{ ...props.style, overflow: "hidden" }}
-    >
-      <StaticMap
-        reuseMaps
-        mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
-        mapStyle={
-          baseLayerStyles[props.baseLayer]?.styleURL ||
-          baseLayerStyles[0].styleURL
-        }
-      />
-    </DeckGL>
+
+          let tt = window.document
+            .getElementById("deckgl-wrapper")
+            .getElementsByClassName("deck-tooltip")[0];
+          let width = 0;
+          let height = 0;
+          if (object.viewport) {
+            ({ width, height } = object.viewport);
+          }
+          const maxx = tt.clientWidth,
+            maxy = tt.clientHeight;
+          if (object.y > height - maxy || object.x > width - maxx) {
+            object.y -= maxy;
+            object.x -= maxx;
+          }
+          let tooltipFields = tooltipFieldDict[object.layer?.id]
+            ? [...tooltipFieldDict[object.layer?.id]]
+            : [...tooltipFieldDict.default];
+          if (tooltipObj) {
+            tooltipFields.push(tooltipObj);
+          }
+          return (
+            object.object && {
+              html: getTooltipContents(
+                object.object,
+                object?.layer?.props?.label,
+                tooltipFields
+              ),
+              style: {
+                position: "absolute",
+                overflow: "hidden",
+                borderRadius: "6px",
+                maxWidth: `250px`,
+                maxHeight: `300px`,
+                lineHeight: "1.2rem",
+              },
+            }
+          );
+        }}
+        onViewStateChange={debounce((newViewState) => {
+          setCachedViewState(newViewState.viewState);
+        }, 100)}
+        style={{ ...props.style, overflow: "hidden" }}
+      >
+        <StaticMap
+          reuseMaps
+          mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
+          mapStyle={
+            baseLayerStyles[props.baseLayer]?.styleURL ||
+            baseLayerStyles[0].styleURL
+          }
+        />
+      </DeckGL>
+      <Box
+        sx={{
+          display: "flex",
+          position: "absolute",
+          justifyContent: "flex-end",
+          alignItems: "flex-start",
+          flexDirection: "column",
+          bottom: 30,
+        }}
+      >
+        <Button
+          onClick={debounce(() => {
+            incrementZoomLevel("in");
+          }, 100)}
+          variant="contained"
+          color="inherit"
+          sx={{
+            mx: 1,
+            mt: 1,
+            mb: 0.25,
+            p: 0,
+            minWidth: 0,
+            maxWidth: "40px",
+            backgroundColor: "white",
+          }}
+        >
+          <Box
+            sx={{
+              p: 1,
+            }}
+          >
+            <AddIcon />
+          </Box>
+        </Button>
+        <Button
+          onClick={() => {
+            incrementZoomLevel("out");
+          }}
+          variant="contained"
+          color="inherit"
+          sx={{
+            mx: 1,
+            my: 0.25,
+            p: 0,
+            minWidth: 0,
+            maxWidth: "40px",
+
+            backgroundColor: "white",
+          }}
+        >
+          <Box
+            sx={{
+              p: 1,
+            }}
+          >
+            <RemoveIcon />
+          </Box>
+        </Button>
+      </Box>
+    </>
   );
 }
 
