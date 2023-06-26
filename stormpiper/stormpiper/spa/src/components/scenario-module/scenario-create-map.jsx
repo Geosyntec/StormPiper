@@ -249,7 +249,6 @@ export default function ScenarioCreateMap({
             props.data = getData();
           }
           if (visState[props.id]) {
-            // props = _injectLayerAccessors(props, focusFeatureID);
             layersToRender.push(new Layer(props));
           }
           return false;

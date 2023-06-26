@@ -471,9 +471,6 @@ function Prioritization({ setDrawerButtonList }) {
         id="sticky"
         md={7}
         sx={{
-          // display: "flex",
-          // justifyContent: "flex-start",
-          // alignItems: "center",
           flexDirection: "column",
           position: "sticky",
           top: 0,
