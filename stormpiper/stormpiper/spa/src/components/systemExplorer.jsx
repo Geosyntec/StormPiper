@@ -392,7 +392,6 @@ function SystemExplorer({ setDrawerButtonList }) {
                 src={legendImg?.src}
                 height={legendImg.height || "200px"}
                 aspect-ratio={legendImg.aspectRatio || "4/3"}
-                // width={legendImg.width || "286px"}
               />
             </CardContent>
           </Card>

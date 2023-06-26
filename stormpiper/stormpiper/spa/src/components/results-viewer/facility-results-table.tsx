@@ -25,7 +25,6 @@ type TableHeader = {
   field: string;
   headerName: string;
   valueFormatter: (values: any) => any;
-  // flex?:number,
   headerAlign: string;
   align: string;
   type: string;
@@ -75,21 +74,13 @@ function exportCSVFile(items: any, fileTitle: string, headers: any) {
     headersFormatted[k] = headers[k].field;
   });
 
-  // if (headers) {
   items.unshift(headersFormatted);
-  // }
-
-  // Convert Object to JSON
-  // var jsonObject = JSON.stringify(items);
 
   var csv = convertToCSV(items);
 
   var exportedFilename = fileTitle + ".csv" || "export.csv";
 
   var blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  // if (navigator.msSaveBlob) { // IE 10+
-  //     navigator.msSaveBlob(blob, exportedFilename);
-  // } else {
   var link = document.createElement("a");
   if (link.download !== undefined) {
     // feature detection
@@ -102,7 +93,6 @@ function exportCSVFile(items: any, fileTitle: string, headers: any) {
     link.click();
     document.body.removeChild(link);
   }
-  // }
 }
 
 export default function FacilityResultsTable(props: FacilityResultsTableProps) {

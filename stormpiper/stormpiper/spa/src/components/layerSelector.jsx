@@ -12,11 +12,8 @@ function LayerSelector(props) {
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
-              // borderBottom: "1px solid grey",
             }}
-          >
-            {/* <Typography variant="h4">Layers</Typography> */}
-          </Box>
+          ></Box>
           {_renderCategories(
             props.layerDict,
             props._onToggleLayer,
