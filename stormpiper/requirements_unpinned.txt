@@ -51,7 +51,7 @@ email-validator
 watchfiles
 asgi-ratelimit
 
-Pint==0.19.2
+pint
 nereid @ https://github.com/Geosyntec/nereid/archive/v0.8.0.zip
 setuptools
 wheel
