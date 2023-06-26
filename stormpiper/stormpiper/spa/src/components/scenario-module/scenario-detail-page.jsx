@@ -421,7 +421,7 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
       "Delineation WQ Results by Climate Epoch\r\n",
       createDelinResultsCSV(),
     ].join(buffer);
-    exportCSVFile(finalCSV, `${scenarioObject.name}_bmp_details_${date}`);
+    exportCSVFile(finalCSV, `${scenarioObject.name}_scenario_details_${date}`);
   }
 
   return (
