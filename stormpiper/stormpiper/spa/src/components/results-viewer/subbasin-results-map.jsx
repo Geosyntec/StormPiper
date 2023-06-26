@@ -75,9 +75,11 @@ export default function SubbasinResultsMap({ visParam }) {
   const subbasinLayer = [
     new GeoJsonLayer({
       ...subbasins.props,
-      getLineColor: [189, 189, 189, 255],
+      getLineColor: colorToList("grey", 0.8),
       getFillColor: visFunction,
       updateTriggers: { getFillColor: [visFunction] },
+      lineWidthMinPixels: 1,
+      _subLayerProps: {}, //prevent default strokedPathLayer from rendering
     }),
   ];
 
@@ -116,8 +118,8 @@ export default function SubbasinResultsMap({ visParam }) {
             position: "absolute",
             bottom: "25px",
             right: "15px",
-            width: "250px",
-            height: "auto",
+            width: "300px",
+            height: "50px",
             padding: 2,
             background: "rgba(255, 255, 255, 0.8)",
             borderRadius: 1,
