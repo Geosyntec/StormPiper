@@ -325,7 +325,7 @@ function SystemExplorer({ setDrawerButtonList }) {
             sx={{
               zIndex: 1000,
               position: "relative",
-              m: 2,
+              m: 1,
             }}
           >
             <Card sx={{ p: 2 }}>
@@ -333,6 +333,42 @@ function SystemExplorer({ setDrawerButtonList }) {
             </Card>
           </Box>
         )}
+        <Box
+          display="flex"
+          sx={{
+            p: 1,
+            justifyContent: "space-between",
+            height: `calc(100% - 116px - ${
+              searchDisplayState ? "88px" : "0px"
+            })`,
+          }}
+        >
+          {lyrSelectDisplayState && (
+            <Card sx={classes.layerPanel}>
+              <CardContent sx={{ p: 2 }}>
+                <LayerSelector
+                  layerDict={layerDict}
+                  activeLayers={activeLayers}
+                  _onToggleLayer={_toggleLayer}
+                  displayStatus={lyrSelectDisplayState}
+                  displayController={_togglelyrSelectDisplayState}
+                ></LayerSelector>
+              </CardContent>
+            </Card>
+          )}
+          {prjStatDisplayState && (
+            <Card sx={classes.prjStatPanel}>
+              <CardContent>
+                <BMPInfoWindow
+                  displayStatus={prjStatDisplayState}
+                  displayController={_toggleprjStatDisplayState}
+                  feature={focusFeatureID}
+                  isDirty={isDirty}
+                ></BMPInfoWindow>
+              </CardContent>
+            </Card>
+          )}
+        </Box>
         <Suspense fallback={<></>}>
           <DeckGLMap
             id="main-map"
@@ -374,44 +410,6 @@ function SystemExplorer({ setDrawerButtonList }) {
             <Tab label="Streets" />
             <Tab label="Satellite" />
           </Tabs>
-        </Box>
-        <Box
-          display="flex"
-          sx={{
-            p: 2,
-            justifyContent: "space-between",
-            height: "calc(100% - 100px)",
-          }}
-        >
-          <Card
-            sx={
-              lyrSelectDisplayState ? classes.layerPanel : classes.panelHidden
-            }
-          >
-            <CardContent sx={{ p: 2 }}>
-              <LayerSelector
-                layerDict={layerDict}
-                activeLayers={activeLayers}
-                _onToggleLayer={_toggleLayer}
-                displayStatus={lyrSelectDisplayState}
-                displayController={_togglelyrSelectDisplayState}
-              ></LayerSelector>
-            </CardContent>
-          </Card>
-          <Card
-            sx={
-              prjStatDisplayState ? classes.prjStatPanel : classes.panelHidden
-            }
-          >
-            <CardContent>
-              <BMPInfoWindow
-                displayStatus={prjStatDisplayState}
-                displayController={_toggleprjStatDisplayState}
-                feature={focusFeatureID}
-                isDirty={isDirty}
-              ></BMPInfoWindow>
-            </CardContent>
-          </Card>
         </Box>
       </Box>
     </Box>
