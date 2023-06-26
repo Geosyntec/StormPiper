@@ -401,6 +401,10 @@ function Prioritization({ setDrawerButtonList }) {
 
     const buffer = "////////////////////////////////////////\r\n";
     const formattedData = await formatFormData(getValues());
+    const date = new Date().toLocaleString("en-US", {
+      dateStyle: "short",
+    });
+    let header = `Tacoma Subbasin Prioritization Results\r\nExported ${date}\r\n`;
     let scoreCSV = convertToCSV(sortedScores, [
       "subbasin",
       ...basinFields,
@@ -417,11 +421,8 @@ function Prioritization({ setDrawerButtonList }) {
       ["WQ Project Type"]
     );
     exportCSVFile(
-      [wqTypeCSV, scenarioCSV, scoreCSV].join(buffer),
-      "Tacoma_Watersheds_Prioritization_Results_" +
-        new Date().toLocaleString("en-US", {
-          dateStyle: "short",
-        })
+      [header, wqTypeCSV, scenarioCSV, scoreCSV].join(buffer),
+      `Tacoma_Watersheds_Prioritization_Results_${date}`
     );
   }
 
