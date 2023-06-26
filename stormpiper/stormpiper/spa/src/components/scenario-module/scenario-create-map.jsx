@@ -124,7 +124,6 @@ export default function ScenarioCreateMap({
       }
     },
     getFillColor: colorToList("steelblue", 0.2),
-    getLineColor: colorToList("black", 1),
     _subLayerProps: {
       geojson: {
         _subLayerProps: {
