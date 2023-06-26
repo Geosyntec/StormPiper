@@ -178,8 +178,6 @@ function Prioritization({ setDrawerButtonList }) {
     return props;
   }
 
-  function injectSubbasinScores() {}
-
   async function formatFormData(data) {
     const subbasinAttributes = await api_fetch(
       "/api/rest/subbasin/?f=geojson&offset=0&epoch=1980s",
@@ -508,8 +506,8 @@ function Prioritization({ setDrawerButtonList }) {
                   position: "absolute",
                   bottom: "25px",
                   right: "15px",
-                  width: "200px",
-                  height: "30px",
+                  width: "300px",
+                  height: "50px",
                   px: 2,
                   py: 1,
                   background: "rgba(255, 255, 255, 0.8)",
