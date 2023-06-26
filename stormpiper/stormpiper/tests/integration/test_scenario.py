@@ -4,6 +4,7 @@ from stormpiper.models.scenario import (
     DELIN_ONLY_SCENARIO,
     TMNT_ONLY_SCENARIO,
     TMNT_SCENARIO,
+    TMNT_SCENARIO_NO_COST,
 )
 from stormpiper.src import tasks
 
@@ -79,7 +80,13 @@ def test_scenario_solve_data_wq(client):
 @pytest.mark.integration
 @test_utils.with_ee_login
 @pytest.mark.parametrize(
-    "blob", [DELIN_ONLY_SCENARIO, TMNT_ONLY_SCENARIO, TMNT_SCENARIO]
+    "blob",
+    [
+        DELIN_ONLY_SCENARIO,
+        TMNT_ONLY_SCENARIO,
+        TMNT_SCENARIO,
+        TMNT_SCENARIO_NO_COST,
+    ],
 )
 def test_solve_new_scenario(client, blob):
     route = "/api/rest/scenario"
@@ -94,7 +101,7 @@ def test_solve_new_scenario(client, blob):
         task_id = response.json()["task_id"]
 
         task_response = test_utils.poll_testclient_url(
-            client, f"/api/rest/tasks/{task_id}", timeout=60
+            client, f"/api/rest/tasks/{task_id}", timeout=120
         )
 
         if task_response:
@@ -114,7 +121,13 @@ def test_solve_new_scenario(client, blob):
 @pytest.mark.integration
 @test_utils.with_ee_login
 @pytest.mark.parametrize(
-    "blob", [DELIN_ONLY_SCENARIO, TMNT_ONLY_SCENARIO, TMNT_SCENARIO]
+    "blob",
+    [
+        DELIN_ONLY_SCENARIO,
+        TMNT_ONLY_SCENARIO,
+        TMNT_SCENARIO,
+        TMNT_SCENARIO_NO_COST,
+    ],
 )
 def test_solve_scenario_foreground(admin_client, blob):
     response = admin_client.post("/api/rpc/solve_scenario_foreground", json=blob)
