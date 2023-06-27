@@ -10,7 +10,7 @@ async function collatePaginatedQuery({ url, fields }) {
   };
 
   const featureCount = await fetch(
-    `${url}/query?where=1%3D1&outFields=*&f=geojson&returnCountOnly=True`
+    `${url}/query?where=1%3D1&outFields=*&f=pjson&returnCountOnly=True`
   )
     .then((r) => r.json())
     .then((r) => r.count);
@@ -213,6 +213,46 @@ export const swInlet = {
   },
 };
 
+export const swManHole = {
+  layer: GeoJsonLayer,
+  props: {
+    data: collatePaginatedQuery({
+      url: "https://services3.arcgis.com/SCwJH1pD8WSn5T5y/arcgis/rest/services/RegionalFacilityModel/FeatureServer/0",
+      fields: [
+        "OBJECTID",
+        "MH_DrainageArea_ALTID",
+        "MH_DrainageArea_UPST_IMPVS",
+      ],
+    }),
+    loadOptions: {
+      fetch: {
+        headers: {
+          Authorization: Authorization,
+        },
+      },
+    },
+    id: "swManHole",
+    featurePKField: "OBJECTID",
+    label: "Regional Facility Model: Manholes",
+    featureType: "points",
+    minZoom: 14,
+    zorder: 10,
+
+    pointType: "circle",
+    pointRadiusUnits: "pixels",
+    defaultFillColor: colorToList("grey"),
+    getFillColor: (d) => {
+      const imp = d.properties["MH_DrainageArea_UPST_IMPVS"];
+      if (imp >= 100) return colorToList("firebrick");
+      else if (imp >= 50) return colorToList("darkorange");
+      return colorToList("mediumturquoise");
+    },
+    getPointRadius: 6,
+    pickable: true,
+    onByDefault: false,
+  },
+};
+
 export const delineations = {
   layer: GeoJsonLayer,
   props: {
@@ -256,6 +296,7 @@ export const delineations = {
     },
   },
 };
+
 export const swMain = {
   layer: GeoJsonLayer,
   props: {
@@ -282,6 +323,7 @@ export const swMain = {
     onByDefault: false,
   },
 };
+
 export const swTrunk = {
   layer: GeoJsonLayer,
   props: {
@@ -306,6 +348,7 @@ export const swTrunk = {
     onByDefault: false,
   },
 };
+
 export const swCBLead = {
   layer: GeoJsonLayer,
   props: {
@@ -615,7 +658,7 @@ export const layerDict = {
     Delineations: [delineations, subbasins],
   },
   "Base Layers": {
-    Conveyance: [swTrunk, swMain, swCBLead, swInlet],
+    Conveyance: [swTrunk, swMain, swCBLead, swInlet, swManHole],
     Landuse: [
       landCoverRaster,
       imperviousnessRaster,
