@@ -355,6 +355,7 @@ function SystemExplorer({ setDrawerButtonList }) {
               </CardContent>
             </Card>
           )}
+          <Box></Box>
           {prjStatDisplayState && (
             <Card sx={classes.prjStatPanel}>
               <CardContent>
