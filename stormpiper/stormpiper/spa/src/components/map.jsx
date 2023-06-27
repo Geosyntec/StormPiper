@@ -40,6 +40,10 @@ const tooltipFieldDict = {
   subbasins: [{ id: "subbasin", label: "Subbasin" }],
   swCBLead: [{ id: "ALTID", label: "Lead ID" }],
   swInlet: [{ id: "ALTID", label: "Inlet ID" }],
+  swManHole: [
+    { id: "MH_DrainageArea_ALTID", label: "Manhole ID" },
+    { id: "MH_DrainageArea_UPST_IMPVS", label: "Upstream Impervious Acres" },
+  ],
   swMain: [
     { id: "ALTID", label: "Pipe ID" },
     { id: "DIAMETER", label: "Diameter" },
@@ -62,7 +66,7 @@ function getTooltipContents(object, layerLabel, fields) {
             } else {
               formattedValue = parseFloat(
                 feat.properties[field.id]
-              ).toLocaleString();
+              ).toLocaleString(undefined, { maximumFractionDigits: 2 });
             }
             return acc + `<p>${field.label}: ${formattedValue}</p>`;
           }, "")}`;
