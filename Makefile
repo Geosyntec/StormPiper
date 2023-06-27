@@ -38,7 +38,6 @@ clean-build: ## remove build artifacts
 
 clean-pyc: ## remove Python file artifacts
 	find stormpiper -path '*/node_modules' -prune -o -name '*.pyo' -o -name '*.pyc' -exec rm -f {} +
-	find stormpiper -path '*/node_modules' -prune -o -name '__pycache__' -exec rm -fr {} +
 
 clean-test: ## remove test and coverage artifacts
 	rm -fr .tox/

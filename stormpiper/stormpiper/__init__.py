@@ -1,4 +1,10 @@
-__version__ = "0.3.1"
+"""Platform for modeling and prioritizing stormwater facilities the city of Tacoma, WA.
+
+Copyright (c) 2023, Geosyntec Consultants Inc.
+All rights reserved.
+"""
+
+__version__ = "0.4.0"
 __author__ = "Austin Orr"
 __email__ = "aorr@geosyntec.com"
 
