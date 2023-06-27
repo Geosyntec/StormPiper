@@ -4,7 +4,7 @@ Copyright (c) 2023, Geosyntec Consultants Inc.
 All rights reserved.
 """
 
-__version__ = "0.3.1"
+__version__ = "0.4.0"
 __author__ = "Austin Orr"
 __email__ = "aorr@geosyntec.com"
 
