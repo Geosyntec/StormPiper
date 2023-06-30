@@ -9,7 +9,7 @@ export default function CostTimeseriesChart({
   data_values,
   ...props
 }) {
-  const id = `${node_id || ""}_cost_timeseries_chart`;
+  const id = `cost_timeseries_chart_${node_id || ""}`;
 
   useEffect(async () => {
     const response = await api_fetch(`/api/rest/chart/cost_timeseries`);
