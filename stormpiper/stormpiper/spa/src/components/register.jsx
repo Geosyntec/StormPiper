@@ -137,30 +137,30 @@ export default function Register() {
                 Submit
               </Button>
             </Box>
-            {error && (
-              <Typography
-                variant="caption"
-                color={(theme) => theme.palette.warning.main}
-                align="center"
-              >
-                User already exists
-              </Typography>
-            )}
-            {success && (
-              <Typography
-                variant="caption"
-                color={(theme) => theme.palette.success.main}
-                align="center"
-              >
-                Successfully registered - Check your email for a confirmation
-                link, and return to{" "}
-                <a href="#" onClick={() => navigate("/app/login")}>
-                  Login
-                </a>
-              </Typography>
-            )}
           </form>
         </Box>
+        {error && (
+          <Typography
+            variant="caption"
+            color={(theme) => theme.palette.warning.main}
+            align="center"
+          >
+            User already exists
+          </Typography>
+        )}
+        {success && (
+          <Typography
+            variant="caption"
+            color={(theme) => theme.palette.success.main}
+            align="center"
+          >
+            Successfully registered - Check your email for a confirmation link,
+            and return to{" "}
+            <a href="#" onClick={() => navigate("/app/login")}>
+              Login
+            </a>
+          </Typography>
+        )}
       </SimpleCardForm>
     </ThemeProvider>
   );
