@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import embed from "vega-embed";
 import { Box } from "@mui/material";
 
@@ -10,6 +10,15 @@ export default function CostTimeseriesChart({
   ...props
 }) {
   const id = `cost_timeseries_chart_${node_id || ""}`;
+  let ref = useRef();
+
+  useEffect(() => {
+    const observer = new ResizeObserver((entries) => {
+      window.dispatchEvent(new Event("resize"));
+    });
+    observer.observe(ref.current);
+    return () => ref.current && observer.unobserve(ref.current);
+  }, []);
 
   useEffect(async () => {
     const response = await api_fetch(`/api/rest/chart/cost_timeseries`);
@@ -20,5 +29,5 @@ export default function CostTimeseriesChart({
     }
   }, [data_values, node_id]);
 
-  return <Box id={id} sx={{ width: "100%" }} {...props}></Box>;
+  return <Box ref={ref} id={id} sx={{ width: "100%" }} {...props}></Box>;
 }
