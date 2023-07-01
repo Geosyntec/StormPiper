@@ -31,7 +31,7 @@ export default function ScenarioReviewPage() {
   return (
     <Box display="flex" justifyContent="center">
       <TwoColGrid>
-        <HalfSpan md={4} sx={{ position: "sticky", top: 0, zIndex: 1 }}>
+        <HalfSpan>
           <Card
             sx={{
               display: "flex",
@@ -61,7 +61,7 @@ export default function ScenarioReviewPage() {
             </Button>
           </Card>
         </HalfSpan>
-        <HalfSpan md={8} sx={{ position: "sticky", top: 0, zIndex: 1 }}>
+        <HalfSpan md={8}>
           <Card
             sx={{
               display: "flex",
