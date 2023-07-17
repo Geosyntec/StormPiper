@@ -1,0 +1,261 @@
+<h1 id="introduction">Introduction</h1>
+<p>This manual describes how to use the Tacoma Watershed Insights web
+application. This application lets users track stormwater
+infrastructure, assess performance, and make informed decisions
+regarding stormwater and water quality in Tacoma.</p>
+<h2 id="purpose">Purpose</h2>
+<p>TODO</p>
+<div class="Warning">
+<p>Remember to bring milk</p>
+</div>
+<h2 id="key-concepts">Key Concepts</h2>
+<h3 id="facility-ids">Facility IDs</h3>
+<h3 id="subbasins">Subbasins</h3>
+<h3 id="scenarios">Scenarios</h3>
+<h3 id="climate-epochs">Climate Epochs</h3>
+<h3 id="facility-types">Facility Types</h3>
+<h3 id="facility-modeling-parameters">Facility Modeling Parameters</h3>
+<h3 id="simple-vs.-detailed-facilities">Simple vs. Detailed
+Facilities</h3>
+<h3 id="pollutants">Pollutants</h3>
+<h2 id="definitions">Definitions</h2>
+<dl>
+<dt>Term 1</dt>
+<dd>
+Definition 1
+</dd>
+<dt>Term 2</dt>
+<dd>
+Definition 2a
+</dd>
+<dd>
+Definition 2b
+</dd>
+</dl>
+<h1 id="editing-facility-data">Editing Facility Data</h1>
+<h2 id="editing-water-quality-parameters">Editing Water Quality
+Parameters</h2>
+<p>You can edit the parameters used to model facilities in the
+<strong>Facility Details</strong> view. There are several ways to
+navigate to this view:</p>
+<ul>
+<li><p>From the Map Explorer map, click on a facility to open the
+Facility Overview panel. Then, click on <strong>View Facility
+Details</strong> to be taken to the detail page.</p></li>
+<li><p>From the <strong>Water Quality Results Viewer,</strong> click on
+a BMP name in the table.</p></li>
+</ul>
+<h2 id="updating-from-simple-to-detailed-facility">Updating from Simple
+to Detailed Facility</h2>
+<p>By default, most facilities are modeled as simple facilities, meaning
+only two parameters are used: Captured Percentage, and Retained
+Percentage.</p>
+<p>See the <a href="#introduction">Introduction</a>.</p>
+<p>Here is a text that includes several acronyms, such as NASA<a
+href="#fn1" class="footnote-ref" id="fnref1"
+role="doc-noteref"><sup>1</sup></a>, FBI<a href="#fn2"
+class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>,
+and SCUBA<a href="#fn3" class="footnote-ref" id="fnref3"
+role="doc-noteref"><sup>3</sup></a>.</p>
+<table>
+<caption>Treatment Facility Parameters</caption>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>altid</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>area_sqft</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>captured_pct</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>commonname</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>depth_ft</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>design_storm_depth_inches</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>facility_type</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>facilitydetail</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>facilitytype</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>flowcontrol</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>flowcontroltype</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>hsg</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>inf_rate_inhr</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>infiltrated</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>media_filtration_rate_inhr</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>minimum_retention_pct_override</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>node_id</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>retained_pct</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>retention_volume_cuft</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>total_volume_cuft</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>treatment_rate_cfs</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>tributary_area_tc_min</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>waterquality</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>waterqualitytype</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<!-- cost data -->
+<table>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>capital_cost</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td>capital_cost_basis_year: int</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<td>om_cost_per_yr: float</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td>om_cost_basis_year: int</td>
+<td>float</td>
+</tr>
+<tr class="odd">
+<td>install_year: int</td>
+<td>float</td>
+</tr>
+<tr class="even">
+<td>replacement_cost: float</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<td>lifespan_yrs: float</td>
+<td>int</td>
+</tr>
+</tbody>
+</table>
+<h1 id="cost-attr-globals">cost attr globals</h1>
+<pre><code>discount_rate: float | None = None
+inflation_rate: float | None = None
+planning_horizon_yrs: float | int | None = None
+cost_basis_year: float | int | None = None
+
+# cost results
+present_value_capital_cost: float | None
+present_value_om_cost: float | None
+present_value_total_cost: float | None
+present_value_cost_table: list[dict] | None = None
+present_value_chart_table: list[dict] | None = None
+
+# cost effectiveness
+TCu_total_cost_dollars_per_load_lbs_removed: float | None
+TN_total_cost_dollars_per_load_lbs_removed: float | None
+TP_total_cost_dollars_per_load_lbs_removed: float | None
+TSS_total_cost_dollars_per_load_lbs_removed: float | None
+TZn_total_cost_dollars_per_load_lbs_removed: float | None
+PHE_total_cost_dollars_per_load_lbs_removed: float | None
+PYR_total_cost_dollars_per_load_lbs_removed: float | None
+DEHP_total_cost_dollars_per_load_lbs_removed: float | None</code></pre>
+<!-- Results -->
+<pre><code>&quot;node_id&quot;,
+&quot;epoch&quot;,
+&quot;node_type&quot;,
+&quot;ntype&quot;,
+&quot;facility_type&quot;,
+&quot;valid_model&quot;,
+&quot;subbasin&quot;,
+&quot;basinname&quot;,</code></pre>
+<h1 id="shared-properties">Shared properties</h1>
+<p>class TMNTFacilityAttrBase(BaseModel): # modeling attrs
+facility_type: None | str = None hsg: None | str = None
+design_storm_depth_inches: None | float = None tributary_area_tc_min:
+None | float = None total_volume_cuft: None | float = None area_sqft:
+None | float = None inf_rate_inhr: None | float = None
+retention_volume_cuft: None | float = None media_filtration_rate_inhr:
+None | float = None minimum_retention_pct_override: None | float = None
+treatment_rate_cfs: None | float = None depth_ft: None | float =
+None</p>
+<pre><code># simplified attrs
+captured_pct: None | float = None
+retained_pct: None | float = None</code></pre>
+<aside id="footnotes" class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>NASA: National Aeronautics and Space Administration<a
+href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>FBI: Federal Bureau of Investigation<a href="#fnref2"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>SCUBA: Self-Contained Underwater Breathing Apparatus<a
+href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</aside>

@@ -1,25 +1,36 @@
 ---
 title: "USER’S MANUAL"
-author: "Geosyntec Consultants, Inc."
 subtitle: "City of Tacoma Watershed Planning Project"
-date: "July 2023"
-#titlepage: true
-#toc: true
+titlepage: true
+titlepage-background: 'md/geo_background.pdf'
+titlepage-rule-height: 0
+titlepage-text-color: "000000"
+toc: true
 lang: "en"
-# titlepage-logo: "Geosyntec-Logo-COLOR-vector-w-tag-EPS.pdf"
 ...
 
 # Introduction
+
 This manual describes how to use the Tacoma Watershed Insights web application. This application lets users track stormwater infrastructure, assess performance, and make informed decisions regarding stormwater and water quality in Tacoma.
 
 ## Purpose
 TODO
 
 ::::: Warning :::::::::::::::::::::::::::::::::::::::::
-
-Remember to bring milk
-
+This is a Warning
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+::::: Note :::::::::::::::::::::::::::::::::::::::::
+**Note**
+
+This is a Note
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+> **Note**
+> This is a note
+
+> **Warning**
+> This is a warning
 
 ## Key Concepts
 ### Facility IDs
@@ -27,15 +38,10 @@ Remember to bring milk
 ### Scenarios
 ### Climate Epochs
 ### Facility Types
+### Facility Modeling Parameters 
+### Simple vs. Detailed Facilities 
 ### Pollutants
 
 
 
-## Definitions
 
-Term 1
-  ~ Definition 1
-
-Term 2
-  ~ Definition 2a
-  ~ Definition 2b

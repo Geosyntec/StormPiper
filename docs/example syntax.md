@@ -18,7 +18,7 @@ pandoc 1_Introduction.md -o example.pdf --from markdown --template eisvogel --pd
 pandoc -N --variable "geometry=margin=1.2in" --variable mainfont="Helvetica" --variable sansfont="Helvetica" --variable monofont="Helvetica" --variable fontsize=12pt --variable version=2.0 0_Title_page.docx  --pdf-engine=xelatex --toc -o TitlePage.pdf
 ```
 ```
-pandoc 1_Introduction.md -o example.pdf --template eisvogel --number-sections --toc
+pandoc md/1_Introduction.md -o example.pdf --template eisvogel --number-sections --toc
 ```
 
 Test table captions:
@@ -37,4 +37,5 @@ pandoc 1_Introduction.md 2_System_Administration.md 3_Map_Explorer.md 4_Results_
 pandoc 1_Introduction.md 2_System_Administration.md 3_Map_Explorer.md 4_Results_Viewer.md -o example.html  --toc --template=bootstrap_menu.html --metadata title="Users Manual"
 ```
 
-pandoc 1_Introduction.md 2_System_Administration.md 3_Map_Explorer.md  -o example.html  --toc --template=GitHub_style.html5 --metadata title="Users Manual"
+pandoc 5_editing_data.md -o example.html  --toc --template=GitHub_style.html5 --metadata title="Users Manual"
+pandoc *.md -o example.html  --toc --template=GitHub_style.html5 --metadata title="Users Manual"
