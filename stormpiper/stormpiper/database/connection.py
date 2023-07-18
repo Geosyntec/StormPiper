@@ -21,7 +21,8 @@ engine_params = {
     "pool_size": 5,
     # Temporarily exceeds the set pool_size if no connections are available.
     "max_overflow": 2,
-    "pool_timeout": 10,  # minutes
+    "pool_timeout": 10 * 60,  # seconds
+    "pool_recycle": 6 * 3600,  # seconds
     "pool_pre_ping": True,
 }
 
@@ -35,12 +36,13 @@ _there_can_be_only_one = None
 
 
 async def get_async_session() -> AsyncIterator[AsyncSession]:
+    global _there_can_be_only_one
     if _there_can_be_only_one is None:
         async_engine = create_async_engine(
             settings.DATABASE_URL_ASYNC,
             **engine_params,
         )
-        async_session_maker = sessionmaker(
+        _there_can_be_only_one = async_session_maker = sessionmaker(
             async_engine, class_=AsyncSession, expire_on_commit=False
         )
     else:
