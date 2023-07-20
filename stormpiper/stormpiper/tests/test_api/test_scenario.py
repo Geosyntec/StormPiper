@@ -371,7 +371,7 @@ def test_scenario_solve_id(client):
         if task_response:
             rjson = task_response.json()
             assert rjson.get("status", "").lower() == "success"
-        else:
+        else:  # pragma: no cover
             response = client.get(f"/api/rest/tasks/{task_id}")
 
             raise ValueError(

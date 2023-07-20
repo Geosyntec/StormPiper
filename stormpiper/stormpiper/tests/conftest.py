@@ -1,8 +1,10 @@
+import asyncio
+
 import pytest
 from fastapi.testclient import TestClient
 
-from stormpiper.database.connection import engine
-from stormpiper.earth_engine import get_layers, get_tile_registry
+from stormpiper.database.connection import engine, get_async_session
+from stormpiper.earth_engine import get_tile_registry
 from stormpiper.email_helper import email
 from stormpiper.factory import create_app
 
@@ -21,93 +23,105 @@ def db():
     yield
 
 
-@pytest.fixture(scope="module")
-def client(db):
+@pytest.fixture
+def app(db):
     app = create_app()
+    app.dependency_overrides[get_async_session] = utils.get_async_session
+    return app
+
+
+@pytest.fixture
+def readonly_token(app):
+    token = ""
+    with TestClient(app) as client:
+        user_token = utils.reader_token(client)
+        client.headers = {"Authorization": f"Bearer {user_token['access_token']}"}
+        readonly_user_data = utils.get_my_data(client)
+        token = readonly_user_data.get("readonly_token", None)
+    return token
+
+
+@pytest.fixture
+def public_token(app):
+    token = ""
+    with TestClient(app) as client:
+        user_token = utils.public_token(client)
+        client.headers = {"Authorization": f"Bearer {user_token['access_token']}"}
+        readonly_user_data = utils.get_my_data(client)
+        token = readonly_user_data.get("readonly_token", None)
+    return token
+
+
+@pytest.fixture
+def client(app):
     with TestClient(app) as client:
         user_token = utils.user_token(client)
         client.headers = {"Authorization": f"Bearer {user_token['access_token']}"}
         yield client
 
 
-@pytest.fixture(scope="module")
-def admin_client(db):
-    app = create_app()
+@pytest.fixture
+def admin_client(app):
     with TestClient(app) as client:
         user_token = utils.admin_token(client)
         client.headers = {"Authorization": f"Bearer {user_token['access_token']}"}
         yield client
 
 
-@pytest.fixture(scope="module")
-def user_admin_client(db):
-    app = create_app()
+@pytest.fixture
+def user_admin_client(app):
     with TestClient(app) as client:
         user_token = utils.user_admin_token(client)
         client.headers = {"Authorization": f"Bearer {user_token['access_token']}"}
         yield client
 
 
-@pytest.fixture(scope="module")
-def readonly_client(db):
-    app = create_app()
+@pytest.fixture
+def readonly_client(app):
     with TestClient(app) as client:
-        token = utils.reader_token(client)
-        client.headers = {"Authorization": f"Bearer {token['access_token']}"}
+        user_token = utils.reader_token(client)
+        client.headers = {"Authorization": f"Bearer {user_token['access_token']}"}
         yield client
 
 
-@pytest.fixture(scope="module")
-def readonly_token(readonly_client):
-    client = readonly_client
-    readonly_user_data = utils.get_my_data(client)
-    token = readonly_user_data.get("readonly_token", None)
-    return token
-
-
-@pytest.fixture(scope="module")
-def public_client(db):
-    app = create_app()
+@pytest.fixture
+def reg_public_client(app):
     with TestClient(app) as client:
         token = utils.public_token(client)
         client.headers = {"Authorization": f"Bearer {token['access_token']}"}
         yield client
 
 
-@pytest.fixture(scope="module")
-def client_local(db):
-    app = create_app()
+@pytest.fixture
+def public_client(app):
+    with TestClient(app) as client:
+        yield client
 
+
+@pytest.fixture
+def client_local(db):
     class Reg:
         def get(self, *args):
             return "./ping"
 
     override_get_tile_registry = lambda: Reg()
 
-    def override_get_layers():
-        return {
-            "param": {
-                "safe_name": "param",
-                "layer": {"url": "string", "image": "image_obj"},
-            }
-        }
-
+    app = create_app()
     app.dependency_overrides[get_tile_registry] = override_get_tile_registry
-    app.dependency_overrides[get_layers] = override_get_layers
 
     with TestClient(app) as client:
         yield client
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def client_lookup(
-    db,
     client,
     admin_client,
     user_admin_client,
     readonly_client,
     client_local,
     public_client,
+    reg_public_client,
 ):
     return {
         "client": client,
@@ -115,6 +129,7 @@ def client_lookup(
         "user_admin_client": user_admin_client,
         "editor_client": client,
         "readonly_client": readonly_client,
+        "reg_public_client": reg_public_client,
         "public_client": public_client,
         "client_local": client_local,
     }

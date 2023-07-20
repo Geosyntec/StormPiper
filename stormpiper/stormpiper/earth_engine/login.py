@@ -64,7 +64,7 @@ async def async_login(**kwargs):
     try:
         return await base_async_login(**kwargs)
 
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         logger.exception("Error logging in to earth engine", e, exc_info=True)
         raise e
 
@@ -79,12 +79,12 @@ def login(**kwargs):
     try:
         return base_login(**kwargs)
 
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         logger.exception("Error logging in to earth engine", e, exc_info=True)
         raise e
 
 
-async def ee_continuous_login(sleep_seconds: int = 3600) -> None:
+async def ee_continuous_login(sleep_seconds: int = 3600) -> None:  # pragma: no cover
     logger.debug("Calling ee_continuous_login...")
     logged_in = await async_login()
 
