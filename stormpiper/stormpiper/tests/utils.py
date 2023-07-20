@@ -2,15 +2,21 @@ import json
 import time
 import uuid
 from functools import wraps
+from typing import Annotated
 
+from fastapi import Depends
 import geopandas
 import pandas
 import sqlalchemy as sa
 from passlib.context import CryptContext
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import NullPool
+
 
 from stormpiper.core.config import settings
 from stormpiper.database import utils
-from stormpiper.database.connection import get_session
+from stormpiper.database.connection import get_session, engine_params
 from stormpiper.database.schemas.base import Base, User
 from stormpiper.database.schemas.globals import GlobalSetting
 from stormpiper.database.schemas.scenario import Scenario
@@ -262,3 +268,17 @@ def poll_testclient_url(testclient, url, timeout=5, verbose=False):  # pragma: n
         time.sleep(0.1)
 
     return
+
+
+async def get_async_session():
+    async_engine = create_async_engine(settings.DATABASE_URL_ASYNC, **engine_params)
+
+    async_session_maker = sessionmaker(
+        async_engine, class_=AsyncSession, expire_on_commit=False
+    )
+
+    async with async_session_maker() as session:
+        yield session
+
+
+AsyncSessionDB = Annotated[AsyncSession, Depends(get_async_session)]

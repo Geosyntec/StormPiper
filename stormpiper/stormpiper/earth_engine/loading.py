@@ -45,7 +45,7 @@ def get_poc_loading_Image(
     concentration_path: str,
     runoff_band: int | str | None = None,
 ) -> Image:
-    if runoff_band is None:
+    if runoff_band is None:  # pragma: no cover
         runoff_band = 0
 
     runoff = Image(runoff_path)

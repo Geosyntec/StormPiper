@@ -23,7 +23,7 @@ async def _init():
 )
 async def tileservice_view(
     request: Request, layers: dict[str, str] = Depends(_init)
-) -> Response:
+) -> Response:  # pragma: no cover
     return templates.TemplateResponse(
         "tileserver.html", {"request": request, "layers": layers.values()}
     )

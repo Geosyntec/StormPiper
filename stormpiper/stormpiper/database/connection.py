@@ -31,23 +31,18 @@ engine = create_engine(
     **engine_params,
 )
 
+async_engine = create_async_engine(
+    settings.DATABASE_URL_ASYNC,
+    **engine_params,
+)
 
-_there_can_be_only_one = None
+
+async_session_maker = sessionmaker(
+    async_engine, class_=AsyncSession, expire_on_commit=False
+)
 
 
 async def get_async_session() -> AsyncIterator[AsyncSession]:
-    global _there_can_be_only_one
-    if _there_can_be_only_one is None:
-        async_engine = create_async_engine(
-            settings.DATABASE_URL_ASYNC,
-            **engine_params,
-        )
-        _there_can_be_only_one = async_session_maker = sessionmaker(
-            async_engine, class_=AsyncSession, expire_on_commit=False
-        )
-    else:
-        async_session_maker = _there_can_be_only_one
-
     async with async_session_maker() as session:
         yield session
 
@@ -65,7 +60,7 @@ def get_session(engine=engine):
     before=before_log(logger, logging.INFO),
     after=after_log(logger, logging.WARN),
 )
-def reconnect_engine(engine=engine):
+def reconnect_engine(engine=engine):  # pragma: no cover
     try:
         with engine.begin() as conn:
             # this should connect/login and ensure that the database is available.

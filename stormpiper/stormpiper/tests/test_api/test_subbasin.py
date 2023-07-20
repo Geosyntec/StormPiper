@@ -35,20 +35,24 @@ def test_get_all_subbasins(client, f, limit):
         ("get", "/api/rest/subbasin/WS_03", "readonly_client", False, True),
         ("get", "/api/rest/subbasin/WS_03", "public_client", False, False),
         ("get", "/api/rest/subbasin/WS_03/token", "readonly_client", True, True),
-        ("get", "/api/rest/subbasin/WS_03/token", "public_client", True, False),
+        ("get", "/api/rest/subbasin/WS_03/token", "reg_public_client", True, False),
+        ("get", "/api/rest/subbasin/WS_03/token", "reg_public_client", False, False),
         ("get", "/api/rest/subbasin", "readonly_client", False, True),
         ("get", "/api/rest/subbasin", "public_client", False, False),
         ("get", "/api/rest/subbasin/token", "readonly_client", True, True),
-        ("get", "/api/rest/subbasin/token", "public_client", True, False),
+        ("get", "/api/rest/subbasin/token", "reg_public_client", True, False),
+        ("get", "/api/rest/subbasin/token", "reg_public_client", False, False),
         # wq
         ("get", "/api/rest/subbasin/wq/WS_03", "readonly_client", False, True),
         ("get", "/api/rest/subbasin/wq/WS_03", "public_client", False, False),
         ("get", "/api/rest/subbasin/wq/WS_03/token", "readonly_client", True, True),
-        ("get", "/api/rest/subbasin/wq/WS_03/token", "public_client", True, False),
+        ("get", "/api/rest/subbasin/wq/WS_03/token", "reg_public_client", True, False),
+        ("get", "/api/rest/subbasin/wq/WS_03/token", "reg_public_client", False, False),
         ("get", "/api/rest/subbasin/wq", "readonly_client", False, True),
         ("get", "/api/rest/subbasin/wq", "public_client", False, False),
         ("get", "/api/rest/subbasin/wq/token", "readonly_client", True, True),
-        ("get", "/api/rest/subbasin/wq/token", "public_client", True, False),
+        ("get", "/api/rest/subbasin/wq/token", "reg_public_client", True, False),
+        ("get", "/api/rest/subbasin/wq/token", "reg_public_client", False, False),
     ],
 )
 @pytest.mark.parametrize("f", ["json", "geojson"])
@@ -88,7 +92,7 @@ def _random_uuid_token(*_, **__):
 
 
 def _invalid_uuid_token(*_, **__):
-    token = "1dc37681-440b-403e-9c72-d9d323*8a347"
+    token = "1dc37681-440b-403e-9c72-d9d32[*]a347"
     return token, False
 
 
@@ -113,14 +117,8 @@ def _not_uuid_token(*_, **__):
         _not_uuid_token,
     ],
 )
-def test_good_bad_token(
-    client_local,
-    readonly_client,
-    route,
-    token_getter,
-):
-    client = client_local
-    token, authorized = token_getter(readonly_client)
+def test_good_bad_token(client, route, token_getter):
+    token, authorized = token_getter(client)
 
     route += f"/{token}"
     response = client.get(route)

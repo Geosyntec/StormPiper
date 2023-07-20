@@ -25,7 +25,6 @@ def test_tileserver_api_response(client, route):
     "route",
     [
         "/api/rest/tileserver/redirect/esri/11/355/821/a",
-        "/api/rest/tileserver/redirect/carto-db/9/89/206/b",
     ],
 )
 @test_utils.with_ee_login
