@@ -47,7 +47,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ==============================================================================-->
-<html lang="en">
+<html>
 <head>
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
@@ -64,1082 +64,132 @@ SOFTWARE.
 <body>
 <article class="markdown-body">
 <header>
-<h1 class="title followed-by-subtitle">Users Manual</h1>
-<p class="subtitle">City of Tacoma Watershed Planning Project</p>
+<h1 class="title">Users Manual</h1>
 </header>
 <hr>
 <nav id="TOC">
 <h1 class="toc-title">Contents</h1>
 <ul>
-<li><a href="#parameter-dictionary"
-id="toc-parameter-dictionary">Parameter Dictionary</a>
-<ul>
-<li><a href="#treatment-facility-input-parameters"
-id="toc-treatment-facility-input-parameters">Treatment Facility Input
-Parameters</a></li>
-<li><a href="#result-parmeters" id="toc-result-parmeters">Result
-Parmeters</a></li>
-</ul></li>
-<li><a href="#cost-analysis-parameters"
-id="toc-cost-analysis-parameters">Cost Analysis Parameters</a>
-<ul>
-<li><a href="#global-parameters" id="toc-global-parameters">Global
-Parameters</a></li>
-<li><a href="#input-parameters" id="toc-input-parameters">Input
-Parameters</a></li>
-</ul></li>
-<li><a href="#shared-properties" id="toc-shared-properties">Shared
-properties</a></li>
-<li><a href="#introduction" id="toc-introduction">Introduction</a>
-<ul>
-<li><a href="#purpose" id="toc-purpose">Purpose</a></li>
-<li><a href="#key-concepts" id="toc-key-concepts">Key Concepts</a>
-<ul>
-<li><a href="#facility-ids" id="toc-facility-ids">Facility IDs</a></li>
-<li><a href="#subbasins" id="toc-subbasins">Subbasins</a></li>
-<li><a href="#scenarios" id="toc-scenarios">Scenarios</a></li>
-<li><a href="#climate-epochs" id="toc-climate-epochs">Climate
-Epochs</a></li>
-<li><a href="#facility-types" id="toc-facility-types">Facility
-Types</a></li>
-<li><a href="#facility-modeling-parameters"
-id="toc-facility-modeling-parameters">Facility Modeling
-Parameters</a></li>
-<li><a href="#simple-vs.-detailed-facilities"
-id="toc-simple-vs.-detailed-facilities">Simple vs. Detailed
-Facilities</a></li>
-<li><a href="#pollutants" id="toc-pollutants">Pollutants</a></li>
-</ul></li>
-<li><a href="#definitions" id="toc-definitions">Definitions</a></li>
-</ul></li>
-<li><a href="#system-administration"
-id="toc-system-administration">System Administration</a>
-<ul>
-<li><a href="#sign-up-as-a-new-user" id="toc-sign-up-as-a-new-user">Sign
-Up as a New User</a></li>
-<li><a href="#user-roles" id="toc-user-roles">User Roles</a></li>
-<li><a href="#managing-users" id="toc-managing-users">Managing
-Users</a></li>
-</ul></li>
-<li><a href="#viewing-results-with-the-map-explorer"
-id="toc-viewing-results-with-the-map-explorer">Viewing Results with the
-Map Explorer</a>
-<ul>
-<li><a href="#viewing-layers" id="toc-viewing-layers">Viewing
-Layers</a></li>
-<li><a href="#viewing-facility-overview-information"
-id="toc-viewing-facility-overview-information">Viewing Facility Overview
-Information</a></li>
-<li><a href="#viewing-facility-details"
-id="toc-viewing-facility-details">Viewing Facility Details</a></li>
-<li><a href="#exporting-facility-details"
-id="toc-exporting-facility-details">Exporting Facility Details</a></li>
-<li><a href="#searching-for-a-facility"
-id="toc-searching-for-a-facility">Searching for a Facility</a></li>
-</ul></li>
-<li><a href="#using-the-bmp-facility-results-view"
-id="toc-using-the-bmp-facility-results-view">Using the BMP Facility
-Results View</a>
-<ul>
-<li><a href="#overview-tab" id="toc-overview-tab">Overview Tab</a></li>
-<li><a href="#runoff-stats-tab" id="toc-runoff-stats-tab">Runoff Stats
-Tab</a></li>
-<li><a href="#pollutant-mass-flow-tab"
-id="toc-pollutant-mass-flow-tab">Pollutant Mass Flow Tab</a></li>
-<li><a href="#pollutant-concentration-tab"
-id="toc-pollutant-concentration-tab">Pollutant Concentration
-Tab</a></li>
-</ul></li>
-<li><a href="#using-the-subbasins-results-view"
-id="toc-using-the-subbasins-results-view">Using the Subbasins Results
-View</a>
-<ul>
-<li><a href="#exporting-results" id="toc-exporting-results">Exporting
-Results</a></li>
-<li><a href="#available-data-layers"
-id="toc-available-data-layers">Available Data Layers</a></li>
-</ul></li>
-<li><a href="#editing-facility-data"
-id="toc-editing-facility-data">Editing Facility Data</a>
-<ul>
-<li><a href="#editing-water-quality-parameters"
-id="toc-editing-water-quality-parameters">Editing Water Quality
-Parameters</a></li>
-<li><a href="#updating-from-simple-to-detailed-facility"
-id="toc-updating-from-simple-to-detailed-facility">Updating from Simple
-to Detailed Facility</a></li>
-<li><a href="#editing-facility-type"
-id="toc-editing-facility-type">Editing Facility Type</a></li>
-<li><a href="#editing-life-cost-analysis-parameters"
-id="toc-editing-life-cost-analysis-parameters">Editing Life Cost
-Analysis Parameters</a>
-<ul>
-<li><a href="#king-county-cost-estimator-tool"
-id="toc-king-county-cost-estimator-tool">King County Cost Estimator
-Tool</a></li>
-</ul></li>
-</ul></li>
-<li><a href="#using-the-prioritization-module"
-id="toc-using-the-prioritization-module">Using the Prioritization
-Module</a>
-<ul>
-<li><a href="#project-type" id="toc-project-type">Project Type</a></li>
-<li><a href="#priority-weights" id="toc-priority-weights">Priority
-Weights</a></li>
-</ul></li>
+<li><a href="#requirements" id="toc-requirements">Requirements</a></li>
+<li><a href="#installation" id="toc-installation">Installation</a></li>
+<li><a href="#compatibility"
+id="toc-compatibility">Compatibility</a></li>
+<li><a href="#license" id="toc-license">License</a></li>
+<li><a href="#exports" id="toc-exports">exports</a></li>
+<li><a href="#introduction-of-lession.1"
+id="toc-introduction-of-lession.1">Introduction of Lession.1</a></li>
+<li><a href="#introduction-of-lession.3"
+id="toc-introduction-of-lession.3">Introduction of Lession.3</a></li>
+<li><a href="#introduction-of-lession.4"
+id="toc-introduction-of-lession.4">Introduction of Lession.4</a></li>
 </ul>
 </nav>
 <hr>
-<h1 id="parameter-dictionary">Parameter Dictionary</h1>
-<p><a href="#altid">altid</a></p>
-<h2 id="treatment-facility-input-parameters">Treatment Facility Input
-Parameters</h2>
-<div id="facility_type">
-
-</div>
-<dl>
-<dt>Facility Type</dt>
-<dd>
-TODO
-</dd>
-</dl>
-<h2 id="result-parmeters">Result Parmeters</h2>
-<div id="altid">
-
-</div>
-<dl>
-<dt>altid</dt>
-<dd>
-TODO
-</dd>
-</dl>
-<div id="area_sqft">
-
-</div>
-<dl>
-<dt>area_sqft</dt>
-<dd>
-TODO
-</dd>
-</dl>
-<div id="captured_pct">
-
-</div>
-<dl>
-<dt>captured_pct</dt>
-<dd>
-TODO
-</dd>
-</dl>
-<div id="commonname">
-
-</div>
-<dl>
-<dt>commonname</dt>
-<dd>
-TODO
-</dd>
-</dl>
-<div id="depth_ft">
-
-</div>
-<dl>
-<dt>depth_ft</dt>
-<dd>
-TODO
-</dd>
-</dl>
-<div id="design_storm_depth_inches">
-
-</div>
-<dl>
-<dt>design_storm_depth_inches</dt>
-<dd>
-TODO
-</dd>
-</dl>
-<div id="facility_type">
-
-</div>
-<dl>
-<dt>facility_type</dt>
-<dd>
-TODO
-</dd>
-</dl>
-<div id="facilitydetail">
-
-</div>
-<dl>
-<dt>facilitydetail</dt>
-<dd>
-TODO
-</dd>
-</dl>
-<div id="facilitytype">
-
-</div>
-<dl>
-<dt>facilitytype</dt>
-<dd>
-TODO
-</dd>
-</dl>
-<div id="flowcontrol">
-
-</div>
-<dl>
-<dt>flowcontrol</dt>
-<dd>
-TODO
-</dd>
-</dl>
-<div id="flowcontroltype">
-
-</div>
-<dl>
-<dt>flowcontroltype</dt>
-<dd>
-TODO
-</dd>
-</dl>
-<div id="hsg">
-
-</div>
-<dl>
-<dt>hsg</dt>
-<dd>
-TODO
-</dd>
-</dl>
-<div id="inf_rate_inhr">
-
-</div>
-<dl>
-<dt>inf_rate_inhr</dt>
-<dd>
-TODO
-</dd>
-</dl>
-<div id="infiltrated">
-
-</div>
-<dl>
-<dt>infiltrated</dt>
-<dd>
-TODO
-</dd>
-</dl>
-<div id="media_filtration_rate_inhr">
-
-</div>
-<dl>
-<dt>media_filtration_rate_inhr</dt>
-<dd>
-TODO
-</dd>
-</dl>
-<div id="minimum_retention_pct_override">
-
-</div>
-<dl>
-<dt>minimum_retention_pct_override</dt>
-<dd>
-TODO
-</dd>
-</dl>
-<div id="node_id">
-
-</div>
-<dl>
-<dt>node_id</dt>
-<dd>
-TODO
-</dd>
-</dl>
-<div id="retained_pct">
-
-</div>
-<dl>
-<dt>retained_pct</dt>
-<dd>
-TODO
-</dd>
-</dl>
-<div id="retention_volume_cuft">
-
-</div>
-<dl>
-<dt>retention_volume_cuft</dt>
-<dd>
-TODO
-</dd>
-</dl>
-<div id="total_volume_cuft">
-
-</div>
-<dl>
-<dt>total_volume_cuft</dt>
-<dd>
-TODO
-</dd>
-</dl>
-<div id="treatment_rate_cfs">
-
-</div>
-<dl>
-<dt>treatment_rate_cfs</dt>
-<dd>
-TODO
-</dd>
-</dl>
-<p>&lt;div id</p>
-<p>waterqualitytype | |</p>
-<p>Table: Treatment Facility Parameters</p>
-<!-- cost data -->
-<table>
-<thead>
-<tr class="header">
-<th>Parameter</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>capital_cost</td>
-<td>None</td>
-</tr>
-<tr class="even">
-<td>capital_cost_basis_year: int</td>
-<td>None</td>
-</tr>
-<tr class="odd">
-<td>om_cost_per_yr: float</td>
-<td>None</td>
-</tr>
-<tr class="even">
-<td>om_cost_basis_year: int</td>
-<td>float</td>
-</tr>
-<tr class="odd">
-<td>install_year: int</td>
-<td>float</td>
-</tr>
-<tr class="even">
-<td>replacement_cost: float</td>
-<td>None</td>
-</tr>
-<tr class="odd">
-<td>lifespan_yrs: float</td>
-<td>int</td>
-</tr>
-</tbody>
-</table>
-<h1 id="cost-analysis-parameters">Cost Analysis Parameters</h1>
-<div id="cost_analysis_params">
-
-<h2 id="global-parameters">Global Parameters</h2>
-<pre><code>discount_rate: float | None = None
-inflation_rate: float | None = None
-planning_horizon_yrs: float | int | None = None
-cost_basis_year: float | int | None = None</code></pre>
-<h2 id="input-parameters">Input Parameters</h2>
-<pre><code># cost results
-present_value_capital_cost: float | None
-present_value_om_cost: float | None
-present_value_total_cost: float | None
-present_value_cost_table: list[dict] | None = None
-present_value_chart_table: list[dict] | None = None
-
-# cost effectiveness
-TCu_total_cost_dollars_per_load_lbs_removed: float | None
-TN_total_cost_dollars_per_load_lbs_removed: float | None
-TP_total_cost_dollars_per_load_lbs_removed: float | None
-TSS_total_cost_dollars_per_load_lbs_removed: float | None
-TZn_total_cost_dollars_per_load_lbs_removed: float | None
-PHE_total_cost_dollars_per_load_lbs_removed: float | None
-PYR_total_cost_dollars_per_load_lbs_removed: float | None
-DEHP_total_cost_dollars_per_load_lbs_removed: float | None</code></pre>
-<!-- Results -->
-<pre><code>&quot;node_id&quot;,
-&quot;epoch&quot;,
-&quot;node_type&quot;,
-&quot;ntype&quot;,
-&quot;facility_type&quot;,
-&quot;valid_model&quot;,
-&quot;subbasin&quot;,
-&quot;basinname&quot;,</code></pre>
-<h1 id="shared-properties">Shared properties</h1>
-<p>class TMNTFacilityAttrBase(BaseModel): # modeling attrs
-facility_type: None | str = None hsg: None | str = None
-design_storm_depth_inches: None | float = None tributary_area_tc_min:
-None | float = None total_volume_cuft: None | float = None area_sqft:
-None | float = None inf_rate_inhr: None | float = None
-retention_volume_cuft: None | float = None media_filtration_rate_inhr:
-None | float = None minimum_retention_pct_override: None | float = None
-treatment_rate_cfs: None | float = None depth_ft: None | float =
-None</p>
-<pre><code># simplified attrs
-captured_pct: None | float = None
-retained_pct: None | float = None</code></pre>
-<dl>
-<dt>captured_pct 1</dt>
-<dd>
-Definition 1
-</dd>
-<dt>retained_pct</dt>
-<dd>
-Percentage retained <em>(cu/ft)</em>
-</dd>
-</dl>
-<h1 id="introduction">Introduction</h1>
-<p>This manual describes how to use the Tacoma Watershed Insights web
-application. This application lets users track stormwater
-infrastructure, assess performance, and make informed decisions
-regarding stormwater and water quality in Tacoma.</p>
-<h2 id="purpose">Purpose</h2>
-<p>TODO</p>
-<div class="Warning">
-<p>This is a Warning</p>
-</div>
-<div class="Note">
-<p><strong>Note</strong></p>
-<p>This is a Note</p>
-</div>
+<p>Awesome Boxes is all about drawing admonition blocks around text to
+inform or alert your readers about something particular. The specific
+aim of this package is to use <a
+href="https://fontawesome.com">FontAwesome 5</a> icons to ease the
+illustration of these blocks.</p>
+<p>The idea of admonition blocks comes from the ones you can easily do
+with <a
+href="http://asciidoctor.org/docs/user-manual/#admonition">AsciiDoc</a>.</p>
+<p>For more details, please refer to the <a
+href="https://github.com/milouse/latex-awesomebox/blob/master/awesomebox.pdf">awesomebox.pdf</a>
+document.</p>
+<h1 id="requirements">Requirements</h1>
+<p>The following LaTeX packages are required (they should be already
+included in your LaTeX distribution):</p>
+<ul>
+<li><code>array</code></li>
+<li><code>fontawesome5</code></li>
+<li><code>ifthen</code></li>
+<li><code>xcolor</code></li>
+<li><code>xparse</code></li>
+</ul>
+<h1 id="installation">Installation</h1>
+<p>Download the <code>awesomebox.sty</code> file and put it in the same
+folder of the document your are composing.</p>
+<p>For system wide installation, please refer to the documentation of
+your LaTeX distribution.</p>
+<h1 id="compatibility">Compatibility</h1>
+<p>This repository also hosts the package
+<code>awesomebox-compat</code>, which depends on the
+<code>fontawesome</code> package, instead of <code>fontawesome5</code>.
+Apart from that, it has the exact same features set.</p>
+<p>This can be usefull for you if you want to use it with an old LaTeX
+distribution, which does not embed <code>fontawesome5</code> yet (like
+Overleaf system). To use it, download the file
+<code>awesomebox-compat.sty</code> in this repository, put it near your
+tex files and just replace your <code>\usepackage{awesomebox}</code>
+instruction by <code>\usepackage{awesomebox-compat}</code>.</p>
+<p>Be aware that icon names changes between FontAwesome and FontAwesome5
+and thus using the compatibility package may break your current files.
+FontAwesome also requires you to use XeLaTeX or LuaTeX: you cannot use
+PDFLaTeX with the compatibility package.</p>
+<h1 id="license">License</h1>
+<p>Awesome Box is released under the <a
+href="http://www.wtfpl.net/txt/copying/">WTFPL</a>. A copy of this
+license is distributed in this package.</p>
 <blockquote>
 <p><strong>Note</strong> This is a note</p>
 </blockquote>
 <blockquote>
 <p><strong>Warning</strong> This is a warning</p>
 </blockquote>
-<h2 id="key-concepts">Key Concepts</h2>
-<h3 id="facility-ids">Facility IDs</h3>
-<h3 id="subbasins">Subbasins</h3>
-<h3 id="scenarios">Scenarios</h3>
-<h3 id="climate-epochs">Climate Epochs</h3>
-<h3 id="facility-types">Facility Types</h3>
-<h3 id="facility-modeling-parameters">Facility Modeling Parameters</h3>
-<h3 id="simple-vs.-detailed-facilities">Simple vs. Detailed
-Facilities</h3>
-<h3 id="pollutants">Pollutants</h3>
-<h2 id="definitions">Definitions</h2>
-<dl>
-<dt>Term 1</dt>
-<dd>
-Definition 1
-</dd>
-<dt>Term 2</dt>
-<dd>
-Definition 2a
-</dd>
-<dd>
-Definition 2b
-</dd>
-</dl>
-<h1 id="system-administration">System Administration</h1>
-<h2 id="sign-up-as-a-new-user">Sign Up as a New User</h2>
-<p>You must register and be approved as a new user before using the
-site. To sign up, click <strong>Login</strong> in the upper right hand
-corner of the site. At the login page, click <strong>Register</strong>
-to be taken to the registration page. After entering the required
-details, click <strong>Submit</strong> to create your account. An email
-will be sent to your provided email address for verification.</p>
-<p>Before you can access the site, your account must be approved by a
-User Admin. See the Modifying User Roles section for information on
-approving new users.</p>
-<h2 id="user-roles">User Roles</h2>
-<p>Users can have one of the following roles associated with their
-account.</p>
-<p>Only a User Admin or System Admin may edit user roles.</p>
-<table>
-<caption>Roles and Permissions</caption>
-<colgroup>
-<col style="width: 32%" />
-<col style="width: 68%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>Role</th>
-<th>Permissions</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Public</td>
-<td>None</td>
-</tr>
-<tr class="even">
-<td>Read-only</td>
-<td>Read access to data via site and via token</td>
-</tr>
-<tr class="odd">
-<td>User/Editor</td>
-<td>All of the above, plus <br> • access to scenarios and editing
-data</td>
-</tr>
-<tr class="even">
-<td>User Admin</td>
-<td>All of the above, plus <br> • access to user manager <br> • access
-to application settings</td>
-</tr>
-<tr class="odd">
-<td>System Admin</td>
-<td>All of the above, plus <br> • direct api access</td>
-</tr>
-</tbody>
-</table>
-<h2 id="managing-users">Managing Users</h2>
-<p>Only a User Admin or System Admin may edit user roles. To approve new
-users and to update user roles, follow these steps.</p>
-<ol type="1">
-<li><p>Click on your profile avatar in the upper left-hand corner of the
-screen.</p></li>
-<li><p>Select <strong>Manage Users</strong> from the menu.</p></li>
-</ol>
-<p>You will be taken to the Manage Users page, where you can edit and
-save user role information.</p>
-<h1 id="viewing-results-with-the-map-explorer">Viewing Results with the
-Map Explorer</h1>
-<p>The map explorer module is the main access point for all the spatial
-resources that can be used to view existing infrastructure and water
-quality conditions.</p>
-<h2 id="viewing-layers">Viewing Layers</h2>
-<p>By default, the following layers are enabled:</p>
-<ul>
-<li>Stormwater facilities</li>
-<li>Stormwater facility delineations</li>
-<li>Stormwater subbasins</li>
-</ul>
-<p>To view other layers select the layer icon on the left-hand menu. A
-new panel will display with available layers.</p>
-<p>Other layers that can be viewed are:</p>
-<p><strong>Conveyance</strong></p>
-<ul>
-<li>Catchbasin Leads</li>
-<li>Regional Facility Model: Manholes</li>
-<li>Surfacewater Inlet</li>
-<li>Surfacewater Main</li>
-<li>Surfacewater Trunk</li>
-</ul>
-<p><strong>Landcover and Landuse</strong></p>
-<ul>
-<li>Land Cover Category</li>
-<li>Imperviousness</li>
-<li>Contours</li>
-<li>Runoff</li>
-<li>Terrain</li>
-</ul>
-<p><strong>Pollutants</strong></p>
-<ul>
-<li>Total Copper Concentration</li>
-<li>Total Nitrogen Concentration</li>
-<li>Total Suspended Solids (TSS) Concentration</li>
-<li>Total Zinc Concentration</li>
-</ul>
-<h2 id="viewing-facility-overview-information">Viewing Facility Overview
-Information</h2>
-<p>You can view summary information for a particular BMP by clicking on
-it from the Map Explorer. The map will zoom to the selected facility and
-a panel will be displayed showing the following information:</p>
-<ul>
-<li>ALTID</li>
-<li>Faciliy Type</li>
-<li>Common Name</li>
-<li>Flow Control Type</li>
-<li>Water Quality Type</li>
-<li>Basin Name</li>
-<li>Subbasin</li>
-</ul>
-<h2 id="viewing-facility-details">Viewing Facility Details</h2>
-<p>Click on <strong>View Facility Details</strong> from the Facility
-Overview Panel to see and edit particular facility attribues. In
-addition to the overview information displayed on the Map Explorer you
-can view water quality parameters, cost analysis parameters, and
-detailed performance data.</p>
-<h2 id="exporting-facility-details">Exporting Facility Details</h2>
-<p>To export detailed facility data, click on <strong>Export
-Results</strong> from the Facility Detail Page. This will export a
-<code>.csv</code> file with all facility attributes and peformance
-results.</p>
-<h2 id="searching-for-a-facility">Searching for a Facility</h2>
-<p>To search for a particular facility, select the search icon on the
-left*hand toolbar. A panel will appear with search options. You may
-search by the following categories:</p>
-<ul>
-<li><strong>altid/node_id</strong> - Facility Type, or Facility</li>
-<li><strong>Facility Type</strong> Refers to the City designated
-facility type</li>
-<li><strong>Facility Type (WQ Modeling)</strong> - Refers to the
-facility type designation used for water quality modeling</li>
-</ul>
-<h1 id="using-the-bmp-facility-results-view">Using the BMP Facility
-Results View</h1>
-<p>The BMP Facility Results View can be used to view a summary of the
-performance of existing BMP’s. To access the viewer, select <strong>WQ
-Results Viewer</strong> from the dropdown menu at the top menu bar, or
-from the homepage.</p>
-<p>You can view individual BMP results by selecting the <strong>BMP
-Facility Results View</strong> card or by selecting the icon on the
-left-hand menu bar.</p>
-<p>Results are summarized by climate epoch. The tables below describe
-the items associated with facility results.</p>
-<h2 id="overview-tab">Overview Tab</h2>
-<table>
-<caption>Facility Overview parameters</caption>
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Facility Type</td>
-<td>Facility type used for water quality modeling</td>
-</tr>
-<tr class="even">
-<td>Node Type</td>
-<td>Modeled type (Simple Facility, Volume-based Facility, or Flow Based
-Facility)</td>
-</tr>
-<tr class="odd">
-<td>Captured Pct</td>
-<td>How much runoff is captured by the facility annually.</td>
-</tr>
-<tr class="even">
-<td>Treated Pct</td>
-<td>How much runoff is treated by the facility annually.</td>
-</tr>
-<tr class="odd">
-<td>Retained Pct</td>
-<td>How much runoff is retained or infiltrated by the facility
-annually.</td>
-</tr>
-<tr class="even">
-<td>Retained Pct</td>
-<td>How much runoff is bypassed by the facility annually.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="runoff-stats-tab">Runoff Stats Tab</h2>
-<table>
-<caption>Runoff Stats Parameters</caption>
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Runoff Volume Cuft Inflow</td>
-<td>Annual influent volume to the facility
-<em>(ft<sup>3</sup>/yr)</em></td>
-</tr>
-<tr class="even">
-<td>Runoff Volume Cuft Treated</td>
-<td>Annual volume that is treated by the facility
-<em>(ft<sup>3</sup>/yr)</em></td>
-</tr>
-<tr class="odd">
-<td>Runoff Volume Cuft Retained</td>
-<td>Annual volume that is retained or infiltrated by the facility
-<em>(ft<sup>3</sup>/yr)</em></td>
-</tr>
-<tr class="even">
-<td>Runoff Volume Cuft Captured</td>
-<td>Annual volume that is captured by the facility
-<em>(ft<sup>3</sup>/yr)</em></td>
-</tr>
-<tr class="odd">
-<td>Runoff Volume Cuft Bypassed</td>
-<td>Annual influent volume that is bypassed by the facility
-<em>(ft<sup>3</sup>/yr)</em></td>
-</tr>
-</tbody>
-</table>
-<h2 id="pollutant-mass-flow-tab">Pollutant Mass Flow Tab</h2>
-<table>
-<caption>Pollutant Mass Flow Parameters</caption>
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Tss Load Lbs Inflow</td>
-<td>Total Suspended Solids load entering the facility
-<em>(lbs/yr)</em></td>
-</tr>
-<tr class="even">
-<td>Tss Load Lbs Removed</td>
-<td>Total Suspended Solids removed by the facility
-<em>(lbs/yr)</em></td>
-</tr>
-<tr class="odd">
-<td>Tn Load Lbs Inflow</td>
-<td>Total Nitrogen load entering the facility <em>(lbs/yr)</em></td>
-</tr>
-<tr class="even">
-<td>Tn Load Lbs Removed</td>
-<td>Total Nitrogen removed by the facility <em>(lbs/yr)</em></td>
-</tr>
-<tr class="odd">
-<td>Tp Load Lbs Inflow</td>
-<td>Total Phosphorus load entering the facility <em>(lbs/yr)</em></td>
-</tr>
-<tr class="even">
-<td>Tp Load Lbs Removed</td>
-<td>Total Phosphorus removed by the facility <em>(lbs/yr)</em></td>
-</tr>
-<tr class="odd">
-<td>Tzn Load Lbs Inflow</td>
-<td>Total Zinc Load entering the facility <em>(lbs/yr)</em></td>
-</tr>
-<tr class="even">
-<td>Tzn Load Lbs Removed</td>
-<td>Total Zinc removed by the facility <em>(lbs/yr)</em></td>
-</tr>
-<tr class="odd">
-<td>Tcu Load Lbs Inflow</td>
-<td>Total Copper load entering the facility <em>(lbs/yr)</em></td>
-</tr>
-<tr class="even">
-<td>Tcu Load Lbs Removed</td>
-<td>Total Copper removed by the facility <em>(lbs/yr)</em></td>
-</tr>
-</tbody>
-</table>
-<h2 id="pollutant-concentration-tab">Pollutant Concentration Tab</h2>
-<table>
-<caption>Pollutant Concentration Parameters</caption>
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Tss Conc Mg/L Influent</td>
-<td>Average annual Total Suspended Solids influent concentration
-<em>(mg/L)</em></td>
-</tr>
-<tr class="even">
-<td>Tss Conc Mg/L Effluent</td>
-<td>Average annual Total Suspended Solids effluent concentration
-<em>(mg/L)</em></td>
-</tr>
-<tr class="odd">
-<td>Tn Conc Mg/L Influent</td>
-<td>Average annual Total Nitrogen influent concentration
-<em>(mg/L)</em></td>
-</tr>
-<tr class="even">
-<td>Tn Conc Mg/L Effluent</td>
-<td>Average annual Total Nitrogen effluent concentration
-<em>(mg/L)</em></td>
-</tr>
-<tr class="odd">
-<td>Tp Conc Mg/L Influent</td>
-<td>Average annual Total Phosphorus influent concentration
-<em>(mg/L)</em></td>
-</tr>
-<tr class="even">
-<td>Tp Conc Mg/L Effluent</td>
-<td>Average annual Total Phosphorus effluent concentration
-<em>(mg/L)</em></td>
-</tr>
-<tr class="odd">
-<td>Tzn Conc Ug/L Influent</td>
-<td>Average annual Total Zinc influent concentration
-<em>(μg/L)</em></td>
-</tr>
-<tr class="even">
-<td>Tzn Conc Ug/L Effluent</td>
-<td>Average annual Total Zinc effluent concentration
-<em>(μg/L)</em></td>
-</tr>
-<tr class="odd">
-<td>Tcu Conc Ug/L Influent</td>
-<td>Average annual Total Copper influent concentration
-<em>(μg/L)</em></td>
-</tr>
-<tr class="even">
-<td>Tcu Conc Ug/L Effluent</td>
-<td>Average annual Total Copper effluent concentration
-<em>(μg/L)</em></td>
-</tr>
-</tbody>
-</table>
-<h1 id="using-the-subbasins-results-view">Using the Subbasins Results
-View</h1>
-<p>The water quality results viewer can be used to view the conditions
-of each stormwater subbasin. To access the viewer, select it from the
-dropdown menu at the top menu bar, or from the homepage.</p>
-<p>You can view aggregated results by subbasin by selecting the
-<strong>Subbasin Results View</strong> card or by selecting the icon on
-the left-hand menu bar. To view a chloropleth map of results, select the
-parameter to visualize from the menu next to the map.</p>
-<h2 id="exporting-results">Exporting Results</h2>
-<p>To export results from the Subbasin Results View, click the
-<strong>Export</strong> button on the table below the map. This will
-download a CSV file of all results. To export a selection of data,
-select the rows you want to export on the table, then click
-<strong>Export</strong>.</p>
-<h2 id="available-data-layers">Available Data Layers</h2>
-<table>
-<caption>Available Data Layers in the Subbasin Results View</caption>
-<colgroup>
-<col style="width: 33%" />
-<col style="width: 33%" />
-<col style="width: 33%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Description</th>
-<th>Data Source</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Land Use Breakdown</td>
-<td>Percent Land Use Category in Subbasin</td>
-<td>Tacoma ArcGIS REST API: Land Use Designations
-<code>(General/LandUseDesignations/MapServer/0)</code></td>
-</tr>
-<tr class="even">
-<td>Land Cover Breakdown</td>
-<td>Percent Land Cover Category in Subbasin</td>
-<td><a
-href="https://www.stormwaterheatmap.org/docs/Data%20Layers/land_cover">TNC
-Stormwater Heatmap</a></td>
-</tr>
-<tr class="odd">
-<td>Runoff</td>
-<td>Runoff depth, runoff volume, total volume reduced by stormwater
-facilities.</td>
-<td>Calculated</td>
-</tr>
-<tr class="even">
-<td>Treatment Facility Summary</td>
-<td>Number of BMPs, Treated Area, Area Treated by Basic Water Quality
-BMPs, Area Treated by Flow Control BMPs, Effective Area</td>
-<td>Calculated</td>
-</tr>
-<tr class="odd">
-<td>Average Pollutant Washoff Concentration</td>
-<td>Average Annual Concentration before treatment</td>
-<td>Calculated</td>
-</tr>
-<tr class="even">
-<td>Annual Load Reductions</td>
-<td>Average Annual Pollutant Load reductions from BMPs</td>
-<td>Calculated</td>
-</tr>
-</tbody>
-</table>
-<h1 id="editing-facility-data">Editing Facility Data</h1>
-<h2 id="editing-water-quality-parameters">Editing Water Quality
-Parameters</h2>
-<p>You can edit the parameters used to model facilities in the
-<strong>Facility Details</strong> view. There are several ways to
-navigate to this view:</p>
-<ul>
-<li><p>From the Map Explorer map, click on a facility to open the
-Facility Overview panel. Then, click on <strong>View Facility
-Details</strong> to be taken to the detail page.</p></li>
-<li><p>From the <strong>Water Quality Results Viewer,</strong> click on
-a BMP name in the table.</p></li>
-</ul>
-<h2 id="updating-from-simple-to-detailed-facility">Updating from Simple
-to Detailed Facility</h2>
-<p>By default, most facilities are modeled as simple facilities, meaning
-only two parameters are used: <a href="#captured_pct">Captured
-Percentage</a>, and <a href="retained_pct">Retained Percentage</a>. The
-Simple Facility type should be used when detailed data about a facility
-are not available (e.g. the facility’s infiltration area).</p>
-<p>If more detailed data are available, turn off the Simple Facility
-switch, and parameters specific to the facility type will be
-editable.</p>
-<h2 id="editing-facility-type">Editing Facility Type</h2>
-<p>If a <a href="#facility_type">Facility Type</a> needs to be updated,
-select the Facility Type dropdown menu and choose the appropriate
-facility type. Click <strong>Save</strong> to save your edits.</p>
-<div class="Warning">
-<p><strong>Warning</strong> Saving your edits does not recalculate
-results. To recalculate, click the <strong>Refresh Results</strong>
-button on the Facility Details Page.</p>
-</div>
-<h2 id="editing-life-cost-analysis-parameters">Editing Life Cost
-Analysis Parameters</h2>
-<p>By default, facilities will not have cost parameters unless users
-provide cost analysis parameters. Facilities without cost data will show
-the following message under the Lifecycle Cost Analysis Heading:</p>
-<blockquote>
-<p><em>Lifecycle costs are unavailable for this facility.</em> <em>This
-usually means that the “Cost Analysis Parameters” are
-incomplete.</em></p>
-</blockquote>
-<p>To edit lifecycle cost parameters, select the dropdown menu titled
-<strong>Cost Analysis Parameters.</strong> There, you can enter the cost
-analysis parameters directly for a facility. See the <a
-href="#cost_analysis_params">Cost Analysis Parameters section</a> for
-descriptions of parameters.</p>
-<h3 id="king-county-cost-estimator-tool">King County Cost Estimator
-Tool</h3>
-<p>To assist with selection of cost analysis parameters, a cost
-estimator tool is available; it uses cost curves developed by King
-County for various facilities. To use this tool, click on the
-<strong>King County Cost Esimator Tool</strong> from a BMP Facility
-Details Page. This will open a dialog box to select and apply data from
-King County cost curves.</p>
-<p>First, select the appropriate facility type under the <em>BMP
-Type</em> dropdown menu. This will preselect an appropriate BMP Cost
-Curve used by King County (<em>KC BMP Variation</em> in the tool). You
-can refine or change the selected cost curve under the <em>KC BMP
-Variation” menu. Cost curves that match the selected </em>BMP Type* will
-be shown in <strong>bold</strong>.</p>
-<p>In order to calculate the cost parameters, you must enter a sizing
-parameter in the next dialog box. Depending on the cost curve selected,
-the dialog box will display either <em>area (sqft)</em> or <em>each
-(count).</em> Here, <em>area</em> refers to the footprint area of a
-facility (e.g. the total area of pervious pavement), or the number of
-facilities to be installed (e.g. number of UIC wells).</p>
-<p>After entering the a number denoting the area or number of
-facilities, the Capital Cost and O&amp;M Costs will be calculated. Click
-<em>Apply to BMP Form</em> to apply the calculated costs to the
-facility. To calculate the final lifecycle cost, you will need to enter
-data for the following:</p>
-<p><strong>Install Year</strong> - The year of installation, denoting
-what year to apply the capital costs.</p>
-<p><strong>Replacement Cost</strong> - The cost to replace a facility.
-This cost is intended to reflect costs related to major replacement of
-facility components, such as replacement of soil after multiple years of
-use.</p>
-<p><strong>Lifespan Yrs</strong> - How long the facility would be
-operated before replacement would be necessary.</p>
-<p>### Global Cost Settings In order to calculate lifecycle costs the
-same way for every facility, the tool uses four global cost parameters
-(<em>discount rate</em>, <em>inflation rate</em>, <em>planning
-horizon</em>, and <em>cost basis year</em>). These parameters apply to
-all facilities analyzed, instead of a particular facility.</p>
-<p>To edit these global parameters, select <em>Settings</em> under your
-user profile in the top left portion of the screen. Individual cost
-parameters can be edited by clicking the edit tool to the left of each
-parameter name.</p>
-<h1 id="using-the-prioritization-module">Using the Prioritization
-Module</h1>
-<p>The watershed prioritization module allows users to identify and
-prioritize areas for actions to meet watershed planning goals related to
-water quality, habitat, and social equity.</p>
-<h2 id="project-type">Project Type</h2>
-<p>The <em>Project Type</em> dialog denotes what type of project is
-being considered. The two choices are:</p>
-<ul>
-<li><p><strong>Retrofit</strong> - Projects that are intended to improve
-water quality or hydrology. This choice gives a higher priority to
-subbasins that have a higher pollutant load, or do not have adequate
-stormwater infrastructure.</p></li>
-<li><p><strong>Preservation</strong> - Projects that are intended to
-preserve an area in a subbasin with better water quality or already have
-adequate stormwater infrastructure.</p></li>
-</ul>
-<h2 id="priority-weights">Priority Weights</h2>
-<p>The prioritization tool allows users to weight watershed management
-goals based on their relative importance. Weights are positive
-numbers</p>
-<p>Weights can be zero or any positive number, and reflect a decision
-maker or stakeholders preferences. The higher the weight, the more
-important the criterion. Numerically, this represents a factor of
-preference. For example if Goal A has a weight of 1 and Goal B has a
-weight of 2, Goal B will be treated as twice as important as Goal A.</p>
-<p>No constraints have been set on the scale of weights, however, it is
-common practice to set a total number of weighting points (e.g. 10
-points) and assign weights so that the sum of weights is equal to this
-predetermined total.</p>
-<p>Priority weights are assigned for each major watershed goal. Goals
-are comprised of subbgoals and numeric metrics as described below:</p>
-<p><strong>Goal 1: Improve Water Quality Outcomes (Clean Water
-Goal)</strong></p>
-<table>
-<colgroup>
-<col style="width: 44%" />
-<col style="width: 55%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th><strong>Sub-goal</strong></th>
-<th><strong>Criteria</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1.1 Prioritize areas based on pollutant concentrations</td>
-<td>Total Nitrogen Concentration <br> TSS Concentration <br> Annual
-Runoff <br> Imperviousness</td>
-</tr>
-<tr class="even">
-<td>1.2 Improve infrastructure in areas with inadequate stormwater
-management</td>
-<td>Percent of Area Treated <br> Age of Development</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Goal 2: Increase Resilience to Climate Change Impacts
-(Resilient Community Goal)</strong></p>
-<table>
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th><strong>Sub-goal</strong></th>
-<th><strong>Criteria</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>2.1 Target areas most vulnerable to and at risk for climate change
-impacts</td>
-<td>Urban Heat Island <br> Capacity Issues Layer</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Goal 3: Preserve and Restore Critical and Sensitive Habitat
-(Healthy Ecosystems)</strong> | <strong>Sub-goal</strong> |
-<strong>Criteria</strong> | | ———— | ———— | 3.1 Preserve and improve
-Natural Spaces | ES Open Space/Natural Resource Areas <br> Biodiversity
-Corridors</p>
-<p><strong>Goal 4: Implement Equity and Social Justice (Healthy
-Neighborhoods; Equity)</strong> | <strong>Sub-goal</strong> |
-<strong>Criteria</strong> | | ———— | ———— | 4.1 Prioritize areas of
-overlapping equity needs as identified by other Tacoma programs |Equity
-Index Score <br> Livability Index| 4.2 Improve access to safe,
-high-quality roadway infrastructure (green infrastructure
-recommendation) | Pavement Condition Index|</p>
-<p>Table: Watershed Planning Goals used in the Prioritization
-Module.</p>
+<h1 id="exports">exports</h1>
+<pre><code>pandoc -N --variable &quot;geometry=margin=1.2in&quot; --variable mainfont=&quot;Helvetica&quot; --variable sansfont=&quot;Helvetica&quot; --variable monofont=&quot;Helvetica&quot; --variable fontsize=12pt --variable version=2.0 1_Introduction.md  --pdf-engine=xelatex --toc -o example.pdf</code></pre>
+<pre><code>pandoc 1_Introduction.md -o example.pdf --from markdown --template eisvogel --pdf-engine=xelatex</code></pre>
+<pre><code>pandoc -N --variable &quot;geometry=margin=1.2in&quot; --variable mainfont=&quot;Helvetica&quot; --variable sansfont=&quot;Helvetica&quot; --variable monofont=&quot;Helvetica&quot; --variable fontsize=12pt --variable version=2.0 0_Title_page.docx  --pdf-engine=xelatex --toc -o TitlePage.pdf</code></pre>
+<pre><code>pandoc md/1_Introduction.md -o example.pdf --template eisvogel --number-sections --toc</code></pre>
+<p>Test table captions:</p>
+<pre><code>pandoc 1_Introduction.md -o example.pdf --template eisvogel --number-sections --toc -f +table_captions</code></pre>
+<p>pandoc -s 2_System_Administration.md -o table.pdf –template
+eisvogel</p>
+<p>Test all chapters</p>
+<pre><code>pandoc 1_Introduction.md 2_System_Administration.md 3_Map_Explorer.md 4_Results_Viewer.md -o example.pdf --template eisvogel --number-sections --toc</code></pre>
+<pre><code>pandoc 1_Introduction.md 2_System_Administration.md 3_Map_Explorer.md 4_Results_Viewer.md -o example.html  --toc --template=bootstrap_menu.html --metadata title=&quot;Users Manual&quot;</code></pre>
+<p>pandoc 5_editing_data.md -o example.html –toc
+–template=GitHub_style.html5 –metadata title=“Users Manual” pandoc *.md
+-o example.html –toc –template=GitHub_style.html5 –metadata title=“Users
+Manual”</p>
+<p>pandoc<br />
+–wrap=none<br />
+–toc<br />
+–reference-links<br />
+-o file.adoc<br />
+md/*.md</p>
+<p>ope<a href="#lession1">Lession.1</a><br />
+<a href="#lession2">Lession.2</a><br />
+<a href="#lession3">Lession.3</a><br />
+<a href="#lession4">Lession.4</a></p>
+<p><span id="lession1"></span></p>
+<h1 id="introduction-of-lession.1">Introduction of Lession.1</h1>
+<p>This is sub topic.1</p>
+<p>This is sub topic.2</p>
+<p>This is sub topic.3</p>
+<p>This is sub topic.4</p>
+<p><br /> <br /></p>
+<p><a href="#lession2" target="_blank">Lession.2</a></p>
+<p>This is sub topic.1</p>
+<p>This is sub topic.2</p>
+<p>This is sub topic.3</p>
+<p>This is sub topic.4</p>
+<p><br /> <br /></p>
+<p id="lession3">
+</p>
+<h1 id="introduction-of-lession.3">Introduction of Lession.3</h1>
+<p>This is sub topic.1</p>
+<p>This is sub topic.2</p>
+<p>This is sub topic.3</p>
+<p>This is sub topic.4</p>
+<p><br /> <br /></p>
+<article id="lession4">
+</article>
+<h1 id="introduction-of-lession.4">Introduction of Lession.4</h1>
+<p>This is sub topic.1</p>
+<p>This is sub topic.2</p>
+<p>This is sub topic.3</p>
+<p>This is sub topic.4</p>
 </article>
 </body>
 </html>

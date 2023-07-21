@@ -20,35 +20,20 @@ No constraints have been set on the scale of weights, however, it is common prac
 
 Priority weights are assigned for each major watershed goal. Goals are comprised of subbgoals and numeric metrics as described below:
 
- **Goal 1: Improve Water Quality Outcomes (Clean Water Goal)**
-
-| **Sub-goal**                                                              | **Criteria**                                                                               |
-| ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| 1.1 Prioritize areas based on pollutant concentrations                    | Total Nitrogen Concentration <br> TSS Concentration <br> Annual Runoff <br> Imperviousness |
-| 1.2 Improve infrastructure in areas with inadequate stormwater management | Percent of Area Treated <br> Age of Development                                            |
-
- **Goal 2: Increase Resilience to Climate Change Impacts (Resilient Community Goal)**
-
-| **Sub-goal** | **Criteria** |
-| ------------ | ------------ |
-2.1 Target areas most vulnerable to and at risk for climate change impacts | Urban Heat Island <br> Capacity Issues Layer
-
-**Goal 3: Preserve and Restore Critical and Sensitive Habitat (Healthy Ecosystems)**
-| **Sub-goal** | **Criteria** |
-| ------------ | ------------ |
-3.1 Preserve and improve Natural Spaces | ES Open Space/Natural Resource Areas <br> Biodiversity Corridors
-
-**Goal 4: Implement Equity and Social Justice (Healthy Neighborhoods; Equity)**
-| **Sub-goal** | **Criteria** |
-| ------------ | ------------ |
-4.1 Prioritize areas of overlapping equity needs as identified by other Tacoma programs |Equity Index Score <br> Livability Index|
-4.2 Improve access to safe, high-quality roadway infrastructure (green infrastructure recommendation) | Pavement Condition Index|
+| Goals | Sub-goals | Criteria |
+|---|---|---|
+| **Goal 1: Improve Water Quality Outcomes (Clean Water Goal)** | 1.1 Prioritize areas based on pollutant concentrations | Total Nitrogen Concentration, TSS Concentration, Annual Runoff, Imperviousness |
+| | 1.2 Improve infrastructure in areas with inadequate stormwater management | Percent of Area Treated, Age of Development |
+| **Goal 2: Increase Resilience to Climate Change Impacts (Resilient Community Goal)** | 2.1 Target areas most vulnerable to and at risk for climate change impacts | Urban Heat Island, Capacity Issues Layer |
+| **Goal 3: Preserve and Restore Critical and Sensitive Habitat (Healthy Ecosystems)** | 3.1 Preserve and improve Natural Spaces | ES Open Space/Natural Resource Areas, Biodiversity Corridors |
+| **Goal 4: Implement Equity and Social Justice (Healthy Neighborhoods; Equity)** | 4.1 Prioritize areas of overlapping equity needs as identified by other Tacoma programs | Equity Index Score , Livability Index |
+| | 4.2 Improve access to safe, high-quality roadway infrastructure (green infrastructure recommendation) | Pavement Condition Index |
 
 Table: Watershed Planning Goals used in the Prioritization Module.
 
 ## Viewing Prioritization Results
 
-After selecting and submitting priority weights, results will be shown on the chlorlopleth map and in the *Subbasin Prioritization Results* table.
+After selecting and submitting priority weights, results will be shown on the chloropleth map and in the *Subbasin Prioritization Results* table.
 
 Subbasins with higher priority scores reflect a higher preference for new projects based on user weighting. Clicking on a row will highlight the selected subbasin on the map.
 

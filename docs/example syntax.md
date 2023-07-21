@@ -30,7 +30,7 @@ pandoc -s 2_System_Administration.md  -o table.pdf --template eisvogel
 
 Test all chapters
 ```
-pandoc 1_Introduction.md 2_System_Administration.md 3_Map_Explorer.md 4_Results_Viewer.md -o example.pdf --template eisvogel --number-sections --toc
+pandoc md/*.md -o example.pdf --template eisvogel --number-sections --toc
 ```
 
 ```
@@ -39,3 +39,13 @@ pandoc 1_Introduction.md 2_System_Administration.md 3_Map_Explorer.md 4_Results_
 
 pandoc 5_editing_data.md -o example.html  --toc --template=GitHub_style.html5 --metadata title="Users Manual"
 pandoc *.md -o example.html  --toc --template=GitHub_style.html5 --metadata title="Users Manual"
+
+
+pandoc \
+    --wrap=none \
+    --toc \
+    --reference-links \
+    -o  file.adoc \
+    md/*.md
+
+    pandoc md/*.md --pdf-engine=xelatex -o file.pdf --template eisvogel --top-level-division=chapter;  

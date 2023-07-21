@@ -11,41 +11,45 @@ By default, the following layers are enabled:
 
 To view other layers select the layer icon on the left-hand menu. A new panel will display with available layers.
 
-Other layers that can be viewed are:
+Other layers that can be viewed are shown below. 
 
-**Conveyance**
 
-* Catchbasin Leads
-* Regional Facility Model: Manholes
-* Surfacewater Inlet
-* Surfacewater Main
-* Surfacewater Trunk
++-----------------------+------------------------------------------+
+| Category              | Layer Name                               |
++=======================+==========================================+
+| **Conveyances**       | Catchbasin Leads                         |
+|                       |                                          |
+|                       | Regional Facility Model: Manholes        |
+|                       |                                          |
+|                       | Surfacewater Inlet                       |
+|                       |                                          |
+|                       | Surfacewater Main                        |
+|                       |                                          |
+|                       | Surfacewater Trunk                       |
++-----------------------+------------------------------------------+
+|**Landcover & Landuse**| Land Cover Category                      |
+|                       |                                          |
+|                       | Imperviousness                           |
+|                       |                                          |
+|                       | Contours                                 |
+|                       |                                          |
+|                       | Runoff                                   |
+|                       |                                          |
+|                       | Terrain                                  |
++-----------------------+------------------------------------------+
+| **Pollutants**        | Total Copper Concentration               |
+|                       |                                          |
+|                       | Total Nitrogen Concentration             |
+|                       |                                          |
+|                       | Total Suspended Solids Concentration     |
+|                       |                                          |
+|                       | Total Zinc Concentration                 |
++-----------------------+------------------------------------------+
 
-**Landcover and Landuse**
-
-* Land Cover Category
-* Imperviousness
-* Contours
-* Runoff
-* Terrain
-
-**Pollutants**
-
-* Total Copper Concentration
-* Total Nitrogen Concentration
-* Total Suspended Solids (TSS) Concentration
-* Total Zinc Concentration
+Table: Map Data Layers
 
 ## Viewing Facility Overview Information
-You can view summary information for a particular BMP by clicking on it from the Map Explorer. The map will zoom to the selected facility and a panel will be displayed showing the following information:
-
-* ALTID
-* Faciliy Type
-* Common Name
-* Flow Control Type
-* Water Quality Type
-* Basin Name
-* Subbasin
+You can view summary information for a particular BMP by clicking on it from the Map Explorer. The map will zoom to the selected facility and a panel will be displayed showing information on a facility. 
 
 ## Viewing Facility Details
 

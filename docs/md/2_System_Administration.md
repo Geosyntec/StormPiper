@@ -21,14 +21,27 @@ Users can have one of the following roles associated with their account.
 
 Only a User Admin or System Admin may edit user roles.
 
-Role | Permissions |
---------|----------------- |
-Public | None |
-Read-only | Read access to data via site and via token |
-User/Editor | All of the above, plus <br> • access to scenarios and editing data |
-User Admin | All of the above, plus <br>  • access to user manager <br>  • access to application settings |
-System Admin | All of the above, plus <br> • direct api access
-
++----------------+------------------------------------------------------------+
+| **Role**       | **Permissions**                                            |
++================+============================================================+
+| **Public**     | None                                                       |
++----------------+------------------------------------------------------------+
+| **Read-only**  | Read access to data via site and via token                 |
++----------------+------------------------------------------------------------+
+| **User/Editor**| All of the above, plus                                     |
+|                |                                                            |
+|                | • access to scenarios and editing data                     |
++----------------+------------------------------------------------------------+
+| **User Admin** | All of the above, plus                                     |
+|                |                                                            |
+|                | • access to user manager                                   |
+|                |                                                            |
+|                | • access to application settings                           |
++----------------+------------------------------------------------------------+
+|**System Admin**| All of the above, plus                                     |
+|                |                                                            |
+|                | • direct api access                                        |
++----------------+------------------------------------------------------------+
 Table:  Roles and Permissions
 
 ## Managing Users
