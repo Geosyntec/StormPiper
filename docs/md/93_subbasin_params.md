@@ -1,5 +1,18 @@
+## Subbasin Parameters
+
 | Parameter                  | Description      
-| :----------------- | :----------------------------------------------- |
+| ----------------------------------- | ----------------------------------- |
+| lc_pasture_pct     | Landcover Pasture (pct)                          |
+| lc_grass_pct       | Landcover Grass (pct)                            |
+| lc_water_pct       | Landcover Water (pct)                            |
+| lc_imp_roof_pct    | Landcover Impervious-roof (pct)                  |
+| lc_imp_nonroof_pct | Landcover Impervious-nonRoof (pct)               |
+| lc_imp_total_pct   | Landcover Impervious-total (pct)                 |
+
+Table: Landcover parameters {#tbl:lc}
+
+| Parameter                  | Description      
+| ----------------------------------- | ----------------------------------- |
 | lu_resair_pct      | Landuse Airport Compatibility Residential (pct)  |
 | lu_commcmu_pct     | Landuse Crossroads Mixed-Use Center (pct)        |
 | lu_rgcd_pct        | Landuse Downtown Regional Growth Center (pct)    |
@@ -15,17 +28,12 @@
 | lu_os_pct          | Landuse Parks and Open Space (pct)               |
 | lu_shore_pct       | Landuse Shoreline (pct)                          |
 | lu_rgctm_pct       | Landuse Tacoma Mall Regional Growth Center (pct) |
-| lc_pasture_pct     | Landcover Pasture (pct)                          |
-| lc_grass_pct       | Landcover Grass (pct)                            |
-| lc_water_pct       | Landcover Water (pct)                            |
-| lc_imp_roof_pct    | Landcover Impervious-roof (pct)                  |
-| lc_imp_nonroof_pct | Landcover Impervious-nonRoof (pct)               |
-| lc_imp_total_pct   | Landcover Impervious-total (pct)                 |
 
-Table: Landcover and Landuse parameters
+Table: Land Use parameters {#tbl:lu}
+
 
 | Parameter                    | Description                                                                          |
-| :--------------------------- | :----------------------------------------------------------------------------------- |
+| ----------------------------------- | ----------------------------------- |
 | area_acres                   | The total subbasin area in acres.                                                    |
 | basicwq_area_acres           | The area in acres allocated for basic water quality.                                 |
 | basicwq_area_pct             | The percentage of total area allocated for basic water quality.                      |
@@ -44,4 +52,4 @@ Table: Landcover and Landuse parameters
 | treated_area_acres           | The area in acres that has been treated by stormwater facilities                     |
 | treated_area_pct             | The percentage of total area that has been treated by stormwater facilities          |
 
-Table: Subbasin Parameters 
+Table: Subbasin Parameters  {#tbl:subbasin_params}

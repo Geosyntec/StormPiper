@@ -46,23 +46,23 @@ Other layers that can be viewed are shown below.
 |                       | Total Zinc Concentration                 |
 +-----------------------+------------------------------------------+
 
-Table: Map Data Layers
+Table: Map Data Layers {#tbl:map_layers}
 
 ## Viewing Facility Overview Information
 You can view summary information for a particular BMP by clicking on it from the Map Explorer. The map will zoom to the selected facility and a panel will be displayed showing information on a facility. 
 
 ## Viewing Facility Details
 
-Click on **View Facility Details** from the Facility Overview Panel to see and edit particular facility attribues. In addition to the overview information displayed on the Map Explorer you can view water quality parameters, cost analysis parameters, and detailed performance data.
+Click on **View Facility Details** from the Facility Overview Panel to see and edit particular facility attributes. In addition to the overview information displayed on the Map Explorer, you can view water quality parameters, cost analysis parameters, and detailed performance data.
 
 ## Exporting Facility Details
 
-To export detailed facility data, click on **Export Results** from the Facility Detail Page. This will export a `.csv` file with all facility attributes and peformance results.
+To export detailed facility data, click on **Export Results** from the Facility Detail Page. This will export a `.csv` file with all facility attributes and performance results.
 
 
 ## Searching for a Facility
 
-To search for a particular facility, select the search icon on the left*hand toolbar. A panel will appear with search options. You may search by the following categories:
+To search for a particular facility, select the search icon on the left-hand toolbar. A panel will appear with search options. You may search by the following categories:
 
 * **altid/node_id** - Facility Type, or Facility
 * **Facility Type**  Refers to the City designated facility type

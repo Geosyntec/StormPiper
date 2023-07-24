@@ -42,7 +42,7 @@ Only a User Admin or System Admin may edit user roles.
 |                |                                                            |
 |                | • direct api access                                        |
 +----------------+------------------------------------------------------------+
-Table:  Roles and Permissions
+Table: Roles and Permissions {#tbl:roles}
 
 ## Managing Users
 

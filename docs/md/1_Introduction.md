@@ -1,14 +1,3 @@
----
-title: "User's Manual"
-subtitle: "City of Tacoma Watershed Planning Project"
-titlepage: true
-titlepage-rule-height: 0
-titlepage-text-color: "000000"
-toc: true
-book: true
-lang: "en"
-...
-
 <!-- 
 ::::: Warning :::::::::::::::::::::::::::::::::::::::::
 **Warning** This is a warning. 
@@ -50,7 +39,7 @@ Stormwater facility results are calculated based on continuous rainfall-runoff s
 
 [^2]: Salathé, E.P., Hamlet, A.F., Mass, C.F., Lee, S-Y., Stumbaugh, M., Steed, R. 2014. Estimates of Twenty-first Century flood risk in the Pacific Northwest based on regional scale climate model simulations. J. Hydrometeorology 15(5): 1881-1899, <https://doi.org/10.1175/JHM-D-13-0137.1>
 
-Four scenarios or *climate epochs* have been developed as shown in the table below.
+Four scenarios or *climate epochs* have been developed as shown in [@tbl:epochs].
 
 | Scenario | Begin | End |
 | :------- | :-------------- | :---------------- |
@@ -59,10 +48,10 @@ Four scenarios or *climate epochs* have been developed as shown in the table bel
 | 2050s | January 1, 2040 | December 31, 2069 |
 | 2080s | January 1, 2070 | December 31, 2099 |
 
-Table: Climate Epochs
+Table: Climate Epochs {#tbl:epochs}
 
 ### Facility Types
-Water quality and hydrology calculations are specific to facility type. *Facility Type* refers to stormwater facility names used by the City of Tacoma. 
+Water quality and hydrology calculations are specific to each facility type. *Facility Type* refers to stormwater facility names used by the City of Tacoma. 
 
 
 | Facility Type | Description |
@@ -79,6 +68,8 @@ Water quality and hydrology calculations are specific to facility type. *Facilit
 | Dry Extended Detention Basin/Tank | Dry extended detention including grass-lined and concrete lined basins that are designed to empty after a storm. |
 | Trench | Filter bed with granular media, typically sand. Full infiltration |
 | Vault | Concrete-lined basins that drain after a storm. |
+
+Table: Facility Types contained in the Tacoma Watershed Insights application {#tbl:facilities}
 
 ### Simple vs. Detailed Facilities
 
@@ -110,24 +101,24 @@ The Tacoma Watershed Insights application models 8 different stormwater pollutan
 | Total Suspended Solids     | Conventional | None     |
 | Zinc                       | Metal        | 7440-66-6         |
 
-Table: Stormwater Pollutants Modeled 
+Table: Stormwater Pollutants  {#tbl:pollutants}
 
 ### Subbasins
 
 a Subbasin is a geographical area that drains into a particular receiving water or collection system node. In addition to reporting facility performance, the tool reports metrics on a subbasin level. 
 
-The subbasins used in this tool have been developed by the City of Tacoma. They are summarized below. 
+The subbasins used in this tool have been developed by the City of Tacoma. They are summarized in [@Tbl:subbasins]. Subbasins are referenced by a unique subbasin code using the subbasin code prefix shown in [@Tbl:subbasins]. For example, the first subbasin that is part of the Flett Creek Basin would be `FL_01`.
 
-| Basin            | Number of Subbasins | Subbasins                                                                                               |
-|------------------|---------------------|---------------------------------------------------------------------------------------------------------|
-| Flett Creek      | 10                  | FL_01, FL_02, FL_03, FL_04, FL_05, FL_06, FL_07, FL_08, FL_09, FL_10                                    |
-| Foss Waterway    | 15                  | FS_01, FS_02, FS_03, FS_04, FS_05, FS_06, FS_07, FS_08, FS_09, FS_10, FS_11, FS_12, FS_13, FS_14, FS_15 |
-| Joes Creek       | 3                   | JC_01, JC_02, JC_03                                                                                     |
-| Leach Creek      | 6                   | LC_01, LC_02, LC_03, LC_04, LC_05, LC_06                                                                |
-| Lower Puyallup   | 6                   | LP_01, LP_02, LP_03, LP_04, LP_05, LP_06                                                                |
-| North Tacoma     | 11                  | NT_01, NT_02, NT_03, NT_04, NT_05, NT_06, NT_07, NT_08, NT_09, NT_10, NT_11                             |
-| Northeast Tacoma | 6                   | NE_01, NE_02, NE_03, NE_04, NE_05, NE_06                                                                |
-| Tideflats        | 6                   | TF_01, TF_02, TF_03, TF_04, TF_05, TF_06                                                                |
-| Western Slopes   | 4                   | WS_01, WS_02, WS_03, WS_04                                                                              |
+| Basin            | Number of Subbasins | Subbasin Code prefix  |
+|----------------|-------------------|--------------------|
+| Flett Creek      | 10                  | `FL_`                |
+| Foss Waterway    | 15                  | `FS_`                |
+| Joes Creek       | 3                   | `JC_`                |
+| Leach Creek      | 6                   | `LC_`                |
+| Lower Puyallup   | 6                   | `LP_`                |
+| North Tacoma     | 11                  | `NT_`                |
+| Northeast Tacoma | 6                   | `NE_`                |
+| Tideflats         | 6                   | `TF_`                |
+| Western Slopes   | 4                   | `WS_`                |
 
-Table: City of Tacoma Subbasins
+Table: City of Tacoma Subbasins {#tbl:subbasins}

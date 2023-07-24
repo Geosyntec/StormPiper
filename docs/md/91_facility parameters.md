@@ -1,19 +1,23 @@
+# Parameter Definitions 
+
+## Facility Parameters
+
 | Parameter                  | Description                                                        |
-|----------------------------|--------------------------------------------------------------------|
+| ----------------------------------- | ----------------------------------- |
 | area_sqft                  | The footprint area of the facility in square feet.                 |
 | captured_pct               | The average annual percent of stormwater captured by the facility. |
 | depth_ft                   | The depth of ponding for the facility in feet.                     |
-| hsg                        | Hydrologic Soil Group classification at the facility location.     |
+| hsg                        | Hydrologic Soil Group classification for native infiltration. Valid Options: `A` `B` `C` `D`     |
 | inf_rate_inhr              | The infiltration rate at the facility location in inches per hour. |
 | media_filtration_rate_inhr | The media filtration rate at the facility in inches per hour.      |
 | retained_pct               | The percent of stormwater retained or infiltrated by the facility. |
 | retention_volume_cuft      | The design retention volume of the facility in cubic feet.         |
 | treatment_rate_cfs         | The treatment rate of the facility in cubic feet per second.       |
 
-Table: Facility Input Data 
+Table: Facility Input Data {#tbl:facility_inputs}
 
 | Parameter                      | Description                                                                                       |
-|--------------------------------|---------------------------------------------------------------------------------------------------|
+| ----------------------------------- | ----------------------------------- |
 | DEHP_conc_mg/l_effluent        | Mean annual concentration of Bis(2-ethylhexyl) phthalate (DEHP) discharged from a facility (mg/l) |
 | DEHP_conc_mg/l_influent        | Mean annual concentration of Bis(2-ethylhexyl) phthalate (DEHP) flowing to a facility (mg/l)      |
 | DEHP_load_lbs_inflow           | Mean annual load of Bis(2-ethylhexyl) phthalate (DEHP) entering a facility (lbs)                  |
@@ -55,10 +59,10 @@ Table: Facility Input Data
 | TZn_load_lbs_removed           | Mean annual load of Total Zinc removed by a facility (lbs)                                        |
 | TZn_load_lbs_total_discharged  | Mean annual load of Total Zinc exiting a facility (lbs)                                           |
 
-Table: Facility Water Quality Result Parameters
+Table: Facility Water Quality Result Parameters {#tbl:facility_wq}
 
 | Parameter                           | Description                                                   |
-|-------------------------------------|---------------------------------------------------------------|
+| ----------------------------------- | ----------------------------------- |
 | bypassed_pct                        | Percent of mean annual runoff bypassed by a facility          |
 | design_intensity_inhr               | Design storm intensity for a flow-based facility (in/hour)    |
 | design_volume_cuft_cumul            | design volume for a volume-based facility (cubic feet)        |
@@ -70,4 +74,4 @@ Table: Facility Water Quality Result Parameters
 | runoff_volume_cuft_total_discharged | Mean annual runoff volume exiting a facility (cubic feet)     |
 | runoff_volume_cuft_treated          | Mean annual runoff volume treated by a facility (cubic feet)  |
 
-Table: Facility Hydrology Result Parameters
+Table: Facility Hydrology Result Parameters {#tbl:facility_hydro}

@@ -18,18 +18,18 @@ Weights can be zero or any positive number, and reflect a decision maker or stak
 
 No constraints have been set on the scale of weights, however, it is common practice to set a total number of weighting points (e.g. 10 points) and assign weights so that the sum of weights is equal to this predetermined total.  
 
-Priority weights are assigned for each major watershed goal. Goals are comprised of subbgoals and numeric metrics as described below:
+Priority weights are assigned for each major watershed goal. Goals are comprised of subgoals and numeric metrics as described in [@tbl:goals]:
 
 | Goals | Sub-goals | Criteria |
 |---|---|---|
 | **Goal 1: Improve Water Quality Outcomes (Clean Water Goal)** | 1.1 Prioritize areas based on pollutant concentrations | Total Nitrogen Concentration, TSS Concentration, Annual Runoff, Imperviousness |
 | | 1.2 Improve infrastructure in areas with inadequate stormwater management | Percent of Area Treated, Age of Development |
 | **Goal 2: Increase Resilience to Climate Change Impacts (Resilient Community Goal)** | 2.1 Target areas most vulnerable to and at risk for climate change impacts | Urban Heat Island, Capacity Issues Layer |
-| **Goal 3: Preserve and Restore Critical and Sensitive Habitat (Healthy Ecosystems)** | 3.1 Preserve and improve Natural Spaces | ES Open Space/Natural Resource Areas, Biodiversity Corridors |
-| **Goal 4: Implement Equity and Social Justice (Healthy Neighborhoods; Equity)** | 4.1 Prioritize areas of overlapping equity needs as identified by other Tacoma programs | Equity Index Score , Livability Index |
+| **Goal 3: Preserve and Restore Critical and Sensitive Habitat (Healthy Ecosystems)** | 3.1 Preserve and Improve Natural Spaces | ES Open Space/Natural Resource Areas, Biodiversity Corridors |
+| **Goal 4: Implement Equity and Social Justice (Healthy Neighborhoods; Equity)** | 4.1 Prioritize areas of overlapping equity needs as identified by other Tacoma programs | Equity Index Score, Livability Index |
 | | 4.2 Improve access to safe, high-quality roadway infrastructure (green infrastructure recommendation) | Pavement Condition Index |
 
-Table: Watershed Planning Goals used in the Prioritization Module.
+Table: Watershed Planning Goals used in the Prioritization Module. {#tbl:goals}
 
 ## Viewing Prioritization Results
 
@@ -39,4 +39,4 @@ Subbasins with higher priority scores reflect a higher preference for new projec
 
 ## Downloading Prioritization Results
 
-To understand the breakdown of attributes and weights from the prioritization module, download the results by clicking on the *Export* button. This will download a .CSV file listing subgoals, criteria, weights, direction of criteria (wether a criteria should be minimized or maximized), as well as the criterion-specific results.
+To understand the breakdown of attributes and weights from the prioritization module, download the results by clicking on the *Export* button. This will download a .CSV file listing subgoals, criteria, weights, direction of criteria (whether a criterion should be minimized or maximized), as well as the criterion-specific results.
