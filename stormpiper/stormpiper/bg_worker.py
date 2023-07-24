@@ -247,14 +247,13 @@ class Workflows:
         can_raise=True, msg="update results"
     )
 
-    # refresh_all = group( # chains of chords cannot propagate errors in celery
-    #     chain(
-    #         _group1,
-    #         _group2,
-    #         _group3,
-    #         # check_results.s(msg="refresh all tables"),
-    #     )
-    # ) | check_results.s(msg="finalize task")
+    refresh_all = group(  # chains of chords cannot propagate errors in celery
+        chain(
+            _group1,
+            _group2,
+            _group3,
+        )
+    ) | check_results.s(msg="finalize task")
 
     # test_refresh = group( # these run out of order for some reason.
     #     chain(
@@ -267,16 +266,7 @@ class Workflows:
 
 @celery_app.task(base=Singleton, acks_late=True, track_started=True)
 def run_refresh_task():
-    # calling 'get' risks deadlocks in the backend. But since Celery won't propagate
-    # errors or pass signatures from chords, it appears to be impossible to work
-    # around this for a series workflow chains of chords rather than chains of tasks.
-    _ = Workflows._group1().get(disable_sync_subtasks=False, timeout=360)
-
-    _ = Workflows._group2().get(disable_sync_subtasks=False, timeout=1200)
-
-    _ = Workflows._group3().get(disable_sync_subtasks=False, timeout=360)
-
-    return True
+    return Workflows.refresh_all()
 
 
 @celery_app.task(base=Singleton, acks_late=True, track_started=True)
