@@ -248,7 +248,7 @@ def get_subbasin_metrics(*, url=None):
     df = (
         pandas.DataFrame(features)
         .rename(columns=lambda c: c.lower())
-        .drop(columns=["object", "id", "objectid"], errors="ignore")
+        .drop(columns=["object", "id", "objectid", "basinname"], errors="ignore")
     )
 
     lu_cols = [c for c in df.columns if c.startswith("lu_")]

@@ -50,6 +50,8 @@ class Subbasin(Base):
     environmental_value = Column(Float)
     livability_value = Column(Float)
     opportunity_value = Column(Float)
+    capacity_rank = Column(Float)
+    rankcriteria = Column(String)
 
     geom = Column(Geometry(srid=settings.TACOMA_EPSG))
 
