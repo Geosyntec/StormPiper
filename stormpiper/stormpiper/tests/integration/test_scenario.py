@@ -57,11 +57,7 @@ def test_scenario_solve(client):
 @test_utils.with_ee_login
 def test_scenario_solve_data_wq(client):
     response = client.get("/api/rest/scenario")
-    scenario = [
-        dct
-        for dct in response.json()
-        if dct["id"] == "00000000-0000-4000-8000-000000000002"
-    ][0]
+    scenario = [dct for dct in response.json() if dct["name"] == "tmnt scenario"][0]
     scenario["input"]["tmnt_facility_collection"]["features"][0]["properties"][
         "captured_pct"
     ] = 81

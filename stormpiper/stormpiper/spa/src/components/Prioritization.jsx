@@ -82,7 +82,7 @@ function Prioritization({ setDrawerButtonList }) {
     return {
       groupType: group.subgoal === "0" ? "main" : "sub",
       label: group.display_name,
-      fieldID: group.subgoal,
+      fieldID: group.goal + group.subgoal,
       description: "",
       fieldGroup: goalFields
         .filter((field) => {
@@ -256,11 +256,12 @@ function Prioritization({ setDrawerButtonList }) {
   }
   function _renderFormFields() {
     if (formFields) {
-      let fieldDiv = Object.values(formFields).map((formField) => {
+      let fieldDiv = Object.values(formFields).map((formField, i) => {
+        const key = formField.fieldID;
         if (formField.groupType === "sub") {
           return (
             <Box
-              key={formField.fieldID}
+              key={key}
               sx={{
                 display: "flex",
                 flexDirection: "column",
@@ -293,7 +294,7 @@ function Prioritization({ setDrawerButtonList }) {
         } else {
           return (
             <Box
-              key={formField.fieldID}
+              key={key}
               sx={{
                 display: "flex",
                 flexDirection: "column",

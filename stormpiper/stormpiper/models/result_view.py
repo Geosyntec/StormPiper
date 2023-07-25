@@ -15,6 +15,7 @@ strings = [
     "valid_model",
     "subbasin",
     "basinname",
+    "rankcriteria",
 ]
 
 ResultView = create_model(

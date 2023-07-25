@@ -12,27 +12,51 @@ from ._base import datadir
 
 
 def fetch_tacoma_gis_data():  # pragma: no cover
-    n = list(range(50))
+    n = 50
 
-    gdf_delin = arcgis.get_tmnt_facility_delineations(url=None).iloc[n]
+    gdf_delin = (
+        arcgis.get_tmnt_facility_delineations(url=None)
+        .iloc[:n]
+        .sort_index(axis=1)
+        .sort_values("node_id")
+    )
     gdf_delin.to_file(datadir / "tmnt_facility_delineation.geojson", driver="GeoJSON")
     altids = gdf_delin.relid
 
-    gdf = arcgis.get_tmnt_facilities(bmp_url=None, codes_url=None, cols=None).query(
-        "altid in @altids"
+    gdf = (
+        arcgis.get_tmnt_facilities(bmp_url=None, codes_url=None, cols=None)
+        .query("altid in @altids")
+        .sort_index(axis=1)
+        .sort_values("node_id")
     )
     gdf.to_file(datadir / "tmnt_facility.geojson", driver="GeoJSON")
 
-    gdf_subbasin = arcgis.get_subbasins_with_equity_ix(url=None, cols=None)
+    gdf_subbasin = (
+        arcgis.get_subbasins_with_metrics(url=None, cols=None)
+        .sort_index(axis=1)
+        .sort_values("subbasin")
+    )
     gdf_subbasin.to_file(datadir / "subbasin.geojson", driver="GeoJSON")
 
-    lgus = spatial.overlay_rodeo(delineations=gdf_delin, subbasins=gdf_subbasin)
+    lgus = (
+        spatial.overlay_rodeo(delineations=gdf_delin, subbasins=gdf_subbasin)
+        .sort_index(axis=1)
+        .sort_values("node_id")
+    )
     lgus.to_file(datadir / "lgu_boundary.geojson", driver="GeoJSON")
 
-    load = loading.compute_loading(lgu_boundary=lgus)
+    load = (
+        loading.compute_loading(lgu_boundary=lgus)
+        .sort_index(axis=1)
+        .sort_values(["node_id", "epoch", "variable"])
+    )
     load.to_json(datadir / "lgu_load.json", orient="table", indent=2)
 
-    tmnt_src_ctrl = src_ctrls.dummy_tmnt_source_control(gdf_subbasin.subbasin.to_list())
+    tmnt_src_ctrl = (
+        src_ctrls.dummy_tmnt_source_control(gdf_subbasin.subbasin.to_list())
+        .sort_index(axis=1)
+        .sort_values(["subbasin", "variable", "direction", "activity"])
+    )
     tmnt_src_ctrl.to_json(
         datadir / "tmnt_source_control.json", orient="table", indent=2
     )
