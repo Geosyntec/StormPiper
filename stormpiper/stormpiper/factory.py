@@ -14,7 +14,7 @@ from ratelimit.backends.redis import RedisBackend
 from redis.asyncio import StrictRedis
 
 from stormpiper.api import api_router, rpc_router
-from stormpiper.api.docs import get_swagger_ui_html
+from stormpiper.api.docs import get_better_swagger_ui_html
 from stormpiper.apps import ratelimiter
 from stormpiper.apps import supersafe as ss
 from stormpiper.apps.supersafe.users import user_role_ge_admin, user_role_ge_reader
@@ -141,10 +141,11 @@ def create_app(
         "/api/docs", include_in_schema=False, dependencies=[Depends(user_role_ge_admin)]
     )
     async def custom_swagger_ui_html():
-        return get_swagger_ui_html(
+        resp = get_better_swagger_ui_html(
             openapi_url="/openapi.json",
             title=app.title + " - Swagger UI",
         )
+        return resp
 
     @app.get("/app", name="home")
     @app.get("/app/{fullpath:path}")
