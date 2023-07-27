@@ -5,7 +5,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import { DataGrid, GridActionsCellItem, GridRowModes } from "@mui/x-data-grid";
 import { useState, useEffect } from "react";
 import { Box, Card, Tooltip, Typography } from "@mui/material";
-import { api_fetch } from "../../utils/utils";
+import { api_fetch, pick } from "../../utils/utils";
 import { FullSpan, TwoColGrid } from "../base/two-col-grid";
 import { ConfirmDeleteModal } from "../base/confirm-delete-modal";
 
@@ -56,7 +56,7 @@ export default function Users() {
 
   useEffect(() => {
     getAllUsers().then((res) => setRows(res));
-  }, [getAllUsers]);
+  }, []);
 
   const handleRowEditStart = (params, event) => {
     event.defaultMuiPrevented = true;
@@ -103,7 +103,8 @@ export default function Users() {
   };
 
   const processRowUpdate = async (newRow, oldRow) => {
-    const data = await patchUserDatabaseId({ ...newRow });
+    const slim_row = pick(newRow, ...columns.map((x) => x.field));
+    const data = await patchUserDatabaseId({ ...slim_row });
     if (!data) {
       return oldRow;
     }
