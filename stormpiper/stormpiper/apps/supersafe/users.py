@@ -245,6 +245,10 @@ def check_protected_user_patch(field: str, min_role: Role = Role.admin):
 
         # prevent users from elevating permissions
         if all(checks):
+            # if checks pass and new role is a user admin or higher, then we need to set
+            # the is_superuser from `fastapi-users`` so they can edit other user accounts.
+            if new_role._q() >= Role.user_admin._q() and id:
+                _ = await user_db.update(await user_db.get(id), {"is_superuser": True})
             return user_update
 
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
