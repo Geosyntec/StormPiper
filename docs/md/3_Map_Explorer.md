@@ -64,8 +64,8 @@ To export detailed facility data, click on **Export Results** from the Facility 
 
 To search for a particular facility, select the search icon on the left-hand toolbar. A panel will appear with search options. You may search by the following categories:
 
-* **altid/node_id** - Facility Type, or Facility
-* **Facility Type**  Refers to the City designated facility type
+* **altid/node_id** -  Refers to the facility id. 
+* **Facility Type**  - Refers to the City designated facility type
 * **Facility Type (WQ Modeling)** - Refers to the facility type designation used for water quality modeling
 
 

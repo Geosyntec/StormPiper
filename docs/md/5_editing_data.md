@@ -35,15 +35,15 @@ By default, facilities will not have cost parameters unless users provide cost a
 
 To edit lifecycle cost parameters, select the dropdown menu titled **Cost Analysis Parameters.** There, you can enter the cost analysis parameters directly for a facility. See the [Cost Analysis Parameters section](#cost_analysis_params) for descriptions of parameters.
 
-### King County Cost Estimator Tool  
+### Cost Estimator Tool  
 
-To assist with selection of cost analysis parameters, a cost estimator tool is available; it uses cost curves developed by King County for various facilities. To use this tool, click on the **King County Cost Estimator Tool** from a BMP Facility Details Page. This will open a dialog box to select and apply data from King County cost curves.
+To assist with selection of cost analysis parameters, a cost estimator tool is available; it uses cost curves and methodology developed by King County to provide high-level cost estimates for various facilities. To use this tool, select a BMP to view the BMP facility details page. Next, click on the cost analysis parameters drop down and then click on the **King County Cost Estimator Tool.** This will open a dialog box to select and apply data from King County cost curves.
 
 First, select the appropriate facility type under the **BMP Type** dropdown menu. This will preselect an appropriate BMP Cost Curve used by King County (**KC BMP Variation** in the tool). You can refine or change the selected cost curve under the **KC BMP Variation** menu. Cost curves that match the selected **BMP Type** will be shown in **bold**.
 
 In order to calculate the cost parameters, you must enter a sizing parameter in the next dialog box. Depending on the cost curve selected, the dialog box will display either *area (sqft)* or *each (count).* Here, *area* refers to the footprint area of a facility (e.g. the total area of pervious pavement), or the number of facilities to be installed (e.g. number of UIC wells).
 
-After entering the a number denoting the area or number of facilities, the Capital Cost and O&M Costs will be calculated. Click *Apply to BMP Form* to apply the calculated costs to the facility. To calculate the final lifecycle cost, you will need to enter data for the following:
+After entering the number denoting the area or number of facilities, the Capital Cost and O&M Costs will be calculated. Click *Apply to BMP Form* to apply the calculated costs to the facility. To calculate the final lifecycle cost, you will need to enter data for the following:
 
  **Install Year** - The year of installation, denoting what year to apply the capital costs.
 

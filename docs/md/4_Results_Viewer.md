@@ -1,8 +1,10 @@
+# Results Viewer
+
 ## Using the BMP Facility Results View
 
 The BMP Facility Results View can be used to view a summary of the performance of existing  BMP's. To access the viewer, select **WQ Results Viewer** from the dropdown menu at the top menu bar, or from the homepage.
 
-You can view individual BMP results by selecting the **BMP Facility Results View** card or by selecting the icon on the left-hand menu bar Results are summarized by climate epoch. 
+You can view individual BMP results by selecting the **BMP Facility Results View** card or by selecting the icon on the left-hand menu bar. Results are summarized by climate epoch. 
 
 ## Using the Subbasins Results View
 The water quality results viewer can be used to view the conditions of each stormwater subbasin. To access the viewer, select it from the dropdown menu at the top menu bar, or the homepage.

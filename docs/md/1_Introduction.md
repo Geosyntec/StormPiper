@@ -56,7 +56,7 @@ Water quality and hydrology calculations are specific to each facility type. *Fa
 
 | Facility Type | Description |
 |---|---|
-| Filterra/Vegetated box | Manufactured devices with high rate filtration media that support plants. |
+| Filterra/Vegetated box | Manufactured devices with high-rate filtration media that support plants. |
 | Media Filter | Manufactured devices with high-rate filtration media consisting of a variety of inert and sorptive media types and configurations (e.g., cartridge filters, upflow filters, membrane filters, vertical bed filters). |
 | Oil-water Separator | Manufactured devices including oil/water separators and baffle chambers designed for removing floatables and coarse solids. |
 | Pervious Pavement | Full-depth pervious concrete, porous asphalt, paving stones or bricks, reinforced turf rings, and other permeable surface designed to replace traditional pavement. | |
@@ -79,7 +79,7 @@ The Tacoma Watershed Insights application models stormwater infrastructure as ei
 
 #### Simple Facilities
 
-By default, facilities are initially modeled as Simple Facilities unless detailed information has been entered. The Simple Facility model is used when detailed data about a facility is not available, such as the specific design parameters of the facility or the infiltration area.
+By default, facilities are initially modeled as Simple Facilities unless detailed information has been entered. The Simple Facility model is used when detailed data about a facility is not available, such as the specific design parameters of the facility or the infiltration area. Simple facilities are assumed to treat or retain 91% of runoff from the effective drainage area.
 
 #### Detailed Facilities
 
@@ -105,7 +105,7 @@ Table: Stormwater Pollutants  {#tbl:pollutants}
 
 ### Subbasins
 
-a Subbasin is a geographical area that drains into a particular receiving water or collection system node. In addition to reporting facility performance, the tool reports metrics on a subbasin level. 
+A Subbasin is a geographical area that drains into a particular receiving water or collection system node. In addition to reporting facility performance, the tool reports metrics on a subbasin level. 
 
 The subbasins used in this tool have been developed by the City of Tacoma. They are summarized in [@Tbl:subbasins]. Subbasins are referenced by a unique subbasin code using the subbasin code prefix shown in [@Tbl:subbasins]. For example, the first subbasin that is part of the Flett Creek Basin would be `FL_01`.
 
