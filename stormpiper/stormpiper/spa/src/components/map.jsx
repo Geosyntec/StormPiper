@@ -41,6 +41,10 @@ const tooltipFieldDict = {
   swCBLead: [{ id: "ALTID", label: "Lead ID" }],
   swInlet: [{ id: "ALTID", label: "Inlet ID" }],
   swManHole: [
+    { id: "FACILITYID", label: "Facility ID" },
+    { id: "ALTID", label: "ALTID" },
+  ],
+  swManHoleModel: [
     { id: "MH_DrainageArea_ALTID", label: "Manhole ID" },
     { id: "MH_DrainageArea_UPST_IMPVS", label: "Upstream Impervious Acres" },
   ],
