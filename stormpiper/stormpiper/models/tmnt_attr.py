@@ -23,6 +23,7 @@ class TMNTFacilityAttrBase(BaseModel):
     minimum_retention_pct_override: None | float = None
     treatment_rate_cfs: None | float = None
     depth_ft: None | float = None
+    treatment_drawdown_time_hr: None | float = None
 
     # simplified attrs
     captured_pct: None | float = None
