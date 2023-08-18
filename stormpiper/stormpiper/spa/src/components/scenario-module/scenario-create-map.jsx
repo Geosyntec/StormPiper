@@ -347,7 +347,6 @@ export default function ScenarioCreateMap({
           position: "relative",
           display: "flex",
           flexDirection: "column",
-          pointerEvents: "none",
         }}
       >
         <Box
