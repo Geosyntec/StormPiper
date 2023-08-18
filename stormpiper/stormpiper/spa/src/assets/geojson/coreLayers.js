@@ -407,9 +407,10 @@ export const subbasins = {
       "polygons-stroke": {
         type: StrokedPathLayer,
         getPath: (d) => d,
-        getWidth: 4,
+        getWidth: 1,
+        widthUnits: "pixels",
         getColor: colorToList("black", 1),
-        getOutlineWidth: 12,
+        getOutlineWidth: 3,
         getOutlineColor: colorToList("orange", 1),
       },
     },
