@@ -119,7 +119,7 @@ export default function AllScenariosMap({
     <Box
       sx={{
         width: "100%",
-        height: "300px",
+        height: "400px",
         position: "relative",
         overflowY: "hidden",
       }}

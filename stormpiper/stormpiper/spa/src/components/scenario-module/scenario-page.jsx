@@ -1,7 +1,7 @@
 import { Box, Button, Card, Typography } from "@mui/material";
 
 import { ScenarioInfoTable } from "./scenario-info-table";
-import { TwoColGrid, FullSpan, HalfSpan } from "../base/two-col-grid";
+import { TwoColGrid, FullSpan } from "../base/two-col-grid";
 import AllScenariosMap from "./scenario-all-map";
 import { api_fetch } from "../../utils/utils";
 import { useState, useEffect } from "react";
@@ -31,43 +31,50 @@ export default function ScenarioReviewPage() {
   return (
     <Box display="flex" justifyContent="center">
       <TwoColGrid>
-        <HalfSpan>
+        <FullSpan>
           <Card
             sx={{
               display: "flex",
-              flexDirection: "column",
-              minHeight: "300px",
-              height: "100%",
-              alignContent: "flex-start",
-              justifyContent: "start",
-              padding: 2,
+              alignContent: "center",
+              justifyContent: "space-between",
+              p: 2,
             }}
           >
-            <Typography sx={{ my: 2 }} variant="h4">
-              View All Scenarios
-            </Typography>
-            <Typography variant="body1">
-              Use the table below to find an existing scenario or to create a
-              new one.
-            </Typography>
             <Button
               color="primary"
               variant="contained"
               startIcon={<AddIcon />}
-              sx={{ alignSelf: "flex-start", my: 2 }}
               onClick={() => navigate("/app/create-scenario")}
             >
-              Create New Scenario
+              <Box
+                sx={{
+                  display: { xs: "none", sm: "block" },
+                  width: { xs: 0, sm: "100%" },
+                }}
+              >
+                Create New Scenario
+              </Box>
             </Button>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "30ch",
+              }}
+            >
+              <Typography variant="h6">View All Scenarios</Typography>
+            </Box>
+
+            <Box sx={{ width: { sm: "0px", md: "30ch" } }}> </Box>
           </Card>
-        </HalfSpan>
-        <HalfSpan md={8}>
+        </FullSpan>
+        <FullSpan>
           <Card
             sx={{
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              height: "300px",
             }}
           >
             <AllScenariosMap
@@ -75,9 +82,23 @@ export default function ScenarioReviewPage() {
               focusScenario={focusScenario}
             />
           </Card>
-        </HalfSpan>
+        </FullSpan>
         <FullSpan>
-          <Card sx={{ height: 500, p: 2 }}>
+          <Card sx={{ height: 800, p: 2 }}>
+            <Box sx={{ alignItems: "center" }}>
+              <Typography variant="body1">
+                Use the table below to find an existing scenario or to create a
+                new one.
+              </Typography>
+              <Button
+                color="primary"
+                startIcon={<AddIcon />}
+                sx={{ alignSelf: "flex-start", px: 0 }}
+                onClick={() => navigate("/app/create-scenario")}
+              >
+                Create New Scenario
+              </Button>
+            </Box>
             <ScenarioInfoTable
               data={allScenarios}
               dataRefresher={getAllScenarios}
