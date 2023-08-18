@@ -213,7 +213,7 @@ export const swInlet = {
   },
 };
 
-export const swManHole = {
+export const swManHoleModel = {
   layer: GeoJsonLayer,
   props: {
     data: collatePaginatedQuery({
@@ -231,13 +231,12 @@ export const swManHole = {
         },
       },
     },
-    id: "swManHole",
+    id: "swManHoleModel",
     featurePKField: "OBJECTID",
     label: "Regional Facility Model: Manholes",
     featureType: "points",
     minZoom: 14,
     zorder: 10,
-
     pointType: "circle",
     pointRadiusUnits: "pixels",
     defaultFillColor: colorToList("grey"),
@@ -248,6 +247,38 @@ export const swManHole = {
       return colorToList("mediumturquoise");
     },
     getPointRadius: 6,
+    pickable: true,
+    onByDefault: false,
+  },
+};
+
+export const swManHole = {
+  layer: GeoJsonLayer,
+  props: {
+    data: collatePaginatedQuery({
+      url: "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/23",
+      fields: ["FACILITYID", "ALTID"],
+    }),
+    loadOptions: {
+      fetch: {
+        headers: {
+          Authorization: Authorization,
+        },
+      },
+    },
+    id: "swManHole",
+    featurePKField: "OBJECTID",
+    label: "Manholes",
+    featureType: "points",
+    minZoom: 14,
+    zorder: 10,
+    pointType: "circle",
+    pointRadiusUnits: "pixels",
+    defaultFillColor: colorToList("grey"),
+    getFillColor: colorToList("grey"),
+    getPointRadius: 3,
+    getLineWidth: 1,
+    lineWidthUnits: "pixels",
     pickable: true,
     onByDefault: false,
   },
@@ -659,7 +690,7 @@ export const layerDict = {
     Delineations: [delineations, subbasins],
   },
   "Base Layers": {
-    Conveyance: [swTrunk, swMain, swCBLead, swInlet, swManHole],
+    Conveyance: [swTrunk, swMain, swCBLead, swInlet, swManHole, swManHoleModel],
     Landuse: [
       landCoverRaster,
       imperviousnessRaster,
