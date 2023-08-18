@@ -85,6 +85,7 @@ class TMNTFacilityAttr(Base, MutableTrackedTable):
     minimum_retention_pct_override = Column(Float)
     treatment_rate_cfs = Column(Float)
     depth_ft = Column(Float)
+    treatment_drawdown_time_hr = Column(Float)
 
     # simplified attrs
     captured_pct = Column(Float)
