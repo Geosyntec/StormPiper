@@ -7,7 +7,14 @@ import {
 } from "react";
 import { api_fetch } from "../../utils/utils";
 import { BMPForm } from "../bmpForm";
-import { Box, Dialog, DialogActions, Typography, Button } from "@mui/material";
+import {
+  Box,
+  Dialog,
+  DialogActions,
+  Typography,
+  Button,
+  List,
+} from "@mui/material";
 
 export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
   { facilitySetter, facility, formDisabled, showHelperText },
@@ -120,7 +127,7 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
     if (header) {
       return header[0];
     } else {
-      return header;
+      return msg;
     }
   }
 
@@ -216,20 +223,23 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
             </DialogActions>
           </Dialog>
           <Dialog open={resultError} onClose={() => setResultError(false)}>
-            <Box sx={{ padding: "15px" }}>
+            <Box sx={{ p: 2 }}>
               <Typography>
                 <strong>Error Saving Scenario</strong>
               </Typography>
-              <Typography variant="caption">Please try again</Typography>
             </Box>
-            <Typography variant="caption" sx={{ padding: "0em 1em" }}>
-              {_renderErrorHeader(errorMsg)}
+            <Typography variant="caption" sx={{ py: 0, px: 2 }}>
+              {errorMsg && _renderErrorHeader(errorMsg)}
             </Typography>
-            <ul style={{ "margin-top": "none", "padding-right": "1em" }}>
-              {_getErrorList(errorMsg).map((msg) => {
-                return <li>{msg}</li>;
+            <List sx={{ mt: 0, pr: 1 }}>
+              {_getErrorList(errorMsg).map((msg, i) => {
+                return (
+                  <ListItem key={i}>
+                    <Typography variant="caption">{msg}</Typography>
+                  </ListItem>
+                );
               })}
-            </ul>
+            </List>
           </Dialog>
         </Box>
       );

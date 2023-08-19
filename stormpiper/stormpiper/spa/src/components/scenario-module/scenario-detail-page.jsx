@@ -4,6 +4,9 @@ import { useParams } from "react-router-dom";
 import {
   Box,
   Card,
+  Dialog,
+  List,
+  ListItem,
   Typography,
   Button,
   Snackbar,
@@ -41,6 +44,8 @@ async function getDataByID(id) {
 export default function ScenarioDetailPage({ setDrawerButtonList }) {
   const params = useParams();
   const [scenarioObject, setScenarioObject] = useState(null);
+  const [submissionError, setSubmissionError] = useState(false);
+  const [submissionErrorMsg, setSubmissionErrorMsg] = useState("error!");
   const [resultsPollInterval, setResultsPollInterval] = useState(null);
   const [resultsSuccessDisplay, setResultsSuccessDisplay] = useState({
     status: false,
@@ -216,33 +221,8 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
       });
     } else {
       submitScenario();
-      setScenarioEditMode(false);
     }
     setMapMode("default");
-  }
-
-  function submitScenario() {
-    const scenarioToSubmit = {
-      name: scenarioObject.name,
-      info: scenarioObject.info,
-      input: scenarioObject.input,
-    };
-    api_fetch(`/api/rest/scenario/${params.id}`, {
-      credentials: "same-origin",
-      headers: {
-        accept: "application/json",
-        "Content-type": "application/json",
-      },
-      method: "PATCH",
-      body: JSON.stringify(scenarioToSubmit),
-    }).then((res) => {
-      if (res.status === 200) {
-        setResultsSuccessDisplay({
-          status: true,
-          msg: "Scenario Updated Successfully",
-        });
-      }
-    });
   }
 
   async function initiateScenarioSolve() {
@@ -293,13 +273,13 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
     setResultsPollInterval(resultsPoll);
   }
 
-  function submitScenario() {
+  async function submitScenario() {
     const scenarioToSubmit = {
       name: scenarioObject.name,
       info: scenarioObject.info,
       input: scenarioObject.input,
     };
-    api_fetch(`/api/rest/scenario/${params.id}`, {
+    const response = await api_fetch(`/api/rest/scenario/${params.id}`, {
       credentials: "same-origin",
       headers: {
         accept: "application/json",
@@ -307,14 +287,65 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
       },
       method: "PATCH",
       body: JSON.stringify(scenarioToSubmit),
-    }).then((res) => {
-      if (res.status === 200) {
-        setResultsSuccessDisplay({
-          status: true,
-          msg: "Scenario Updated Successfully",
-        });
-      }
-    });
+    })
+      .then((resp) => {
+        if (resp.status >= 400) {
+          setSubmissionError(true);
+        } else {
+          setResultsSuccessDisplay({
+            status: true,
+            msg: "Scenario Updated Successfully",
+          });
+          setScenarioEditMode(false);
+        }
+        return resp.json();
+      })
+      .then((r) => {
+        //assume that only error responses have a detail object
+        if (r.detail) {
+          setSubmissionErrorMsg(r.detail);
+        }
+      })
+      .catch((err) => {
+        setSubmissionError(true);
+        setSubmissionErrorMsg(err.message);
+        setScenarioEditMode(true);
+        console.log(err);
+      });
+    return response;
+  }
+
+  function _renderErrorHeader(msg) {
+    let beginningText = /[0-9]*\svalidation (error[s]*)/g;
+    let header = msg.match(beginningText);
+    if (header) {
+      return header[0];
+    } else {
+      return msg;
+    }
+  }
+
+  function _getErrorList(msg) {
+    let errorList = [];
+
+    //Find the number of errors so that we know
+    let errorNum = 0;
+    let nums = msg.match(/[0-9]*/g);
+    if (nums) {
+      errorNum = parseInt(nums[0]);
+    }
+
+    //Isolate just the list of errors
+    let beginningText = /[0-9]*\svalidation (error[s]*\sfor\s\w*\s)/g;
+    msg = msg.replaceAll(beginningText, "");
+
+    let err = msg.match(/([\w\s.;=_]*)\([\w.=;\s]+\)/g);
+    if (err) {
+      err.map((e) => {
+        errorList.push(e.replace(/\([\w.=;\s]+\)/g, "")); //remove the error type in parantheses
+      });
+    }
+    return errorList;
   }
 
   function createBMPResultsCSV() {
@@ -513,7 +544,13 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
               )}
 
               <br></br>
-              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  pb: 1,
+                }}
+              >
                 <Typography variant="h6">Delineation Details</Typography>
                 {scenarioEditMode && (
                   <Button
@@ -586,6 +623,28 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
               )}
             </Box>
           </Card>
+          <Dialog
+            open={submissionError}
+            onClose={() => setSubmissionError(false)}
+          >
+            <Box sx={{ p: 2 }}>
+              <Typography>
+                <strong>Error Saving BMP</strong>
+              </Typography>
+            </Box>
+            <Typography variant="caption" sx={{ py: 0, px: 2 }}>
+              {submissionErrorMsg && _renderErrorHeader(submissionErrorMsg)}
+            </Typography>
+            <List sx={{ mt: 0, pr: 1 }}>
+              {_getErrorList(submissionErrorMsg).map((msg, i) => {
+                return (
+                  <ListItem key={i}>
+                    <Typography variant="caption">{msg}</Typography>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </Dialog>
         </HalfSpan>
         <HalfSpan>
           <Card

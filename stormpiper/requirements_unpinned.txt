@@ -52,7 +52,7 @@ watchfiles
 asgi-ratelimit
 
 pint
-nereid @ https://github.com/Geosyntec/nereid/archive/v0.8.0.zip
+nereid-engine @ https://github.com/Geosyntec/nereid/archive/v0.9.1.zip
 setuptools
 wheel
 
