@@ -152,7 +152,6 @@ export function BMPDetailForm() {
     msg = msg.replaceAll(beginningText, "");
 
     let err = msg.match(/([\w\s.;=_]*)\([\w.=;\s]+\)/g);
-    console.log("Found errors:", err);
     if (err) {
       err.map((e) => {
         errorList.push(e.replace(/\([\w.=;\s]+\)/g, "")); //remove the error type in parantheses
@@ -208,9 +207,9 @@ export function BMPDetailForm() {
               {errorMsg && _renderErrorHeader(errorMsg)}
             </Typography>
             <List sx={{ mt: 0, pr: 1 }}>
-              {_getErrorList(errorMsg).map((msg) => {
+              {_getErrorList(errorMsg).map((msg, i) => {
                 return (
-                  <ListItem>
+                  <ListItem key={i}>
                     <Typography variant="caption">{msg}</Typography>
                   </ListItem>
                 );
