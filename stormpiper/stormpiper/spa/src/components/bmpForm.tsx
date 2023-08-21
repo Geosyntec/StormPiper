@@ -23,6 +23,7 @@ import React, {
 import { useForm } from "react-hook-form";
 import { BMPReadOnlyInfo } from "./bmp-detail-page/bmp-basic-info";
 import { KCBMPDetailModal } from "./cost-estimator/kc-estimator-modal";
+import { fieldAlias } from "./fieldAlias";
 
 const hiddenFields: string[] = [
   "ref_data_key",
@@ -183,7 +184,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
       if (!hiddenFields.includes(k)) {
         let fieldObj = {
           fieldID: k,
-          label: v.title,
+          label: fieldAlias?.[k] || v.title,
           type: overrides?.type
             ? overrides.type
             : typeof v?.type === "string" || v?.type instanceof String
@@ -385,7 +386,8 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
                   ...formField.adornment,
                 }}
                 disabled={
-                  (formField.label === "Node Id" && showSubmit) || formDisabled //having showSubmit disabled the field is a workaround to disable it only in the scenario version of this form
+                  (formField.fieldID === "node_id" && showSubmit) ||
+                  formDisabled //having showSubmit disabled the field is a workaround to disable it only in the scenario version of this form
                 }
                 onClick={() => setIsTouched(true)}
               />
