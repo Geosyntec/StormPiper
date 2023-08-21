@@ -8,18 +8,19 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useState, useEffect, useRef } from "react";
-import { numFormatter, pctFormatter } from "../../utils/utils";
+import { api_fetch, numFormatter, pctFormatter } from "../../utils/utils";
 import {
   DataGrid,
   GridToolbarContainer,
   GridToolbarExport,
+  GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 
-import { api_fetch } from "../../utils/utils";
 import {
   result_fields_csv,
   result_groups_csv,
 } from "../../assets/data/csv_assets";
+import { fieldAlias } from "../fieldAlias";
 
 type TableHeader = {
   field: string;
@@ -149,58 +150,61 @@ export default function SubbasinResultsTable({ fieldList }) {
             alignContent: "center",
             justifyContent: "flex-start",
             width: "100%",
-            mx: 3,
             my: 2,
           }}
         >
-          <GridToolbarExport
-            csvOptions={{
-              allColumns: true,
-              fileName:
-                "Tacoma_Watersheds_Subbasin_" +
-                currentEpoch +
-                "_" +
-                currentGroup?.replaceAll(" ", "_") +
-                "_" +
-                new Date().toLocaleString("en-US", {
-                  dateStyle: "short",
-                }),
-            }}
-            printOptions={{ disableToolbarButton: true }}
-            sx={{ mx: 2 }}
-          />
-          <TextField
-            sx={{ minWidth: "125px", mx: 5, alignSelf: "center" }}
-            variant="outlined"
-            label="Climate Epoch"
-            select
-            value={
-              [
+          <Box sx={{ minWidth: "250px", mx: 2 }}>
+            <GridToolbarExport
+              csvOptions={{
+                allColumns: true,
+                fileName:
+                  "Tacoma_Watersheds_Subbasin_" +
+                  currentEpoch +
+                  "_" +
+                  currentGroup?.replaceAll(" ", "_") +
+                  "_" +
+                  new Date().toLocaleString("en-US", {
+                    dateStyle: "short",
+                  }),
+              }}
+              printOptions={{ disableToolbarButton: true }}
+            />
+            <TextField
+              sx={{ minWidth: "125px", ml: 3, alignSelf: "center" }}
+              variant="outlined"
+              label="Climate Epoch"
+              select
+              value={
+                [
+                  "Land Use Breakdown",
+                  "Land Cover Breakdown",
+                  "Treatment Facility Summary",
+                ].includes(currentGroup)
+                  ? "1980s"
+                  : currentEpoch
+              }
+              onChange={(e) => {
+                setCurrentEpoch(e.target.value);
+              }}
+              size="small"
+              disabled={[
                 "Land Use Breakdown",
                 "Land Cover Breakdown",
                 "Treatment Facility Summary",
-              ].includes(currentGroup)
-                ? "1980s"
-                : currentEpoch
-            }
-            onChange={(e) => {
-              setCurrentEpoch(e.target.value);
-            }}
-            size="small"
-            disabled={[
-              "Land Use Breakdown",
-              "Land Cover Breakdown",
-              "Treatment Facility Summary",
-            ].includes(currentGroup)}
-          >
-            {["all", "1980s", "2030s", "2050s", "2080s"].map((epoch) => {
-              return (
-                <MenuItem key={`epoch-${epoch}`} value={epoch}>
-                  {epoch}
-                </MenuItem>
-              );
-            })}
-          </TextField>
+              ].includes(currentGroup)}
+            >
+              {["all", "1980s", "2030s", "2050s", "2080s"].map((epoch) => {
+                return (
+                  <MenuItem key={`epoch-${epoch}`} value={epoch}>
+                    {epoch}
+                  </MenuItem>
+                );
+              })}
+            </TextField>
+            <Box sx={{ py: 1 }}>
+              <GridToolbarQuickFilter />
+            </Box>
+          </Box>
           <Box
             sx={{
               display: "flex",
@@ -272,6 +276,7 @@ export default function SubbasinResultsTable({ fieldList }) {
           field: k,
           headerName:
             resultFields.filter((field) => field.field === k)[0]?.displayName ||
+            fieldAlias?.[k] ||
             props[k].title, //props[k].title,
           width: 150, //pinnedFields.includes(k) ? 100 : 100 + (props[k].title.length - 20),
           headerAlign: "center",
@@ -307,8 +312,6 @@ export default function SubbasinResultsTable({ fieldList }) {
     return (
       <Box
         sx={{
-          maxHeight: 1000,
-          height: 500,
           "& .actions": {
             color: "text.secondary",
           },
@@ -316,12 +319,12 @@ export default function SubbasinResultsTable({ fieldList }) {
             color: "text.primary",
           },
           overflow: "scroll",
+          width: "100%",
         }}
       >
         <Box
           sx={{
             display: "flex",
-            height: "95%",
             width: "100%",
             flexGrow: 1,
             flexDirection: "column",
@@ -338,18 +341,24 @@ export default function SubbasinResultsTable({ fieldList }) {
             ></Box>
           </Box>
           <DataGrid
+            autoHeight
             sx={{
               "& .MuiDataGrid-columnHeaderTitle": {
                 textOverflow: "clip",
                 whiteSpace: "break-spaces",
                 lineHeight: "1.35rem",
               },
+              m: 1,
+            }}
+            initialState={{
+              pagination: {
+                paginationModel: { pageSize: 100, page: 0 },
+              },
             }}
             rows={resultState.results}
             columnHeaderHeight={100}
             columns={getCurrentColumns(resultState.headers, currentFields)}
-            rowsPerPageOptions={[5, 25, 100]}
-            disableSelectionOnClick
+            disableRowSelectionOnClick
             getRowId={(row) => row["node_id"] + row["epoch"]}
             density={"compact"}
             slots={{ toolbar: CustomToolbar }}

@@ -9,8 +9,7 @@ import {
 } from "@mui/material";
 import { FullSpan, HalfSpan } from "../base/two-col-grid";
 import SubbasinResultsMap from "./subbasin-results-map";
-import { api_fetch } from "../../utils/utils";
-import { createDisplayName } from "../../utils/utils";
+import { api_fetch, createDisplayName } from "../../utils/utils";
 import {
   result_fields_csv,
   field_manifest_csv,

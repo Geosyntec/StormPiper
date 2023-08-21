@@ -6,20 +6,27 @@ import {
   TextField,
   MenuItem,
   ListItem,
-  Paper,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import {
   DataGrid,
   GridToolbarContainer,
   GridToolbarExport,
+  GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 
-import { numFormatter, pctFormatter, strFormatter } from "../../utils/utils";
+import {
+  api_fetch,
+  pick,
+  createDisplayName,
+  numFormatter,
+  pctFormatter,
+  strFormatter,
+} from "../../utils/utils";
 
-import { api_fetch } from "../../utils/utils";
 import ResultRefreshBox from "../resultRefreshBox";
+import { fieldAlias } from "../fieldAlias";
 
 type TableHeader = {
   field: string;
@@ -47,65 +54,18 @@ type FacilityResultsTableState = {
   loaded: Boolean;
 };
 
-function convertToCSV(
-  objArray: { [k: string]: string | number | undefined }[]
-) {
-  var array = typeof objArray != "object" ? JSON.parse(objArray) : objArray;
-  var str = "";
-
-  for (var i = 0; i < array.length; i++) {
-    var line = "";
-    for (var index in array[i]) {
-      if (line != "") line += ",";
-
-      line += array[i][index];
-    }
-
-    str += line + "\r\n";
-  }
-
-  return str;
-}
-
-function exportCSVFile(items: any, fileTitle: string, headers: any) {
-  let headersFormatted: { [k: string]: string } = {};
-
-  Object.keys(headers).map((k) => {
-    headersFormatted[k] = headers[k].field;
-  });
-
-  items.unshift(headersFormatted);
-
-  var csv = convertToCSV(items);
-
-  var exportedFilename = fileTitle + ".csv" || "export.csv";
-
-  var blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  var link = document.createElement("a");
-  if (link.download !== undefined) {
-    // feature detection
-    // Browsers that support HTML5 download attribute
-    var url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute("download", exportedFilename);
-    link.style.visibility = "hidden";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-}
-
 export default function FacilityResultsTable(props: FacilityResultsTableProps) {
   let allResults: any;
-  let resSpec: any;
   let headers: TableHeader[];
 
-  const pinnedFields = ["node_id", "epoch"];
+  const infoFields = ["basinname", "subbasin", "facilitytype"];
+  const pinnedFields = ["node_id", "basinname", "subbasin", "epoch"];
   const fieldGroups: FieldGroup[] = [
     {
       groupName: "Overview",
       fields: [
         ...pinnedFields,
+        "facilitytype",
         "facility_type",
         "node_type",
         "captured_pct",
@@ -115,7 +75,7 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
       ],
     },
     {
-      groupName: "Runoff Stats",
+      groupName: "Runoff Volume Capture",
       fields: [
         ...pinnedFields,
         "runoff_volume_cuft_inflow",
@@ -126,7 +86,7 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
       ],
     },
     {
-      groupName: "Pollutant Mass Flow",
+      groupName: "Pollutant Load",
       fields: [
         ...pinnedFields,
         "TSS_load_lbs_inflow",
@@ -139,6 +99,12 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
         "TZn_load_lbs_removed",
         "TCu_load_lbs_inflow",
         "TCu_load_lbs_removed",
+        "DEHP_load_lbs_inflow",
+        "DEHP_load_lbs_removed",
+        "PHE_load_lbs_inflow",
+        "PHE_load_lbs_removed",
+        "PYR_load_lbs_inflow",
+        "PYR_load_lbs_removed",
       ],
     },
     {
@@ -155,6 +121,12 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
         "TZn_conc_ug/l_effluent",
         "TCu_conc_ug/l_influent",
         "TCu_conc_ug/l_effluent",
+        "DEHP_conc_mg/l_influent",
+        "DEHP_conc_mg/l_effluent",
+        "PHE_conc_mg/l_influent",
+        "PHE_conc_mg/l_effluent",
+        "PYR_conc_mg/l_influent",
+        "PYR_conc_mg/l_effluent",
       ],
     },
   ];
@@ -164,15 +136,7 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
     headers: [],
     loaded: false,
   });
-  const [currentFields, setCurrentFields] = useState([
-    ...pinnedFields,
-    "facility_type",
-    "node_type",
-    "captured_pct",
-    "treated_pct",
-    "retained_pct",
-    "bypassed_pct",
-  ]);
+  const [currentFields, setCurrentFields] = useState(fieldGroups[0].fields);
   const [currentGroup, setCurrentGroup] = useState("Overview");
 
   const [currentEpoch, setCurrentEpoch] = useState("1980s");
@@ -185,16 +149,39 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
     let resources = [
       "/openapi.json",
       `/api/rest/results?ntype=tmnt_facility&epoch=${currentEpoch}`,
+      "/api/rest/tmnt_facility",
     ];
     Promise.all(
       resources.map((url) => api_fetch(url).then((res) => res.json()))
     )
       .then((resArray) => {
-        resSpec = resArray[0].components.schemas.ResultView;
+        let resSpec = resArray[0].components.schemas.ResultView;
+        let tmntSpec = resArray[0].components.schemas.TMNTView;
         allResults = resArray[1];
-        headers = _buildTableColumns(resSpec.properties);
+        let tmntInfo = resArray[2];
+
+        allResults.forEach((element) => {
+          const nid = element.node_id;
+          const allinfo = tmntInfo.find((k) => k.node_id === nid);
+          Object.assign(element, pick(allinfo, ...infoFields));
+        });
+
+        let resHeaders = _buildTableColumns(resSpec.properties);
+        let headerFields = resHeaders.map((k) => k.field);
+        let infoHeaders = _buildTableColumns(tmntSpec.properties).filter(
+          (k) => !headerFields.includes(k.field)
+        );
+
+        headers = [...resHeaders, ...infoHeaders];
+
         setResultState({
-          results: allResults,
+          results: allResults.toSorted((a, b) => {
+            const aid = a.subbasin + a.node_id;
+            const bid = b.subbasin + b.node_id;
+            if (aid > bid) return 1;
+            if (bid > aid) return -1;
+            return 0;
+          }),
           headers,
           loaded: true,
         });
@@ -212,6 +199,15 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
     return valueFormatter;
   }
 
+  function getHeaderName(k, props) {
+    let headername = fieldAlias?.[k] || props[k]?.title || k;
+    if (k.includes("_conc_") || k.includes("_load_")) {
+      headername = createDisplayName(k);
+    }
+
+    return headername;
+  }
+
   function _buildTableColumns(props: {
     [key: string]: { title: string; type: string };
   }): TableHeader[] {
@@ -219,7 +215,7 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
     Object.keys(props).map((k) => {
       colArr.push({
         field: k,
-        headerName: props[k].title,
+        headerName: getHeaderName(k, props),
         width: 150, //pinnedFields.includes(k) ? 100 : 100 + (props[k].title.length - 20),
         headerAlign: "center",
         align: "center",
@@ -274,45 +270,54 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
             alignContent: "center",
             justifyContent: "flex-start",
             width: "100%",
-            mx: 3,
             my: 2,
           }}
         >
-          <GridToolbarExport
-            sx={{ mx: 2 }}
-            csvOptions={{
-              allColumns: true,
-              fileName:
-                "Tacoma_Watersheds_BMP_" +
-                currentEpoch +
-                "_" +
-                currentGroup?.replaceAll(" ", "_") +
-                "_" +
-                new Date().toLocaleString("en-US", {
-                  dateStyle: "short",
-                }),
-            }}
-            printOptions={{ disableToolbarButton: true }}
-          />
-          <TextField
-            sx={{ minWidth: "125px", mx: 5, alignSelf: "center" }}
-            variant="outlined"
-            label="Climate Epoch"
-            select
-            value={currentEpoch}
-            onChange={(e) => {
-              setCurrentEpoch(e.target.value);
-            }}
-            size="small"
-          >
-            {["all", "1980s", "2030s", "2050s", "2080s"].map((epoch) => {
-              return (
-                <MenuItem key={`epoch-${epoch}`} value={epoch}>
-                  {epoch}
-                </MenuItem>
-              );
-            })}
-          </TextField>
+          <Box sx={{ minWidth: "250px", mx: 2 }}>
+            <GridToolbarExport
+              csvOptions={{
+                allColumns: true,
+                fileName:
+                  "Tacoma_Watersheds_BMP_" +
+                  currentEpoch +
+                  "_" +
+                  currentGroup?.replaceAll(" ", "_") +
+                  "_" +
+                  new Date().toLocaleString("en-US", {
+                    dateStyle: "short",
+                  }),
+              }}
+              printOptions={{ disableToolbarButton: true }}
+            />
+            <TextField
+              sx={{ minWidth: "125px", ml: 3, alignSelf: "center" }}
+              variant="outlined"
+              label="Climate Epoch"
+              select
+              value={currentEpoch}
+              onChange={(e) => {
+                setCurrentEpoch(e.target.value);
+              }}
+              size="small"
+            >
+              {["all", "1980s", "2030s", "2050s", "2080s"].map((epoch) => {
+                return (
+                  <MenuItem key={`epoch-${epoch}`} value={epoch}>
+                    {epoch}
+                  </MenuItem>
+                );
+              })}
+            </TextField>
+            <Box
+              sx={{
+                py: 1,
+                display: "flex",
+                justifyContent: "flex-start",
+              }}
+            >
+              <GridToolbarQuickFilter />
+            </Box>
+          </Box>
           <Box
             sx={{
               display: "flex",
@@ -320,8 +325,8 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
               justifyContent: "flex-start",
               flexWrap: "wrap",
               listStyle: "none",
-              padding: 0,
-              margin: 0,
+              p: 0,
+              m: 0,
             }}
             component="ul"
           >
@@ -365,8 +370,6 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
     return (
       <Box
         sx={{
-          height: 600,
-          maxHeight: 1000,
           "& .actions": {
             color: "text.secondary",
           },
@@ -380,7 +383,6 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
         <Box
           sx={{
             display: "flex",
-            height: "95%",
             width: "100%",
             flexGrow: 1,
             flexDirection: "column",
@@ -422,18 +424,24 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
             />
           </Box>
           <DataGrid
+            autoHeight
             sx={{
               "& .MuiDataGrid-columnHeaderTitle": {
                 textOverflow: "clip",
                 whiteSpace: "break-spaces",
                 lineHeight: "1.35rem",
               },
-              margin: 1,
+              m: 1,
+            }}
+            initialState={{
+              pagination: {
+                paginationModel: { pageSize: 5, page: 0 },
+              },
             }}
             rows={resultState.results}
             columnHeaderHeight={100}
             columns={getCurrentColumns(resultState.headers, currentFields)}
-            rowsPerPageOptions={[5, 25, 100]}
+            pageSizeOptions={[5, 25, 100]}
             getRowId={(row) => row["node_id"] + row["epoch"]}
             density={"compact"}
             slots={{ toolbar: CustomToolbar }}

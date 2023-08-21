@@ -103,7 +103,7 @@ export const strFormatter = (params) => {
 };
 
 export const createDisplayName = (str) => {
-  const units = ["pct", "lbs", "mg/l", "inches", "cuft"];
+  const units = ["pct", "lbs", "ug/l", "mg/l", "inches", "cuft"];
 
   let targetIndex = -1;
 
@@ -121,11 +121,14 @@ export const createDisplayName = (str) => {
       .replace(/(?:^|\s)\S/g, function (a) {
         return a.toUpperCase();
       }); // e.g "TSS Conc"
-    const substring2 = str.substring(targetIndex).replaceAll("_", " "); // e.g. "(mg/l)"
+    const substring2 = str
+      .substring(targetIndex)
+      .replaceAll("_", " ")
+      .replace("ug", "µg");
     return `${substring1} (${substring2})`;
   }
 
-  return [str];
+  return str;
 };
 
 export function exportCSVFile(csv, fileTitle) {
