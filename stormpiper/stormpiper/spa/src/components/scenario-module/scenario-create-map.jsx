@@ -347,6 +347,7 @@ export default function ScenarioCreateMap({
           position: "relative",
           display: "flex",
           flexDirection: "column",
+          pointerEvents: "none",
         }}
       >
         <Box
@@ -362,6 +363,7 @@ export default function ScenarioCreateMap({
             variant="contained"
             color={lyrSelectDisplayState ? "primary" : "inherit"}
             sx={{
+              pointerEvents: "all",
               m: 1,
               p: 0,
               minWidth: 0,

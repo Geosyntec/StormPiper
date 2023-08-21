@@ -1,19 +1,10 @@
-import { Checkbox, Box, Typography } from "@mui/material";
+import { Checkbox, Box, Typography, FormControlLabel } from "@mui/material";
 
 function LayerSelector(props) {
   return (
     <>
       {props.displayStatus && (
-        <Box>
-          <Box
-            sx={{
-              mb: 1,
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          ></Box>
+        <Box sx={{ pointerEvents: "all" }}>
           {_renderCategories(
             props.layerDict,
             props._onToggleLayer,
@@ -89,20 +80,17 @@ function _renderCategories(
 function LayerToggler(props) {
   return (
     <Box sx={{ display: "flex" }}>
-      <Box>
-        <Checkbox
-          id={props.layerID}
-          checked={props.activeLayers[props.layerID]}
-          onChange={() => props._toggleLayer(props.layerID)}
-          color="primary"
-          sx={{ pt: 0 }}
-        />
-      </Box>
-      <Box sx={{ alignSelf: "start" }}>
-        <label htmlFor={props.layerLabel}>
-          <span>{props.layerLabel}</span>
-        </label>
-      </Box>
+      <FormControlLabel
+        label={props.layerLabel}
+        control={
+          <Checkbox
+            id={props.layerID}
+            checked={props.activeLayers[props.layerID]}
+            onChange={() => props._toggleLayer(props.layerID)}
+            color="primary"
+          />
+        }
+      />
     </Box>
   );
 }
