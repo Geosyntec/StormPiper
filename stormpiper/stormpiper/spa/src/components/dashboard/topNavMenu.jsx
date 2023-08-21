@@ -98,7 +98,7 @@ export default function TopNavMenu(props) {
 
   return (
     <Box {...props}>
-      <Tooltip title="Navigate">
+      <Tooltip title="Navigate" placement="right">
         <Button
           ref={anchorRef}
           id="composition-button"
