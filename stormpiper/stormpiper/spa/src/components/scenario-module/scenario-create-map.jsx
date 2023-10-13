@@ -392,6 +392,7 @@ export default function ScenarioCreateMap({
               height: "400px",
               width: "100%",
               p: 2,
+              pointerEvents: "all",
             }}
           >
             <Card
