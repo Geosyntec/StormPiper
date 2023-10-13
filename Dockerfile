@@ -43,8 +43,7 @@ COPY ./stormpiper/requirements.txt /requirements.txt
 RUN mkdir /core \
     && pip wheel \
     --wheel-dir=/core \
-    -r /requirements.txt \
-    hatchling
+    -r /requirements.txt
 RUN mkdir /gunicorn \
     && pip wheel \
     --wheel-dir=/gunicorn \
