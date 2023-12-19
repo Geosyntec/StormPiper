@@ -4,7 +4,7 @@ from uuid import UUID
 
 from geojson_pydantic import FeatureCollection, Point, Polygon
 from nereid.api.api_v1.models.treatment_facility_models import STRUCTURAL_FACILITY_TYPE
-from pydantic import Field
+from pydantic import Field, validator
 
 from .base import BaseModel, BaseORM
 from .tmnt_attr import TMNTFacilityPatch
@@ -23,11 +23,46 @@ class DelineationPropsUpdate(DelineationProps):
     area_acres: None | float = None
 
 
-DelineationFeatureCollection = FeatureCollection[Polygon, DelineationProps]
-DelineationFeatureCollectionUpdate = FeatureCollection[Polygon, DelineationPropsUpdate]
+def lower_precision(data: list, precision=5) -> None:
+    for obj in data:
+        if isinstance(obj, tuple):
+            obj = list(obj)
+
+        if isinstance(obj, float):
+            obj = round(obj, precision)
+        elif all(isinstance(v, float) for v in obj):
+            for i, v in enumerate(obj):
+                obj[i] = round(v, precision)
+        else:
+            lower_precision(obj)
+
+
+class LowResPolygon(Polygon):
+    @validator("coordinates", pre=True, always=True)
+    def low_precision(cls, coordinates: list) -> list:
+        """limit polygon precision."""
+        for ele in coordinates:
+            lower_precision(ele)
+        return coordinates
+
+
+class LowResPoint(Point):
+    @validator("coordinates", pre=True, always=True)
+    def low_precision(cls, coordinates: list) -> list:
+        """limit point precision."""
+        coordinates = list(coordinates)
+        for ele in [coordinates]:
+            lower_precision(ele)
+        return coordinates
+
+
+DelineationFeatureCollection = FeatureCollection[LowResPolygon, DelineationProps]
+DelineationFeatureCollectionUpdate = FeatureCollection[
+    LowResPolygon, DelineationPropsUpdate
+]
 
 StructuralFacilityFeatureCollection = FeatureCollection[
-    Point, dict[str, Any] | TMNTFacilityPatch | STRUCTURAL_FACILITY_TYPE
+    LowResPoint, dict[str, Any] | TMNTFacilityPatch | STRUCTURAL_FACILITY_TYPE
 ]
 
 DELIN_BBOX_COORD_01 = [
