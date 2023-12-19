@@ -14,8 +14,8 @@ from .tmnt_attr_validator import tmnt_attr_validator
 
 
 def scenario_delin_uid(ix: int, geom: str, name: None | str, relid: None | str) -> str:
-    inp = f"{ix}_{geom}_{name}_{relid}".encode()
-    hash = sha256(inp).hexdigest()[:8]
+    inp = f"{ix}_{geom}_{name}_{relid}"
+    hash = sha256(inp.encode()).hexdigest()[:8]
     return hash
 
 
