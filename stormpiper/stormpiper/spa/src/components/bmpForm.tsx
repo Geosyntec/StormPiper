@@ -390,6 +390,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
                   formDisabled //having showSubmit disabled the field is a workaround to disable it only in the scenario version of this form
                 }
                 onClick={() => setIsTouched(true)}
+                onFocus={(e) => e.target.select()}
               />
             )}
             {errors[formField.fieldID] && (
