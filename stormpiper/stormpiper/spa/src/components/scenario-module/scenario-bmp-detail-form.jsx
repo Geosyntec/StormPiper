@@ -93,13 +93,6 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
     Object.keys(data).forEach(
       (k) => (data[k] = data[k] === "" ? null : data[k])
     );
-    if (
-      facilityType.match("_simple") &&
-      !data["facility_type"].match("_simple")
-    ) {
-      data["facility_type"] = data["facility_type"] + "_simple";
-    }
-
     facilitySetter({
       type: "FeatureCollection",
       features: [
@@ -158,6 +151,10 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
     _handleSubmit(data, facility);
   }
 
+  function facilityChangeHandler(newFacilityType) {
+    setFacilityType(newFacilityType);
+  }
+
   function renderForm() {
     if (loadingState) {
       return <p>loading...</p>;
@@ -202,8 +199,7 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
             }
             allFacilities={specs.context}
             currentFacility={facilityType}
-            facilityChangeHandler={setFacilityType}
-            handleFormSubmit={_handleSubmit}
+            facilityChangeHandler={facilityChangeHandler}
             ref={childRef}
             showSubmit={false}
             formDataEmitter={formOnChangeHandler}
