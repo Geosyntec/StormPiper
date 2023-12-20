@@ -160,6 +160,17 @@ export function BMPDetailForm() {
     return errorList;
   }
 
+  function facilityChangeHandler(newFacilityType) {
+    setFacilityType(newFacilityType);
+  }
+
+  function formChangeHandler(data) {
+    Object.keys(data).forEach(
+      (k) => (data[k] = data[k] === "" ? null : data[k])
+    );
+    setTMNTAttrs(data);
+  }
+
   function renderForm() {
     if (loadingState) {
       return <p>loading...</p>;
@@ -193,7 +204,8 @@ export function BMPDetailForm() {
             values={TMNTAttrs}
             allFacilities={specs.context}
             currentFacility={facilityType}
-            facilityChangeHandler={setFacilityType}
+            facilityChangeHandler={facilityChangeHandler}
+            formDataEmitter={formChangeHandler}
             handleFormSubmit={_handleSubmit}
             handleEditReset={removeEdits}
           ></BMPForm>

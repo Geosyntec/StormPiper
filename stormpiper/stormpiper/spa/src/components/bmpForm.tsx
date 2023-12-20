@@ -55,7 +55,7 @@ type formProps = {
   };
   handleFormSubmit: Function;
   showSubmit?: boolean;
-  formDataEmitter?: Function;
+  formDataEmitter: Function;
   formDisabled?: boolean;
 };
 
@@ -194,17 +194,7 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
             fields.required.includes(k) ||
             costFields?.required?.includes(k) ||
             false,
-          value: props.values
-            ? props.values[k]
-              ? props.values[k]
-              : v.default
-              ? v.default
-              : v.type === "string"
-              ? ""
-              : numDefault
-            : v.type === "string"
-            ? ""
-            : numDefault,
+          value: _setFieldValue(k, v, is_cost_field),
           adornment: getFieldAdornment(k),
           step: overrides?.step || null,
         };
@@ -218,6 +208,30 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
     return res;
   }
 
+  function _setFieldValue(
+    fieldID: string,
+    fieldObj: any,
+    isCostField: boolean
+  ) {
+    if (getValues(fieldID)) {
+      // console.log(`Retaining ${fieldID} value of ${getValues(fieldID)}`);
+      return getValues(fieldID);
+    }
+    const fallbackDefault: any =
+      fieldObj.type === "string" ? "" : isCostField ? null : 0;
+    const defaultValue: any = fieldObj.default || fallbackDefault;
+
+    if (props.values) {
+      // console.log(
+      //   `Resetting ${fieldID} value to r${
+      //     props.values[fieldID] || defaultValue
+      //   }`
+      // );
+
+      return props.values[fieldID] || defaultValue;
+    }
+  }
+
   function _createDefaults(
     simpleStatus: boolean | undefined,
     includeExistingValues: boolean = true
@@ -226,11 +240,16 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
     let defaultValues: {
       [x: string]: string | number | boolean | null | undefined;
     } = {};
-    simpleStatus
-      ? (fieldSet = props.simpleFields)
-      : (fieldSet = props.allFields);
+    // simpleStatus
+    //   ? (fieldSet = props.simpleFields)
+    //   : (fieldSet = props.allFields);
+    fieldSet = props.allFields;
     Object.keys(fieldSet.properties).map((k) => {
-      if (!hiddenFields.includes(k)) {
+      if (k === "node_id") {
+        defaultValues[k] = (props.values && props.values[k]) || "";
+      } else if (k === "facility_type") {
+        defaultValues[k] = getValues("facility_type");
+      } else if (!hiddenFields.includes(k)) {
         let resetValue;
         let numDefault = Object.keys(costFields?.properties || {}).includes(k)
           ? null
@@ -253,10 +272,8 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
             : numDefault;
         }
         defaultValues[k] = resetValue;
-      } else if (k === "node_id") {
-        defaultValues[k] = (props.values && props.values[k]) || "";
-      } else if (k === "facility_type") {
-        defaultValues[k] = props.currentFacility;
+      } else {
+        defaultValues[k] = null; //useForm recommends supplying values for all formFields even if not displayed
       }
     });
     return defaultValues;
@@ -340,10 +357,12 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
                 required={formField.required}
                 {...inputProps}
                 onChange={(e) => {
-                  reset(_createDefaults(isSimple, false));
-                  props.facilityChangeHandler(
-                    e.target.value + (isSimple ? "_simple" : "")
-                  );
+                  let newFacilityType =
+                    e.target.value + (isSimple ? "_simple" : "");
+                  let defaults = _createDefaults(isSimple, false);
+                  reset({ ...defaults, facility_type: newFacilityType });
+                  props.facilityChangeHandler(newFacilityType);
+                  props.formDataEmitter(getValues());
                 }}
                 onClick={() => setIsTouched(true)}
                 disabled={formDisabled}
