@@ -214,7 +214,6 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
     isCostField: boolean
   ) {
     if (getValues(fieldID)) {
-      // console.log(`Retaining ${fieldID} value of ${getValues(fieldID)}`);
       return getValues(fieldID);
     }
     const fallbackDefault: any =
@@ -222,12 +221,6 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
     const defaultValue: any = fieldObj.default || fallbackDefault;
 
     if (props.values) {
-      // console.log(
-      //   `Resetting ${fieldID} value to r${
-      //     props.values[fieldID] || defaultValue
-      //   }`
-      // );
-
       return props.values[fieldID] || defaultValue;
     }
   }
@@ -240,9 +233,6 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
     let defaultValues: {
       [x: string]: string | number | boolean | null | undefined;
     } = {};
-    // simpleStatus
-    //   ? (fieldSet = props.simpleFields)
-    //   : (fieldSet = props.allFields);
     fieldSet = props.allFields;
     Object.keys(fieldSet.properties).map((k) => {
       if (k === "node_id") {
