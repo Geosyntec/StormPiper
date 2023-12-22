@@ -51,8 +51,6 @@ export function ScenarioDelineationDetailResults({ data }) {
     }
   }
 
-  console.log("wide delin results", delinLoadResultWide);
-
   if (delinLoadResultWide.length > 0) {
     delinLoadResultWide.forEach((r) => {
       prepLoadData(r);
