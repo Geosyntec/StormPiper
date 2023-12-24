@@ -143,13 +143,17 @@ def solve_scenario_data(data: dict, force=False, engine=None) -> dict:
         )
         tmnt_facilities = pandas.DataFrame(data["structural_tmnt"])
 
-        result = solve_structural_wq.solve_wq_epochs(
-            edge_list=edge_list,
-            met=met,
-            loading=nereid_load_df,
-            tmnt_facilities=tmnt_facilities,
-            epochs=epochs,
-        ).assign(blob=lambda df: df["blob"].apply(json.loads))
+        result = (
+            solve_structural_wq.solve_wq_epochs(
+                edge_list=edge_list,
+                met=met,
+                loading=nereid_load_df,
+                tmnt_facilities=tmnt_facilities,
+                epochs=epochs,
+            )
+            .assign(blob=lambda df: df["blob"].apply(json.loads))
+            .assign(_watershed=lambda df: df["_watershed"].apply(json.loads))
+        )
 
         result_blob = json.loads(result.to_json(orient="records"))
 

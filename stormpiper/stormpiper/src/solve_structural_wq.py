@@ -64,12 +64,7 @@ def init_treatment_facilities_from_df(
     return treatment_facilities_list
 
 
-def solve_wq(
-    *, edge_list, loading, tmnt_facilities, context: dict[str, Any] | None = None
-) -> pandas.DataFrame:
-    if context is None:  # pragma: no cover
-        context = get_context()
-
+def make_nereid_watershed(edge_list, loading, tmnt_facilities):
     loading_data = init_land_surface_loading_node_data_from_df(df=loading)
     treatment_facilities = init_treatment_facilities_from_df(df=tmnt_facilities)
 
@@ -81,9 +76,18 @@ def solve_wq(
 
     # prep for nereid call
 
-    ## serialise the graph with data
+    ## serialize the graph with data
     graph = nxGraph_to_dict(g)
     watershed = dict(graph=graph, treatment_facilities=treatment_facilities)
+
+    return watershed
+
+
+def solve_wq(
+    *, watershed, edge_list, context: dict[str, Any] | None = None
+) -> pandas.DataFrame:
+    if context is None:  # pragma: no cover
+        context = get_context()
 
     response_dict = solve_watershed(
         watershed=watershed,
@@ -113,6 +117,7 @@ def solve_wq(
             {
                 "node_id": n.get("node_id"),
                 "blob": json.dumps(n, sort_keys=True),
+                "_watershed": json.dumps(watershed, sort_keys=True),
                 **{c: n.get(c, None) for c in COLS},
             }
             for n in result
@@ -150,10 +155,15 @@ def solve_wq_epochs(
             design_storm_depth_inches=design_storm_depth_inches
         ).assign(ref_data_key=ref_data_key)
 
-        res_df = solve_wq(
+        watershed = make_nereid_watershed(
             edge_list=edge_list,
             loading=epoch_loading_df,
             tmnt_facilities=tmnt_facilities_df,
+        )
+
+        res_df = solve_wq(
+            watershed=watershed,
+            edge_list=edge_list,
             context=context,
         ).assign(epoch=epoch)
 
