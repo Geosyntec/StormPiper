@@ -116,8 +116,9 @@ def solve_wq(
         [
             {
                 "node_id": n.get("node_id"),
-                "blob": json.dumps(n, sort_keys=True),
-                "_watershed": json.dumps(watershed, sort_keys=True),
+                "blob": json.dumps(
+                    {**n, "_watershed": watershed}, sort_keys=True, default=str
+                ),
                 **{c: n.get(c, None) for c in COLS},
             }
             for n in result
