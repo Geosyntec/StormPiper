@@ -1,5 +1,6 @@
 import asyncio
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import Any
 
 import aiohttp
@@ -9,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from nereid.factory import create_app as create_nereid_app
 from ratelimit import RateLimitMiddleware, Rule
 from ratelimit.backends.redis import RedisBackend
 from redis.asyncio import StrictRedis
@@ -134,6 +136,24 @@ def create_app(
         StaticFiles(directory="stormpiper/spa/build/assets"),
         name="app",
     )
+
+    nereid_app = create_nereid_app(
+        settings_override={
+            "ASYNC_MODE": "add",
+            "DATA_DIRECTORY": Path(__file__).parent / "data" / "project_data",
+        },
+        app_kwargs={"docs_url": "", "dependencies": [Depends(user_role_ge_admin)]},
+    )
+
+    @nereid_app.get("/docs", include_in_schema=False)
+    async def nereid_custom_swagger_ui_html():
+        resp = get_better_swagger_ui_html(
+            openapi_url="/api/nereid" + str(nereid_app.openapi_url),
+            title=nereid_app.title + " - Swagger UI",
+        )
+        return resp
+
+    app.mount("/api/nereid", nereid_app, name="nereid")
 
     templates = Jinja2Templates(directory="stormpiper/spa/build")
 
