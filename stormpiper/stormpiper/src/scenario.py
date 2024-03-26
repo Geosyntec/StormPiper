@@ -149,6 +149,7 @@ def solve_scenario_data(data: dict, force=False, engine=None) -> dict:
             loading=nereid_load_df,
             tmnt_facilities=tmnt_facilities,
             epochs=epochs,
+            embed_watershed=True,
         ).assign(blob=lambda df: df["blob"].apply(json.loads))
 
         result_blob = json.loads(result.to_json(orient="records"))

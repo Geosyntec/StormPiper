@@ -1,17 +1,24 @@
 import json
+import logging
 from typing import Any, Hashable
 
 import networkx as nx
 import pandas
 from nereid.src.network.utils import nxGraph_to_dict
 from nereid.src.tasks import solve_watershed
+from nereid.src.network.validate import is_valid, validate_network
 
 from stormpiper.core.context import get_context
+from stormpiper.core.config import settings
 from stormpiper.database.connection import engine
 from stormpiper.database.schemas.results import COLS
 
 from .loading import land_surface_load_to_structural_from_db
 from .organics import add_virtual_pocs_to_wide_load_summary
+
+
+logging.basicConfig(level=settings.LOGLEVEL)
+logger = logging.getLogger(__name__)
 
 
 def get_graph_edges_from_db(connectable):
@@ -71,6 +78,10 @@ def make_nereid_watershed(edge_list, loading, tmnt_facilities):
     # make a fresh graph
     g = init_graph_from_df(edge_list=edge_list)
 
+    if not is_valid(g):
+        msg = validate_network(g)
+        raise Exception(f"network is invalid: {msg}")
+
     # set loading data
     nx.set_node_attributes(g, loading_data)
 
@@ -84,7 +95,11 @@ def make_nereid_watershed(edge_list, loading, tmnt_facilities):
 
 
 def solve_wq(
-    *, watershed, edge_list, context: dict[str, Any] | None = None
+    *,
+    watershed,
+    edge_list,
+    context: dict[str, Any] | None = None,
+    embed_watershed: bool = False,
 ) -> pandas.DataFrame:
     if context is None:  # pragma: no cover
         context = get_context()
@@ -111,14 +126,13 @@ def solve_wq(
     )
 
     result = json.loads(_r_df.to_json(orient="records"))
+    ws = {"_watershed": watershed} if embed_watershed else {}
 
     res_df = pandas.DataFrame(
         [
             {
                 "node_id": n.get("node_id"),
-                "blob": json.dumps(
-                    {**n, "_watershed": watershed}, sort_keys=True, default=str
-                ),
+                "blob": json.dumps({**n, **ws}, sort_keys=True, default=str),
                 **{c: n.get(c, None) for c in COLS},
             }
             for n in result
@@ -135,13 +149,15 @@ def solve_wq_epochs(
     loading,
     tmnt_facilities,
     epochs: list[str],
-    context: dict[str, Any] | None = None
+    context: dict[str, Any] | None = None,
+    embed_watershed: bool = False,
 ):
     if context is None:  # pragma: no cover
         context = get_context()
     results_per_epoch_dfs = []
 
     for epoch in epochs:
+        logger.info(f"starting epoch {epoch}...")
         # TODO: loading should be _after_ applying upstream source controls
         epoch_loading_df = loading.query("epoch==@epoch").assign(
             node_type="land_surface"
@@ -162,13 +178,18 @@ def solve_wq_epochs(
             tmnt_facilities=tmnt_facilities_df,
         )
 
+        logger.info(f"built watershed for epoch {epoch}.")
+
         res_df = solve_wq(
             watershed=watershed,
             edge_list=edge_list,
             context=context,
+            embed_watershed=embed_watershed,
         ).assign(epoch=epoch)
 
         results_per_epoch_dfs.append(res_df)
+
+        logger.info(f"solved wq for epoch {epoch}.")
 
     results_blob = pandas.concat(results_per_epoch_dfs).reset_index(drop=True)
 
@@ -216,6 +237,7 @@ def solve_wq_epochs_from_db(engine=engine):
 
     epochs = list(met.epoch.unique())
     context = get_context()
+    logger.info("solve_wq_epochs_from_db data fetch completed...")
     results_blob = solve_wq_epochs(
         epochs=epochs,
         edge_list=edge_list,
