@@ -8,6 +8,7 @@ import sqlalchemy as sa
 
 from stormpiper.core.config import POCS, settings
 from stormpiper.core.utils import datetime_now
+from stormpiper.database.changelog import sync_log
 from stormpiper.database.connection import engine, get_session
 from stormpiper.database.schemas.scenario import Scenario
 from stormpiper.database.utils import orm_to_dict
@@ -181,5 +182,8 @@ def solve_scenario_db(data: dict, engine=engine) -> dict:
         )
         res = session.scalars(q).first()
         res = orm_to_dict(res)
+
+        logger.info("recording table change...")
+        sync_log(tablename="scenario", db=session)
 
     return res

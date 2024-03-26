@@ -51,8 +51,7 @@ def run_in_chain(func, *args, **kwargs):
     return True
 
 
-class IncompleteChainError(Exception):
-    ...
+class IncompleteChainError(Exception): ...
 
 
 @celery_app.task(acks_late=True, track_started=True)
@@ -282,9 +281,6 @@ def compute_scenario_results(data: dict):
 
 @celery_app.task(base=Singleton, acks_late=True, track_started=True)
 def update_all_scenario_results(data_list: list[dict], force: bool = False):
-    raise DeprecationWarning(
-        "this functionality should be supported by the frontend, not the backend."
-    )
     _ = group(
         update_scenario_results.s(data=data, force=force) for data in data_list
     )().get(disable_sync_subtasks=False)

@@ -231,16 +231,12 @@ async def solve_single_scenario(
     "/solve_all_scenarios", name="scenario:solve_all", response_model=TaskModel
 )
 async def solve_all_scenarios(
-    force: bool = Query(False),
-    # db: AsyncSession = Depends(get_async_session),
+    db: AsyncSessionDB, force: bool = Query(False)
 ):  # pragma: no cover
-    raise DeprecationWarning(
-        "this functionality should be supported by the frontend, not the backend."
-    )
     attrs = await crud.scenario.get_all(db=db)
 
     if not attrs:
-        raise HTTPException(status_code=404, detail=f"Records not found.")
+        raise HTTPException(status_code=404, detail="Scenario records not found.")
 
     data_list = [
         ScenarioSolve(**utils.orm_to_dict(attr)).dict(exclude_unset=True)
@@ -251,9 +247,7 @@ async def solve_all_scenarios(
         kwargs={"data_list": data_list, "force": force}
     )
 
-    response = dict(task_id=task.task_id, status=task.status)
-
-    return response
+    return await generate_task_response(task=task)
 
 
 @rpc_router.post("/solve_scenario", name="scenario:solve", response_model=TaskModel)
