@@ -5,17 +5,16 @@ from typing import Any, Hashable
 import networkx as nx
 import pandas
 from nereid.src.network.utils import nxGraph_to_dict
-from nereid.src.tasks import solve_watershed
 from nereid.src.network.validate import is_valid, validate_network
+from nereid.src.tasks import solve_watershed
 
-from stormpiper.core.context import get_context
 from stormpiper.core.config import settings
+from stormpiper.core.context import get_context
 from stormpiper.database.connection import engine
 from stormpiper.database.schemas.results import COLS
 
 from .loading import land_surface_load_to_structural_from_db
 from .organics import add_virtual_pocs_to_wide_load_summary
-
 
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
