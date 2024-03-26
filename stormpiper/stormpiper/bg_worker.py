@@ -51,7 +51,8 @@ def run_in_chain(func, *args, **kwargs):
     return True
 
 
-class IncompleteChainError(Exception): ...
+class IncompleteChainError(Exception):
+    ...
 
 
 @celery_app.task(acks_late=True, track_started=True)
