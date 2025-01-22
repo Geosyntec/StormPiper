@@ -40,6 +40,13 @@ spec:
       containers:
         - name: stormpiper
           image: gcr.io/tacoma-app/stormpiper-pod
+          resources:
+            requests:
+              memory: 512Mi
+              cpu: 250m
+            limits:
+              memory: 1Gi
+              cpu: 500m
           imagePullPolicy: Always
           ports:
             - name: web

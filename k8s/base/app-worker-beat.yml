@@ -19,6 +19,13 @@ spec:
       containers:
         - name: beat
           image: gcr.io/tacoma-app/bg_worker
+          resources:
+            requests:
+              memory: 512Mi
+              cpu: 250m
+            limits:
+              memory: 1Gi
+              cpu: 500m
           command:
             - /run-beat.sh
           imagePullPolicy: Always
