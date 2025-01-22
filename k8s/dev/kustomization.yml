@@ -1,8 +1,12 @@
 resources:
   - ../base
 nameSuffix: -dev
-commonLabels:
-  app: stormpiper-dev
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+labels:
+- includeSelectors: true
+  pairs:
+    app: stormpiper-dev
 images:
   - name: gcr.io/tacoma-app/stormpiper-pod
     newName: gcr.io/tacoma-app/stormpiper-pod
@@ -13,22 +17,22 @@ images:
   - name: gcr.io/tacoma-app/redis
     newName: gcr.io/tacoma-app/redis
     newTag: edge
-patchesJSON6902:
-  - target:
+patches:
+  - path: secrets.yml
+    target:
       group: apps
-      version: v1
       kind: Deployment
-      name: stormpiper-dev
-    path: secrets.yml
-  - target:
+      name: stormpiper
+      version: v1
+  - path: secrets.yml
+    target:
       group: apps
-      version: v1
       kind: Deployment
-      name: worker-dev
-    path: secrets.yml
-  - target:
+      name: worker
+      version: v1
+  - path: secrets.yml
+    target:
       group: apps
-      version: v1
       kind: Deployment
-      name: beat-dev
-    path: secrets.yml
+      name: beat
+      version: v1
