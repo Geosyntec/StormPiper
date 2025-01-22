@@ -19,6 +19,13 @@ spec:
       containers:
         - name: worker
           image: gcr.io/tacoma-app/bg_worker
+          resources:
+            requests:
+              memory: 1500Mi
+              cpu: 250m
+            limits:
+              memory: 2Gi
+              cpu: 500m
           command:
             - /run-worker.sh
           imagePullPolicy: Always
