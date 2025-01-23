@@ -24,3 +24,9 @@ Update env vars if needed and then run from the project directory, rather than f
  kubectl rollout restart deploy --selector=app=stormpiper-dev
  kubectl rollout restart deploy --selector=app=stormpiper-prod
 ```
+
+# check usage recommendations
+
+```
+ kubectl get vpa worker-dev -o yaml
+```

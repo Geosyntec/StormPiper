@@ -21,14 +21,31 @@ spec:
           image: gcr.io/tacoma-app/bg_worker
           resources:
             requests:
-              memory: 1500Mi
-              cpu: 250m
+              memory: 512Mi
+              cpu: 100m
             limits:
               memory: 2Gi
-              cpu: 500m
+              cpu: 1000m
           command:
             - /run-worker.sh
           imagePullPolicy: Always
           envFrom:
             - secretRef:
                 name: prod-secrets
+
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: worker
+spec:
+  targetRef:
+    kind: Deployment
+    name: worker-prod
+    apiVersion: apps/v1
+  updatePolicy:
+    updateMode: Off
+  resourcePolicy:
+    containerPolicies:
+      - mode: 'Auto'
+        containerName: '*'

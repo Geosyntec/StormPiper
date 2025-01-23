@@ -36,3 +36,35 @@ patches:
       kind: Deployment
       name: beat
       version: v1
+  - target:
+      version: v1
+      kind: VerticalPodAutoscaler
+      name: redis
+    patch: |-
+      - op: replace
+        path: /spec/targetRef/name
+        value: redis-dev
+  - target:
+      version: v1
+      kind: VerticalPodAutoscaler
+      name: beat
+    patch: |-
+      - op: replace
+        path: /spec/targetRef/name
+        value: beat-dev
+  - target:
+      version: v1
+      kind: VerticalPodAutoscaler
+      name: worker
+    patch: |-
+      - op: replace
+        path: /spec/targetRef/name
+        value: worker-dev
+  - target:
+      version: v1
+      kind: VerticalPodAutoscaler
+      name: stormpiper
+    patch: |-
+      - op: replace
+        path: /spec/targetRef/name
+        value: stormpiper-dev
