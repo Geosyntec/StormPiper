@@ -38,11 +38,28 @@ spec:
           image: gcr.io/tacoma-app/redis
           resources:
             requests:
-              memory: 512Mi
-              cpu: 250m
+              memory: 128Mi
+              cpu: 50m
             limits:
               memory: 1Gi
-              cpu: 500m
+              cpu: 200m
           imagePullPolicy: Always
           ports:
             - containerPort: 6379
+
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: redis
+spec:
+  targetRef:
+    kind: Deployment
+    name: redis-prod
+    apiVersion: apps/v1
+  updatePolicy:
+    updateMode: Off
+  resourcePolicy:
+    containerPolicies:
+      - mode: 'Auto'
+        containerName: '*'
