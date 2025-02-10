@@ -40,7 +40,7 @@ def run_in_chain(func, *args, **kwargs):
     logger.info(f"background {func.__name__} has started running.")
     continue_chain = kwargs.pop("continue_chain", True)
     if not continue_chain:
-        raise IncompleteChainError(f"A task failed and broke the chain.")
+        raise IncompleteChainError("A task failed and broke the chain.")
     try:
         func(*args, **kwargs)
     except Exception as e:
@@ -51,8 +51,7 @@ def run_in_chain(func, *args, **kwargs):
     return True
 
 
-class IncompleteChainError(Exception):
-    ...
+class IncompleteChainError(Exception): ...
 
 
 @celery_app.task(acks_late=True, track_started=True)
