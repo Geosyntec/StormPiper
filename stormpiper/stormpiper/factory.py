@@ -5,7 +5,7 @@ from typing import Any
 
 import aiohttp
 from brotli_asgi import BrotliMiddleware
-from fastapi import Depends, FastAPI, Request, Response
+from fastapi import Depends, FastAPI, Request, Response, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -15,6 +15,7 @@ from ratelimit import RateLimitMiddleware, Rule
 from ratelimit.backends.redis import RedisBackend
 from redis.asyncio import StrictRedis
 
+import stormpiper.bg_worker as bg
 from stormpiper.api import api_router, rpc_router
 from stormpiper.api.docs import get_better_swagger_ui_html
 from stormpiper.apps import ratelimiter
@@ -113,6 +114,12 @@ def create_app(
     async def ping(
         request: Request,
     ) -> dict:
+        task = bg.ping.apply_async().get()
+        if not task:
+            raise HTTPException(
+                status_code=406, detail="cannot connect to background worker."
+            )
+
         msg = {
             "message": "welcome home.",
             "version": _settings.VERSION,
@@ -121,6 +128,7 @@ def create_app(
                 "login:get_login"
             ),
             "redirect_url_for": str(request.url_for("login:get_login")),
+            "has_worker": task,
         }
 
         return msg
