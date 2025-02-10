@@ -1,6 +1,7 @@
 import asyncio
 import base64
 import logging
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import geopandas
 import pandas
@@ -13,17 +14,66 @@ logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
 
 
-def get_features(url: str | bytes) -> list:
-    response = requests.get(url)
-    js = response.json()
+def get_urls_parallel(urls, getter=requests.get, max_workers=None):
+    completed = []
+    with ThreadPoolExecutor(max_workers) as executor:
+        futures = [executor.submit(getter, url=url) for i, url in enumerate(urls)]
 
-    features = js.get("features", None)
-    return [] if features is None else features
+        for future in as_completed(futures):
+            res = future.result()
+            completed.append(res)
+            logger.info(f"result status: {res.status_code} {res.url}")
+
+    return completed
+
+
+def build_esri_geojson_urls(
+    *,
+    url: str | bytes,
+    chunksize: int = 500,
+    fields: tuple[str, ...] | str = "*",
+    max_records: int | None = None,
+):
+    url_base = str(url).split("/query?")[0]
+    total_records = (
+        requests.get(url_base + "/query?where=1%3D1&returnCountOnly=true&f=json")
+        .json()
+        .get("count")
+    )
+
+    max_records = min(total_records, max_records or total_records)
+    if not max_records:  # pragma: no cover
+        raise ValueError(f"No Data to Process at {url_base}")
+
+    q = (
+        "/query?where=1%3D1&outFields={fields}&returnGeometry=true&"
+        "resultOffset={offset}&resultRecordCount={chunksize}&f=geojson"
+    )
+    urls = [
+        url_base + q.format(offset=offset, chunksize=chunksize, fields=",".join(fields))
+        for offset in [i * chunksize for i in range(0, max_records // chunksize + 1)]
+    ]
+
+    return urls
+
+
+def get_features(url: str | bytes) -> list:
+    urls = build_esri_geojson_urls(url=url)
+    responses = get_urls_parallel(urls=urls)
+    features = []
+    for r in responses:
+        try:
+            js = r.json()
+        except Exception as e:
+            print(r.content)
+            raise e
+        features.extend(js.get("features", []))
+    return features
 
 
 def _get_tmnt_facility_type_codes(*, url: str | bytes | None = None) -> dict[str, str]:
     if url is None:  # pragma: no branch
-        url = external_resources.get("tmnt_facility_codes", {}).get("url", "")
+        url = str(external_resources.get("tmnt_facility_codes", {}).get("url", ""))
     r = requests.get(url)
     data = r.json()
 
@@ -39,11 +89,10 @@ def _get_tmnt_facility_type_codes(*, url: str | bytes | None = None) -> dict[str
 
 def _get_tmnt_facilities(*, url: str | bytes | None = None) -> geopandas.GeoDataFrame:
     if url is None:  # pragma: no branch
-        url = external_resources.get("tmnt_facilities", {}).get("url", "")
+        url = str(external_resources.get("tmnt_facilities", {}).get("url", ""))
 
     features = get_features(url=url)
     gdf = geopandas.GeoDataFrame.from_features(features=features, crs=4326)
-
     return gdf
 
 
@@ -244,7 +293,7 @@ def get_subbasin_metrics(*, url=None):
     if url is None:  # pragma: no branch
         url = external_resources["subbasin_metrics"]["url"]
 
-    features = [f.get("attributes", {}) for f in get_features(url)]
+    features = [f.get("properties", {}) for f in get_features(url)]
     df = (
         pandas.DataFrame(features)
         .rename(columns=lambda c: c.lower())
