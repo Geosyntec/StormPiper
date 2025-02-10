@@ -1,9 +1,9 @@
 {
   "tmnt_facility_codes": {
-    "url": "https://services3.arcgis.com/SCwJH1pD8WSn5T5y/arcgis/rest/services/swFacilities/FeatureServer/0/query?where=1%3D1&outFields=*&returnQueryGeometry=false&resultRecordCount=1&f=pjson"
+    "url": "https://services3.arcgis.com/SCwJH1pD8WSn5T5y/arcgis/rest/services/swFacilities/FeatureServer/0/query?where=1%3D1&outFields=*&returnGeometry=false&resultRecordCount=1&f=json"
   },
   "tmnt_facilities": {
-    "url": "https://services3.arcgis.com/SCwJH1pD8WSn5T5y/arcgis/rest/services/swFacilities/FeatureServer/0/query?where=1%3D1&outFields=*&returnGeometry=true&f=geojson",
+    "url": "https://services3.arcgis.com/SCwJH1pD8WSn5T5y/arcgis/rest/services/swFacilities/FeatureServer/0",
     "old_url": "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/21/query?where=1%3D1&outFields=*&returnGeometry=true&f=pjson",
     "columns": [
       "ALTID",
@@ -19,15 +19,15 @@
     ]
   },
   "tmnt_facility_delineations": {
-    "url": "https://services3.arcgis.com/SCwJH1pD8WSn5T5y/arcgis/rest/services/swFacilitiesContAreas/FeatureServer/1/query?where=1%3D1&outFields=*&returnGeometry=true&f=geojson",
+    "url": "https://services3.arcgis.com/SCwJH1pD8WSn5T5y/arcgis/rest/services/swFacilitiesContAreas/FeatureServer/1",
     "old_url": "error unknown Url"
   },
   "subbasins": {
-    "url": "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/41/query?where=1%3D1&outFields=*&returnGeometry=true&f=geojson",
+    "url": "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/41",
     "columns": ["BASINNAME", "SUBBASIN", "geometry"]
   },
   "equity_index": {
-    "url": "https://gis.cityoftacoma.org/arcgis/rest/services/General/Equity2020/MapServer/1/query?where=1%3D1&outFields=*&f=geojson&returnGeometry=true",
+    "url": "https://gis.cityoftacoma.org/arcgis/rest/services/General/Equity2020/MapServer/1",
     "columns": [
       "Access",
       "Economic_Value",
@@ -38,6 +38,6 @@
     ]
   },
   "subbasin_metrics": {
-    "url": "https://services3.arcgis.com/SCwJH1pD8WSn5T5y/arcgis/rest/services/swSubbasinMetrics/FeatureServer/56/query?f=pjson&where=1%3D1&outFields=*"
+    "url": "https://services3.arcgis.com/SCwJH1pD8WSn5T5y/arcgis/rest/services/swSubbasinMetrics/FeatureServer/56"
   }
 }
