@@ -5,7 +5,7 @@ from typing import Any
 
 import aiohttp
 from brotli_asgi import BrotliMiddleware
-from fastapi import Depends, FastAPI, Request, Response, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
