@@ -1,12 +1,12 @@
-FROM redis:6.2.12-alpine3.18 as redis
+FROM redis:6.2.12-alpine3.18 AS redis
 COPY ./stormpiper/redis.conf /redis.conf
 CMD ["redis-server", "/redis.conf"]
 
 
-FROM postgis/postgis:14-3.3 as postgis
+FROM postgis/postgis:14-3.3 AS postgis
 
 
-FROM node:18.16.0-bullseye as build-frontend
+FROM node:18.16.0-bullseye AS build-frontend
 WORKDIR /app
 COPY ./stormpiper/stormpiper/spa/package*.json /app/
 RUN npm install
@@ -14,7 +14,7 @@ COPY ./stormpiper/stormpiper/spa /app/
 RUN npm run build
 
 
-FROM python:3.11.4-slim-bullseye as core-runtime
+FROM python:3.11.4-slim-bullseye AS core-runtime
 RUN apt-get update -y \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /stormpiper
@@ -22,7 +22,7 @@ ENV PYTHONPATH=/stormpiper
 ENV PATH=/opt/venv/bin:$PATH
 
 
-FROM core-runtime as base-app
+FROM core-runtime AS base-app
 COPY ./stormpiper/scripts /
 COPY ./stormpiper/alembic.ini /stormpiper/alembic.ini
 COPY ./stormpiper/prestart.sh /stormpiper/prestart.sh
@@ -32,13 +32,13 @@ COPY --from=build-frontend /app/build /stormpiper/stormpiper/spa/build
 RUN chmod +x /start.sh /start-pod.sh /start-reload.sh /start-test-container.sh
 
 
-FROM python:3.11.4-bullseye as base-builder
+FROM python:3.11.4-bullseye AS base-builder
 RUN apt-get update -y \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean \
     && pip install -U pip wheel setuptools
 
-FROM base-builder as builder
+FROM base-builder AS builder
 COPY ./stormpiper/requirements.txt /requirements.txt
 RUN mkdir /core \
     && pip wheel \
@@ -50,7 +50,7 @@ RUN mkdir /gunicorn \
     gunicorn==20.1.0
 
 
-FROM python:3.11.4-slim-bullseye as core-env
+FROM python:3.11.4-slim-bullseye AS core-env
 RUN pip install -U pip wheel setuptools
 COPY --from=builder /core /core
 COPY ./stormpiper/requirements.txt /requirements.txt
@@ -65,13 +65,13 @@ RUN pip install \
     && rm -rf /core/*
 
 
-FROM base-app as stormpiper-pod
+FROM base-app AS stormpiper-pod
 COPY --from=core-env /opt/venv /opt/venv
 EXPOSE 80
 CMD /start-pod.sh
 
 
-FROM stormpiper-pod as stormpiper-test
+FROM stormpiper-pod AS stormpiper-test
 COPY ./stormpiper/requirements_test.txt /requirements_test.txt
 COPY ./stormpiper/pytest.ini /stormpiper/pytest.ini
 COPY ./stormpiper/prestart-tests.sh /stormpiper/prestart-tests.sh
@@ -81,7 +81,7 @@ COPY .coveragerc /stormpiper/.coveragerc
 CMD ["bash", "-c", "while true; do sleep 1; done"]
 
 
-FROM core-runtime as bg_worker
+FROM core-runtime AS bg_worker
 # Add a user with an explicit UID/GID and create necessary directories
 ENV IMG_USER=bg_worker
 RUN addgroup --gid 1000 ${IMG_USER} \
@@ -97,7 +97,7 @@ RUN chmod gu+x /run-worker.sh /run-beat.sh /stormpiper/prestart-worker.sh
 CMD ["/run-worker.sh"]
 
 
-FROM core-env as server-env
+FROM core-env AS server-env
 COPY --from=builder /gunicorn /gunicorn
 RUN pip install \
     --no-index \
@@ -107,13 +107,13 @@ RUN pip install \
     && rm -rf /gunicorn/*
 
 
-FROM base-app as stormpiper
+FROM base-app AS stormpiper
 COPY --from=server-env /opt/venv /opt/venv
 COPY ./stormpiper/gunicorn_conf.py /gunicorn_conf.py
 EXPOSE 80
 
 
-FROM base-builder as stormpiper-unpinned
+FROM base-builder AS stormpiper-unpinned
 COPY ./stormpiper/requirements_unpinned.txt /requirements_unpinned.txt
 RUN pip install -r /requirements_unpinned.txt
 
