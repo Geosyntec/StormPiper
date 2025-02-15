@@ -45,7 +45,9 @@ def delete_and_refresh_tmnt_facility_table(
 
     logger.info("deleting and replacing tmnt_facility table")
     delete_and_replace_postgis_table(
-        gdf=gdf, table_name="tmnt_facility", engine=engine  # type: ignore
+        gdf=gdf,
+        table_name="tmnt_facility",
+        engine=engine,  # type: ignore
     )
     logger.info("TASK COMPLETE: replaced tmnt_facility table.")
 
@@ -87,7 +89,9 @@ def delete_and_refresh_subbasin_table(
 
     logger.info("deleting and replacing subbasin table")
     delete_and_replace_postgis_table(
-        gdf=gdf, table_name="subbasin", engine=engine  # type: ignore
+        gdf=gdf,
+        table_name="subbasin",
+        engine=engine,  # type: ignore
     )
     logger.info("TASK COMPLETE: replaced subbasin table.")
 
@@ -104,7 +108,7 @@ def delete_and_refresh_lgu_boundary_table(*, engine=engine):  # pragma: no cover
         .reset_index(drop=True)
         .assign(id=lambda df: df.index.values + 1)
         .rename_geometry("geom")
-        .reindex(columns=LGU_BOUNDARY_FIELDS)
+        .reindex(columns=LGU_BOUNDARY_FIELDS)  # type: ignore
     )
 
     logger.info("deleting and replacing lgu_boundary table")

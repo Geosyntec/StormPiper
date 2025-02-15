@@ -30,6 +30,6 @@ async def get_ee_assets() -> dict[str, Any]:  # pragma: no cover
     rsp = await run_in_threadpool(ee.assets)
 
     if not rsp:  # pragma: no cover
-        raise HTTPException(status_code=404, detail=f"not found")
+        raise HTTPException(status_code=404, detail="not found")
 
     return rsp

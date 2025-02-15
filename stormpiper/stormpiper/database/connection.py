@@ -1,15 +1,15 @@
 import logging
-from typing import Annotated, AsyncIterator
+from typing import Annotated, AsyncIterator, TypeAlias
 
 from fastapi import Depends
 from sqlalchemy import create_engine, text
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
-from tenacity import after_log  # type: ignore
-from tenacity import before_log  # type: ignore
-from tenacity import stop_after_attempt  # type: ignore
-from tenacity import wait_fixed  # type: ignore
 from tenacity import retry
+from tenacity.after import after_log
+from tenacity.before import before_log
+from tenacity.stop import stop_after_attempt
+from tenacity.wait import wait_fixed
 
 from stormpiper.core.config import settings
 
@@ -22,7 +22,6 @@ engine_params = {
     # Temporarily exceeds the set pool_size if no connections are available.
     "max_overflow": 2,
     "pool_timeout": 10 * 60,  # seconds
-    "pool_recycle": 6 * 3600,  # seconds
     "pool_pre_ping": True,
 }
 
@@ -38,16 +37,18 @@ async_engine = create_async_engine(
 
 
 async_session_maker = sessionmaker(
-    async_engine, class_=AsyncSession, expire_on_commit=False
+    async_engine,  # type: ignore
+    class_=AsyncSession,
+    expire_on_commit=False,
 )
 
 
 async def get_async_session() -> AsyncIterator[AsyncSession]:
-    async with async_session_maker() as session:
+    async with async_session_maker() as session:  # type: ignore
         yield session
 
 
-AsyncSessionDB = Annotated[AsyncSession, Depends(get_async_session)]
+AsyncSessionDB: TypeAlias = Annotated[AsyncSession, Depends(get_async_session)]
 
 
 def get_session(engine=engine):

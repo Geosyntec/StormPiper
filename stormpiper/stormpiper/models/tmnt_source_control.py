@@ -21,13 +21,11 @@ class TMNTSourceControlBase(BaseModel):
 
 
 # Properties to recieve at the /post route handler
-class TMNTSourceControlPost(TMNTSourceControlBase):
-    ...
+class TMNTSourceControlPost(TMNTSourceControlBase): ...
 
 
 # Properties to receive at the /patch route handler
-class TMNTSourceControlPatch(TMNTSourceControlBase):
-    ...
+class TMNTSourceControlPatch(TMNTSourceControlBase): ...
 
 
 # Properties to store in DB during update
@@ -36,8 +34,7 @@ class TMNTSourceControlUpdate(TMNTSourceControlPatch):
 
 
 # Properties to store in DB during creation
-class TMNTSourceControlCreate(TMNTSourceControlUpdate):
-    ...
+class TMNTSourceControlCreate(TMNTSourceControlUpdate): ...
 
 
 # Properties shared by models stored in DB
@@ -46,5 +43,4 @@ class TMNTSourceControlInDBBase(BaseORM, TMNTSourceControlBase):
 
 
 # Properties to return to client
-class TMNTSourceControl(TMNTSourceControlInDBBase):
-    ...
+class TMNTSourceControl(TMNTSourceControlInDBBase): ...

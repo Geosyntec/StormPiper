@@ -232,7 +232,7 @@ def solve_wq_epochs_from_db(engine=engine):
         met = pandas.read_sql("met", con=conn)
 
         # get all loading data for all epochs. will query it down later.
-        loading = land_surface_load_to_structural_from_db(epoch=None, connectable=conn)
+        loading = land_surface_load_to_structural_from_db(epoch=None, connectable=conn)  # type: ignore
 
     epochs = list(met.epoch.unique())
     context = get_context()

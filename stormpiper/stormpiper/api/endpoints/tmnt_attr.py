@@ -32,7 +32,7 @@ router = APIRouter(dependencies=[Depends(user_role_ge_reader)])
 )
 async def get_tmnt_attr(node_id: str, db: AsyncSessionDB):
     result = await db.execute(
-        select(tmnt.TMNT_View).where(tmnt.TMNT_View.node_id == node_id)
+        select(tmnt.TMNT_View).where(tmnt.TMNT_View.node_id == node_id)  # type: ignore
     )
 
     if not result:  # pragma: no cover
@@ -118,7 +118,7 @@ async def patch_tmnt_attr(
         )
 
     result = await db.execute(
-        select(tmnt.TMNT_View).where(tmnt.TMNT_View.node_id == node_id)
+        select(tmnt.TMNT_View).where(tmnt.TMNT_View.node_id == node_id)  # type: ignore
     )
     return result.scalars().first()
 

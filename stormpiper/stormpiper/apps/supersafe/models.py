@@ -36,8 +36,7 @@ class UserRead(UserExtras, schemas.BaseUser[uuid.UUID]):
     readonly_token: uuid.UUID | None = None
 
 
-class UserRegister(UserExtras, schemas.BaseUserCreate):
-    ...
+class UserRegister(UserExtras, schemas.BaseUserCreate): ...
 
 
 class UserCreate(UserExtras, schemas.BaseUserCreate):

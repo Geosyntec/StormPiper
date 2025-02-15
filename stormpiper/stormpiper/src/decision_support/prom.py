@@ -1,7 +1,9 @@
 import logging
+import warnings
 from typing import Sequence
 
 import geopandas
+import numpy
 from pymcdm.methods import PROMETHEE_II
 from pymcdm.normalizations import minmax_normalization
 
@@ -23,7 +25,9 @@ def run_promethee_ii(
 
     logger.debug(f"types: {types}\nweights: {weights}")
 
-    scores = promethee_ii(matrix, weights, types)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        scores = promethee_ii(matrix, numpy.array(weights), numpy.array(types))
     scores = minmax_normalization(scores) * 100
 
     return scores
@@ -36,7 +40,7 @@ def run_subbasins_promethee_prioritization(
     engine=engine,
 ) -> geopandas.GeoDataFrame:
     sub_results = geopandas.read_postgis(
-        f"select * from subbasininfo_v order by subbasin",
+        "select * from subbasininfo_v order by subbasin",
         con=engine,
     ).assign(  # type: ignore
         score=lambda df: run_promethee_ii(

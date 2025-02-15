@@ -25,18 +25,18 @@ router = APIRouter()
 )
 async def get_all_results(
     db: AsyncSessionDB,
-    ntype: NType | None = None,  # type: ignore
+    ntype: NType | None = None,
     limit: int | None = Query(int(1e6)),
     offset: int | None = Query(0),
-    epoch: Epoch | None = Query("1980s", example="1980s"),  # type: ignore
+    epoch: Epoch | None = Query("1980s"),
 ):
     q = select(results.ResultBlob)
 
-    epoch = epoch or "1980s"
+    epoch = epoch or "1980s"  # type: ignore
     if epoch != "all":
-        q = q.where(results.ResultBlob.epoch == epoch)
+        q = q.where(results.ResultBlob.epoch == epoch)  # type: ignore
     if ntype is not None:
-        q = q.where(results.ResultBlob.ntype == ntype)
+        q = q.where(results.ResultBlob.ntype == ntype)  # type: ignore
 
     q = q.offset(offset).limit(limit)
 
@@ -75,11 +75,11 @@ async def get_result(
     node_id: str = Path(..., title="node id or altid", example="SWFA-100002"),
     epoch: Epoch | None = Query("1980s", example="1980s"),  # type: ignore
 ):
-    q = select(results.ResultBlob).where(results.ResultBlob.node_id == node_id)
+    q = select(results.ResultBlob).where(results.ResultBlob.node_id == node_id)  # type: ignore
 
-    epoch = epoch or "1980s"
+    epoch = epoch or "1980s"  # type: ignore
     if epoch != "all":
-        q = q.where(results.ResultBlob.epoch == epoch)
+        q = q.where(results.ResultBlob.epoch == epoch)  # type: ignore
 
     result = await db.execute(q)
     scalar = result.scalars().all()

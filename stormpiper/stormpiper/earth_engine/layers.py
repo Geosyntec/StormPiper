@@ -175,12 +175,12 @@ def _init_tile_registry():  # pragma: no cover
 
     tile_registry = {}
 
-    tile_registry[
-        "esri"
-    ] = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
-    tile_registry[
-        "carto-db"
-    ] = "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
+    tile_registry["esri"] = (
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
+    )
+    tile_registry["carto-db"] = (
+        "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
+    )
 
     layers = _init_layers()
 

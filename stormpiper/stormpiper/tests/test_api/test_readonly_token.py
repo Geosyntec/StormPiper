@@ -1,7 +1,5 @@
 import pytest
 
-from .. import utils
-
 
 @pytest.mark.parametrize("f", ["json", "geojson"])
 @pytest.mark.parametrize("limit", [3, 5])

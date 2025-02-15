@@ -114,7 +114,7 @@ def solve_scenario_data(data: dict, force=False, engine=None) -> dict:
         data["lgu_load"] = lgu_load.to_dict(orient="records")
 
         data["delin_load"] = (
-            lgu_load.merge(lgu_boundary[["node_id", "altid"]], on="node_id", how="left")
+            lgu_load.merge(lgu_boundary[["node_id", "altid"]], on="node_id", how="left")  # type: ignore
             .groupby(["epoch", "altid", "variable", "units"], as_index=False)[["value"]]
             .sum()
         ).to_dict(orient="records")
@@ -136,7 +136,7 @@ def solve_scenario_data(data: dict, force=False, engine=None) -> dict:
         epochs = list(met.epoch.unique())
         zones = geopandas.read_file(orjson.dumps(data["lgu_boundary"]).decode()).to_crs(
             epsg=settings.TACOMA_EPSG
-        )
+        )  # type: ignore
         land_surface_load_nereid = pandas.DataFrame(data["lgu_load"])
 
         nereid_load_df = land_surface_load_nereid.pipe(

@@ -2,7 +2,6 @@ from copy import deepcopy
 
 import pytest
 
-from stormpiper.models.scenario import TMNT_SCENARIO
 from stormpiper.models.scenario_validator import scenario_validator
 from stormpiper.src import scenario
 from stormpiper.tests.utils import tacoma_scenarios

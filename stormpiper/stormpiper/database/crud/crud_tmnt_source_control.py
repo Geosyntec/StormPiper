@@ -9,8 +9,7 @@ from .base import CRUDBase
 
 class CRUDTMNTSourceControl(
     CRUDBase[TMNTSourceControl, TMNTSourceControlCreate, TMNTSourceControlUpdate]
-):
-    ...
+): ...
 
 
 tmnt_source_control = CRUDTMNTSourceControl(TMNTSourceControl)

@@ -89,7 +89,7 @@ class Singleton(BaseTask):
         link=None,
         link_error=None,
         shadow=None,
-        **options
+        **options,
     ):
         args = args or []
         kwargs = kwargs or {}
@@ -105,7 +105,7 @@ class Singleton(BaseTask):
             link=link,
             link_error=link_error,
             shadow=shadow,
-            **options
+            **options,
         )
 
         task = self.lock_and_run(**run_args)

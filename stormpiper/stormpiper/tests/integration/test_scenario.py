@@ -35,7 +35,7 @@ def test_scenario_solve(client):
     ][:3]
 
     for scenario in scenarios:
-        response = client.post(f"/api/rpc/solve_scenario", json=scenario)
+        response = client.post("/api/rpc/solve_scenario", json=scenario)
         task_id = response.json()["task_id"]
 
         task_response = test_utils.poll_testclient_url(
@@ -70,7 +70,7 @@ def test_scenario_solve_data_wq(client):
         == 81
     ), updated_scenario
 
-    assert updated_scenario["structural_tmnt_result"] != None, updated_scenario
+    assert updated_scenario["structural_tmnt_result"] is not None, updated_scenario
 
 
 @pytest.mark.integration

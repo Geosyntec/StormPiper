@@ -16,8 +16,7 @@ from .base import CRUDBase
 
 class CRUDTMNTFacilityAttr(
     CRUDBase[TMNTFacilityAttr, TMNTFacilityAttrCreate, TMNTFacilityAttrUpdate]
-):
-    ...
+): ...
 
 
 class CRUDTMNTFacilityCost(

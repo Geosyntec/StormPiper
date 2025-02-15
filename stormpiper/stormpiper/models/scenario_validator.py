@@ -22,8 +22,8 @@ def scenario_delin_uid(ix: int, geom: str, name: None | str, relid: None | str) 
 def validate_delineation_collection(delineation_collection_geojson: str) -> str:
     delin = (
         geopandas.read_file(delineation_collection_geojson)
-        .to_crs(epsg=settings.TACOMA_EPSG)
-        .assign(
+        .to_crs(epsg=settings.TACOMA_EPSG)  # type: ignore
+        .assign(  # type: ignore
             altid=lambda df: df.apply(
                 lambda r: scenario_delin_uid(
                     r.name,  # r.name is the index
@@ -39,7 +39,7 @@ def validate_delineation_collection(delineation_collection_geojson: str) -> str:
         .to_crs(epsg=4326)
     )
 
-    delin_json = delin.to_json()
+    delin_json = delin.to_json()  # type: ignore
 
     return delin_json
 

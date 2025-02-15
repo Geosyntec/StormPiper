@@ -1,6 +1,6 @@
 import ee
 
-from .ee import Geometry, Image
+from .ee import Geometry, Image  # type: ignore
 
 
 def get_elevation(long: float, lat: float) -> dict[str, float]:

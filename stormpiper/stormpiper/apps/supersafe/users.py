@@ -21,7 +21,7 @@ from stormpiper.core.config import settings
 from stormpiper.email_helper import email
 
 from .db import AsyncSessionDB, User, UserDB
-from .models import Role, UserCreate, UserRead, UserUpdate
+from .models import Role, UserCreate as UserCreate, UserRead as UserRead, UserUpdate
 
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)

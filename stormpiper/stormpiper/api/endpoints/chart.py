@@ -40,11 +40,11 @@ async def get_chart_cost_timeseries(
 async def get_chart_cost_timeseries_data(node_id: str, db: AsyncSessionDB):
     if node_id == "null":  # pragma: no cover
         raise HTTPException(
-            status_code=404, detail=f"Null record requested. No data available."
+            status_code=404, detail="Null record requested. No data available."
         )
 
     result = await db.execute(
-        select(tmnt.TMNT_View).where(tmnt.TMNT_View.node_id == node_id)
+        select(tmnt.TMNT_View).where(tmnt.TMNT_View.node_id == node_id)  # type: ignore
     )
 
     scalar = result.scalars().first()

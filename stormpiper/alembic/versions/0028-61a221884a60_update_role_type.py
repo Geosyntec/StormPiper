@@ -5,6 +5,7 @@ Revises: d7eb9f21a208
 Create Date: 2023-01-07 14:22:35.420414
 
 """
+
 import sqlalchemy as sa
 from alembic import op
 
@@ -45,7 +46,7 @@ def downgrade():
     # Convert 'output_limit_exceeded' status into 'timed_out'
     op.execute(tcr.update().where(tcr.c.role == "user_admin").values(role="editor"))
     op.execute(tcr.update().where(tcr.c.role == "reader").values(role="public"))
-    op.execute(tcr.update().where(tcr.c.role == None).values(role="none"))
+    op.execute(tcr.update().where(tcr.c.role == None).values(role="none"))  # noqa
 
     op.execute(f"ALTER TYPE {name} RENAME TO {tmp_name}")
 

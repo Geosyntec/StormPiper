@@ -35,16 +35,16 @@ async def get_all_tmnt(
 ):
     q = select(tmnt.TMNT_View).offset(offset).limit(limit)
     if altid is not None:
-        q = q.where(tmnt.TMNT_View.altid == altid)
+        q = q.where(tmnt.TMNT_View.altid == altid)  # type: ignore
     if node_id is not None:
-        q = q.where(tmnt.TMNT_View.node_id == node_id)
+        q = q.where(tmnt.TMNT_View.node_id == node_id)  # type: ignore
 
     result = await db.execute(q)
     scalars = result.scalars().all()
 
     if f == "geojson" and scalars:
         # TODO: cache this server-side
-        content = await run_in_threadpool(scalars_to_gdf_to_geojson, scalars)
+        content = await run_in_threadpool(scalars_to_gdf_to_geojson, scalars)  # type: ignore
 
         return Response(
             content=content,
@@ -69,7 +69,7 @@ async def get_all_tmnt(
 )
 async def get_tmnt(node_id: str, db: AsyncSessionDB):
     result = await db.execute(
-        select(tmnt.TMNT_View).where(tmnt.TMNT_View.node_id == node_id)
+        select(tmnt.TMNT_View).where(tmnt.TMNT_View.node_id == node_id)  # type: ignore
     )
     scalar = result.scalars().first()
 

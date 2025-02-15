@@ -1,5 +1,5 @@
 def test_get_reference_context(client):
-    response = client.get(f"/api/rest/reference/context")
+    response = client.get("/api/rest/reference/context")
     assert 200 <= response.status_code < 300, response.content
     rsp_json = response.json()
 

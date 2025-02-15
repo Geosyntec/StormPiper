@@ -67,6 +67,7 @@ def test_pv_api_response_node_id_no_server_error(client, node_id, method):
 def test_pv_api_response_node_id(client, node_id, blob, exp):
     route = f"/api/rest/tmnt_attr/{node_id}"
     p_response = client.patch(route, json=blob)
+    assert p_response.status_code == 200, p_response
 
     route = f"/api/rpc/calculate_present_cost/{node_id}"
     response = client.post(route)

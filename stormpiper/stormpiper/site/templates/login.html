@@ -95,8 +95,8 @@
     }
     return "";
   }
-  const submitLoginUrl = "{{ str(request.url_for('login:post_login')) }}";
-  const redirectRoute = "{{ str(request.url_for('home')) }}";
+  const submitLoginUrl = "{{ request.url_for('login:post_login') }}";
+  const redirectRoute = "{{ request.url_for('home') }}";
   const form = document.getElementById("LoginForm");
   var err_div = document.getElementById("error_msgs");
 

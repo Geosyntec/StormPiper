@@ -1,7 +1,5 @@
 from sqlalchemy import Column, Integer, String
 
-from stormpiper.core.config import settings
-
 from .base_class import Base
 
 

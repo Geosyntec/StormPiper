@@ -11,9 +11,10 @@ def unpack_results_blob(results_blob):
 
     results = (
         results_blob.join(results_unpacked)
-        # if these duplicate keys are in the blob, we need to drop them to prevent dupplicate column names
-        # when resetting the index
-        .drop(columns=["blob", "node_id", "epoch"]).reset_index()
+        # if these duplicate keys are in the blob, we need to drop them to prevent
+        # duplicate column names when resetting the index
+        .drop(columns=["blob", "node_id", "epoch"])
+        .reset_index()
         # drop duplicated columns
         .loc[:, lambda df: ~df.columns.duplicated()]
     )

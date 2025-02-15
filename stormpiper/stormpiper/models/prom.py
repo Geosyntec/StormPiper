@@ -3,7 +3,7 @@ from typing import Literal
 from pydantic import Field, validator
 
 from stormpiper.database.schemas import views
-from stormpiper.src.decision_support import prom
+from stormpiper.src.decision_support import prom as prom
 
 from .base import BaseModel
 

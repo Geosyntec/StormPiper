@@ -268,7 +268,7 @@ def test_tmnt_only_scenario(client, blob, exp_pv):
     gresponse = client.get(route_id)
 
     ## cleanup
-    dresponse = client.delete(route_id)
+    _ = client.delete(route_id)
 
     scenario_data = gresponse.json()
 
@@ -328,7 +328,7 @@ def test_delin_only_scenario(client, blob):
     gresponse = client.get(route_id)
 
     ## cleanup
-    dresponse = client.delete(route_id)
+    _ = client.delete(route_id)
 
     scenario_data = gresponse.json()
 

@@ -30,7 +30,8 @@ async def create_user(
                     user = await user_manager.user_db.get_by_email(email)
                     if user is not None and force_set_password:
                         await user_manager.update(
-                            UserUpdate(password=password), user  # type: ignore
+                            UserUpdate(password=password),
+                            user,  # type: ignore
                         )
 
                     user = await user_manager.create(

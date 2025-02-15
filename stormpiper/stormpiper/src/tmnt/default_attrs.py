@@ -101,7 +101,7 @@ def update_tmnt_attributes(engine, overwrite=False):
 
     with engine.begin() as conn:
         if overwrite:
-            existing_altids = []
+            existing_altids = []  # noqa
             conn.execute(sa.text("delete from tmnt_facility_attribute"))
 
         df = df.query("altid not in @existing_altids")

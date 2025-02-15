@@ -78,10 +78,10 @@ def test_clean_dirty_clean(client, node_id, blob, after_change_is_dirty):
     tasks.delete_and_refresh_all_results_tables(engine=engine)
 
     # check if db is clean
-    response = client.get(f"/api/rest/results/is_dirty")
+    response = client.get("/api/rest/results/is_dirty")
     assert 200 <= response.status_code < 300, response.content
     rsp_json = response.json()
-    assert rsp_json["is_dirty"] == False, rsp_json
+    assert not rsp_json["is_dirty"], rsp_json
 
     # try to dirty the results by patching an attribute
     response = client.get(f"/api/rest/tmnt_attr/{node_id}")
@@ -93,7 +93,7 @@ def test_clean_dirty_clean(client, node_id, blob, after_change_is_dirty):
     rsp_json = response.json()
 
     # check if dirty got set
-    response = client.get(f"/api/rest/results/is_dirty")
+    response = client.get("/api/rest/results/is_dirty")
     assert 200 <= response.status_code < 300, response.content
     rsp_json = response.json()
     assert rsp_json["is_dirty"] == after_change_is_dirty, rsp_json
@@ -101,10 +101,10 @@ def test_clean_dirty_clean(client, node_id, blob, after_change_is_dirty):
     tasks.delete_and_refresh_all_results_tables(engine=engine)
 
     # check if dirty got cleaned
-    response = client.get(f"/api/rest/results/is_dirty")
+    response = client.get("/api/rest/results/is_dirty")
     assert 200 <= response.status_code < 300, response.content
     rsp_json = response.json()
-    assert rsp_json["is_dirty"] == False, rsp_json
+    assert not rsp_json["is_dirty"], rsp_json
 
 
 # # re-solve results

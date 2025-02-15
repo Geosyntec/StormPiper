@@ -10,17 +10,14 @@ class GlobalSettingBase(BaseModel):
     value: str
 
 
-class GlobalSettingResponse(BaseORM, GlobalSettingBase):
-    ...
+class GlobalSettingResponse(BaseORM, GlobalSettingBase): ...
 
 
-class GlobalSettingPost(GlobalSettingBase):
-    ...
+class GlobalSettingPost(GlobalSettingBase): ...
 
 
 class GlobalSettingUpdate(GlobalSettingBase):
     updated_by: None | str = None
 
 
-class GlobalSettingCreate(GlobalSettingUpdate):
-    ...
+class GlobalSettingCreate(GlobalSettingUpdate): ...

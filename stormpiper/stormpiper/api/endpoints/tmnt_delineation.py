@@ -39,7 +39,8 @@ async def get_tmnt_delineations(
 
     if f == "geojson":
         content = await run_in_threadpool(
-            scalars_to_gdf_to_geojson, result.scalars().all()
+            scalars_to_gdf_to_geojson,
+            result.scalars().all(),  # type: ignore
         )
         return Response(
             content=content,
@@ -81,7 +82,7 @@ async def get_all_tmnt_delineations(
     if f == "geojson" and scalars:
         # TODO: cache this server-side
 
-        content = await run_in_threadpool(scalars_to_gdf_to_geojson, scalars)
+        content = await run_in_threadpool(scalars_to_gdf_to_geojson, scalars)  # type: ignore
 
         return Response(
             content=content,

@@ -12,7 +12,7 @@ def reset_password(*, email, token, name=None, reset_url="", **kwargs):
                     "Name": "Tacoma Watersheds Administrators",
                 },
                 "To": [{"Email": email, "Name": name}],
-                "Subject": f"Password Reset Requested for Tacoma Watersheds",
+                "Subject": "Password Reset Requested for Tacoma Watersheds",
                 "TextPart": f"Hello {name},\nYour reset link is:\n{reset_url}",
                 "HTMLPart": f"""
                     <p>Hello {name},</p>
@@ -37,7 +37,7 @@ def request_verify(*, email, token, name=None, verify_url="", **kwargs):
                     "Name": "Tacoma Watersheds Administrators",
                 },
                 "To": [{"Email": email, "Name": name}],
-                "Subject": f"Email Verification Code for Tacoma Watersheds",
+                "Subject": "Email Verification Code for Tacoma Watersheds",
                 "TextPart": f"Hello {name},\nYour verification link is:\n{verify_url}",
                 "HTMLPart": f"""
                     <p>Hello {name},</p>
@@ -62,7 +62,7 @@ def welcome_verify(*, email, token, name=None, verify_url="", **kwargs):
                     "Name": "Tacoma Watersheds Administrators",
                 },
                 "To": [{"Email": email, "Name": name}],
-                "Subject": f"Welcome to Tacoma Watersheds",
+                "Subject": "Welcome to Tacoma Watersheds",
                 "TextPart": dedent(
                     f"""Welcome {name},
                     Thank you for registering for access to the Tacoma Watersheds Application.
@@ -96,7 +96,7 @@ def error_message(*, email_dict_list, content, attachments=None, **kwargs):
                     "Name": "Tacoma Watersheds Administrators",
                 },
                 "To": email_dict_list,
-                "Subject": f"Error from Tacoma Watersheds",
+                "Subject": "Error from Tacoma Watersheds",
                 "TextPart": content,
                 "Attachments": attachments or [],
             }

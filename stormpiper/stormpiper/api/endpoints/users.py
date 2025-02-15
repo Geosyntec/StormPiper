@@ -33,7 +33,7 @@ async def get_readonly_token(
     user: Reader,
     user_db: UserDB,
 ):
-    if user.readonly_token:
+    if user.readonly_token:  # type: ignore
         return user
 
     user_ = await user_db.update(user, {"readonly_token": str(uuid4())})

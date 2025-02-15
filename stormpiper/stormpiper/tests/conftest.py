@@ -1,5 +1,3 @@
-import asyncio
-
 import pytest
 from fastapi.testclient import TestClient
 
@@ -104,7 +102,8 @@ def client_local(db):
         def get(self, *args):
             return "./ping"
 
-    override_get_tile_registry = lambda: Reg()
+    def override_get_tile_registry():
+        return Reg()
 
     app = create_app()
     app.dependency_overrides[get_tile_registry] = override_get_tile_registry

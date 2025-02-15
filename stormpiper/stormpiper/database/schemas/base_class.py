@@ -2,8 +2,7 @@ import sqlalchemy as sa
 from sqlalchemy.orm import DeclarativeBase  # type: ignore ; pylance import bug.
 
 
-class Base(DeclarativeBase):
-    ...
+class Base(DeclarativeBase): ...
 
 
 class TrackedTable:

@@ -14,5 +14,4 @@ class BaseORM(BaseModel):
         orm_mode = True
 
 
-class StrEnum(str, Enum):
-    ...
+class StrEnum(str, Enum): ...

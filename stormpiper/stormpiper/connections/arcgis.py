@@ -2,6 +2,7 @@ import asyncio
 import base64
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import cast
 
 import geopandas
 import pandas
@@ -180,7 +181,7 @@ def get_tmnt_facilities(
         # ref: database.schemas.tmnt
     )
 
-    duplicate_altids = gdf.loc[gdf["altid"].duplicated()]
+    duplicate_altids = gdf.loc[gdf["altid"].duplicated()]  # type: ignore
 
     if len(duplicate_altids) > 0 and with_warning:  # pragma: no cover
         # send email to maintainers
@@ -204,7 +205,7 @@ def get_tmnt_facility_delineations(*, url=None):
     delineations = (
         geopandas.GeoDataFrame.from_features(features=features, crs=4326)
         .to_crs(settings.TACOMA_EPSG)
-        .reset_index(drop=True)
+        .reset_index(drop=True)  # type: ignore
         .rename(columns=lambda c: c.lower())
         .assign(relid=lambda df: df.rel_id)
         .dropna(subset="relid")
@@ -234,7 +235,7 @@ def get_subbasins(*, url=None, cols=None):
     subbasins = (
         geopandas.GeoDataFrame.from_features(features=features, crs=4326, columns=cols)
         .to_crs(settings.TACOMA_EPSG)
-        .rename(columns=lambda c: c.lower())
+        .rename(columns=lambda c: c.lower())  # type: ignore
         .loc[lambda df: ~df.geometry.is_empty]
         .drop_duplicates()
         .assign(area_acres=lambda df: df.geometry.area / 43560)
@@ -254,7 +255,7 @@ def get_equity_index_deprecated(*, url=None, cols=None):  # pragma: no cover
     equity_index = (
         geopandas.GeoDataFrame.from_features(features=features, crs=4326, columns=cols)
         .to_crs(settings.TACOMA_EPSG)
-        .rename(columns=lambda c: c.lower())
+        .rename(columns=lambda c: c.lower())  # type: ignore
         .loc[lambda df: ~df.geometry.is_empty]
         .drop_duplicates()
     )
@@ -278,8 +279,9 @@ def get_subbasins_with_equity_ix_deprecated(
         make_valid=True,
     ).assign(ratio=lambda df: df.geometry.area / df["equity_ix_area_sqft"])
 
-    subbasins_eq_ix[equity_index_cols] = subbasins_eq_ix[equity_index_cols].multiply(
-        subbasins_eq_ix["ratio"], axis=0
+    subbasins_eq_ix[equity_index_cols] = subbasins_eq_ix[equity_index_cols].multiply(  # type:ignore
+        subbasins_eq_ix["ratio"],  # type:ignore
+        axis=0,
     )
 
     # sum over census blocks
@@ -316,9 +318,14 @@ def get_subbasin_metrics(*, url=None):
     return df
 
 
-def get_subbasins_with_metrics(*, url=None, cols=None, subbasin_metrics_url=None):
+def get_subbasins_with_metrics(
+    *, url=None, cols=None, subbasin_metrics_url=None
+) -> geopandas.GeoDataFrame:
     subbasins_raw = get_subbasins(url=url, cols=cols)
     subbasin_metrics = get_subbasin_metrics(url=subbasin_metrics_url)
-    subbasins = subbasins_raw.merge(subbasin_metrics, on="subbasin", how="left")
+    subbasins = cast(
+        geopandas.GeoDataFrame,
+        subbasins_raw.merge(subbasin_metrics, on="subbasin", how="left"),
+    )
 
     return subbasins

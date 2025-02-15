@@ -31,18 +31,16 @@ class TMNTFacilityAttrBase(BaseModel):
 
 
 # Properties to receive on update
-class TMNTFacilityAttrPatch(TMNTFacilityAttrBase):
-    ...
+class TMNTFacilityAttrPatch(TMNTFacilityAttrBase): ...
 
 
 # Properties to send on update
 class TMNTFacilityAttrUpdate(TMNTFacilityAttrPatch):
-    updated_by: None | str
+    updated_by: None | str = None
 
 
 # Properties to receive on creation
-class TMNTFacilityAttrCreate(TMNTFacilityAttrUpdate):
-    ...
+class TMNTFacilityAttrCreate(TMNTFacilityAttrUpdate): ...
 
 
 # Properties shared by models stored in DB
@@ -54,13 +52,11 @@ class TMNTFacilityAttrInDBBase(BaseORM, TMNTFacilityAttrBase):
 
 
 # Properties to return to client
-class TMNTFacilityAttr(TMNTFacilityAttrInDBBase):
-    ...
+class TMNTFacilityAttr(TMNTFacilityAttrInDBBase): ...
 
 
 # Properties properties stored in DB
-class TMNTFacilityAttrInDB(TMNTFacilityAttrInDBBase):
-    ...
+class TMNTFacilityAttrInDB(TMNTFacilityAttrInDBBase): ...
 
 
 # TMNT Cost related attributes
@@ -79,8 +75,7 @@ class TMNTFacilityCostBase(BaseModel):
 
 
 # Properties to receive on update
-class TMNTFacilityCostPatch(TMNTFacilityCostBase):
-    ...
+class TMNTFacilityCostPatch(TMNTFacilityCostBase): ...
 
 
 # Properties to send to DB on update
@@ -125,8 +120,7 @@ class TMNTFacilityCostInDBBase(BaseORM, TMNTFacilityCostBase):
 
 
 # Properties to return to client
-class TMNTFacilityCost(TMNTFacilityCostInDBBase):
-    ...
+class TMNTFacilityCost(TMNTFacilityCostInDBBase): ...
 
 
 class TMNTUpdate(BaseModel):
@@ -134,9 +128,7 @@ class TMNTUpdate(BaseModel):
     tmnt_cost: None | TMNTFacilityCostUpdate = None
 
 
-class TMNTFacilityPatch(TMNTFacilityCostPatch, TMNTFacilityAttrPatch):
-    ...
+class TMNTFacilityPatch(TMNTFacilityCostPatch, TMNTFacilityAttrPatch): ...
 
 
-class InvalidModel(Exception):
-    ...
+class InvalidModel(Exception): ...

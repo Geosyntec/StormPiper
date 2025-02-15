@@ -91,7 +91,7 @@ def calculate_src_ctrl_percent_reduction(
     *,
     load: pandas.DataFrame,
     src_ctrls: pandas.DataFrame,
-    direction: str | None = "upstream"
+    direction: str | None = "upstream",
 ):
     """
     load must have the subbasins and basinname attributes pre-joined in and runoff removed (pocs only)

@@ -1,4 +1,3 @@
-import asyncio
 import json
 
 from stormpiper.connections import arcgis
@@ -21,7 +20,7 @@ def fetch_tacoma_gis_data():  # pragma: no cover
         .sort_values("node_id")
     )
     gdf_delin.to_file(datadir / "tmnt_facility_delineation.geojson", driver="GeoJSON")
-    altids = gdf_delin.relid
+    altids = gdf_delin.relid  # noqa
 
     gdf = (
         arcgis.get_tmnt_facilities(bmp_url=None, codes_url=None, cols=None)

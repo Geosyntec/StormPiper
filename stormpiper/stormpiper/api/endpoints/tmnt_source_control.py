@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from fastapi.exceptions import HTTPException
 from sqlalchemy import select
 
 from stormpiper.apps.supersafe.users import user_role_ge_editor, user_role_ge_reader
@@ -104,7 +103,7 @@ async def delete_tmnt_source_control(
     id: int,
 ):
     try:
-        attr = await crud.tmnt_source_control.remove(db=db, id=id)
+        _ = await crud.tmnt_source_control.remove(db=db, id=id)
     except Exception as e:  # pragma: no cover
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
