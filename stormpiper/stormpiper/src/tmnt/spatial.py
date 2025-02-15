@@ -39,7 +39,7 @@ def overlay_rodeo(
 
 def overlay_rodeo_from_database(engine) -> geopandas.GeoDataFrame:
     with engine.begin() as conn:
-        relid = pandas.read_sql("select distinct altid from tmnt_facility", con=conn)[
+        relid = pandas.read_sql("select distinct altid from tmnt_facility", con=conn)[  # noqa
             "altid"
         ]
 
@@ -61,9 +61,9 @@ def scenario_delin_json_to_gdf(geojson: str) -> geopandas.GeoDataFrame:
 
 
 def scenario_json_to_gdf(geojson: str) -> geopandas.GeoDataFrame:
-    delin = geopandas.read_file(geojson).to_crs(settings.TACOMA_EPSG)
+    delin = geopandas.read_file(geojson).to_crs(settings.TACOMA_EPSG)  # type: ignore
 
-    return delin
+    return delin  # type: ignore
 
 
 def overlay_rodeo_for_scenario_from_database(

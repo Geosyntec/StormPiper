@@ -6,6 +6,10 @@ from sqlalchemy import MetaData, engine_from_config, pool
 
 from stormpiper.core.config import settings
 
+# add your model's MetaData object here
+# for 'autogenerate' support
+from stormpiper.database.schemas.base import Base
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -18,10 +22,6 @@ url = settings.DATABASE_URL_SYNC
 # This line sets up loggers basically.
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
-
-# add your model's MetaData object here
-# for 'autogenerate' support
-from stormpiper.database.schemas.base import Base
 
 # target_metadata = mymodel.Base.metadata
 target_metadata: MetaData = Base.metadata  # type: ignore

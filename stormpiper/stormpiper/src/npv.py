@@ -47,7 +47,7 @@ def compute_bmp_npv_deprecated(
 
     # net_present_value = nf.npv(discount_rate, costs)
 
-    return round(net_present_value, 2), list(costs.round(2))
+    # return round(net_present_value, 2), list(costs.round(2))
 
 
 def compute_pv_capital_cost(

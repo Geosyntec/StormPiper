@@ -31,7 +31,7 @@ hasher = CryptContext(schemes=["bcrypt"], deprecated="auto").hash
 def with_ee_login(func):
     try:
         base_login()
-    except:  # pragma: no cover
+    except Exception as _:  # pragma: no cover
         print("Not logged in to EE!")
 
     @wraps(func)
@@ -179,8 +179,8 @@ def load_json(filepath, engine):
 def load_geojson(filepath, engine):
     gdf = (
         geopandas.read_file(filepath)
-        .to_crs(settings.TACOMA_EPSG)
-        .reset_index(drop=True)
+        .to_crs(settings.TACOMA_EPSG)  # type: ignore
+        .reset_index(drop=True)  # type: ignore
         .assign(id=lambda df: df.index.values + 1)
     )
     table_name = filepath.stem
@@ -252,10 +252,9 @@ def seed_db(engine):
 
 def poll_testclient_url(testclient, url, timeout=5, verbose=False):  # pragma: no cover
     ts = time.perf_counter()
-    timer = lambda: time.perf_counter() - ts
     tries = 0
 
-    while timer() < timeout:
+    while (time.perf_counter() - ts) < timeout:
         tries += 1
         response = testclient.get(url)
         status = response.json().get("status", "")
@@ -273,10 +272,12 @@ async def get_async_session():
     async_engine = create_async_engine(settings.DATABASE_URL_ASYNC, **engine_params)
 
     async_session_maker = sessionmaker(
-        async_engine, class_=AsyncSession, expire_on_commit=False
+        bind=async_engine,  # type: ignore
+        class_=AsyncSession,
+        expire_on_commit=False,
     )
 
-    async with async_session_maker() as session:
+    async with async_session_maker() as session:  # type: ignore
         yield session
 
 

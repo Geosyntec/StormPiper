@@ -1,6 +1,7 @@
 import logging
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
+from typing import cast
 
 import geopandas
 import numpy
@@ -47,13 +48,14 @@ def compute_loading_zonal_stats(
 
     logger.info("Running zonal stats on earth engine...")
 
-    zones_gdb = lgu_boundary.to_crs(4326)
+    zones_gdb = cast(geopandas.GeoDataFrame, lgu_boundary.to_crs(4326))
     n_chunks = max(1, len(lgu_boundary))
 
     zones_json = [
         {"zones": gdf.to_json(sort_keys=True)}  # type: ignore
         for gdf in numpy.array_split(
-            zones_gdb.sort_values("subbasin"), min(10, n_chunks)  # type: ignore
+            zones_gdb.sort_values("subbasin"),
+            min(10, n_chunks),  # type: ignore
         )
     ]
 
@@ -146,10 +148,15 @@ def compute_loading(
 
 def compute_loading_db(engine=engine, runoff_path=None, coc_path=None):
     with engine.begin() as conn:
-        zones = geopandas.read_postgis("lgu_boundary", con=conn)
+        zones = cast(
+            geopandas.GeoDataFrame,
+            geopandas.read_postgis("lgu_boundary", con=conn),
+        )
 
     df = compute_loading(
-        lgu_boundary=zones, runoff_path=runoff_path, coc_path=coc_path  # type: ignore
+        lgu_boundary=zones,
+        runoff_path=runoff_path,
+        coc_path=coc_path,  # type: ignore
     )
     return df
 
@@ -339,17 +346,16 @@ def subbasin_load_reduced_summary(
         **{
             c.replace("_volume_cuft", "_volume_cuft_reduced").replace(
                 "_load_lbs", "_load_lbs_reduced"
-            ): lambda df, col=c: df[col + "_generated"]
-            - df[col]
+            ): lambda df, col=c: df[col + "_generated"] - df[col]
             for c in vol_cols + load_cols
         }
     ).assign(
         **{
-            c.replace("_volume_cuft", "_volume_pct_reduced")
-            .replace("_load_lbs", "_load_pct_reduced"): lambda df, col=c: (
+            c.replace("_volume_cuft", "_volume_pct_reduced").replace(
+                "_load_lbs", "_load_pct_reduced"
+            ): lambda df, col=c: (
                 100 * (df[col + "_reduced"] / df[col + "_generated"])
-            )
-            .round(2)
+            ).round(2)
             for c in vol_cols + load_cols
         }
     )

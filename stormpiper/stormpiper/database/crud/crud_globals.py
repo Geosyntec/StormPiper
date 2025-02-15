@@ -6,8 +6,7 @@ from .base import CRUDBase
 
 class CRUDGlobalSetting(
     CRUDBase[GlobalSetting, GlobalSettingCreate, GlobalSettingUpdate]
-):
-    ...
+): ...
 
 
 class CRUDGlobalCostSetting(

@@ -22,7 +22,7 @@ class RedisBackend(BaseBackend):
     def clear(self, key_prefix):
         cursor = 0
         while True:
-            cursor, keys = self.redis.scan(cursor=cursor, match=key_prefix + "*")
+            cursor, keys = self.redis.scan(cursor=cursor, match=key_prefix + "*")  # type: ignore
             for k in keys:
                 self.redis.delete(k)
             if cursor == 0:

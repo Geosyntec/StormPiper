@@ -18,7 +18,7 @@ EXAMPLE_PV = dict(
 
 class PVRequest(BaseModel):
     capital_cost: float
-    capital_cost_basis_year: int | float | None
+    capital_cost_basis_year: int | float | None = None
     om_cost_per_yr: float
     om_cost_basis_year: int | float | None
     install_year: int | float | None

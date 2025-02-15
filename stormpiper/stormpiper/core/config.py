@@ -5,13 +5,13 @@ from typing import Literal
 
 from pydantic import AnyHttpUrl, BaseSettings, validator
 
-import stormpiper
+from stormpiper import __version__  # type: ignore
 
 stormpiper_path = Path(__file__).parent.parent.resolve()
 
 
 class Settings(BaseSettings):
-    VERSION: str = stormpiper.__version__  # type: ignore
+    VERSION: str = __version__  # type: ignore
     ENVIRONMENT: str = "development"
 
     SECRET_KEY: str = secrets.token_urlsafe(32)
@@ -39,10 +39,13 @@ class Settings(BaseSettings):
     EE_PROJECT_DIRECTORY: str = ""
     EE_JSON_BASE64: str = ""
     EE_LOGIN_INTERVAL_SECONDS: int = 3600 * 4  # every four hours
-    EE_RUNOFF_PATH = (
+    EE_RUNOFF_PATH: str = (
         "projects/ee-stormwaterheatmap/assets/production/Mean_Annual_Q_4_epochs"
     )
-    EE_COC_PATH = "projects/ee-tacoma-watershed/assets/production/coc_concentrations"
+
+    EE_COC_PATH: str = (
+        "projects/ee-tacoma-watershed/assets/production/coc_concentrations"
+    )
 
     # Database
     ADMIN_ACCOUNT_PASSWORD: str = "change me with an env variable"

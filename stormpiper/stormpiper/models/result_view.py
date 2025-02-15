@@ -18,30 +18,30 @@ strings = [
     "rankcriteria",
 ]
 
-ResultView = create_model(
+ResultView = create_model(  # type: ignore
     "ResultView",
     __base__=BaseORM,
-    **{
+    **{  # type: ignore
         str(c): (Optional[str] if c in strings else Optional[float], ...)
         for c in set(["node_id", "epoch"] + results.COLS)
         if not c.startswith("_")
     },
 )
 
-SubbasinWQResultView = create_model(
+SubbasinWQResultView = create_model(  # type: ignore
     "SubbasinWQResultView",
     __base__=BaseORM,
-    **{
+    **{  # type: ignore
         str(c): (Optional[str] if c in strings else Optional[float], ...)
         for c in set(["subbasin", "basinname", "epoch"] + views.WQ_COLS)
         if not any([c.startswith("_"), c == "geom"])
     },
 )
 
-SubbasinInfoView = create_model(
+SubbasinInfoView = create_model(  # type: ignore
     "SubbasinInfoView",
     __base__=BaseORM,
-    **{
+    **{  # type: ignore
         str(c): (Optional[str] if c in strings else Optional[float], ...)
         for c in set(["subbasin", "basinname", "epoch"] + views.INFO_COLS)
         if not any([c.startswith("_"), c == "geom"])

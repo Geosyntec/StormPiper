@@ -34,6 +34,7 @@ def test_chart_data(client):
     }
     route = f"/api/rest/tmnt_attr/{node_id}"
     p_response = client.patch(route, json=data)
+    assert p_response.status_code == 200, p_response.content
 
     route = f"/api/rest/chart/{node_id}/cost_timeseries/data"
     response = client.get(route)

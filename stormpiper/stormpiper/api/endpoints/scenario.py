@@ -137,14 +137,14 @@ async def update_scenario(
         recalculate_loading = attr.loading_hash != loading_hash
         recalculate_wq = attr.input_hash != input_hash
 
-        if recalculate_loading:
+        if recalculate_loading:  # type: ignore
             logger.info("SCENARIO: Clearing prev scenario loading results.")
 
             data["lgu_boundary"] = None
             data["lgu_load"] = None
             data["delin_load"] = None
 
-        if recalculate_wq:
+        if recalculate_wq:  # type: ignore
             logger.info("SCENARIO: Clearing scenario wq results")
             data["graph_edge"] = None
             data["structural_tmnt_result"] = None

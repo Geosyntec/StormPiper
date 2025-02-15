@@ -31,7 +31,7 @@ def datetime_to_isoformat(
     if not inplace:
         df = df.copy()
 
-    df[cols] = df[cols].applymap(lambda x: x.isoformat())
+    df[cols] = df[cols].map(lambda x: x.isoformat())  # type: ignore
 
     return df
 
@@ -67,7 +67,7 @@ async def generate_task_response(
     _ = await wait_a_sec_and_see_if_we_can_return_some_data(
         task, timeout=timeout, exp=exp
     )
-    response = dict(task_id=task.task_id, status=task.status)
+    response = {"task_id": task.task_id, "status": task.status}
     if task.successful():
         response["result"] = task.result
     return response

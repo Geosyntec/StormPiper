@@ -53,7 +53,9 @@ def view(name, metadata, selectable):  # pragma: no cover
         CreateView(name, selectable).execute_if(callable_=view_doesnt_exist),  # type: ignore
     )
     event.listen(
-        metadata, "before_drop", DropView(name).execute_if(callable_=view_exists)  # type: ignore
+        metadata,
+        "before_drop",
+        DropView(name).execute_if(callable_=view_exists),  # type: ignore
     )
     return t
 

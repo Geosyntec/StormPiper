@@ -82,7 +82,7 @@ def create_app(
     app.add_middleware(BrotliMiddleware)
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=_settings.ALLOW_CORS_ORIGINS,
+        allow_origins=[str(o) for o in _settings.ALLOW_CORS_ORIGINS],
         allow_origin_regex=_settings.ALLOW_CORS_ORIGIN_REGEX,
         allow_credentials=False,
         allow_methods=["GET", "OPTIONS", "POST", "PATCH", "DELETE"],
@@ -133,22 +133,18 @@ def create_app(
 
         return msg
 
-    app.mount(
-        "/site/static",
-        StaticFiles(directory="stormpiper/site/static"),
-        name="site/static",
-    )
+    pkg_path = Path(__file__).parent
 
     app.mount(
         "/app/assets",
-        StaticFiles(directory="stormpiper/spa/build/assets"),
+        StaticFiles(directory=pkg_path / "spa/build/assets"),
         name="app",
     )
 
     nereid_app = create_nereid_app(
         settings_override={
             "ASYNC_MODE": "add",
-            "DATA_DIRECTORY": Path(__file__).parent / "data" / "project_data",
+            "DATA_DIRECTORY": pkg_path / "data" / "project_data",
         },
         app_kwargs={"docs_url": "", "dependencies": [Depends(user_role_ge_admin)]},
     )
@@ -163,7 +159,7 @@ def create_app(
 
     app.mount("/api/nereid", nereid_app, name="nereid")
 
-    templates = Jinja2Templates(directory="stormpiper/spa/build")
+    templates = Jinja2Templates(directory=pkg_path / "spa/build")
 
     @app.get(
         "/api/docs", include_in_schema=False, dependencies=[Depends(user_role_ge_admin)]

@@ -46,7 +46,7 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
     ) -> list[SchemaType] | None:
         q = sa.select(self.base).offset(offset).limit(limit)
         result = await db.execute(q)
-        return result.scalars().all()
+        return result.scalars().all()  # type: ignore
 
     async def on_after_create(self, *, db: AsyncSession, obj: SchemaType) -> None:
         return None
@@ -99,7 +99,7 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
         return obj
 
     async def log(self, db: AsyncSession):
-        await async_log(tablename=self.tablename, db=db, changelog=self.changelog)
+        await async_log(tablename=self.tablename, db=db, changelog=self.changelog)  # type: ignore
 
     async def remove(self, db: AsyncSession, *, id: Any) -> None:
         q = sa.delete(self.base).where(getattr(self.base, self.id) == id)

@@ -13,10 +13,10 @@ def test_prom_equity():
     ).set_index("subbasin")
 
     # sort to low access first - ascending
-    subbasins_attr = df["access"].sort_values().index
+    subbasins_attr = df["access"].sort_values().index  # type: ignore
 
     # sort to high scores first - descending
-    subbasins_score = df["score"].sort_values(ascending=False).index
+    subbasins_score = df["score"].sort_values(ascending=False).index  # type: ignore
 
     assert_index_equal(subbasins_attr, subbasins_score)
 
@@ -31,10 +31,10 @@ def test_prom_preservation():
     ).set_index("subbasin")
 
     # if we're seeking preservation projects, we prioritize low load first
-    subbasins_attr = df["TSS_load_lbs"].sort_values().index
+    subbasins_attr = df["TSS_load_lbs"].sort_values().index  # type: ignore
 
     # sort to high scores first - descending
-    subbasins_score = df["score"].sort_values(ascending=False).index
+    subbasins_score = df["score"].sort_values(ascending=False).index  # type: ignore
 
     assert_index_equal(subbasins_attr, subbasins_score)
 
@@ -49,9 +49,9 @@ def test_prom_retrofit():
     ).set_index("subbasin")
 
     # if we're seeking retrofit projects, we prioritize high load first
-    subbasins_attr = df["TSS_load_lbs"].sort_values(ascending=False).index
+    subbasins_attr = df["TSS_load_lbs"].sort_values(ascending=False).index  # type: ignore
 
     # sort to high scores first - descending
-    subbasins_score = df["score"].sort_values(ascending=False).index
+    subbasins_score = df["score"].sort_values(ascending=False).index  # type: ignore
 
     assert_index_equal(subbasins_attr, subbasins_score)

@@ -7,7 +7,7 @@ import pandas
 
 from stormpiper.core.config import settings
 
-from .ee import FeatureCollection, Image
+from .ee import FeatureCollection, Image  # type: ignore
 
 logging.basicConfig(level=settings.LOGLEVEL)
 logger = logging.getLogger(__name__)
@@ -94,10 +94,13 @@ def zonal_stats(
     runoff = Image(runoff_path)
     ro_bands = get_runoff_bands(runoff_path)
     ro_units = runoff.toDictionary().get("units").getInfo()
-    logger.info(f"Calculating zonal stats for the runoff")
-    ro_dct = get_loading_zonal_stats(
-        runoff.multiply(Image.pixelArea()), zones=zones_fc
-    ).getInfo()
+    logger.info("Calculating zonal stats for the runoff")
+    ro_dct = (
+        get_loading_zonal_stats(
+            runoff.multiply(Image.pixelArea()), zones=zones_fc
+        ).getInfo()
+        or {}
+    )
     df = (
         get_loading_zonal_stats_df(ro_dct)
         .melt(
@@ -113,8 +116,8 @@ def zonal_stats(
     for epoch in ro_bands:
         logger.info(f"Calculating zonal stats for the {epoch} epoch")
         loadingImage = get_poc_loading_Image(runoff_path, concentration_path, epoch)
-        c_band = loadingImage.bandNames().getInfo()
-        poc_dct = get_loading_zonal_stats(loadingImage, zones=zones_fc).getInfo()
+        c_band = loadingImage.bandNames().getInfo() or []
+        poc_dct = get_loading_zonal_stats(loadingImage, zones=zones_fc).getInfo() or {}
 
         poc_df = (
             get_loading_zonal_stats_df(poc_dct)

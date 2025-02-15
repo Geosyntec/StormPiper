@@ -31,14 +31,14 @@ router = APIRouter()
 async def get_subbasin_wq(
     subbasin_id: str,
     db: AsyncSessionDB,
-    epoch: Epoch | None = Query("1980s", example="1980s"),  # type: ignore
+    epoch: Epoch | None = Query("1980s"),
 ):
     q = select(SubbasinWQResult_View).where(
-        SubbasinWQResult_View.subbasin == subbasin_id
+        SubbasinWQResult_View.subbasin == subbasin_id  # type: ignore
     )
-    epoch = epoch or "1980s"
+    epoch = epoch or "1980s"  # type: ignore
     if epoch != "all":
-        q = q.where(SubbasinWQResult_View.epoch == epoch)
+        q = q.where(SubbasinWQResult_View.epoch == epoch)  # type: ignore
     result = await db.execute(q)
     scalar = result.scalars().first()
 
@@ -64,13 +64,13 @@ async def get_all_subbasins_wq(
     db: AsyncSessionDB,
     limit: int | None = Query(int(1e6)),
     offset: int | None = Query(0),
-    epoch: Epoch | None = Query("1980s", example="1980s"),  # type: ignore
+    epoch: Epoch | None = Query("1980s"),
 ):
     q = select(SubbasinWQResult_View)
 
-    epoch = epoch or "1980s"
+    epoch = epoch or "1980s"  # type: ignore
     if epoch != "all":
-        q = q.where(SubbasinWQResult_View.epoch == epoch)
+        q = q.where(SubbasinWQResult_View.epoch == epoch)  # type: ignore
 
     q = q.offset(offset).limit(limit)
 
@@ -96,7 +96,7 @@ async def get_subbasin_info(
     subbasin_id: str,
     db: AsyncSessionDB,
 ):
-    q = select(SubbasinInfo_View).where(SubbasinInfo_View.subbasin == subbasin_id)
+    q = select(SubbasinInfo_View).where(SubbasinInfo_View.subbasin == subbasin_id)  # type: ignore
     result = await db.execute(q)
     scalar = result.scalars().first()
 
@@ -132,7 +132,7 @@ async def get_all_subbasins_info(
     if f == "geojson" and scalars:
         # TODO: cache this server-side
 
-        content = await run_in_threadpool(scalars_to_gdf_to_geojson, scalars)
+        content = await run_in_threadpool(scalars_to_gdf_to_geojson, scalars)  # type: ignore
 
         return Response(
             content=content,

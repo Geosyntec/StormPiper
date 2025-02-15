@@ -216,12 +216,10 @@ class ScenarioBase(BaseModel):
     input: ScenarioInput | None = None
 
 
-class ScenarioPost(ScenarioBase):
-    ...
+class ScenarioPost(ScenarioBase): ...
 
 
-class ScenarioPatch(ScenarioBase):
-    ...
+class ScenarioPatch(ScenarioBase): ...
 
 
 class ScenarioUpdate(ScenarioPatch):
@@ -262,5 +260,4 @@ class ScenarioInDBBase(BaseORM, ScenarioUpdate):
 
 
 # Properties to return to client
-class Scenario(ScenarioInDBBase):
-    ...
+class Scenario(ScenarioInDBBase): ...

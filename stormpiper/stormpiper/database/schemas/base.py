@@ -1,3 +1,5 @@
+# ruff: noqa
+# type: ignore
 """This module is imported by alembic only"""
 
 from stormpiper.apps.supersafe.db import User
