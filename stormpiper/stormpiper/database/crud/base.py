@@ -52,7 +52,7 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
         return None
 
     async def create(self, db: AsyncSession, *, new_obj: CreateModelType) -> SchemaType:
-        db_obj = self.base(**new_obj.dict(exclude_unset=True))
+        db_obj = self.base(**new_obj.model_dump(exclude_unset=True))
 
         db.add(db_obj)
         await db.commit()
@@ -80,7 +80,7 @@ class CRUDBase(Generic[SchemaType, CreateModelType, UpdateModelType]):
         if isinstance(new_obj, dict):
             update_data = new_obj
         else:
-            update_data = new_obj.dict(exclude_unset=True)
+            update_data = new_obj.model_dump(exclude_unset=True)
 
         update_data[self.id] = id
 

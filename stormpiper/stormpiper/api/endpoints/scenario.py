@@ -40,11 +40,14 @@ async def validate_scenario(
     request: Request,
     user: Editor,
     db: AsyncSessionDB,
-    scenario: ScenarioPost | dict[str, Any] = Body(..., examples=SCENARIO_EXAMPLES),
+    scenario: ScenarioPost | dict[str, Any] = Body(
+        ...,
+        openapi_examples=SCENARIO_EXAMPLES,  # type: ignore
+    ),
 ) -> ScenarioUpdate:
     context = request.state.context
     if isinstance(scenario, BaseModel):  # pragma: no branch
-        scenario = scenario.dict(exclude_unset=True)
+        scenario = scenario.model_dump(exclude_unset=True)
     scenario["updated_by"] = user.email
 
     try:
@@ -126,7 +129,7 @@ async def update_scenario(
     if not attr:  # pragma: no cover
         raise HTTPException(status_code=404, detail=f"Record not found for id={id}")
 
-    data = scenario.dict(exclude_unset=True)
+    data = scenario.model_dump(exclude_unset=True)
 
     if "input" in data:
         loading_hash = scenario.loading_hash
@@ -192,7 +195,9 @@ async def create_scenario(
     user: Editor,
     data: ScenarioUpdate = Depends(validate_scenario),
 ):
-    scenario = ScenarioCreate(**data.dict(exclude_unset=True), created_by=user.email)
+    scenario = ScenarioCreate(
+        **data.model_dump(exclude_unset=True), created_by=user.email
+    )
     try:
         attr = await crud.scenario.create(db=db, new_obj=scenario)
     except Exception as e:  # pragma: no cover
@@ -220,7 +225,7 @@ async def solve_single_scenario(
     if not attr:  # pragma: no cover
         raise HTTPException(status_code=404, detail=f"Record not found for id={id}")
 
-    data = ScenarioSolve(**utils.orm_to_dict(attr)).dict(exclude_unset=True)
+    data = ScenarioSolve(**utils.orm_to_dict(attr)).model_dump(exclude_unset=True)
 
     task = bg.update_scenario_results.apply_async(kwargs={"data": data, "force": force})
 
@@ -239,7 +244,7 @@ async def solve_all_scenarios(
         raise HTTPException(status_code=404, detail="Scenario records not found.")
 
     data_list = [
-        ScenarioSolve(**utils.orm_to_dict(attr)).dict(exclude_unset=True)
+        ScenarioSolve(**utils.orm_to_dict(attr)).model_dump(exclude_unset=True)
         for attr in attrs
     ]
 
@@ -255,7 +260,7 @@ async def solve_scenario(
     scenario: ScenarioCreate = Depends(validate_scenario),
 ):
     """Stateless solves of scenarios with identical logic as the stateful variant."""
-    data = scenario.dict(exclude_unset=True)
+    data = scenario.model_dump(exclude_unset=True)
     task = bg.compute_scenario_results.apply_async(kwargs={"data": data})
     return await generate_task_response(task=task)
 
@@ -270,6 +275,6 @@ async def solve_scenario_foreground(
     scenario: ScenarioCreate = Depends(validate_scenario),
 ):
     """Stateless solves of scenarios with identical logic as the stateful variant."""
-    data = scenario.dict(exclude_unset=True)
+    data = scenario.model_dump(exclude_unset=True)
     response = solve_scenario_data(data=data)
     return response

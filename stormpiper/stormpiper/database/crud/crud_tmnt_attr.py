@@ -32,7 +32,7 @@ class CRUDTMNTFacilityCost(
         if isinstance(new_obj, dict):
             update_data = new_obj
         else:
-            update_data = new_obj.dict(exclude_unset=True)
+            update_data = new_obj.model_dump(exclude_unset=True)
 
         obj = await self.get(db=db, id=id)
 

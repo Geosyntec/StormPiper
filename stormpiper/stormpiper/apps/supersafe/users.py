@@ -220,7 +220,7 @@ def check_protected_user_patch(field: str, min_role: Role = Role.admin):
         current_user=Depends(current_active_user),
         id: Any = None,
     ) -> UserUpdate:
-        data = user_update.dict(exclude_unset=True)
+        data = user_update.model_dump(exclude_unset=True)
 
         if field not in data:
             return user_update

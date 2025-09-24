@@ -2,9 +2,9 @@ from datetime import datetime
 from typing import Any
 from uuid import UUID
 
-from geojson_pydantic import FeatureCollection, Point, Polygon
-from nereid.api.api_v1.models.treatment_facility_models import STRUCTURAL_FACILITY_TYPE
-from pydantic import Field, validator
+from geojson_pydantic import Feature, FeatureCollection, Point, Polygon
+from nereid.models.treatment_facility_models import STRUCTURAL_FACILITY_TYPE
+from pydantic import Field, field_validator
 
 from .base import BaseModel, BaseORM
 from .tmnt_attr import TMNTFacilityPatch
@@ -38,7 +38,7 @@ def lower_precision(data: list, precision=5) -> None:
 
 
 class LowResPolygon(Polygon):
-    @validator("coordinates", pre=True, always=True)
+    @field_validator("coordinates", mode="before")
     def low_precision(cls, coordinates: list) -> list:
         """limit polygon precision."""
         for ele in coordinates:
@@ -47,7 +47,7 @@ class LowResPolygon(Polygon):
 
 
 class LowResPoint(Point):
-    @validator("coordinates", pre=True, always=True)
+    @field_validator("coordinates", mode="before")
     def low_precision(cls, coordinates: list) -> list:
         """limit point precision."""
         coordinates = list(coordinates)
@@ -56,13 +56,15 @@ class LowResPoint(Point):
         return coordinates
 
 
-DelineationFeatureCollection = FeatureCollection[LowResPolygon, DelineationProps]
+DelineationFeatureCollection = FeatureCollection[
+    Feature[LowResPolygon, DelineationProps]
+]
 DelineationFeatureCollectionUpdate = FeatureCollection[
-    LowResPolygon, DelineationPropsUpdate
+    Feature[LowResPolygon, DelineationPropsUpdate]
 ]
 
 StructuralFacilityFeatureCollection = FeatureCollection[
-    LowResPoint, dict[str, Any] | TMNTFacilityPatch | STRUCTURAL_FACILITY_TYPE
+    Feature[LowResPoint, dict[str, Any] | TMNTFacilityPatch | STRUCTURAL_FACILITY_TYPE]
 ]
 
 DELIN_BBOX_COORD_01 = [

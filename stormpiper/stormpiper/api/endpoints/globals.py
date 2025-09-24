@@ -59,8 +59,8 @@ async def patch_cost_global(
             status_code=404, detail=f"Record not found for variable={variable}"
         )
 
-    _setting = GlobalSettingUpdate.construct(
-        **setting.dict(exclude_unset=True), updated_by=user.email
+    _setting = GlobalSettingUpdate.model_construct(
+        **setting.model_dump(exclude_unset=True), updated_by=user.email
     )
 
     attr = await crud.global_cost_setting.update(db=db, id=variable, new_obj=_setting)
@@ -120,8 +120,8 @@ async def patch_global(
             status_code=404, detail=f"Record not found for variable={variable}"
         )
 
-    _setting = GlobalSettingUpdate.construct(
-        **setting.dict(exclude_unset=True), updated_by=user.email
+    _setting = GlobalSettingUpdate.model_construct(
+        **setting.model_dump(exclude_unset=True), updated_by=user.email
     )
 
     attr = await crud.global_setting.update(db=db, id=variable, new_obj=_setting)
@@ -141,7 +141,8 @@ async def create_global_setting(
     user: UserAdmin,
 ):
     new_obj = GlobalSettingCreate(
-        **setting.dict(exclude_unset=True, exclude_none=True), updated_by=user.email
+        **setting.model_dump(exclude_unset=True, exclude_none=True),
+        updated_by=user.email,
     )
 
     try:

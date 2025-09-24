@@ -3,7 +3,8 @@ import secrets
 from pathlib import Path
 from typing import Literal
 
-from pydantic import AnyHttpUrl, BaseSettings, validator
+from pydantic import AnyHttpUrl, field_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from stormpiper import __version__  # type: ignore
 
@@ -25,7 +26,7 @@ class Settings(BaseSettings):
     ALLOW_CORS_ORIGIN_REGEX: str | None = None
     TRUSTED_HOSTS: list[str] | str = "127.0.0.1"
 
-    @validator("ALLOW_CORS_ORIGINS", pre=True)  # pragma: no cover
+    @field_validator("ALLOW_CORS_ORIGINS", mode="before")  # pragma: no cover
     def assemble_cors_origins(cls, v: str | list[str]) -> str | list[str]:
         if isinstance(v, str) and not v.startswith("["):
             return [i.strip() for i in v.split(",")]
@@ -77,7 +78,7 @@ class Settings(BaseSettings):
     EMAIL_API_SECRET: str = ""
     MAINTAINER_EMAIL_LIST: str | list[str] = ""
 
-    @validator("MAINTAINER_EMAIL_LIST", pre=True)  # pragma: no cover
+    @field_validator("MAINTAINER_EMAIL_LIST", mode="before")  # pragma: no cover
     def assemble_maintainer_emails(cls, v: str | list[str]) -> str | list[str]:
         if isinstance(v, str) and not v.startswith("["):
             return [i.strip() for i in v.split(",")]
@@ -85,7 +86,7 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
-    @validator("EMAIL_SEND_URL", pre=True)  # pragma: no cover
+    @field_validator("EMAIL_SEND_URL", mode="before")  # pragma: no cover
     def assure_valid_url(cls, v: str) -> str:
         if not v or v.strip() == "":
             return "http://example.com"
@@ -97,17 +98,18 @@ class Settings(BaseSettings):
     # AGOL
     TACOMA_EPSG: int = 2927
 
-    class Config:
-        extra = "allow"
-        env_prefix = "STP_"
-        try:
-            env_file = ".env"
-        except FileNotFoundError:  # pragma: no cover
-            pass
-
     def update(self, other: dict) -> None:  # pragma: no cover
         for key, value in other.items():
             setattr(self, key, value)
+
+    model_config = SettingsConfigDict(
+        extra="allow",
+        env_prefix="STP_",
+        # try:
+        env_file=".env",
+        # except FileNotFoundError:  # pragma: no cover
+        # pass
+    )
 
 
 settings = Settings()

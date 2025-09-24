@@ -1,6 +1,7 @@
 from uuid import uuid4
 
 from fastapi import APIRouter, Depends
+from pydantic import ConfigDict
 from sqlalchemy import select
 
 from stormpiper.apps.supersafe import models
@@ -16,8 +17,7 @@ from ..depends import AsyncSessionDB, Reader, UserDB
 
 
 class UserResponse(models.UserRead):
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 router = APIRouter()
