@@ -72,8 +72,12 @@ async def get_result_is_dirty(db: AsyncSessionDB):
 )
 async def get_result(
     db: AsyncSessionDB,
-    node_id: str = Path(..., title="node id or altid", example="SWFA-100002"),
-    epoch: Epoch | None = Query("1980s", example="1980s"),  # type: ignore
+    node_id: str = Path(
+        ...,
+        title="node id or altid",
+        openapi_examples={"t": {"summary": "t", "value": "SWFA-100002"}},
+    ),
+    epoch: Epoch | None = Query("1980s"),
 ):
     q = select(results.ResultBlob).where(results.ResultBlob.node_id == node_id)  # type: ignore
 

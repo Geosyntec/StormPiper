@@ -47,7 +47,7 @@ RUN mkdir /core \
 RUN mkdir /gunicorn \
     && pip wheel \
     --wheel-dir=/gunicorn \
-    gunicorn==20.1.0
+    gunicorn==23.0.0
 
 
 FROM python:3.11.4-slim-bullseye AS core-env

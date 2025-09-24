@@ -77,9 +77,9 @@ def scenario_validator(
                     )
                     new_props = deepcopy(props)
                     if tmnt_update.tmnt_attr:
-                        new_props.update(**tmnt_update.tmnt_attr.dict())
+                        new_props.update(**tmnt_update.tmnt_attr.model_dump())
                     if tmnt_update.tmnt_cost:
-                        new_props.update(**tmnt_update.tmnt_cost.dict())
+                        new_props.update(**tmnt_update.tmnt_cost.model_dump())
 
                     structural_tmnt.append(new_props)
 

@@ -8,10 +8,9 @@ import geopandas
 import pandas
 import sqlalchemy as sa
 from fastapi import Depends
-from passlib.context import CryptContext
+from fastapi_users.password import PasswordHelper
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import NullPool
 
 from stormpiper.core.config import settings
 from stormpiper.database import utils
@@ -25,7 +24,7 @@ from stormpiper.src import tasks
 from stormpiper.startup import create_default_cost_globals
 from stormpiper.tests.data import _base
 
-hasher = CryptContext(schemes=["bcrypt"], deprecated="auto").hash
+hasher = PasswordHelper().hash
 
 
 def with_ee_login(func):

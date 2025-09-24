@@ -170,7 +170,7 @@ def solve_scenario_data(data: dict, force=False, engine=None) -> dict:
 
 def solve_scenario_db(data: dict, engine=engine) -> dict:
     Session = get_session(engine=engine)
-    data = ScenarioSolve(**data).dict(exclude_unset=True)
+    data = ScenarioSolve(**data).model_dump(exclude_unset=True)
     id_ = str(data["id"])
     res = {}
     with Session.begin() as session:  # type: ignore

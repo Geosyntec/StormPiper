@@ -30,6 +30,6 @@ MOD_TMNT["input"]["tmnt_facility_collection"]["features"][0]["properties"][
 )
 def test_scenario_solve_scenario_data(data, exp):
     valid_model = scenario_validator(scenario=data)
-    updated_scenario = scenario.solve_scenario_data(data=valid_model.dict())
+    updated_scenario = scenario.solve_scenario_data(data=valid_model.model_dump())
     for k, v in exp.items():
         assert updated_scenario[k] == v, (k, v, updated_scenario[k])

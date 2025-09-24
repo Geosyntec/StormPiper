@@ -1,3 +1,5 @@
+from pydantic import ConfigDict
+
 from stormpiper.models.base import BaseModel
 
 EXAMPLE_PV = dict(
@@ -20,8 +22,8 @@ class PVRequest(BaseModel):
     capital_cost: float
     capital_cost_basis_year: int | float | None = None
     om_cost_per_yr: float
-    om_cost_basis_year: int | float | None
-    install_year: int | float | None
+    om_cost_basis_year: int | float | None = None
+    install_year: int | float | None = None
     replacement_cost: None | float = None
     lifespan_yrs: float | int | None = None
     # globals
@@ -30,5 +32,4 @@ class PVRequest(BaseModel):
     planning_horizon_yrs: float | int
     cost_basis_year: float | int
 
-    class Config:
-        schema_extra = {"example": EXAMPLE_PV}
+    model_config = ConfigDict(json_schema_extra={"example": EXAMPLE_PV})  # type: ignore

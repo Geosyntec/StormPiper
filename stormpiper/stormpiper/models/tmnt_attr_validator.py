@@ -2,8 +2,8 @@ import logging
 from copy import deepcopy
 from typing import Any
 
-from nereid.api.api_v1.models import treatment_facility_models
-from nereid.api.api_v1.models.treatment_facility_models import (
+from nereid.models import treatment_facility_models
+from nereid.models.treatment_facility_models import (
     STRUCTURAL_FACILITY_TYPE,
     TREATMENT_FACILITY_MODELS,
 )
@@ -65,7 +65,7 @@ def validate_tmnt_modeling_params(
 
     md = dict(node_id="", ref_data_key="", design_storm_depth_inches=1)
     md.update(
-        TMNTFacilityAttrPatch(**unvalidated_data).dict(
+        TMNTFacilityAttrPatch(**unvalidated_data).model_dump(
             exclude_unset=True, exclude_none=True
         )
     )
@@ -101,7 +101,7 @@ def maybe_update_pv_params(
     except ValidationError as e:
         logger.info(f"Validation Error {str(e)}")
         return TMNTFacilityCostUpdate(**unvalidated_data)
-    cost_results = compute_bmp_pv(**pv_req.dict())
+    cost_results = compute_bmp_pv(**pv_req.model_dump())
     unvalidated_data.update(**cost_results)
 
     return TMNTFacilityCostUpdate(**unvalidated_data)
@@ -115,7 +115,7 @@ def tmnt_attr_validator(
     unvalidated_data = deepcopy(tmnt_patch)
 
     if isinstance(unvalidated_data, BASE):
-        unvalidated_data = unvalidated_data.dict()
+        unvalidated_data = unvalidated_data.model_dump()
 
     tmnt_attr = validate_tmnt_modeling_params(unvalidated_data, context=context)
 

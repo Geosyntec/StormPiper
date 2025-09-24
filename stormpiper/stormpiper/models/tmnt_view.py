@@ -59,6 +59,3 @@ class TMNTView(BaseORM):
     PHE_total_cost_dollars_per_load_lbs_removed: float | None
     PYR_total_cost_dollars_per_load_lbs_removed: float | None
     DEHP_total_cost_dollars_per_load_lbs_removed: float | None
-
-    class Config:
-        orm_mode = True

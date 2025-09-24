@@ -16,6 +16,6 @@ rpc_router = APIRouter(dependencies=[Depends(user_role_ge_reader)])
 )
 async def calculate_subbasin_promethee_prioritization(prom: PromRequest):
     task = bg.calculate_subbasin_promethee_prioritization.apply_async(
-        kwargs={"data": prom.dict()}
+        kwargs={"data": prom.model_dump()}
     )
     return await generate_task_response(task=task, timeout=15)

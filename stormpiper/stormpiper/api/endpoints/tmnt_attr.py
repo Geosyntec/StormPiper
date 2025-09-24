@@ -3,7 +3,7 @@ from typing import Any
 from fastapi import APIRouter, Body, Depends, Path, Query, Request, status
 from fastapi.concurrency import run_in_threadpool
 from fastapi.exceptions import HTTPException
-from nereid.api.api_v1.models.treatment_facility_models import STRUCTURAL_FACILITY_TYPE
+from nereid.models.treatment_facility_models import STRUCTURAL_FACILITY_TYPE
 from pydantic import BaseModel
 from sqlalchemy import select
 
@@ -68,7 +68,7 @@ async def validate_tmnt_update(
     ),
 ) -> TMNTUpdate:
     if isinstance(tmnt_patch, BaseModel):  # pragma: no cover
-        tmnt_patch = tmnt_patch.dict(exclude_unset=True)
+        tmnt_patch = tmnt_patch.model_dump(exclude_unset=True)
     tmnt_patch["updated_by"] = user.email
     context = request.state.context
 

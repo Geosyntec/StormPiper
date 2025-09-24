@@ -327,7 +327,7 @@ async def calculate_pv_for_existing_tmnt_in_db(node_id: str, db: AsyncSession):
         attr = await crud.tmnt_cost.update(db=db, id=node_id, new_obj=cost_results)
         raise
 
-    cost_results = await run_in_threadpool(compute_bmp_pv, **pv_req.dict())
+    cost_results = await run_in_threadpool(compute_bmp_pv, **pv_req.model_dump())
 
     attr = await crud.tmnt_cost.update(db=db, id=node_id, new_obj=cost_results)
 

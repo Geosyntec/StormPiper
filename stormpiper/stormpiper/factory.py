@@ -16,7 +16,7 @@ from ratelimit.backends.redis import RedisBackend
 from redis.asyncio import StrictRedis
 
 import stormpiper.bg_worker as bg
-from stormpiper.api import api_router, rpc_router
+from stormpiper.api.router import api_router, rpc_router
 from stormpiper.api.docs import get_better_swagger_ui_html
 from stormpiper.apps import ratelimiter
 from stormpiper.apps import supersafe as ss
@@ -24,10 +24,6 @@ from stormpiper.apps.supersafe.users import user_role_ge_admin, user_role_ge_rea
 from stormpiper.core.config import settings
 from stormpiper.core.context import get_context
 from stormpiper.earth_engine import ee_continuous_login
-from stormpiper.site import site_router
-
-# from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware
-# from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 
 ss_router = ss.create_router()
@@ -60,7 +56,7 @@ def create_app(
     settings_override: dict[str, Any] | None = None,
     app_kwargs: dict[str, Any] | None = None,
 ) -> FastAPI:
-    _settings = settings.copy(deep=True)
+    _settings = settings.model_copy(deep=True)
     if settings_override is not None:  # pragma: no branch
         _settings.update(settings_override)
 
@@ -107,7 +103,6 @@ def create_app(
 
     app.include_router(api_router)
     app.include_router(rpc_router)
-    app.include_router(site_router)
     app.include_router(ss_router)
 
     @app.get("/ping", name="ping")
@@ -124,10 +119,6 @@ def create_app(
             "message": "welcome home.",
             "version": _settings.VERSION,
             "environment": _settings.ENVIRONMENT,
-            "redirect_url_path_for": request.scope["router"].url_path_for(
-                "login:get_login"
-            ),
-            "redirect_url_for": str(request.url_for("login:get_login")),
             "has_worker": task,
         }
 
@@ -146,16 +137,8 @@ def create_app(
             "ASYNC_MODE": "add",
             "DATA_DIRECTORY": pkg_path / "data" / "project_data",
         },
-        app_kwargs={"docs_url": "", "dependencies": [Depends(user_role_ge_admin)]},
+        app_kwargs={"dependencies": [Depends(user_role_ge_admin)]},
     )
-
-    @nereid_app.get("/docs", include_in_schema=False)
-    async def nereid_custom_swagger_ui_html():
-        resp = get_better_swagger_ui_html(
-            openapi_url="/api/nereid" + str(nereid_app.openapi_url),
-            title=nereid_app.title + " - Swagger UI",
-        )
-        return resp
 
     app.mount("/api/nereid", nereid_app, name="nereid")
 

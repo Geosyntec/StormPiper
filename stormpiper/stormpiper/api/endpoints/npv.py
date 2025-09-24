@@ -16,7 +16,7 @@ rpc_router = APIRouter(dependencies=[Depends(user_role_ge_editor)])
 
 @rpc_router.post("/calculate_present_cost", tags=["rpc"])
 async def calculate_npv(pv: PVRequest):
-    cost_results = await run_in_threadpool(compute_bmp_pv, **pv.dict())
+    cost_results = await run_in_threadpool(compute_bmp_pv, **pv.model_dump())
     return cost_results
 
 
@@ -52,11 +52,13 @@ async def refresh_pv_for_all_existing_tmnt(db: AsyncSessionDB):
 
     attrs = await crud.tmnt_cost.get_all(db=db)
     if not attrs:
-        raise HTTPException(status_code=404, detail=f"Records not found.")
+        raise HTTPException(status_code=404, detail="Records not found.")
 
     for attr in attrs:
         try:
-            _ = await calculate_pv_for_existing_tmnt_in_db(db=db, node_id=attr.node_id)
+            _ = await calculate_pv_for_existing_tmnt_in_db(
+                db=db, node_id=str(attr.node_id)
+            )
 
         except RecordNotFound as e:
             raise HTTPException(status_code=404, detail=f"{e}")

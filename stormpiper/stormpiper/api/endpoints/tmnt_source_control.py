@@ -52,7 +52,8 @@ async def patch_tmnt_source_control(
         raise HTTPException(status_code=404, detail=f"Record not found for id={id}")
 
     new_obj = TMNTSourceControlUpdate(
-        **tmnt_attr.dict(exclude_unset=True, exclude_none=True), updated_by=user.email
+        **tmnt_attr.model_dump(exclude_unset=True, exclude_none=True),
+        updated_by=user.email,
     )
 
     try:
@@ -78,7 +79,8 @@ async def create_tmnt_source_control(
     tmnt_attr: TMNTSourceControlPost,
 ):
     new_obj = TMNTSourceControlCreate(
-        **tmnt_attr.dict(exclude_unset=True, exclude_none=True), updated_by=user.email
+        **tmnt_attr.model_dump(exclude_unset=True, exclude_none=True),
+        updated_by=user.email,
     )
 
     try:

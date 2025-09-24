@@ -65,7 +65,7 @@ def fetch_scenario_results():
     scenarios = []
     for _, dct in enumerate(SCENARIO_EXAMPLES.values()):
         scenario_data = dct.get("value", {})
-        d = scenario_validator(scenario_data).dict(exclude_unset=True)
+        d = scenario_validator(scenario_data).model_dump(exclude_unset=True)
         data = scenario.solve_scenario_data(data=d, force=True)
         scenarios.append(data)
 
