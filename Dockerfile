@@ -1,9 +1,9 @@
-FROM redis:6.2.12-alpine3.18 AS redis
+FROM redis:6.2.17-alpine3.21 AS redis
 COPY ./stormpiper/redis.conf /redis.conf
 CMD ["redis-server", "/redis.conf"]
 
 
-FROM postgis/postgis:14-3.3 AS postgis
+FROM postgis/postgis:14-3.5 AS postgis
 
 
 FROM node:24.10-trixie AS build-frontend
@@ -14,7 +14,7 @@ COPY ./stormpiper/stormpiper/spa /app/
 RUN npm run build
 
 
-FROM python:3.11.4-slim-bullseye AS core-runtime
+FROM python:3.11.14-slim-trixie AS core-runtime
 RUN apt-get update -y \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /stormpiper
@@ -32,11 +32,12 @@ COPY --from=build-frontend /app/build /stormpiper/stormpiper/spa/build
 RUN chmod +x /start.sh /start-pod.sh /start-reload.sh /start-test-container.sh
 
 
-FROM python:3.11.4-bullseye AS base-builder
+FROM python:3.11.14-trixie AS base-builder
 RUN apt-get update -y \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean \
     && pip install -U pip wheel setuptools
+
 
 FROM base-builder AS builder
 COPY ./stormpiper/requirements.txt /requirements.txt
@@ -50,7 +51,7 @@ RUN mkdir /gunicorn \
     gunicorn==23.0.0
 
 
-FROM python:3.11.4-slim-bullseye AS core-env
+FROM python:3.11.14-slim-trixie AS core-env
 RUN pip install -U pip wheel setuptools
 COPY --from=builder /core /core
 COPY ./stormpiper/requirements.txt /requirements.txt
