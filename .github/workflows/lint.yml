@@ -19,9 +19,9 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version: 3.12
       - name: Install Linters
         run: |
-          pip install black isort -c stormpiper/requirements_test.txt
+          pip install -r stormpiper/requirements_test.txt
       - name: Run Linters
         run: make lint
