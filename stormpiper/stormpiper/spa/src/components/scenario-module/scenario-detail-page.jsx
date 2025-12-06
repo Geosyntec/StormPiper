@@ -704,6 +704,7 @@ export default function ScenarioDetailPage({ setDrawerButtonList }) {
                 updateFacilityData={() => {
                   console.log("attempted cost refresh. no op.");
                 }}
+                shouldRefresh={false}
               />
             </Card>
           </Box>

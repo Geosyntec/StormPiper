@@ -44,6 +44,9 @@ export async function api_fetch(resource, args = {}) {
   if (response.status === 401 && window.location.pathname !== "/app") {
     window.location.replace(`${urlPrefix}/app`);
   }
+  if (response.status > 401) {
+    console.debug(await response.clone().text());
+  }
 
   return response;
 }
@@ -84,7 +87,7 @@ export const numFormatter = (params) => {
     return "0";
   }
   const n = Number(parseFloat(params.value).toPrecision(3));
-  return `${n}`;
+  return `${n.toLocaleString("en-US")}`;
 };
 
 export const pctFormatter = (params) => {
