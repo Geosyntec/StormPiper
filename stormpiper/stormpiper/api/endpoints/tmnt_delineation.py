@@ -30,8 +30,6 @@ async def get_tmnt_delineations(
     altid: str,
     f: str = Query("json"),
 ):
-    """Returns a list because more than one delineation can be associated with a facility"""
-
     q = select(tmnt.TMNTFacilityDelineation).where(
         tmnt.TMNTFacilityDelineation.altid == altid
     )

@@ -7,7 +7,7 @@ import AppBar from "./appbar";
 import Landing from "../landing";
 import AuthChecker from "../authChecker";
 import ResultsViewerPage from "../results-viewer/results-page";
-
+// const ResultsViewerPage = lazy(() => import("../results-viewer/results-page"));
 const SystemExplorer = lazy(() => import("../systemExplorer"));
 const Prioritization = lazy(() => import("../Prioritization"));
 const EditAllUsers = lazy(() => import("../users/users-edit-all"));
