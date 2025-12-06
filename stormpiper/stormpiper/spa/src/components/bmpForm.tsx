@@ -21,9 +21,13 @@ import React, {
   useState,
 } from "react";
 import { useForm } from "react-hook-form";
+// @ts-ignore
 import { BMPReadOnlyInfo } from "./bmp-detail-page/bmp-basic-info";
+// @ts-ignore
 import { KCBMPDetailModal } from "./cost-estimator/kc-estimator-modal";
+// @ts-ignore
 import { fieldAlias } from "./fieldAlias";
+import DocumentationURL from "../assets/docs/Appendix_B.pdf";
 
 const hiddenFields: string[] = [
   "ref_data_key",
@@ -54,6 +58,7 @@ type formProps = {
     [x: string]: { [x: string]: string };
   };
   handleFormSubmit: Function;
+  handleEditReset: Function;
   showSubmit?: boolean;
   formDataEmitter: Function;
   formDisabled?: boolean;
@@ -516,6 +521,22 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
 
               <Button onClick={handleModalOpen}>
                 King County Cost Estimator Tool
+              </Button>
+              <Button
+                // variant="contained"
+                component="label"
+                sx={{
+                  textTransform: "none",
+                }}
+              >
+                <a
+                  href={DocumentationURL}
+                  target="_blank"
+                  // download // uncomment to cause the file to be downloaded rather than opened in a new tab.
+                  style={{ textDecoration: "none", color: "dimgray" }}
+                >
+                  WQBE (PDF)
+                </a>
               </Button>
             </>
           </AccordionDetails>

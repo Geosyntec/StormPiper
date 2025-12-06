@@ -2,6 +2,7 @@ import { Box, Button, Modal, Typography } from "@mui/material";
 import { useState } from "react";
 
 import KCCostEstimator from "./kc-estimator";
+import DocumentationURL from "../../assets/docs/Appendix_B.pdf";
 
 export function KCBMPDetailModal({
   modalOpen,
@@ -51,7 +52,22 @@ export function KCBMPDetailModal({
           {"King County BMP Cost Estimator Tool"}
         </Typography>
         <Typography id="modal-modal-description" align="center" sx={{ mt: 2 }}>
-          {"2020 King County Report <link>"}
+          <Button
+            variant="contained"
+            component="label"
+            sx={{
+              textTransform: "none",
+            }}
+          >
+            <a
+              href={DocumentationURL}
+              target="_blank"
+              // download // uncomment to cause the file to be downloaded rather than opened in a new tab.
+              style={{ textDecoration: "none", color: "white" }}
+            >
+              King County WQBE Report (PDF)
+            </a>
+          </Button>
         </Typography>
 
         <KCCostEstimator
