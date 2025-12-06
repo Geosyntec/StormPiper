@@ -8,7 +8,12 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useState, useEffect, useRef } from "react";
-import { api_fetch, numFormatter, pctFormatter } from "../../utils/utils";
+import {
+  api_fetch,
+  numFormatter,
+  pctFormatter,
+  strFormatter,
+} from "../../utils/utils";
 import {
   DataGrid,
   GridToolbarContainer,
@@ -254,23 +259,35 @@ export default function SubbasinResultsTable({ fieldList }) {
   }
 
   function getValueFormatter(fieldName: string, type: string) {
-    let valueFormatter;
-    valueFormatter =
-      fieldName.toLowerCase().indexOf("pct") > 0 ? pctFormatter : numFormatter;
     if (type === "string") {
-      valueFormatter = null;
+      return strFormatter;
     }
-    return valueFormatter;
+
+    return fieldName.toLowerCase().indexOf("pct") > 0
+      ? pctFormatter
+      : numFormatter;
+  }
+
+  function inferType(obj: { type: string; anyOf: [{ type: string }] }) {
+    let type = obj?.type;
+    if (type != null) {
+      return type;
+    } else {
+      let t = obj?.anyOf.find((t) => t.type != null)?.type;
+      return t || "string";
+    }
   }
 
   function _buildTableColumns(
     props: {
-      [key: string]: { title: string; type: string };
+      [key: string]: { title: string; type: string; anyOf: [{ type: string }] };
     },
     resultFields: { group: string; field: string; displayName: string }[]
   ): TableHeader[] {
     let colArr: TableHeader[] = [];
     Object.keys(props).map((k) => {
+      let type = inferType(props[k]);
+
       if (resultFields) {
         colArr.push({
           field: k,
@@ -281,8 +298,8 @@ export default function SubbasinResultsTable({ fieldList }) {
           width: 150, //pinnedFields.includes(k) ? 100 : 100 + (props[k].title.length - 20),
           headerAlign: "center",
           align: "center",
-          valueFormatter: getValueFormatter(k, props[k].type),
-          type: props[k].type,
+          valueFormatter: getValueFormatter(k, type),
+          type: type,
         });
       }
     });

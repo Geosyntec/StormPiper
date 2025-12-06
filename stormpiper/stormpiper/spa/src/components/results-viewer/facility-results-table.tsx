@@ -190,13 +190,23 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
   }
 
   function getValueFormatter(fieldName: string, type: string) {
-    let valueFormatter;
-    valueFormatter =
-      fieldName.toLowerCase().indexOf("pct") > 0 ? pctFormatter : numFormatter;
     if (type === "string") {
-      valueFormatter = strFormatter;
+      return strFormatter;
     }
-    return valueFormatter;
+
+    return fieldName.toLowerCase().indexOf("pct") > 0
+      ? pctFormatter
+      : numFormatter;
+  }
+
+  function inferType(obj: { type: string; anyOf: [{ type: string }] }) {
+    let type = obj?.type;
+    if (type != null) {
+      return type;
+    } else {
+      let t = obj?.anyOf.find((t) => t.type != null)?.type;
+      return t || "string";
+    }
   }
 
   function getHeaderName(k, props) {
@@ -209,18 +219,19 @@ export default function FacilityResultsTable(props: FacilityResultsTableProps) {
   }
 
   function _buildTableColumns(props: {
-    [key: string]: { title: string; type: string };
+    [key: string]: { title: string; type: string; anyOf: [{ type: string }] };
   }): TableHeader[] {
     let colArr: TableHeader[] = [];
     Object.keys(props).map((k) => {
+      let type = inferType(props[k]);
       colArr.push({
         field: k,
         headerName: getHeaderName(k, props),
         width: 150, //pinnedFields.includes(k) ? 100 : 100 + (props[k].title.length - 20),
         headerAlign: "center",
         align: "center",
-        valueFormatter: getValueFormatter(k, props[k].type),
-        type: props[k].type,
+        valueFormatter: getValueFormatter(k, type),
+        type: type,
         renderCell: (params) => {
           if (k === "node_id") {
             return (

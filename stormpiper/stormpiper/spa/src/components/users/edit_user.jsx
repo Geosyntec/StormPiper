@@ -311,6 +311,7 @@ export default function EditUser() {
         <Card
           sx={{
             p: 2,
+            maxWidth: "lg",
           }}
         >
           <Typography variant="h6">Data Integration</Typography>

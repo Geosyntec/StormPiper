@@ -1,5 +1,6 @@
 from sqlalchemy import inspect, text
 
+from .results import ResultBlob
 from .subbasin import Subbasin, SubbasinResult
 from .tmnt import TMNTFacility, TMNTFacilityAttr
 from .tmnt_cost import TMNTFacilityCost
@@ -215,6 +216,16 @@ def build_tmnt_v():
         if k not in ["node_id"] + t_cols + ta_cols + ts_cols
     ]
 
+    r_cols = [
+        k
+        for k in ResultBlob.__table__.columns.keys()
+        if k
+        not in ["node_id", "design_intensity_inhr", "design_volume_cuft_cumul"]
+        + t_cols
+        + ta_cols
+        + ts_cols
+    ]
+
     tcols = [f"""\tt."{s}" """ for s in t_cols]
 
     tatscols = [f"""\tta."{s}" as "modeling_attr_{s}" """ for s in ts_cols]
@@ -222,12 +233,15 @@ def build_tmnt_v():
 
     tctscols = [f"""\ttc."{s}" as "cost_attr_{s}" """ for s in ts_cols]
     tccols = [f"""\ttc."{s}" """ for s in tc_cols]
+    rcols = [f"""\tr."{s}" """ for s in r_cols]
     costploadcols = [
         f"""tc.present_value_total_cost / nullif(COALESCE(nullif(sign(r."{poc}_removed"),-1),0)*r."{poc}_removed", 0) AS "{poc.split("_")[0]}_total_cost_dollars_per_load_lbs_removed" """
         for poc in load_cols
     ]
 
-    block = ",\n".join(tcols + tatscols + tacols + tctscols + tccols + costploadcols)
+    block = ",\n".join(
+        tcols + tatscols + tacols + tctscols + tccols + rcols + costploadcols
+    )
 
     view_template = f"""
 CREATE OR REPLACE VIEW tmnt_v AS
@@ -236,7 +250,7 @@ select
 from tmnt_facility as t
     LEFT JOIN tmnt_facility_attribute as ta on t.node_id = ta.node_id
     LEFT JOIN tmnt_facility_cost as tc on t.node_id = tc.node_id
-    LEFT JOIN (SELECT * from result_blob where epoch = '1980s') as r ON t.node_id = r.node_id
+    LEFT JOIN (SELECT * from result_blob where epoch = '1980s') as r on t.node_id = r.node_id
 """
     return view_template
 
