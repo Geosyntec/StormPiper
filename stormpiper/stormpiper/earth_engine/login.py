@@ -36,7 +36,7 @@ def base_login(**kwargs):
     credentials = _build_credentials(**kwargs)
     ee.Initialize(
         credentials=credentials,  # type: ignore ; the ee library has set incorrect type hints/constraints on the ee.Initialize function.
-        opt_url="https://earthengine-highvolume.googleapis.com",
+        opt_url="https://earthengine.googleapis.com",  # high volume is slow
     )
     logger.info("Login to earth engine succeeded.")
     return True
@@ -48,7 +48,7 @@ async def base_async_login(**kwargs):
     await run_in_threadpool(
         ee.Initialize,
         credentials=credentials,  # type: ignore ; the ee library has set incorrect type hints/constraints on the ee.Initialize function.
-        opt_url="https://earthengine-highvolume.googleapis.com",
+        opt_url="https://earthengine.googleapis.com",  # high volume is slow
     )
     logger.info("Login to earth engine succeeded.")
     return True
