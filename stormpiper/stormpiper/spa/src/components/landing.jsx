@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { Link } from "react-router-dom";
 import {
   Box,
+  Button,
   Typography,
   Grid,
   Card,
@@ -21,6 +22,8 @@ import heroUrl from "../assets/img/hero-stormdrain.jpg";
 import ecology_logo from "../assets/img/ecylogo-wide-color.svg";
 import tacoma_logo from "../assets/img/Tacoma-Logo-3.png";
 import geosyntec_logo from "../assets/img/geosyntec-logo.png";
+
+import DocumentationURL from "../assets/docs/Tacoma_Users_Manual_Compiled.pdf";
 
 function ActionAreaCard({ img, header, content, ...props }) {
   return (
@@ -244,6 +247,31 @@ export default function Landing() {
 
                     `}
               />
+            </Grid>
+          </Grid>
+          <Grid container sx={{ py: 2, alignItems: "center" }}>
+            <Grid
+              item
+              xs={12}
+              sx={{ display: "flex", justifyContent: "center" }}
+            >
+              <Button
+                variant="contained"
+                component="label"
+                sx={{
+                  textTransform: "none",
+                  // my: 2,
+                }}
+              >
+                <a
+                  href={DocumentationURL}
+                  target="_blank"
+                  // download // uncomment to cause the file to be downloaded rather than opened in a new tab.
+                  style={{ textDecoration: "none", color: "white" }}
+                >
+                  Technical Documentation (PDF)
+                </a>
+              </Button>
             </Grid>
           </Grid>
           <Grid container sx={{ py: 2, alignItems: "center" }}>
