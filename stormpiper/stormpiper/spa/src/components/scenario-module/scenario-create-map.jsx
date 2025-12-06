@@ -1,12 +1,13 @@
 import DeckGLMap from "../map";
 import { GeoJsonLayer } from "@deck.gl/layers";
+import { EditableGeoJsonLayer } from "@nebula.gl/layers";
 import {
-  EditableGeoJsonLayer,
   DrawPolygonMode,
   DrawPointMode,
   ViewMode,
   ModifyMode,
-} from "nebula.gl";
+} from "@nebula.gl/edit-modes";
+
 import { Box, Card, CardContent, Button, Tooltip } from "@mui/material";
 import {
   activeLocalSWFacility as tmnt,
