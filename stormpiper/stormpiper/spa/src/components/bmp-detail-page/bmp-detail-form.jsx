@@ -3,15 +3,14 @@ import { useParams } from "react-router-dom";
 import {
   Box,
   Dialog,
-  DialogActions,
   Typography,
-  Button,
   List,
   ListItem,
   Snackbar,
 } from "@mui/material";
 
 import { api_fetch } from "../../utils/utils";
+import { AlertModal } from "../base/alert-modal";
 import { BMPForm } from "../bmpForm";
 
 export function BMPDetailForm() {
@@ -20,16 +19,18 @@ export function BMPDetailForm() {
     context: {},
     facilitySpec: {},
   });
-  const [facilityType, setFacilityType] = useState("");
+  const [facilityType, setFacilityType] = useState("no_treatment");
   const [loadingState, setLoadingState] = useState(true);
   const [TMNTAttrs, setTMNTAttrs] = useState({});
   const [resultError, setResultError] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("error!");
+  const [errorMsg, setErrorMsg] = useState("");
   const [snackbarContents, setSnackbarContents] = useState({
     status: false,
     msg: "",
     closeHandler: () => {},
   });
+  const [modalState, setModalState] = useState({ open: false });
+  const handleModalClose = () => setModalState({ open: false });
 
   useEffect(() => {
     if (!params.id) return;
@@ -48,12 +49,30 @@ export function BMPDetailForm() {
       resources.map((url) => api_fetch(url).then((res) => res.json()))
     )
       .then((resArray) => {
+        let facilitySpec = resArray[0].components.schemas;
+        let context =
+          resArray[1].api_recognize.treatment_facility.facility_type;
+        let attrs = resArray[2];
+
+        console.log("looking for", attrs.facility_type);
+
         setSpecs({
-          facilitySpec: resArray[0].components.schemas,
-          context: resArray[1].api_recognize.treatment_facility.facility_type,
+          facilitySpec,
+          context,
         });
-        setFacilityType(resArray[2].facility_type);
-        setTMNTAttrs(resArray[2]);
+
+        setTMNTAttrs(attrs);
+        console.log("attrs", attrs);
+
+        if (attrs.facility_type in context) {
+          setFacilityType(attrs.facility_type);
+        } else {
+          setModalState({
+            open: true,
+            messageTitle: `Error: ${attrs.facility_type} is not available`,
+            messageDescription: `Please select a different Facility Type from the menu. `,
+          });
+        }
       })
       .then(() => {
         setLoadingState(false);
@@ -150,12 +169,9 @@ export function BMPDetailForm() {
     //Isolate just the list of errors
     let beginningText = /[0-9]*\svalidation (error[s]*\sfor\s\w*\s)/g;
     msg = msg.replaceAll(beginningText, "");
-
-    let err = msg.match(/([\w\s.;=_]*)\([\w.=;\s]+\)/g);
-    if (err) {
-      err.map((e) => {
-        errorList.push(e.replace(/\([\w.=;\s]+\)/g, "")); //remove the error type in parantheses
-      });
+    msg = msg.match(/^(.+?)(?=\[)/g);
+    if (msg) {
+      errorList = [msg.pop()];
     }
     return errorList;
   }
@@ -165,10 +181,10 @@ export function BMPDetailForm() {
   }
 
   function formChangeHandler(data) {
-    Object.keys(data).forEach(
-      (k) => (data[k] = data[k] === "" ? null : data[k])
+    let d = Object.fromEntries(
+      Object.entries(data).filter(([_, v]) => Boolean(v))
     );
-    setTMNTAttrs(data);
+    setTMNTAttrs({ ...TMNTAttrs, ...d });
   }
 
   function renderForm() {
@@ -234,10 +250,18 @@ export function BMPDetailForm() {
   }
 
   return (
-    <Box>
-      {/* {_renderUpdateBox()} */}
-      {!loadingState && renderForm()}
-      {/* <Button onClick={removeEdits}>Reset</Button> */}
-    </Box>
+    <>
+      <AlertModal
+        modalOpen={modalState.open}
+        messageTitle={modalState.messageTitle}
+        messageDescription={modalState.messageDescription}
+        handleModalClose={handleModalClose}
+      />
+      <Box>
+        {/* {_renderUpdateBox()} */}
+        {!loadingState && renderForm()}
+        {/* <Button onClick={removeEdits}>Reset</Button> */}
+      </Box>
+    </>
   );
 }

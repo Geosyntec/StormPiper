@@ -22,7 +22,7 @@ from stormpiper.apps import ratelimiter
 from stormpiper.apps import supersafe as ss
 from stormpiper.apps.supersafe.users import user_role_ge_admin, user_role_ge_reader
 from stormpiper.core.config import settings
-from stormpiper.core.context import get_context
+from stormpiper.core.context import get_context, context
 from stormpiper.earth_engine import ee_continuous_login
 
 
@@ -36,7 +36,9 @@ async def lifespan(app: FastAPI):
         asyncio.create_task(ee_continuous_login(_settings.EE_LOGIN_INTERVAL_SECONDS))
 
     state = {}
-    state["context"] = get_context()
+    ctx = get_context()
+    ctx["_is_valid"] = context.validate_request_context(ctx)
+    state["context"] = ctx
     async with (
         aiohttp.ClientSession() as tileserver_session,
         aiohttp.ClientSession() as user_email_session,
@@ -78,7 +80,8 @@ def create_app(
     app.add_middleware(BrotliMiddleware)
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[str(o) for o in _settings.ALLOW_CORS_ORIGINS],
+        allow_origins=["127.0.0.1", "localhost"]
+        + [str(o) for o in _settings.ALLOW_CORS_ORIGINS],
         allow_origin_regex=_settings.ALLOW_CORS_ORIGIN_REGEX,
         allow_credentials=False,
         allow_methods=["GET", "OPTIONS", "POST", "PATCH", "DELETE"],
@@ -157,7 +160,7 @@ def create_app(
     @app.get("/app", name="home")
     @app.get("/app/{fullpath:path}")
     async def serve_spa(request: Request, fullpath: str | None = None) -> Response:
-        return templates.TemplateResponse("index.html", {"request": request})
+        return templates.TemplateResponse(request, "index.html")
 
     @app.get("/")
     async def home(request: Request) -> Response:

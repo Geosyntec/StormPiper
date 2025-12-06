@@ -15,6 +15,7 @@ import {
   Button,
   List,
 } from "@mui/material";
+import { AlertModal } from "../base/alert-modal";
 
 export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
   { facilitySetter, facility, formDisabled, showHelperText },
@@ -40,6 +41,8 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
   const [resultError, setResultError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("error!");
   const childRef = useRef(null);
+  const [modalState, setModalState] = useState({ open: false });
+  const handleModalClose = () => setModalState({ open: false });
 
   // Allows parent components to perform form functions
   useImperativeHandle(
@@ -79,10 +82,22 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
       resources.map((url) => api_fetch(url).then((res) => res.json()))
     )
       .then((resArray) => {
+        let facilitySpec = resArray[0].components.schemas;
+        let context =
+          resArray[1].api_recognize.treatment_facility.facility_type;
         setSpecs({
-          facilitySpec: resArray[0].components.schemas,
-          context: resArray[1].api_recognize.treatment_facility.facility_type,
+          facilitySpec,
+          context,
         });
+
+        if (!(facilityType in context)) {
+          setModalState({
+            open: true,
+            messageTitle: `Error: ${facilityType} is not available`,
+            messageDescription: `Please select a different Facility Type from the menu. `,
+          });
+          setFacilityType("no_treatment");
+        }
       })
       .then(() => {
         setLoadingState(false);
@@ -90,15 +105,17 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
   }, []);
 
   function _handleSubmit(data, facility) {
-    Object.keys(data).forEach(
-      (k) => (data[k] = data[k] === "" ? null : data[k])
+    console.log(data, facility?.features[0]);
+    let d = Object.fromEntries(
+      Object.entries(data).filter(([_, v]) => Boolean(v))
     );
+
     facilitySetter({
       type: "FeatureCollection",
       features: [
         {
           ...facility?.features[0],
-          properties: data,
+          properties: d,
           type: "Feature",
         },
       ],
@@ -137,12 +154,9 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
     //Isolate just the list of errors
     let beginningText = /[0-9]*\svalidation (error[s]*\sfor\s\w*\s)/g;
     msg = msg.replaceAll(beginningText, "");
-
-    let err = msg.match(/([\w\s.;=_]*)\([\w.=;\s]+\)/g);
-    if (err) {
-      err.map((e) => {
-        errorList.push(e.replace(/\([\w.=;\s]+\)/g, "")); //remove the error type in parantheses
-      });
+    msg = msg.match(/^(.+?)(?=\[)/g);
+    if (msg) {
+      errorList = [msg.pop()];
     }
     return errorList;
   }
@@ -242,5 +256,15 @@ export const ScenarioBMPForm = forwardRef(function ScenarioBMPForm(
     }
   }
 
-  return <>{!loadingState && renderForm()}</>;
+  return (
+    <>
+      <AlertModal
+        modalOpen={modalState.open}
+        messageTitle={modalState.messageTitle}
+        messageDescription={modalState.messageDescription}
+        handleModalClose={handleModalClose}
+      />
+      {!loadingState && renderForm()}
+    </>
+  );
 });

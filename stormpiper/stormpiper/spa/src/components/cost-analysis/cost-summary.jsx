@@ -98,9 +98,11 @@ function CostEffectivenessDetails({ tmntDetails }) {
 export default function CostSummary({
   tmntDetails,
   updateFacilityData,
+  shouldRefresh,
   ...props
 }) {
   const hasData = tmntDetails?.present_value_total_cost != null;
+  shouldRefresh = shouldRefresh == null ? true : shouldRefresh;
 
   async function refreshCostAnalysisByID() {
     await api_fetch(`/api/rpc/calculate_present_cost/${tmntDetails.node_id}`, {
@@ -118,7 +120,7 @@ export default function CostSummary({
         justifyContent={"space-between"}
       >
         <Typography variant="h6">Lifecycle Cost Analysis</Typography>
-        {hasData && (
+        {hasData && shouldRefresh && (
           <Tooltip title="Refresh Cost Analysis">
             <IconButton onClick={refreshCostAnalysisByID} color="primary">
               <AutorenewIcon sx={{ fontSize: "2rem" }} />

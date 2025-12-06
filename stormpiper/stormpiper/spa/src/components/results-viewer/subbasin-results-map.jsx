@@ -7,7 +7,6 @@ import { useState, useEffect } from "react";
 import { interpolateViridis } from "d3-scale-chromatic";
 import { api_fetch } from "../../utils/utils";
 import ColorRampLegend from "../colorRampLegend";
-import { findIndex } from "lodash";
 
 export default function SubbasinResultsMap({ visParam }) {
   const [subbasinData, setSubbasinData] = useState(null);
@@ -31,7 +30,7 @@ export default function SubbasinResultsMap({ visParam }) {
     dataSorted.sort((a, b) => a - b);
 
     let normalizedFeatures = data.features.map((feature) => {
-      let index = findIndex(dataSorted, (d) => {
+      let index = dataSorted.findIndex((d) => {
         return (
           parseFloat(d).toPrecision(3) ===
           parseFloat(feature.properties[param]).toPrecision(3)
