@@ -1,5 +1,5 @@
 resources:
-  - ../base
+- ../base
 nameSuffix: -dev
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
@@ -8,63 +8,63 @@ labels:
   pairs:
     app: stormpiper-dev
 images:
-  - name: gcr.io/tacoma-app/stormpiper-pod
-    newName: gcr.io/tacoma-app/stormpiper-pod
-    newTag: edge
-  - name: gcr.io/tacoma-app/bg_worker
-    newName: gcr.io/tacoma-app/bg_worker
-    newTag: edge
-  - name: gcr.io/tacoma-app/redis
-    newName: gcr.io/tacoma-app/redis
-    newTag: edge
+- name: gcr.io/tacoma-app/stormpiper-pod
+  newName: gcr.io/tacoma-app/stormpiper-pod
+  newTag: edge
+- name: gcr.io/tacoma-app/bg_worker
+  newName: gcr.io/tacoma-app/bg_worker
+  newTag: edge
+- name: gcr.io/tacoma-app/redis
+  newName: gcr.io/tacoma-app/redis
+  newTag: edge
 patches:
-  - path: secrets.yml
-    target:
-      group: apps
-      kind: Deployment
-      name: stormpiper
-      version: v1
-  - path: secrets.yml
-    target:
-      group: apps
-      kind: Deployment
-      name: worker
-      version: v1
-  - path: secrets.yml
-    target:
-      group: apps
-      kind: Deployment
-      name: beat
-      version: v1
-  - target:
-      version: v1
-      kind: VerticalPodAutoscaler
-      name: redis
-    patch: |-
-      - op: replace
-        path: /spec/targetRef/name
-        value: redis-dev
-  - target:
-      version: v1
-      kind: VerticalPodAutoscaler
-      name: beat
-    patch: |-
-      - op: replace
-        path: /spec/targetRef/name
-        value: beat-dev
-  - target:
-      version: v1
-      kind: VerticalPodAutoscaler
-      name: worker
-    patch: |-
-      - op: replace
-        path: /spec/targetRef/name
-        value: worker-dev
-  - target:
-      version: v1
-      kind: VerticalPodAutoscaler
-      name: stormpiper
-    patch: |-
-      - op: replace
-        path: /spec/targetRef/name
-        value: stormpiper-dev
+- path: secrets.yml
+  target:
+    group: apps
+    kind: Deployment
+    name: stormpiper
+    version: v1
+- path: secrets.yml
+  target:
+    group: apps
+    kind: Deployment
+    name: worker
+    version: v1
+- path: secrets.yml
+  target:
+    group: apps
+    kind: Deployment
+    name: beat
+    version: v1
+- patch: |-
+    - op: replace
+      path: /spec/targetRef/name
+      value: redis-dev
+  target:
+    kind: VerticalPodAutoscaler
+    name: redis
+    version: v1
+- patch: |-
+    - op: replace
+      path: /spec/targetRef/name
+      value: beat-dev
+  target:
+    kind: VerticalPodAutoscaler
+    name: beat
+    version: v1
+- patch: |-
+    - op: replace
+      path: /spec/targetRef/name
+      value: worker-dev
+  target:
+    kind: VerticalPodAutoscaler
+    name: worker
+    version: v1
+- patch: |-
+    - op: replace
+      path: /spec/targetRef/name
+      value: stormpiper-dev
+  target:
+    kind: VerticalPodAutoscaler
+    name: stormpiper
+    version: v1

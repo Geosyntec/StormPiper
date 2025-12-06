@@ -1,5 +1,7 @@
 resources:
-  - app.yml
-  - app-redis.yml
-  - app-worker-beat.yml
-  - app-worker.yml
+- app.yml
+- app-redis.yml
+- app-worker-beat.yml
+- app-worker.yml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
