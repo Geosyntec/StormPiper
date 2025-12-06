@@ -71,7 +71,7 @@ MarkupSafe==3.0.2
 matplotlib==3.10.0
 multidict==6.1.0
 narwhals==1.26.0
-nereid-engine @ https://github.com/Geosyntec/nereid/archive/v0.10.2.zip
+nereid-engine @ https://github.com/Geosyntec/nereid/archive/v0.11.0.zip
 networkx==3.4.2
 numpy==2.2.2
 orjson==3.10.15

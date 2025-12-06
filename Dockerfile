@@ -6,7 +6,7 @@ CMD ["redis-server", "/redis.conf"]
 FROM postgis/postgis:14-3.3 AS postgis
 
 
-FROM node:18.16.0-bullseye AS build-frontend
+FROM node:24.10-trixie AS build-frontend
 WORKDIR /app
 COPY ./stormpiper/stormpiper/spa/package*.json /app/
 RUN npm install

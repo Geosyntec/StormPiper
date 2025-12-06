@@ -43,7 +43,7 @@ celery[redis]
 
 fastapi #<0.99.0
 starlette
-pydantic #<2.0.0
+pydantic
 httpx
 orjson
 uvicorn
@@ -53,7 +53,7 @@ watchfiles
 asgi-ratelimit
 
 pint
-nereid-engine @ https://github.com/Geosyntec/nereid/archive/v0.10.2.zip
+nereid-engine @ https://github.com/Geosyntec/nereid/archive/v0.11.0.zip
 setuptools
 wheel
 

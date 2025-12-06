@@ -24,7 +24,7 @@ def ping():  # pragma: no cover
     return True
 
 
-def update_tmnt_attributes(engine=engine, overwrite=None):
+def update_tmnt_attributes(engine=engine, overwrite: bool | None = None):
     if overwrite is None:
         overwrite = False
 

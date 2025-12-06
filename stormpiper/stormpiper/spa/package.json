@@ -12,12 +12,14 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^3.1.0",
-    "cypress": "^9.7.0",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
     "rollup-plugin-analyzer": "^4.0.0",
-    "rollup-plugin-polyfill-node": "^0.10.2",
-    "typescript": "^4.8.4",
-    "vite": "^4.3.9"
+    "rollup-plugin-polyfill-node": "^0.13.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.6"
   },
   "dependencies": {
     "@deck.gl/core": "^8.8.12",
@@ -29,13 +31,8 @@
     "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.15",
     "@mui/x-data-grid": "^6.0.4",
-    "@types/jest": "^28.1.1",
-    "@types/node": "^18.8.2",
-    "@types/react": "^17.0.45",
-    "@types/react-dom": "^18.0.6",
     "d3-fetch": "^3.0.1",
     "d3-scale-chromatic": "^3.0.0",
-    "events": "^3.3.0",
     "lodash.debounce": "^4.0.8",
     "mapbox-gl": "^2.10.0",
     "nebula.gl": "^1.0.4",
@@ -44,8 +41,6 @@
     "react-hook-form": "^7.36.1",
     "react-map-gl": "^6.1.16",
     "react-router-dom": "^6.4.1",
-    "vega": "^5.25.0",
-    "vega-embed": "^6.22.1",
-    "vega-lite": "^5.8.0"
+    "vega-embed": "^7.0.2"
   }
 }
