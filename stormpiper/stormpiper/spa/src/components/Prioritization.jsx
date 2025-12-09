@@ -1,4 +1,4 @@
-import { Suspense, useState, useRef, useEffect, lazy } from "react";
+import { Suspense, useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   Card,
@@ -25,8 +25,7 @@ import {
 } from "../utils/utils";
 import { HalfSpan, TwoColGrid } from "./base/two-col-grid";
 import { goals_csv, field_manifest_csv } from "../assets/data/csv_assets";
-
-const DeckGLMap = lazy(() => import("./map"));
+import DeckGLMap from "./map";
 
 function Prioritization({ setDrawerButtonList }) {
   let firstRender = useRef(true);

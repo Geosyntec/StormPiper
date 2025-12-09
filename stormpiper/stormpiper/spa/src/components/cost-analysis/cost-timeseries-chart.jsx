@@ -1,15 +1,14 @@
 import { useEffect, useRef } from "react";
 import embed from "vega-embed";
 import { Box } from "@mui/material";
-
-import { api_fetch } from "../../utils/utils";
+import { api_fetch, toValidHtmlId } from "../../utils/utils";
 
 export default function CostTimeseriesChart({
   node_id,
   data_values,
   ...props
 }) {
-  const id = `cost_timeseries_chart_${node_id || ""}`;
+  const id = `cost_timeseries_chart_${toValidHtmlId(node_id) || ""}`;
   let ref = useRef();
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 import { subbasins } from "../../assets/geojson/coreLayers";
 import DeckGLMap from "../map";
-import { Box, TextField, MenuItem } from "@mui/material";
+import { Box } from "@mui/material";
 import { GeoJsonLayer } from "@deck.gl/layers";
 import { colorToList } from "../../utils/utils";
 import { useState, useEffect } from "react";

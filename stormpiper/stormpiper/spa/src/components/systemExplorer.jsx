@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useState, useRef, lazy, useContext } from "react";
+import { Suspense, useEffect, useState, useRef, useContext } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Card, CardContent, Box, Tabs, Tab } from "@mui/material";
 import LayersRoundedIcon from "@mui/icons-material/LayersRounded";
@@ -10,8 +10,7 @@ import LayerSelector from "./layerSelector";
 import BMPInfoWindow from "./bmpInfoWindow";
 import { api_fetch } from "../utils/utils";
 import { ExplorerSearch } from "./search/explorer-search-bar";
-
-const DeckGLMap = lazy(() => import("./map"));
+import DeckGLMap from "./map";
 
 const panelStyles = {
   prjStatPanel: {

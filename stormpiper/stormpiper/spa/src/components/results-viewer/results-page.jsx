@@ -4,12 +4,11 @@ import { Box, Card, CardContent, Typography, Grid } from "@mui/material";
 import ScatterPlotIcon from "@mui/icons-material/ScatterPlot";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
-import { TwoColGrid, FullSpan, HalfSpan } from "../base/two-col-grid";
-import { api_fetch } from "../../utils/utils";
-import SubbasinResultsView from "./subbasin-result-view";
+import { TwoColGrid, FullSpan } from "../base/two-col-grid";
 import ActionAreaCard from "../base/action-area-card";
 
 const FacilityResultsTable = lazy(() => import("./facility-results-table"));
+const SubbasinResultsView = lazy(() => import("./subbasin-result-view"));
 
 export default function ResultsViewerPage({
   setDrawerButtonList,

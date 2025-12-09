@@ -1,17 +1,17 @@
+import { lazy } from "react";
 import {
   Box,
   Paper,
   Grid,
   Typography,
-  Button,
   IconButton,
   Tooltip,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 
-import CostTimeseriesChart from "./cost-timeseries-chart";
 import { api_fetch } from "../../utils/utils";
+const CostTimeseriesChart = lazy(() => import("./cost-timeseries-chart"));
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
