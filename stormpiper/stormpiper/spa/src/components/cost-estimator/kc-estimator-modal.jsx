@@ -1,5 +1,6 @@
 import { Box, Button, Modal, Typography } from "@mui/material";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 import KCCostEstimator from "./kc-estimator";
 import DocumentationURL from "../../assets/docs/Appendix_B.pdf";
@@ -54,19 +55,15 @@ export function KCBMPDetailModal({
         <Typography id="modal-modal-description" align="center" sx={{ mt: 2 }}>
           <Button
             variant="contained"
-            component="label"
+            component={Link}
+            to={DocumentationURL}
+            target={"_blank"}
             sx={{
               textTransform: "none",
+              textDecoration: "none",
             }}
           >
-            <a
-              href={DocumentationURL}
-              target="_blank"
-              // download // uncomment to cause the file to be downloaded rather than opened in a new tab.
-              style={{ textDecoration: "none", color: "white" }}
-            >
-              King County WQBE Report (PDF)
-            </a>
+            King County WQBE Report (PDF)
           </Button>
         </Typography>
 

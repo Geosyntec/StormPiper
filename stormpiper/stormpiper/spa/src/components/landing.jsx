@@ -257,20 +257,15 @@ export default function Landing() {
             >
               <Button
                 variant="contained"
-                component="label"
+                component={Link}
+                to={allowNav && DocumentationURL}
+                target={allowNav ? "_blank" : "_self"}
                 sx={{
                   textTransform: "none",
-                  // my: 2,
+                  textDecoration: "none",
                 }}
               >
-                <a
-                  href={DocumentationURL}
-                  target="_blank"
-                  // download // uncomment to cause the file to be downloaded rather than opened in a new tab.
-                  style={{ textDecoration: "none", color: "white" }}
-                >
-                  Technical Documentation (PDF)
-                </a>
+                Technical Documentation (PDF)
               </Button>
             </Grid>
           </Grid>
