@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense, Fragment } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import {
   Box,
   Card,
@@ -8,7 +8,7 @@ import {
   ListSubheader,
 } from "@mui/material";
 import { FullSpan, HalfSpan } from "../base/two-col-grid";
-import SubbasinResultsMap from "./subbasin-results-map";
+
 import { api_fetch, createDisplayName } from "../../utils/utils";
 import {
   result_fields_csv,
@@ -18,6 +18,7 @@ import {
 import ResultRefreshBox from "../resultRefreshBox";
 
 const SubbasinResultsTable = lazy(() => import("./subbasin-results-table"));
+const SubbasinResultsMap = lazy(() => import("./subbasin-results-map"));
 
 export default function SubbasinResultsView() {
   const [visParam, setVisParam] = useState(null);

@@ -105,6 +105,28 @@ export const strFormatter = (params) => {
   return params.value.replace("_simple", "").replaceAll("_", " ");
 };
 
+export const toValidHtmlId = (str) => {
+  // Convert to lowercase
+  let validId = String(str).toLowerCase();
+
+  // Replace any characters not allowed in an HTML ID with a hyphen
+  // (except for letters, numbers, hyphens, and underscores)
+  validId = validId.replace(/[^a-z0-9-_]/g, "-");
+
+  // Remove multiple consecutive hyphens
+  validId = validId.replace(/--+/g, "-");
+
+  // Remove leading or trailing hyphens
+  validId = validId.replace(/^-+|-+$/g, "");
+
+  // Ensure the ID starts with a letter if it doesn't already
+  if (!validId.match(/^[a-z]/)) {
+    validId = "id-" + validId;
+  }
+
+  return validId;
+};
+
 export const createDisplayName = (str) => {
   const units = ["pct", "lbs", "ug/l", "mg/l", "inches", "cuft"];
 

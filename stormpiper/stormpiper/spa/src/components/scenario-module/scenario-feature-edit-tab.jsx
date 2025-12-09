@@ -1,18 +1,7 @@
-import {
-  Card,
-  CardActions,
-  CardContent,
-  Typography,
-  Button,
-  Box,
-  Tabs,
-  Tab,
-  Tooltip,
-} from "@mui/material";
+import { Box, Tabs, Tab, Tooltip } from "@mui/material";
 import { Fragment, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from "@mui/icons-material/Add";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 import SaveAsIcon from "@mui/icons-material/SaveAs";

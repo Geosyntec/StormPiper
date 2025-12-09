@@ -1,14 +1,14 @@
 import DeckGL from "@deck.gl/react";
 import StaticMap from "react-map-gl";
 import { useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy } from "react";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { getLayerData, zoomToFeature } from "../utils/map_utils.js";
+import { zoomToFeature } from "../utils/map_utils.js";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { Box, Button } from "@mui/material";
 import debounce from "lodash.debounce";
-import { FlyToInterpolator } from "@deck.gl/core";
+const FlyToInterpolator = lazy(() => import("@deck.gl/core"));
 
 const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoiYWNhbmctZ3MiLCJhIjoiY2w0NGl1YWwyMDE0YzNpb2hhbzN3dzcxdiJ9.3V1BdATyCSerixms7Er3Rw";
