@@ -20,6 +20,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 // @ts-ignore
 import { BMPReadOnlyInfo } from "./bmp-detail-page/bmp-basic-info";
@@ -524,19 +525,16 @@ export const BMPForm = forwardRef(function BMPForm(props: formProps, ref) {
               </Button>
               <Button
                 // variant="contained"
-                component="label"
+                component={Link}
+                to={DocumentationURL}
+                target={"_blank"}
                 sx={{
                   textTransform: "none",
+                  textDecoration: "none",
+                  color: "dimgray",
                 }}
               >
-                <a
-                  href={DocumentationURL}
-                  target="_blank"
-                  // download // uncomment to cause the file to be downloaded rather than opened in a new tab.
-                  style={{ textDecoration: "none", color: "dimgray" }}
-                >
-                  WQBE (PDF)
-                </a>
+                WQBE (PDF)
               </Button>
             </>
           </AccordionDetails>
