@@ -172,7 +172,7 @@ export const swInlet = {
   layer: GeoJsonLayer,
   props: {
     data: collatePaginatedQuery({
-      url: "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/25",
+      url: "https://gis.tacoma.gov/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/25",
       fields: ["ALTID"],
     }),
     loadOptions: {
@@ -256,7 +256,7 @@ export const swManHole = {
   layer: GeoJsonLayer,
   props: {
     data: collatePaginatedQuery({
-      url: "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/23",
+      url: "https://gis.tacoma.gov/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/23",
       fields: ["FACILITYID", "ALTID"],
     }),
     loadOptions: {
@@ -332,7 +332,7 @@ export const swMain = {
   layer: GeoJsonLayer,
   props: {
     data: collatePaginatedQuery({
-      url: "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/31",
+      url: "https://gis.tacoma.gov/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/31",
       fields: ["ALTID", "DIAMETER"],
     }),
     id: "swMain",
@@ -359,7 +359,7 @@ export const swTrunk = {
   layer: GeoJsonLayer,
   props: {
     data: collatePaginatedQuery({
-      url: "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/32",
+      url: "https://gis.tacoma.gov/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/32",
       fields: ["ALTID", "DIAMETER"],
     }),
     id: "swTrunk",
@@ -384,7 +384,7 @@ export const swCBLead = {
   layer: GeoJsonLayer,
   props: {
     data: collatePaginatedQuery({
-      url: "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/30",
+      url: "https://gis.tacoma.gov/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/30",
       fields: ["ALTID"],
     }),
     id: "swCBLead",
