@@ -23,11 +23,11 @@
     "old_url": "error unknown Url"
   },
   "subbasins": {
-    "url": "https://gis.cityoftacoma.org/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/41",
+    "url": "https://gis.tacoma.gov/arcgis/rest/services/ES/SurfacewaterNetwork/MapServer/41",
     "columns": ["BASINNAME", "SUBBASIN", "geometry"]
   },
   "equity_index": {
-    "url": "https://gis.cityoftacoma.org/arcgis/rest/services/General/Equity2020/MapServer/1",
+    "url": "https://gis.tacoma.gov/arcgis/rest/services/General/Equity2020/MapServer/1",
     "columns": [
       "Access",
       "Economic_Value",
