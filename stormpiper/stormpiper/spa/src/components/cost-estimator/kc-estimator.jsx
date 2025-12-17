@@ -9,13 +9,16 @@ import {
   Grid,
   Paper,
 } from "@mui/material";
+import { moneyFormatter } from "../../utils/utils";
 
 import KCdata from "../../assets/data/kc_cost_table.json";
 
 const TACOMA_TYPES = [...new Set(KCdata.map((k) => k.tacoma_type))];
-const TACOMA_TYPE_OPTIONS = TACOMA_TYPES.map((k) => {
-  return { value: k, label: k };
-});
+const TACOMA_TYPE_OPTIONS = TACOMA_TYPES.sort()
+  .filter((k) => !["none", "--"].includes(Object(k).toString().toLowerCase()))
+  .map((k) => {
+    return { value: k, label: k };
+  });
 const KC_VARIATIONS = [...new Set(KCdata.map((k) => k.description))];
 const KC_VARIATION_OPTIONS = KC_VARIATIONS.map((k) => {
   return { value: k, label: k, bold: false };
@@ -238,7 +241,7 @@ export default function KCCostEstimator({ initialBMPType, getResult }) {
                     <Grid item key={index} xs={1}>
                       <Item>
                         <Typography fontWeight="bold"> {d.title} </Typography>
-                        <Typography> {`${value}`} </Typography>
+                        <Typography> {`${moneyFormatter(value)}`} </Typography>
                       </Item>
                     </Grid>
                   );

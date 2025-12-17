@@ -105,6 +105,12 @@ export const strFormatter = (params) => {
   return params.value.replace("_simple", "").replaceAll("_", " ");
 };
 
+export const moneyFormatter = (val) => {
+  if (val == null) return "--";
+  const n = Math.round(val).toLocaleString();
+  return `$${n}`;
+};
+
 export const toValidHtmlId = (str) => {
   // Convert to lowercase
   let validId = String(str).toLowerCase();
