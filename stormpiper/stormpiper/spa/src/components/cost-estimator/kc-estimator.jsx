@@ -219,10 +219,9 @@ export default function KCCostEstimator({ initialBMPType, getResult }) {
             onChange={handleScalerInputChange}
           ></TextField>
           <Box sx={{ flexGrow: 1 }}>
-            <Typography variant="h6">
-              King County Cost Estimates (2023)
+            <Typography variant="h6" align="center">
+              Cost Estimates
             </Typography>
-
             <Grid
               container
               spacing={{ xs: 2, md: 3 }}
