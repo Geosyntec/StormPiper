@@ -10,7 +10,7 @@ import {
 import { styled } from "@mui/material/styles";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 
-import { api_fetch } from "../../utils/utils";
+import { api_fetch, moneyFormatter } from "../../utils/utils";
 const CostTimeseriesChart = lazy(() => import("./cost-timeseries-chart"));
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -20,12 +20,6 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: "center",
   color: theme.palette.text.secondary,
 }));
-
-function moneyFormatter(val) {
-  if (val == null) return "--";
-  const n = Math.round(val).toLocaleString();
-  return `$${n}`;
-}
 
 function CostDetails({ tmntDetails }) {
   const data = [
