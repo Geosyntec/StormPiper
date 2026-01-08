@@ -56,6 +56,13 @@ spec:
             httpGet:
               path: /ping
               port: 80
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: 80
+            initialDelaySeconds: 600 # Give the app time to start
+            periodSeconds: 30        # How often to run the probe
+            failureThreshold: 8      # Number of consecutive failures before restart
           envFrom:
             - secretRef:
                 name: prod-secrets
