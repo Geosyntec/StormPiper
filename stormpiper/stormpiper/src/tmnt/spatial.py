@@ -27,7 +27,7 @@ def overlay_rodeo(
             node_id=lambda df: numpy.where(
                 df["node_id"].isna(),
                 "SB_" + df["subbasin"],
-                df["node_id"] + "_SB_" + df["subbasin"],
+                df["node_id"].astype(str) + "_SB_" + df["subbasin"],
             )
         )
         .loc[lambda df: df.geometry.area > 1.0]

@@ -32,7 +32,7 @@ def get_background_worker_connection():  # pragma: no cover
     import stormpiper.bg_worker as bg
 
     try:
-        bg.ping.apply_async().get(timeout=0.2)
+        bg.ping.apply_async().get(timeout=0.2)  # type: ignore
     except Exception as e:
         logger.error(e)
         raise e

@@ -227,7 +227,9 @@ async def solve_single_scenario(
 
     data = ScenarioSolve(**utils.orm_to_dict(attr)).model_dump(exclude_unset=True)
 
-    task = bg.update_scenario_results.apply_async(kwargs={"data": data, "force": force})
+    task = bg.update_scenario_results.apply_async(  # type: ignore
+        kwargs={"data": data, "force": force},
+    )
 
     return await generate_task_response(task=task)
 
@@ -248,7 +250,7 @@ async def solve_all_scenarios(
         for attr in attrs
     ]
 
-    task = bg.update_all_scenario_results.apply_async(
+    task = bg.update_all_scenario_results.apply_async(  # type: ignore
         kwargs={"data_list": data_list, "force": force}
     )
 
@@ -261,7 +263,9 @@ async def solve_scenario(
 ):
     """Stateless solves of scenarios with identical logic as the stateful variant."""
     data = scenario.model_dump(exclude_unset=True)
-    task = bg.compute_scenario_results.apply_async(kwargs={"data": data})
+    task = bg.compute_scenario_results.apply_async(  # type: ignore
+        kwargs={"data": data},
+    )
     return await generate_task_response(task=task)
 
 

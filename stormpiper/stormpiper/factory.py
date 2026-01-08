@@ -112,7 +112,7 @@ def create_app(
     async def ping(
         request: Request,
     ) -> dict:
-        task = bg.ping.apply_async().get()
+        task = bg.ping.apply_async().get()  # type: ignore
         if not task:
             raise HTTPException(
                 status_code=406, detail="cannot connect to background worker."

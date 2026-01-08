@@ -1,3 +1,4 @@
+# type: ignore
 import logging
 
 from celery import Celery, chain, group

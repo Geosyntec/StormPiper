@@ -226,7 +226,7 @@ class ScenarioPatch(ScenarioBase): ...
 
 class ScenarioUpdate(ScenarioPatch):
     updated_by: str | None = None
-    input: ScenarioInputUpdate | None = None
+    input: ScenarioInputUpdate | None = None  # type: ignore
     input_time_updated: datetime | None = None
     loading_hash: str | None = None
     input_hash: str | None = None
@@ -246,7 +246,7 @@ class ScenarioSolve(ScenarioUpdate):
 class ScenarioCreate(ScenarioBase):
     created_by: str | None = None
     updated_by: str | None = None
-    input: ScenarioInputUpdate | None = None
+    input: ScenarioInputUpdate | None = None  # type: ignore
     input_time_updated: datetime | None = None
     loading_hash: str | None = None
     input_hash: str | None = None

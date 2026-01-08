@@ -38,7 +38,7 @@ def scalar_records_to_gdf(
         crs = 4326
     data = (
         pandas.DataFrame(records)
-        .assign(geometry=lambda df: df[geometry].apply(lambda x: to_shape(x)))
+        .assign(geometry=lambda df: df[geometry].map(to_shape))
         .pipe(datetime_to_isoformat)
     )
     gdf = geopandas.GeoDataFrame(data, geometry="geometry", crs=crs)  # type: ignore

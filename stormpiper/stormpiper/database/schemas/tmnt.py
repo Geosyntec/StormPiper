@@ -134,7 +134,8 @@ class TMNTSourceControlResultsBase:
     order = Column(Integer)
     activity = Column(String, nullable=False)
     direction = Column(
-        sa.dialects.postgresql.ENUM(name="direction", create_type=False), nullable=False
+        sa.dialects.postgresql.ENUM(name="direction", create_type=False),  # type: ignore
+        nullable=False,
     )
 
     epoch = Column(String)

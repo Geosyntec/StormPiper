@@ -12,12 +12,12 @@ class CRUDGlobalSetting(
 class CRUDGlobalCostSetting(
     CRUDBase[GlobalCostSetting, GlobalSettingCreate, GlobalSettingUpdate]
 ):
-    async def create(self, *args, **kwargs) -> None:  # pragma: no cover
+    async def create(self, *args, **kwargs):  # pragma: no cover
         raise NotImplementedError(
             "Global cost settings cannot be created by the user, only edited."
         )
 
-    async def remove(self, *args, **kwargs) -> None:  # pragma: no cover
+    async def remove(self, *args, **kwargs):  # pragma: no cover
         raise NotImplementedError(
             "Global cost settings cannot be removed by the user, only edited."
         )
