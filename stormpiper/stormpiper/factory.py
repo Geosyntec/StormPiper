@@ -99,8 +99,18 @@ def create_app(
         authenticate=ratelimiter.client_ip,
         backend=RedisBackend(StrictRedis.from_url(_settings.REDIS_BROKER_URL)),
         config={
-            r".+?/token/": [Rule(minute=120, second=5, block_time=60)],
-            r".+?/auth/": [Rule(minute=30, second=5, block_time=3600)],
+            r".+?/token/": [  # catch all malicious traffic, block malicious ips for 30 days
+                Rule(second=1, block_time=3600 * 24 * 30, group="malicious"),
+                Rule(minute=120, second=5, block_time=60),
+            ],
+            r".+?/auth/": [  # catch all malicious traffic, block malicious ips for 30 days
+                Rule(second=1, block_time=3600 * 24 * 30, group="malicious"),
+                Rule(minute=30, second=5, block_time=3600),
+            ],
+            r".+?/": [
+                # catch all malicious traffic, block malicious ips for 30 days
+                Rule(second=1, block_time=3600 * 24 * 30, group="malicious")
+            ],
         },
     )
 
