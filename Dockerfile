@@ -40,7 +40,7 @@ RUN apt-get update -y \
 
 
 FROM base-builder AS builder
-COPY ./stormpiper/requirements.txt /requirements.txt
+COPY ./requirements/requirements.txt /requirements.txt
 RUN mkdir /core \
     && pip wheel \
     --wheel-dir=/core \
@@ -54,7 +54,7 @@ RUN mkdir /gunicorn \
 FROM python:3.11.14-slim-trixie AS core-env
 RUN pip install -U pip wheel setuptools
 COPY --from=builder /core /core
-COPY ./stormpiper/requirements.txt /requirements.txt
+COPY ./requirements/requirements.txt /requirements.txt
 RUN python -m venv /opt/venv
 # Make sure we use the virtualenv:
 ENV PATH=/opt/venv/bin:$PATH
@@ -73,7 +73,7 @@ CMD /start-pod.sh
 
 
 FROM stormpiper-pod AS stormpiper-test
-COPY ./stormpiper/requirements_test.txt /requirements_test.txt
+COPY ./requirements/requirements_test.txt /requirements_test.txt
 COPY ./stormpiper/pytest.ini /stormpiper/pytest.ini
 COPY ./stormpiper/prestart-tests.sh /stormpiper/prestart-tests.sh
 RUN pip install -r /requirements_test.txt
@@ -115,7 +115,7 @@ EXPOSE 80
 
 
 FROM base-builder AS stormpiper-unpinned
-COPY ./stormpiper/requirements_unpinned.txt /requirements_unpinned.txt
+COPY ./requirements/requirements_unpinned.txt /requirements_unpinned.txt
 RUN pip install -r /requirements_unpinned.txt
 
 # docker stop unpinned

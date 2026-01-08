@@ -16,7 +16,7 @@ earthengine-api
 fastapi-users
 fastapi-users-db-sqlalchemy
 
-fiona
+# fiona
 GeoAlchemy2
 geopandas
 shapely
@@ -31,7 +31,7 @@ networkx
 scipy
 numpy
 pandas
-matplotlib
+# matplotlib
 
 pwdlib
 # passlib[bcrypt]
@@ -57,6 +57,6 @@ nereid-engine @ https://github.com/Geosyntec/nereid/archive/v0.11.0.zip
 setuptools
 wheel
 
-pymcdm>=1.1.0
+# pymcdm>=1.1.0
 
 altair>=5.0.0
