@@ -57,13 +57,13 @@ async def run_workflow(
 
 @rpc_router.get("/ping_background", response_class=JSONResponse)
 async def ping_background() -> dict[str, Any]:
-    task = bg.ping.apply_async()
+    task = bg.ping.apply_async()  # type: ignore
     return await utils.generate_task_response(task)
 
 
 @rpc_router.get("/solve_watershed", response_class=JSONResponse, tags=["rpc"])
 async def solve_watershed() -> dict[str, Any]:
-    task = bg.delete_and_refresh_all_results_tables.apply_async()
+    task = bg.delete_and_refresh_all_results_tables.apply_async()  # type: ignore
     return await utils.generate_task_response(task)
 
 

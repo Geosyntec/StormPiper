@@ -112,6 +112,9 @@ def tmnt_attr_validator(
     context: dict[str, Any] | None = None,
     pv_global_settings: dict[str, Any] | None = None,
 ) -> TMNTUpdate:
+    if isinstance(tmnt_patch, BaseModel):
+        tmnt_patch = tmnt_patch.model_dump()
+
     unvalidated_data = deepcopy(tmnt_patch)
 
     if isinstance(unvalidated_data, BASE):

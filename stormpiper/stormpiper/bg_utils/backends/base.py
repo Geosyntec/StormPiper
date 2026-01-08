@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
+from typing import Any
 
 
 class BaseBackend(ABC):
     @abstractmethod
-    def lock(self, lock, task_id, expiry=None):
+    def lock(self, lock, task_id, expiry=None) -> bool:
         """
         Store a lock for given lock value and task ID
 
@@ -30,7 +31,7 @@ class BaseBackend(ABC):
         """
 
     @abstractmethod
-    def get(self, lock):
+    def get(self, lock) -> str | None | Any:
         """
         Get task ID for given lock
 
